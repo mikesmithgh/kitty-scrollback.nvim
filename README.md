@@ -3,6 +3,10 @@
 > [!WARNING]  
 > This project is still a work in progress and not considered stable
 
+
+https://github.com/mikesmithgh/scrollback.nvim/assets/10135646/549c04e9-a251-41fa-b3cd-1dffda73a2e7
+
+
 ```sh
 git clone git@github.com:mikesmithgh/scrollback.nvim.git
 cd scrollback.nvim
