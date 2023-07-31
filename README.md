@@ -12,3 +12,9 @@ git clone git@github.com:mikesmithgh/scrollback.nvim.git
 cd scrollback.nvim
 ./scripts/generate-kitty-conf.sh >> ~/.config/kitty/kitty.conf # TODO: improve generation and avoid duplicates
 ```
+
+## Ideas
+- create callback to populate terminal or execute command
+- add support for https://github.com/m00qek/baleia.nvim
+- add pre/post hooks for user
+- allow user to custom flags sent to nvim 

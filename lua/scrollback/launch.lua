@@ -47,7 +47,7 @@ local term_chanid = vim.api.nvim_open_term(bufid, {})
 local color_reset = '\x1b[0m'
 local crlf = '\r\n'
 for i, l in pairs(scrollback_input) do
-  local line = l .. (i > line_count and color_reset or crlf)
+  local line = l .. (i >= line_count and color_reset or crlf)
   vim.api.nvim_chan_send(term_chanid, line)
 end
 vim.api.nvim_buf_delete(0, {
