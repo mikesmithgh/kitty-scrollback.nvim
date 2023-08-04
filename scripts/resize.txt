@@ -1,0 +1,24 @@
+resize boss: <kitty.boss.Boss object at 0x110bec220>
+resize window: Window(title=scrollback.sh, id=2)
+resize boss: <kitty.boss.Boss object at 0x110bec220>
+resize window: Window(title=scrollback.sh, id=2)
+resize boss: <kitty.boss.Boss object at 0x104ee4220>
+resize window: Window(title=scrollback.sh, id=2)
+resize boss: <kitty.boss.Boss object at 0x104ee4220>
+resize window: Window(title=scrollback.sh, id=2)
+resize boss: <kitty.boss.Boss object at 0x104ee4220>
+resize window: Window(title=scrollback.sh, id=2)
+resize boss: <kitty.boss.Boss object at 0x104ee4220>
+resize window: Window(title=scrollback.sh, id=3)
+resize boss: <kitty.boss.Boss object at 0x104ee4220>
+resize window: Window(title=scrollback.sh, id=4)
+resize boss: <kitty.boss.Boss object at 0x103f2c220>
+resize window: Window(title=scrollback.sh, id=2)
+resize boss: <kitty.boss.Boss object at 0x103f2c220>
+resize window: Window(title=scrollback.sh, id=3)
+resize boss: <kitty.boss.Boss object at 0x11842c220>
+resize window: Window(title=scrollback.sh, id=2)
+resize boss: <kitty.boss.Boss object at 0x104718220>
+resize window: Window(title=scrollback.sh, id=2)
+resize boss: <kitty.boss.Boss object at 0x104718220>
+resize window: Window(title=scrollback.sh, id=3)

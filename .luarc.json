@@ -3,7 +3,8 @@
     "diagnostics": {
         "enable": true,
         "globals": [
-            "vim"
+            "vim",
+            "ksbnvim"
         ]
     },
     "workspace": {

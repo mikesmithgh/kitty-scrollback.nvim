@@ -1,0 +1,20 @@
+focus boss: <kitty.boss.Boss object at 0x104ee4220>
+focus window: Window(title=scrollback.sh, id=2)
+focus boss: <kitty.boss.Boss object at 0x104ee4220>
+focus window: Window(title=scrollback.sh, id=2)
+focus boss: <kitty.boss.Boss object at 0x104ee4220>
+focus window: Window(title=scrollback.sh, id=2)
+focus boss: <kitty.boss.Boss object at 0x104ee4220>
+focus window: Window(title=scrollback.sh, id=3)
+focus boss: <kitty.boss.Boss object at 0x104ee4220>
+focus window: Window(title=scrollback.sh, id=4)
+focus boss: <kitty.boss.Boss object at 0x103f2c220>
+focus window: Window(title=scrollback.sh, id=2)
+focus boss: <kitty.boss.Boss object at 0x103f2c220>
+focus window: Window(title=scrollback.sh, id=3)
+focus boss: <kitty.boss.Boss object at 0x11842c220>
+focus window: Window(title=scrollback.sh, id=2)
+focus boss: <kitty.boss.Boss object at 0x104718220>
+focus window: Window(title=scrollback.sh, id=2)
+focus boss: <kitty.boss.Boss object at 0x104718220>
+focus window: Window(title=scrollback.sh, id=3)

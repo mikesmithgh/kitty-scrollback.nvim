@@ -1,0 +1,4 @@
+
+*.orig
+.worktrees/
+.DS_Store
