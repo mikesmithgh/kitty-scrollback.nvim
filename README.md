@@ -10,7 +10,7 @@ https://github.com/mikesmithgh/scrollback.nvim/assets/10135646/549c04e9-a251-41f
 ```sh
 git clone git@github.com:mikesmithgh/scrollback.nvim.git
 cd scrollback.nvim
-./scripts/generate-kitty-conf.sh >> ~/.config/kitty/kitty.conf # TODO: improve generation and avoid duplicates
+./scripts/generate-kitty-conf.sh 
 ```
 
 ## Ideas
@@ -18,69 +18,4 @@ cd scrollback.nvim
 - add support for https://github.com/m00qek/baleia.nvim
 - add pre/post hooks for user
 - allow user to custom flags sent to nvim 
-
-## Design (In-progress)
-kitty
-```
-┌─────────────────────────────────┐
-│                                 │
-│ kitten kitty_scrollback_nvim.py │
-│                                 │
-└─────────────────────────────────┘
-
-
-kitty_scrollback_nvim.py
-┌─────────────────────────────────────────────────────────────────────────┐
-│                                                                         │
-│ @result_handler                                                         │
-│ def handle_result(args, result, target_window_id, boss)                 │
-│                                                                         │
-│   kitty_pipe_data = $KITTY_PIPE_DATA                                    │
-│                                                                         │
-│   kitty_data = { kitty_pipe_data, target_window_id }                    │
-│                                                                         │
-│   kitty @ launch --type overlay                                         │
-│                                                                         │
-│          nvim --cmd ' lua ksbnvim=dofile('kitty_scrollback_nvim.lua') ' │
-│                       lua ksbnvim.setup()                               │
-│                       lua ksbnvim.launch(kitty_data)                    │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-
-
-
-nvim
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                 │
-│ function setup(opts)                                                            │
-- set options
-- set keymaps
-- set autocommands
-│                                                                                 │
-│ end                                                                             │
-│                                                                                 │
-│ function launch(kitty_data)                                                     │
-
-  - open empty buffer
-│
-│   vim.fn.termopen(                                                              │
-│                                                                                 │
-│     kitty @ get-text --ansi --match=id:kitty_data.target_window_id --extend=all │
-│                                                                                 │
-│   )                                                                             │
-  - delete last line with process terminated
-
-│                                                                                 │
-  - loading popup
-  - set position of cursor                                                
-│                                                                                 │
-│                                                                                 │
-│                                                                                 │
-│ end                                                                             │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
-```
-kitty @ launch --type overlay nvim --cmd 'lua vim.o.scrollback = 100000; vim.fn.termopen([[kitty @ get-text --ansi --match="id:4" --extent=all | sed "s/$/\x1b[0m/g"]])'
-```
 

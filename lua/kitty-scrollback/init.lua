@@ -128,11 +128,35 @@ local function set_options()
   }
 end
 
+local function set_yank_post(kitty_data)
+  vim.api.nvim_create_autocmd({ 'TextYankPost' }, {
+    group = vim.api.nvim_create_augroup('KittyScrollBackNvimTextYankPost', { clear = true }),
+    pattern = '*',
+    callback = function()
+      local e = vim.v.event
+      local contents = e.regcontents
+      if type(contents) == 'table' then
+        -- contents = table.concat(contents, ' \\\r')
+        contents = table.concat(contents, '\n')
+      end
+      vim.fn.system({
+        'kitty',
+        '@',
+        'send-text',
+        '--match=id:' .. kitty_data.window_id,
+        contents,
+      })
+      vim.schedule(function()
+        vim.cmd.quit({ bang = true })
+      end)
+    end
+  })
+end
+
+
 local function set_term_enter(buf_id)
-  -- required, it doesn't make sense to enter the terminal since it is readonly
-  -- optional, TextYankPost quickly return to terminal after yank - might not want this depending on use case
   vim.api.nvim_create_autocmd({ 'TermEnter' }, {
-    group = vim.api.nvim_create_augroup('ScrollBackNvimTermEnter', { clear = true }),
+    group = vim.api.nvim_create_augroup('KittyScrollBackNvimTermEnter', { clear = true }),
     callback = vim.schedule_wrap(function(e)
       if e.buf == buf_id then
         local termenter = M.opts.termenter
@@ -460,6 +484,7 @@ M.launch = vim.schedule_wrap(function(kitty_data_str)
   local kitty_data = vim.fn.json_decode(kitty_data_str)
   local buf_id = vim.api.nvim_get_current_buf()
   set_term_enter(buf_id)
+  set_yank_post(kitty_data)
 
   local ansi = '--ansi'
   if not M.opts.kitty_get_text.ansi then
@@ -482,7 +507,7 @@ M.launch = vim.schedule_wrap(function(kitty_data_str)
     vim.o.columns = min_cols
   end
   vim.fn.termopen(
-    [[kitty @ get-text ]] .. ansi .. [[ --match="state:overlay_parent" ]] .. extent .. [[ --add-cursor | ]] ..
+    [[kitty @ get-text ]] .. ansi .. [[ --match="id:]] .. kitty_data.window_id .. [[" ]] .. extent .. [[ --add-cursor | ]] ..
     [[sed -e "s/$/\x1b[0m/g" ]] .. -- .. -- append all lines with reset to avoid unintended colors
     [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
     {
