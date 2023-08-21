@@ -7,7 +7,6 @@ local M = {
 local kitty_loading_window_id = nil
 
 ---@class KsbOpts
----@field termenter string|function
 ---@field callbacks KsbCallbacks
 local default_opts = {
   keymaps_enabled = true,
@@ -43,10 +42,15 @@ local default_opts = {
     -- after_launch = function(kitty_data, M.opts) end,
     -- after_ready = function(kitty_data, M.opts) end,
   },
-  termenter = 'stopinsert'
 }
 
-local orig_columns = vim.o.columns
+---@class KsbPrivate
+---@field orig_columns number
+---@field bufid number?
+---@field paste_bufid number?
+local p = {
+  orig_columns = vim.o.columns
+}
 
 local highlight_definitions = {
   KittyScrollbackNvimNormal = {
@@ -108,7 +112,7 @@ local function set_options()
   vim.o.hidden = true -- optional
   vim.o.laststatus = 0 -- preferred
   vim.o.virtualedit = 'all' -- all or onemore for correct position
-  vim.o.clipboard = 'unnamedplus' -- optional
+  -- vim.o.clipboard = 'unnamedplus' -- optional
   vim.o.scrolloff = 0 -- preferred
   vim.o.termguicolors = true -- required
   vim.o.lazyredraw = false -- conflicts with noice
@@ -128,59 +132,147 @@ local function set_options()
   }
 end
 
+local function size(max, value)
+  return value > 1 and math.min(value, max) or math.floor(max * value)
+end
+
+-- local center_window_options = function(width, height, columns, lines)
+--   return {
+--     width = size(columns, width),
+--     height = size(lines, height),
+--     row = math.floor((lines - height) / 2),
+--     col = math.floor((columns - width) / 2),
+--   }
+-- end
+
+local open_paste_window = function(start_insert)
+  vim.cmd.stopinsert()
+  vim.fn.cursor({ vim.fn.line('$'), 0 })
+  vim.fn.search('.', 'b')
+  local lnum = vim.fn.winline() - 2
+  local col = vim.fn.wincol() + 1
+  if not p.paste_bufid then
+    p.paste_bufid = vim.api.nvim_create_buf(false, false)
+    vim.api.nvim_buf_set_name(p.paste_bufid, vim.fn.tempname())
+    vim.api.nvim_set_option_value('filetype', 'sh', {
+      buf = p.paste_bufid,
+    })
+  end
+  if not p.paste_winid or vim.fn.win_id2win(p.paste_winid) == 0 then
+    local keymap_title = M.opts.keymaps_enabled and ' or CTRL-Enter' or ''
+    p.paste_winid = vim.api.nvim_open_win(
+      p.paste_bufid, true, {
+        relative = 'editor',
+        noautocmd = false,
+        zindex = 1000,
+        focusable = true,
+        border = 'rounded',
+        title = ' Write' .. keymap_title .. ' to execute command ',
+        title_pos = 'center',
+        width = size(vim.o.columns, vim.o.columns - col) - 1,
+        height = math.floor(size(vim.o.lines, (vim.o.lines + 2) / 2)),
+        row = lnum,
+        col = col,
+      }
+    )
+    vim.api.nvim_set_option_value('winhighlight',
+      'Normal:NormalFloat',
+      { win = p.paste_winid, }
+    )
+  end
+  if start_insert then
+    vim.schedule(function()
+      vim.fn.cursor(vim.fn.line('$', p.paste_winid), 1)
+      vim.cmd.startinsert({ bang = true })
+    end)
+  end
+end
+
+local function send_paste_buffer_text_to_kitty_and_quit(kitty_data)
+  local cmd_str = table.concat(vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false), '\r') .. '\r'
+  vim.fn.system({
+    'kitty',
+    '@',
+    'send-text',
+    '--match=id:' .. kitty_data.window_id,
+    cmd_str,
+  })
+  vim.cmd.quitall({ bang = true })
+end
+
 local function set_yank_post(kitty_data)
   vim.api.nvim_create_autocmd({ 'TextYankPost' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimTextYankPost', { clear = true }),
     pattern = '*',
-    callback = function()
-      local e = vim.v.event
-      local contents = e.regcontents
-      if type(contents) == 'table' then
-        -- contents = table.concat(contents, ' \\\r')
-        contents = table.concat(contents, '\n')
+    callback = function(e)
+      if e.buf ~= p.bufid then
+        return
       end
-      vim.fn.system({
-        'kitty',
-        '@',
-        'send-text',
-        '--match=id:' .. kitty_data.window_id,
-        contents,
-      })
-      vim.schedule(function()
-        vim.cmd.quit({ bang = true })
-      end)
+      local yankevent = vim.v.event
+      if yankevent.operator ~= 'y' then
+        return
+      end
+      local contents = {}
+      for _, line in pairs(yankevent.regcontents) do
+        line = line:gsub('%s+$', '')
+        table.insert(contents, line)
+      end
+      if type(contents) == 'table' then
+        vim.schedule(function()
+          open_paste_window()
+          vim.fn.cursor({ vim.fn.line('$'), 0 })
+          local lastline = vim.fn.search('.', 'bnc')
+          if lastline > 0 then
+            table.insert(contents, 1, '')
+          end
+          vim.api.nvim_buf_set_lines(p.paste_bufid, lastline, lastline, false, contents)
+
+          vim.api.nvim_create_autocmd({ 'BufWriteCmd' }, {
+            group = vim.api.nvim_create_augroup('KittyScrollBackNvimBufWritePre', { clear = true }),
+            callback = function(paste_event)
+              if paste_event.buf == p.paste_bufid then
+                send_paste_buffer_text_to_kitty_and_quit(kitty_data)
+              end
+            end
+          })
+        end)
+      end
     end
   })
 end
 
 
-local function set_term_enter(buf_id)
+local function set_term_enter(bufid)
   vim.api.nvim_create_autocmd({ 'TermEnter' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimTermEnter', { clear = true }),
-    callback = vim.schedule_wrap(function(e)
-      if e.buf == buf_id then
-        local termenter = M.opts.termenter
-        if type(termenter) == 'function' then
-          return termenter(e, buf_id)
-        end
-        if termenter == 'stopinsert' then
-          vim.cmd.stopinsert()
-        elseif termenter == 'quit' then
-          vim.cmd.quit({ bang = true })
-        end
+    callback = function(e)
+      if e.buf == bufid then
+        open_paste_window(true)
       end
-    end)
+    end
   }
   )
 end
 
-local function set_keymaps()
+local function set_keymaps(kitty_data)
   if M.opts.keymaps_enabled then
-    -- optional keymaps
-    vim.api.nvim_set_keymap('n', '<esc>', ':qa!<cr>', { silent = true, noremap = true })
-    vim.api.nvim_set_keymap('n', '<c-c>', ':qa!<cr>', { silent = true, noremap = true })
-    vim.api.nvim_set_keymap('n', 'q', ':qa!<cr>', { silent = true, noremap = true })
-    vim.api.nvim_set_keymap('n', '<cr>', ':qa!<cr>', { silent = true, noremap = true })
+    vim.keymap.set('n', '<esc>', function()
+      if vim.api.nvim_get_current_buf() == p.bufid then
+        vim.cmd.quitall({ bang = true })
+        return
+      end
+      if vim.api.nvim_get_current_buf() == p.paste_bufid then
+        vim.cmd.close({ bang = true })
+        return
+      end
+      return '<esc>'
+    end)
+    vim.keymap.set({ 'n', 't' }, '<c-c>', function() vim.cmd.quitall({ bang = true }) end)
+    vim.keymap.set({ 'n', 'i' }, '<c-cr>', function()
+      if vim.api.nvim_get_current_buf() == p.paste_bufid then
+        send_paste_buffer_text_to_kitty_and_quit(kitty_data)
+      end
+    end)
   end
 end
 
@@ -226,9 +318,6 @@ local function show_status_window()
       vim_icon = ''
       width = 25
     end
-    local function size(max, value)
-      return value > 1 and math.min(value, max) or math.floor(max * value)
-    end
     local popup_bufid = vim.api.nvim_create_buf(false, true)
     local winopts = function()
       return {
@@ -236,7 +325,7 @@ local function show_status_window()
         zindex = 10,
         style = 'minimal',
         focusable = false,
-        width = size(orig_columns or vim.o.columns, width),
+        width = size(p.orig_columns or vim.o.columns, width),
         height = 1,
         row = 0,
         col = vim.o.columns,
@@ -271,7 +360,7 @@ local function show_status_window()
             if ok then
               vim.schedule(function()
                 pcall(vim.api.nvim_win_set_config, popup_winid, vim.tbl_deep_extend('force', winopts(), {
-                  width = size(orig_columns or vim.o.columns, winopts().width - 2)
+                  width = size(p.orig_columns or vim.o.columns, winopts().width - 2)
                 }))
               end)
             end
@@ -323,7 +412,7 @@ local function show_status_window()
                 end
                 if current_winopts.width > 2 then
                   ok, _ = pcall(vim.api.nvim_win_set_config, popup_winid, vim.tbl_deep_extend('force', winopts(), {
-                    width = size(orig_columns or vim.o.columns, current_winopts.width - 1)
+                    width = size(p.orig_columns or vim.o.columns, current_winopts.width - 1)
                   }))
                   if not ok then
                     vim.fn.timer_stop(close_window_timer)
@@ -375,6 +464,7 @@ local function show_status_window()
     })
   end
 end
+
 
 local function close_kitty_loading_window()
   if kitty_loading_window_id then
@@ -428,6 +518,17 @@ end
 
 M.setup = function(kitty_data_str)
   local kitty_data = vim.fn.json_decode(kitty_data_str)
+  if not vim.g.colors_name then
+    vim.api.nvim_set_hl(0, 'NormalFloat', {
+      link = 'Normal',
+    })
+    vim.api.nvim_set_hl(0, 'FloatBorder', {
+      link = 'Normal',
+    })
+    vim.api.nvim_set_hl(0, 'FloatTitle', {
+      link = 'Normal',
+    })
+  end
   local opts = {}
   if kitty_data.config_file then
     opts = dofile(kitty_data.config_file).config(kitty_data)
@@ -436,7 +537,7 @@ M.setup = function(kitty_data_str)
   set_highlights()
   open_kitty_loading_window(kitty_data.ksb_dir) -- must be after opts and highlights set
   set_options()
-  set_keymaps()
+  set_keymaps(kitty_data)
   if M.opts.callbacks.after_setup and type(M.opts.callbacks.after_setup) == 'function' then
     M.opts.after_setup(kitty_data, M.opts)
   end
@@ -480,82 +581,86 @@ local set_cursor_position = vim.schedule_wrap(
 )
 
 
-M.launch = vim.schedule_wrap(function(kitty_data_str)
+M.launch = function(kitty_data_str)
   local kitty_data = vim.fn.json_decode(kitty_data_str)
-  local buf_id = vim.api.nvim_get_current_buf()
-  set_term_enter(buf_id)
-  set_yank_post(kitty_data)
+  vim.schedule(function()
+    p.bufid = vim.api.nvim_get_current_buf()
+    set_term_enter(p.bufid)
+    set_yank_post(kitty_data)
 
-  local ansi = '--ansi'
-  if not M.opts.kitty_get_text.ansi then
-    ansi = ''
-  end
+    local ansi = '--ansi'
+    if not M.opts.kitty_get_text.ansi then
+      ansi = ''
+    end
 
-  local extent = '--extent=all'
-  local extent_opt = M.opts.kitty_get_text.extent
-  if extent_opt then
-    extent = '--extent=' .. extent_opt
-  end
+    local extent = '--extent=all'
+    local extent_opt = M.opts.kitty_get_text.extent
+    if extent_opt then
+      extent = '--extent=' .. extent_opt
+    end
 
-  -- increase the number of columns temporary so that the width is used during the
-  -- terminal command kitty @ get-text. this avoids hard wrapping lines to the
-  -- current window size. Note: a larger min_cols appears to impact performance
-  -- do not worry about setting vim.o.columns back to original value that is taken
-  -- care of when we trigger kitty to send a SIGWINCH to the nvim process
-  local min_cols = 300
-  if vim.o.columns < min_cols then
-    vim.o.columns = min_cols
-  end
-  vim.fn.termopen(
-    [[kitty @ get-text ]] .. ansi .. [[ --match="id:]] .. kitty_data.window_id .. [[" ]] .. extent .. [[ --add-cursor | ]] ..
-    [[sed -e "s/$/\x1b[0m/g" ]] .. -- .. -- append all lines with reset to avoid unintended colors
-    [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
-    {
-      stdout_buffered = true,
-      on_stdout = function(_, lines)
-        signal_winchanged_to_kitty_child_process()
-        local delete_line_timer = vim.fn.timer_start(
-          100,
-          function(t) ---@diagnostic disable-line: redundant-parameter
-            local process_exited_line = vim.fn.search('\\[process exited \\d\\+\\]', 'bn')
-            if process_exited_line > 0 then
-              vim.fn.timer_stop(t)
-              kitty_data.line_count = #lines - 1
-              kitty_data.cursor_y = kitty_data.cursor_y
-              vim.api.nvim_set_option_value('modifiable', true, { buf = buf_id, })
-              vim.api.nvim_buf_set_lines(buf_id, process_exited_line - 2, process_exited_line, true, {}) -- delete lines
-              vim.api.nvim_set_option_value('modifiable', false, { buf = buf_id, })
-              set_cursor_position(kitty_data)
-              show_status_window()
+    -- increase the number of columns temporary so that the width is used during the
+    -- terminal command kitty @ get-text. this avoids hard wrapping lines to the
+    -- current window size. Note: a larger min_cols appears to impact performance
+    -- do not worry about setting vim.o.columns back to original value that is taken
+    -- care of when we trigger kitty to send a SIGWINCH to the nvim process
+    local min_cols = 300
+    if vim.o.columns < min_cols then
+      vim.o.columns = min_cols
+    end
+    vim.schedule(function()
+      vim.fn.termopen(
+        [[kitty @ get-text ]] .. ansi .. [[ --match="id:]] .. kitty_data.window_id .. [[" ]] .. extent .. [[ --add-cursor | ]] ..
+        [[sed -e "s/$/\x1b[0m/g" ]] .. -- append all lines with reset to avoid unintended colors
+        [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
+        {
+          stdout_buffered = true,
+          on_stdout = function(_, lines)
+            signal_winchanged_to_kitty_child_process()
+            local delete_line_timer = vim.fn.timer_start(
+              100,
+              function(t) ---@diagnostic disable-line: redundant-parameter
+                local process_exited_line = vim.fn.search('\\[process exited \\d\\+\\]', 'bn')
+                if process_exited_line > 0 then
+                  vim.fn.timer_stop(t)
+                  kitty_data.line_count = #lines - 1
+                  kitty_data.cursor_y = kitty_data.cursor_y
+                  vim.api.nvim_set_option_value('modifiable', true, { buf = p.bufid, })
+                  vim.api.nvim_buf_set_lines(p.bufid, process_exited_line - 2, process_exited_line, true, {}) -- delete lines
+                  vim.api.nvim_set_option_value('modifiable', false, { buf = p.bufid, })
+                  set_cursor_position(kitty_data)
+                  show_status_window()
 
-              -- improve buffer name to avoid displaying complex command to user
-              local term_buf_name = vim.api.nvim_buf_get_name(buf_id)
-              term_buf_name = term_buf_name:gsub(':kitty.*$', ':kitty-scrollback.nvim')
-              vim.api.nvim_buf_set_name(buf_id, term_buf_name)
+                  -- improve buffer name to avoid displaying complex command to user
+                  local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
+                  term_buf_name = term_buf_name:gsub(':kitty.*$', ':kitty-scrollback.nvim')
+                  vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
 
-              if M.opts.callbacks.after_ready and type(M.opts.callbacks.after_ready) == 'function' then
-                M.opts.after_ready(kitty_data, M.opts)
-              end
+                  if M.opts.callbacks.after_ready and type(M.opts.callbacks.after_ready) == 'function' then
+                    M.opts.after_ready(kitty_data, M.opts)
+                  end
 
-              close_kitty_loading_window()
-            end
+                  close_kitty_loading_window()
+                end
+              end,
+              { ['repeat'] = -1 } -- repeat indefinitely but will be cancelled after 2 seconds
+            )
+            -- give at most 2 seconds of an attempt to delete the line
+            vim.defer_fn(
+              function()
+                vim.fn.timer_stop(delete_line_timer)
+                close_kitty_loading_window()
+              end,
+              2000
+            )
           end,
-          { ['repeat'] = -1 } -- repeat indefinitely but will be cancelled after 2 seconds
-        )
-        -- give at most 2 seconds of an attempt to delete the line
-        vim.defer_fn(
-          function()
-            vim.fn.timer_stop(delete_line_timer)
-            close_kitty_loading_window()
-          end,
-          2000
-        )
-      end,
-    })
-  if M.opts.callbacks.after_launch and type(M.opts.callbacks.after_launch) == 'function' then
-    M.opts.after_launch(kitty_data, M.opts)
-  end
-end)
+        })
+    end)
+    if M.opts.callbacks.after_launch and type(M.opts.callbacks.after_launch) == 'function' then
+      M.opts.after_launch(kitty_data, M.opts)
+    end
+  end)
+end
 
 
 return M

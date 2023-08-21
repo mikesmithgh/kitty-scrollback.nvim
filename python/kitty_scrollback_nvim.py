@@ -89,8 +89,8 @@ def handle_result(args: List[str],
         ) + kitty_args + (
             'nvim',
         ) + nvim_args + (
-            '-c',
-            f'lua ksbnvim=dofile([[{ksb_dir}/lua/kitty-scrollback/init.lua]])'
+            '--cmd',
+            f'autocmd VimEnter * lua ksbnvim=dofile([[{ksb_dir}/lua/kitty-scrollback/init.lua]])'
             + f'ksbnvim.setup([[{kitty_data}]])' +
             f'ksbnvim.launch([[{kitty_data}]])',
         )
