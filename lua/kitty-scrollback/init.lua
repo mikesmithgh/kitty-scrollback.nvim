@@ -593,11 +593,20 @@ M.launch = function(kitty_data_str)
       ansi = ''
     end
 
+    local clear_selection = '--clear-selection'
+    if not M.opts.kitty_get_text.clear_selection then
+      clear_selection = ''
+    end
+
     local extent = '--extent=all'
     local extent_opt = M.opts.kitty_get_text.extent
     if extent_opt then
       extent = '--extent=' .. extent_opt
     end
+
+    local add_cursor = '--add-cursor' -- always add cursor
+
+    local get_text_opts = ansi .. ' ' .. clear_selection .. ' ' .. add_cursor .. ' ' .. extent
 
     -- increase the number of columns temporary so that the width is used during the
     -- terminal command kitty @ get-text. this avoids hard wrapping lines to the
@@ -610,7 +619,7 @@ M.launch = function(kitty_data_str)
     end
     vim.schedule(function()
       vim.fn.termopen(
-        [[kitty @ get-text ]] .. ansi .. [[ --match="id:]] .. kitty_data.window_id .. [[" ]] .. extent .. [[ --add-cursor | ]] ..
+        [[kitty @ get-text --match="id:]] .. kitty_data.window_id .. [[" ]] .. get_text_opts .. [[ | ]] ..
         [[sed -e "s/$/\x1b[0m/g" ]] .. -- append all lines with reset to avoid unintended colors
         [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
         {
@@ -628,7 +637,9 @@ M.launch = function(kitty_data_str)
                   vim.api.nvim_set_option_value('modifiable', true, { buf = p.bufid, })
                   vim.api.nvim_buf_set_lines(p.bufid, process_exited_line - 2, process_exited_line, true, {}) -- delete lines
                   vim.api.nvim_set_option_value('modifiable', false, { buf = p.bufid, })
-                  set_cursor_position(kitty_data)
+                  if M.opts.kitty_get_text.extent == 'screen' or M.opts.kitty_get_text.extent == 'all' then
+                    set_cursor_position(kitty_data)
+                  end
                   show_status_window()
 
                   -- improve buffer name to avoid displaying complex command to user

@@ -14,11 +14,25 @@ https://github.com/mikesmithgh/scrollback.nvim/assets/10135646/8a3bacc8-73de-4cc
 ```sh
 git clone git@github.com:mikesmithgh/kitty-scrollback.nvim.git
 cd kitty-scrollback.nvim
-./scripts/generate-kitty-conf.sh 
+./scripts/kittyscrollbackgeneratekittens.sh
 ```
+
+## Configuration
+anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
+`--nvim-no-args` to disable default and pass no args
+`--nvim-appname` to set `NVIM_APPNAME` environment variable
+`--config-file` to set lua file with `config` function to set plugin options
 
 ## Ideas
 - create callback to populate terminal or execute command
 - add support for https://github.com/m00qek/baleia.nvim
 - add pre/post hooks for user
 - allow user to custom flags sent to nvim 
+
+## Recommendations
+-  `fladson/vim-kitty` for config syntax highlighting
+- `smart-splits`
+
+## Acknowledgements
+- https://github.com/Eandrju/cellular-automaton.nvim/tree/main
+- tokyonight

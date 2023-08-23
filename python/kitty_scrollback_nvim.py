@@ -31,34 +31,26 @@ def pipe_data(w, target_window_id, ksb_dir, config_file):
     return data
 
 
-def parse_kitty_launch_args(args):
-    for idx, arg in enumerate(args):
-        if arg.startswith('--kitty-launch-args') and (idx + 1 < len(args)):
-            kitty_args = args[idx + 1]
-            if kitty_args:
-                return eval(f'({kitty_args.rstrip(",")},)')
-            return ()
-    return (
-        '--copy-env',
-        '--type',
-        'overlay',
-        '--title',
-        'kitty-scrollback.nvim',
-    )
-
-
 def parse_nvim_args(args):
     for idx, arg in enumerate(args):
-        if arg.startswith('--nvim-args') and (idx + 1 < len(args)):
-            nvim_args = args[idx + 1]
-            if nvim_args:
-                return eval(f'({nvim_args.rstrip(",")},)')
+        if arg.startswith('--no-nvim-args'):
+            return ()
+        if arg.startswith('--nvim-args'):
+            if idx + 1 < len(args):
+                return tuple(filter(None, args[idx + 1:]))
             return ()
     return (
         '--clean',
         '--noplugin',
         '-n',
     )
+
+
+def parse_nvim_appname(args):
+    for idx, arg in enumerate(args):
+        if arg.startswith('--nvim-appname') and (idx + 1 < len(args)):
+            return ('--env', f'NVIM_APPNAME={args[idx + 1]}')
+    return ()
 
 
 def parse_config_file(args):
@@ -76,24 +68,29 @@ def handle_result(args: List[str],
                   boss: Boss) -> None:
     w = boss.window_id_map.get(target_window_id)
     if w is not None:
-        kitty_args = parse_kitty_launch_args(args[1:])
-        nvim_args = parse_nvim_args(args[1:])
         config_file = parse_config_file(args[1:])
         kitty_data = json.dumps(
             pipe_data(w,
                       target_window_id,
                       ksb_dir,
                       config_file))
-        cmd = (
-            'launch',
-        ) + kitty_args + (
-            'nvim',
-        ) + nvim_args + (
+
+        kitty_args = (
+            '--copy-env',
+            '--type',
+            'overlay',
+            '--title',
+            'kitty-scrollback.nvim',
+        ) + parse_nvim_appname(args[1:])
+
+        nvim_args = parse_nvim_args(args[1:]) + (
             '--cmd',
             f'autocmd VimEnter * lua ksbnvim=dofile([[{ksb_dir}/lua/kitty-scrollback/init.lua]])'
             + f'ksbnvim.setup([[{kitty_data}]])' +
             f'ksbnvim.launch([[{kitty_data}]])',
         )
+
+        cmd = ('launch', ) + kitty_args + ('nvim', ) + nvim_args
         boss.call_remote_control(w, cmd)
     else:
         raise Exception(f'Failed to get window with id: {target_window_id}')
