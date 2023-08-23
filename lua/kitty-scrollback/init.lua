@@ -241,6 +241,24 @@ local function set_yank_post(kitty_data)
   })
 end
 
+local function remove_process_exited()
+  local last_line_range = vim.api.nvim_buf_line_count(p.bufid) - vim.o.lines
+  if last_line_range < 1 then
+    last_line_range = 1
+  end
+  local last_lines = vim.api.nvim_buf_get_lines(p.bufid, last_line_range, -1, false)
+  for i, line in pairs(last_lines) do
+    local match = line:lower():gmatch('%[process exited %d+%]')
+    if match() then
+      local target_line = last_line_range - 1 + i
+      vim.api.nvim_set_option_value('modifiable', true, { buf = p.bufid, })
+      vim.api.nvim_buf_set_lines(p.bufid, target_line, target_line + 1, false, {})
+      vim.api.nvim_set_option_value('modifiable', false, { buf = p.bufid, })
+      return true
+    end
+  end
+  return false
+end
 
 local function set_term_enter(bufid)
   vim.api.nvim_create_autocmd({ 'TermEnter' }, {
@@ -248,10 +266,19 @@ local function set_term_enter(bufid)
     callback = function(e)
       if e.buf == bufid then
         open_paste_window(true)
+
+        -- when performing last cmd or visited output, every time termenter is triggered it
+        -- is restoring the process exited message, this may be a bug in neovim
+        vim.fn.timer_start(20, function(t) ---@diagnostic disable-line: redundant-parameter
+          if remove_process_exited() then
+            vim.fn.timer_stop(t)
+          end
+        end, {
+          ['repeat'] = 100,
+        })
       end
     end
-  }
-  )
+  })
 end
 
 local function set_keymaps(kitty_data)
@@ -347,8 +374,7 @@ local function show_status_window()
     end
     vim.fn.timer_start(
       80,
-      ---@diagnostic disable-next-line: redundant-parameter
-      function(status_window_timer)
+      function(status_window_timer) ---@diagnostic disable-line: redundant-parameter
         count = count + 1
         local spinner_icon = count > #spinner and spinner[#spinner] or spinner[count]
         local fmt_msg = ' ' .. spinner_icon .. ' ' .. kitty_icon .. ' ' .. love_icon .. ' ' .. vim_icon .. ' '
@@ -402,8 +428,7 @@ local function show_status_window()
           end
           if M.opts.status_window.autoclose then
             if count > #spinner then
-              ---@diagnostic disable-next-line: redundant-parameter
-              vim.fn.timer_start(60, function(close_window_timer)
+              vim.fn.timer_start(60, function(close_window_timer) ---@diagnostic disable-line: redundant-parameter
                 local ok, current_winopts = pcall(vim.api.nvim_win_get_config, popup_winid)
                 if not ok then
                   vim.fn.timer_stop(close_window_timer)
@@ -562,7 +587,7 @@ local set_cursor_position = vim.schedule_wrap(
 
     vim.fn.cursor(last_line, 1) -- cursor last line
     -- using normal commands instead of cursor pos due to virtualedit
-    vim.cmd.normal({ (lines - 1) .. 'k', bang = true }) -- cursor up
+    vim.cmd.normal({ lines .. 'k', bang = true }) -- cursor up
     vim.cmd.normal({ y .. 'j', bang = true }) -- cursor down
     vim.cmd.normal({ x .. 'l', bang = true }) -- cursor right
     if scrolled_by > 0 then
@@ -624,19 +649,15 @@ M.launch = function(kitty_data_str)
         [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
         {
           stdout_buffered = true,
-          on_stdout = function(_, lines)
+          on_exit = function()
             signal_winchanged_to_kitty_child_process()
-            local delete_line_timer = vim.fn.timer_start(
-              100,
+            vim.fn.timer_start(
+              20,
               function(t) ---@diagnostic disable-line: redundant-parameter
-                local process_exited_line = vim.fn.search('\\[process exited \\d\\+\\]', 'bn')
-                if process_exited_line > 0 then
+                local timer_info = vim.fn.timer_info(t)[1] or {}
+                local ready = remove_process_exited()
+                if ready or timer_info['repeat'] == 0 then
                   vim.fn.timer_stop(t)
-                  kitty_data.line_count = #lines - 1
-                  kitty_data.cursor_y = kitty_data.cursor_y
-                  vim.api.nvim_set_option_value('modifiable', true, { buf = p.bufid, })
-                  vim.api.nvim_buf_set_lines(p.bufid, process_exited_line - 2, process_exited_line, true, {}) -- delete lines
-                  vim.api.nvim_set_option_value('modifiable', false, { buf = p.bufid, })
                   if M.opts.kitty_get_text.extent == 'screen' or M.opts.kitty_get_text.extent == 'all' then
                     set_cursor_position(kitty_data)
                   end
@@ -650,20 +671,12 @@ M.launch = function(kitty_data_str)
                   if M.opts.callbacks.after_ready and type(M.opts.callbacks.after_ready) == 'function' then
                     M.opts.after_ready(kitty_data, M.opts)
                   end
-
-                  close_kitty_loading_window()
+                  vim.schedule(close_kitty_loading_window)
                 end
               end,
-              { ['repeat'] = -1 } -- repeat indefinitely but will be cancelled after 2 seconds
-            )
-            -- give at most 2 seconds of an attempt to delete the line
-            vim.defer_fn(
-              function()
-                vim.fn.timer_stop(delete_line_timer)
-                close_kitty_loading_window()
-              end,
-              2000
-            )
+              {
+                ['repeat'] = 100
+              })
           end,
         })
     end)
