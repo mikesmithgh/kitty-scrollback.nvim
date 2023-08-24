@@ -36,3 +36,4 @@ anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an e
 ## Acknowledgements
 - https://github.com/Eandrju/cellular-automaton.nvim/tree/main
 - tokyonight
+- lazy.nvim
