@@ -10,6 +10,7 @@ local M = {
 ---@field callbacks KsbCallbacks
 local default_opts = {
   keymaps_enabled = true,
+  restore_options = false,
   status_window = {
     enabled = true,
     style_simple = false,
@@ -32,6 +33,7 @@ local default_opts = {
     -- KittyScrollbackNvimReady = '#8faa80',
     -- KittyScrollbackNvimKitty = '#754b33',
     -- KittyScrollbackNvimVim = '#188b25',
+    -- TODO: add paste window highlight overrides
   },
   ---@class KsbCallbacks
   ---@field after_setup function
@@ -112,7 +114,35 @@ local function set_highlights()
   end
 end
 
+local function restore_orig_options()
+  for option, value in pairs(p.orig_options) do
+    vim.o[option] = value
+  end
+end
+
 local function set_options()
+  p.orig_options = {
+    virtualedit = vim.o.virtualedit,
+    termguicolors = vim.o.termguicolors,
+    laststatus = vim.o.laststatus,
+    scrolloff = vim.o.scrolloff,
+    cmdheight = vim.o.cmdheight,
+    number = vim.o.number,
+    relativenumber = vim.o.relativenumber,
+    scrollback = vim.o.scrollback,
+    list = vim.o.list,
+    showtabline = vim.o.showtabline,
+    ignorecase = vim.o.ignorecase,
+    smartcase = vim.o.smartcase,
+    cursorline = vim.o.cursorline,
+    cursorcolumn = vim.o.cursorcolumn,
+    fillchars = vim.o.fillchars,
+    lazyredraw = vim.o.lazyredraw,
+    hidden = vim.o.hidden,
+    modifiable = vim.o.modifiable,
+    wrap = vim.o.wrap,
+  }
+
   -- required opts
   vim.o.virtualedit = 'all' -- all or onemore for correct position
   vim.o.termguicolors = true
@@ -145,7 +175,7 @@ local paste_winopts = function(lnum, col, noautocmd)
     relative = 'editor',
     zindex = 1000,
     focusable = true,
-    border = 'rounded',
+    border = { '🭽', '▔', '🭾', '▕', '🭿', '▁', '🭼', '▏' },
     title = ' Write' .. keymap_title .. ' to execute command ',
     title_pos = 'center',
     height = math.floor(m.util.size(vim.o.lines, (vim.o.lines + 2) / 2)),
@@ -163,7 +193,7 @@ local paste_winopts = function(lnum, col, noautocmd)
       -- current line is larger than window, put window below current line
       vim.fn.setcursorcharpos({ vim.fn.line('.'), 0 })
       vim.cmd.redraw()
-      winopts.width = vim.o.columns
+      winopts.width = vim.o.columns - 1
       winopts.col = 0
     end
   end
@@ -173,9 +203,11 @@ end
 local open_paste_window = function(start_insert)
   vim.cmd.stopinsert()
   vim.fn.cursor({ vim.fn.line('$'), 0 })
-  vim.fn.search('.', 'b')
-  local lnum = vim.fn.winline() - 2
-  local col = vim.fn.wincol() + 1
+  if M.opts.kitty_get_text.extent == 'screen' or M.opts.kitty_get_text.extent == 'all' then
+    vim.fn.search('.', 'b')
+  end
+  local lnum = vim.fn.winline() - 1
+  local col = vim.fn.wincol()
   if not p.paste_bufid then
     p.paste_bufid = vim.api.nvim_create_buf(false, false)
     vim.api.nvim_buf_set_name(p.paste_bufid, vim.fn.tempname())
@@ -185,8 +217,34 @@ local open_paste_window = function(start_insert)
   end
   if not p.paste_winid or vim.fn.win_id2win(p.paste_winid) == 0 then
     p.paste_winid = vim.api.nvim_open_win(p.paste_bufid, true, paste_winopts(lnum, col, false))
+    local normal_hl = vim.api.nvim_get_hl(0, {
+      name = 'Normal',
+      link = false,
+    })
+    local normal_bg_color = normal_hl.bg or p.kitty_colors.background
+    local floatborder_fg_color = m.util.darken(p.kitty_colors.foreground, 0.3, p.kitty_colors.background)
+    local floattitle_fg_color = m.util.darken(p.kitty_colors.foreground, 0.7, p.kitty_colors.background)
+
+    vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinNormal', {
+      bg = normal_bg_color,
+      blend = 4
+    })
+    vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinFloatBorder', {
+      bg = normal_bg_color,
+      fg = floatborder_fg_color,
+      blend = 4
+    })
+    vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinFloatTitle', {
+      bg = normal_bg_color,
+      fg = floattitle_fg_color,
+      blend = 4
+    })
     vim.api.nvim_set_option_value('winhighlight',
-      'Normal:NormalFloat',
+      'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
+      { win = p.paste_winid, }
+    )
+    vim.api.nvim_set_option_value('winblend',
+      4,
       { win = p.paste_winid, }
     )
   end
@@ -198,8 +256,29 @@ local open_paste_window = function(start_insert)
   end
 end
 
+local function get_kitty_colors(kitty_data)
+  local kitty_colors = {}
+  local kitty_colors_str = vim.fn.system({
+    'kitty',
+    '@',
+    'get-colors',
+    '--match=id:' .. kitty_data.window_id,
+  }) or ''
+  for color_kv in kitty_colors_str:gmatch('[^\r\n]+') do
+    local split_kv = color_kv:gmatch('%S+')
+    kitty_colors[split_kv()] = split_kv()
+  end
+  return kitty_colors
+end
+
 local function send_paste_buffer_text_to_kitty_and_quit(kitty_data)
-  local cmd_str = table.concat(vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false), '\r') .. '\r'
+  local cmd_str = table.concat(
+    vim.tbl_filter(function(l)
+        return #l > 0 -- remove empty lines
+      end,
+      vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false)
+    ),
+    '\r') .. '\r'
   vim.fn.system({
     'kitty',
     '@',
@@ -209,7 +288,6 @@ local function send_paste_buffer_text_to_kitty_and_quit(kitty_data)
   })
   vim.cmd.quitall({ bang = true })
 end
-
 
 local function remove_process_exited()
   local last_line_range = vim.api.nvim_buf_line_count(p.bufid) - vim.o.lines
@@ -579,15 +657,17 @@ end
 M.setup = function(kitty_data_str)
   local kitty_data = vim.fn.json_decode(kitty_data_str)
   local ksb_dir = kitty_data.ksb_dir
-
   m.util = dofile(ksb_dir .. '/lua/kitty-scrollback/util.lua')
 
-  -- avoid terrible purple floating windows for the default colorscheme
-  if not vim.g.colors_name then
-    vim.api.nvim_set_hl(0, 'NormalFloat', { link = 'Normal', })
-    vim.api.nvim_set_hl(0, 'FloatBorder', { link = 'Normal', })
-    vim.api.nvim_set_hl(0, 'FloatTitle', { link = 'Normal', })
-  end
+  vim.schedule(function()
+    -- avoid terrible purple floating windows for the default colorscheme
+    if not vim.g.colors_name then
+      vim.api.nvim_set_hl(0, 'NormalFloat', { link = 'Normal', })
+      vim.api.nvim_set_hl(0, 'FloatBorder', { link = 'Normal', })
+      vim.api.nvim_set_hl(0, 'FloatTitle', { link = 'Normal', })
+    end
+    p.kitty_colors = get_kitty_colors(kitty_data)
+  end)
 
   local opts = {}
   if kitty_data.config_file then
@@ -671,6 +751,9 @@ M.launch = function(kitty_data_str)
                   vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
 
                   close_kitty_loading_window()
+                  if M.opts.restore_options then
+                    restore_orig_options()
+                  end
                   if M.opts.callbacks.after_ready and type(M.opts.callbacks.after_ready) == 'function' then
                     vim.schedule(function()
                       M.opts.callbacks.after_ready(kitty_data, M.opts)

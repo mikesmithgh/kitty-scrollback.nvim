@@ -7,14 +7,23 @@ Neovim plugin/Kitten to integrate Neovim with Kitty's scrollback buffer
 > [!WARNING]  
 > This project is still a work in progress and not considered stable
 
+https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/ceeff852-2e95-452d-8b4b-c05e65b38607
 
-https://github.com/mikesmithgh/scrollback.nvim/assets/10135646/8a3bacc8-73de-4ccd-ac5a-18934042a88e
-
-
+Installation
 ```sh
 git clone git@github.com:mikesmithgh/kitty-scrollback.nvim.git
 cd kitty-scrollback.nvim
-./scripts/kittyscrollbackgeneratekittens.sh
+./scripts/kittyscrollbackgeneratekittens.sh # copy desired configs to kitty config
+```
+
+Example:
+```sh
+# Browse scrollback buffer in nvim
+map ctrl+shift+h kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py
+# Browse output of the last shell command in nvim
+map ctrl+shift+g kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --config-file /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs/last_cmd_output.lua
+# Show clicked command output in nvim
+mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --config-file /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs/last_visited_cmd_output.lua
 ```
 
 ## Configuration
@@ -23,11 +32,12 @@ anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an e
 `--nvim-appname` to set `NVIM_APPNAME` environment variable
 `--config-file` to set lua file with `config` function to set plugin options
 
-## Ideas
-- create callback to populate terminal or execute command
+## Roadmap
+- add quick setup to allow user to test easily before installing
+- add documentation and examples
+- release v1
+- ci/cd
 - add support for https://github.com/m00qek/baleia.nvim
-- add pre/post hooks for user
-- allow user to custom flags sent to nvim 
 
 ## Recommendations
 -  `fladson/vim-kitty` for config syntax highlighting
