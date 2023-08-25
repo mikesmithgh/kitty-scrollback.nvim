@@ -175,14 +175,21 @@ end
 
 local paste_winopts = function(lnum, col, noautocmd)
   local keymap_title = M.opts.keymaps_enabled and ' or CTRL-Enter' or ''
+  local h            = m.util.size(vim.o.lines, math.floor(m.util.size(vim.o.lines, (vim.o.lines + 2) / 3)))
+  local diff         = vim.o.lines - lnum - h
+  if diff < 0 then
+    lnum = lnum - h - 2
+  end
   local winopts = {
     relative = 'editor',
-    zindex = 98,
+    zindex = 40,
     focusable = true,
     border = { '🭽', '▔', '🭾', '▕', '🭿', '▁', '🭼', '▏' },
+    -- border = 'rounded',
     -- title = ' Write' .. keymap_title .. ' to execute command ',
     -- title_pos = 'center',
-    height = math.floor(m.util.size(vim.o.lines, (vim.o.lines + 2) / 2)),
+    height = h,
+    -- height = math.floor(m.util.size(vim.o.lines, (vim.o.lines + 2) / 2)),
   }
   if type(noautocmd) == 'boolean' then
     winopts.noautocmd = noautocmd
@@ -212,25 +219,27 @@ local legend_winopts = function(paste_winopts)
     zindex = paste_winopts.zindex + 1,
     focusable = false,
     -- border = { ' ', ' ', '▕', '▕', '🭿', '▁', '▁', ' ' },
-    border = { '🭽', '▔', '🭾', '▕', '🭿', '▁', '🭼', '▏' },
+    border = { '▏', ' ', '▕', '▕', '🭿', '▁', '🭼', '▏' },
+    -- border = 'rounded',
     height = 1,
     width = paste_winopts.width,
-    row = paste_winopts.height - 2,
+    row = paste_winopts.height + 1,
     col = -1,
     style = 'minimal',
-    title = 'Mappings',
-    title_pos = 'center',
+    -- title = 'Mappings',
+    -- title_pos = 'center',
     -- anchor = 'NE',
   }
 end
 
-local open_paste_window = function(start_insert, cb)
+local open_paste_window = function(start_insert)
   vim.cmd.stopinsert()
   vim.fn.cursor({ vim.fn.line('$'), 0 })
   if M.opts.kitty_get_text.extent == 'screen' or M.opts.kitty_get_text.extent == 'all' then
     vim.fn.search('.', 'b')
   end
-  local lnum = vim.fn.winline() - 1 - vim.o.cmdheight
+
+  local lnum = m.util.size(vim.o.lines, vim.fn.winline() - 2 - vim.o.cmdheight)
   local col = vim.fn.wincol()
   if not p.paste_bufid then
     p.paste_bufid = vim.api.nvim_create_buf(false, false)
@@ -264,7 +273,7 @@ local open_paste_window = function(start_insert, cb)
       vim.api.nvim_set_option_value('conceallevel', 2, {
         win = p.legend_winid,
       })
-      local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '|g?| Toggle Mappings' }
+      local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '*g?* Toggle Mappings' }
       local padding = math.floor(winopts.width / #legend_msg)
       local string_with_padding = '%' .. padding .. 's'
       local string_with_half_padding = '%' .. math.floor(padding / 4) .. 's'
@@ -297,35 +306,32 @@ local open_paste_window = function(start_insert, cb)
 
     vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinNormal', {
       bg = normal_bg_color,
-      blend = 4
+      -- blend = 4
     })
     vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinFloatBorder', {
       bg = normal_bg_color,
       fg = floatborder_fg_color,
-      blend = 4
+      -- blend = 30
     })
     vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinFloatTitle', {
       bg = floatborder_fg_color,
       fg = normal_bg_color,
-      blend = 4
+      -- blend = 30
     })
     vim.api.nvim_set_option_value('winhighlight',
       'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
       { win = p.paste_winid, }
     )
-    vim.api.nvim_set_option_value('winblend',
-      4,
-      { win = p.paste_winid, }
-    )
+    -- vim.api.nvim_set_option_value('winblend',
+    --   4,
+    --   { win = p.paste_winid, }
+    -- )
   end
   if start_insert then
     vim.schedule(function()
       vim.fn.cursor(vim.fn.line('$', p.paste_winid), 1)
       vim.cmd.startinsert({ bang = true })
     end)
-  end
-  if type(cb) == 'function' then
-    cb()
   end
 end
 
@@ -446,7 +452,7 @@ local function set_keymaps(kitty_data)
             vim.api.nvim_set_option_value('conceallevel', 2, {
               win = p.legend_winid,
             })
-            local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '|g?| Toggle Mappings' }
+            local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '*g?* Toggle Mappings' }
             local padding = math.floor(winopts.width / #legend_msg)
             local string_with_padding = '%' .. padding .. 's'
             local string_with_half_padding = '%' .. math.floor(padding / 4) .. 's'
@@ -493,7 +499,7 @@ local function show_status_window()
     local winopts = function()
       return {
         relative = 'editor',
-        zindex = 150,
+        zindex = 40,
         style = 'minimal',
         focusable = false,
         width = m.util.size(p.orig_columns or vim.o.columns, width),
@@ -745,7 +751,7 @@ local function set_paste_window_resized_autocmd()
           vim.schedule(function()
             local len_winopts = legend_winopts(current_winopts)
             pcall(vim.api.nvim_win_set_config, p.legend_winid, len_winopts)
-            local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '|g?| Toggle Mappings' }
+            local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '*g?* Toggle Mappings' }
             local padding = math.floor(len_winopts.width / #legend_msg)
             local string_with_padding = '%' .. padding .. 's'
             local string_with_half_padding = '%' .. math.floor(padding / 4) .. 's'
@@ -825,14 +831,13 @@ local function set_yank_post_autocmd(kitty_data)
         end
         if type(contents) == 'table' then
           vim.schedule(function()
-            open_paste_window(false, vim.defer_fn(function()
-              vim.fn.cursor({ vim.fn.line('$'), 0 })
-              local lastline = vim.fn.search('.', 'bnc')
-              if lastline > 0 then
-                table.insert(contents, 1, '')
-              end
-              vim.api.nvim_buf_set_lines(p.paste_bufid, lastline, lastline, false, contents)
-            end, 20)) -- TODO: why do I need this delay, and remove this as a cb doesn't make sense
+            open_paste_window()
+            vim.fn.cursor({ vim.fn.line('$'), 0 })
+            local lastline = vim.fn.search('.', 'bnc')
+            if lastline > 0 then
+              table.insert(contents, 1, '')
+            end
+            vim.api.nvim_buf_set_lines(p.paste_bufid, lastline, lastline, false, contents)
           end)
         end
       end
