@@ -127,11 +127,13 @@ local function set_options()
     laststatus = vim.o.laststatus,
     scrolloff = vim.o.scrolloff,
     cmdheight = vim.o.cmdheight,
+    ruler = vim.o.ruler,
     number = vim.o.number,
     relativenumber = vim.o.relativenumber,
     scrollback = vim.o.scrollback,
     list = vim.o.list,
     showtabline = vim.o.showtabline,
+    showmode = vim.o.showmode,
     ignorecase = vim.o.ignorecase,
     smartcase = vim.o.smartcase,
     cursorline = vim.o.cursorline,
@@ -151,11 +153,13 @@ local function set_options()
   vim.o.laststatus = 0
   vim.o.scrolloff = 0
   vim.o.cmdheight = 0
+  vim.o.ruler = false
   vim.o.number = false
   vim.o.relativenumber = false
   vim.o.scrollback = 100000
   vim.o.list = false
   vim.o.showtabline = 0
+  vim.o.showmode = false
   vim.o.ignorecase = true
   vim.o.smartcase = true
   vim.o.cursorline = false
@@ -173,11 +177,11 @@ local paste_winopts = function(lnum, col, noautocmd)
   local keymap_title = M.opts.keymaps_enabled and ' or CTRL-Enter' or ''
   local winopts = {
     relative = 'editor',
-    zindex = 1000,
+    zindex = 98,
     focusable = true,
     border = { '🭽', '▔', '🭾', '▕', '🭿', '▁', '🭼', '▏' },
-    title = ' Write' .. keymap_title .. ' to execute command ',
-    title_pos = 'center',
+    -- title = ' Write' .. keymap_title .. ' to execute command ',
+    -- title_pos = 'center',
     height = math.floor(m.util.size(vim.o.lines, (vim.o.lines + 2) / 2)),
   }
   if type(noautocmd) == 'boolean' then
@@ -188,7 +192,8 @@ local paste_winopts = function(lnum, col, noautocmd)
   end
   if type(col) == 'number' then
     winopts.col = col
-    winopts.width = m.util.size(vim.o.columns, vim.o.columns - col) - 1
+    local offset = 1
+    winopts.width = m.util.size(vim.o.columns, vim.o.columns - col) - offset
     if winopts.width < 0 then
       -- current line is larger than window, put window below current line
       vim.fn.setcursorcharpos({ vim.fn.line('.'), 0 })
@@ -200,13 +205,32 @@ local paste_winopts = function(lnum, col, noautocmd)
   return winopts
 end
 
-local open_paste_window = function(start_insert)
+local legend_winopts = function(paste_winopts)
+  return {
+    relative = 'win',
+    win = p.paste_winid,
+    zindex = paste_winopts.zindex + 1,
+    focusable = false,
+    -- border = { ' ', ' ', '▕', '▕', '🭿', '▁', '▁', ' ' },
+    border = { '🭽', '▔', '🭾', '▕', '🭿', '▁', '🭼', '▏' },
+    height = 1,
+    width = paste_winopts.width,
+    row = paste_winopts.height - 2,
+    col = -1,
+    style = 'minimal',
+    title = 'Mappings',
+    title_pos = 'center',
+    -- anchor = 'NE',
+  }
+end
+
+local open_paste_window = function(start_insert, cb)
   vim.cmd.stopinsert()
   vim.fn.cursor({ vim.fn.line('$'), 0 })
   if M.opts.kitty_get_text.extent == 'screen' or M.opts.kitty_get_text.extent == 'all' then
     vim.fn.search('.', 'b')
   end
-  local lnum = vim.fn.winline() - 1
+  local lnum = vim.fn.winline() - 1 - vim.o.cmdheight
   local col = vim.fn.wincol()
   if not p.paste_bufid then
     p.paste_bufid = vim.api.nvim_create_buf(false, false)
@@ -216,7 +240,53 @@ local open_paste_window = function(start_insert)
     })
   end
   if not p.paste_winid or vim.fn.win_id2win(p.paste_winid) == 0 then
-    p.paste_winid = vim.api.nvim_open_win(p.paste_bufid, true, paste_winopts(lnum, col, false))
+    local winopts = paste_winopts(lnum, col, false)
+    p.paste_winid = vim.api.nvim_open_win(p.paste_bufid, true, winopts)
+    vim.api.nvim_set_option_value('scrolloff', 2, {
+      win = p.paste_winid,
+    })
+
+    vim.schedule(function()
+      p.legend_bufid = vim.api.nvim_create_buf(false, false)
+      vim.api.nvim_set_option_value('filetype', 'help', {
+        buf = p.legend_bufid,
+      })
+
+      p.legend_winid = vim.api.nvim_open_win(p.legend_bufid, false, legend_winopts(winopts))
+      vim.api.nvim_create_autocmd('WinClosed', {
+        group = vim.api.nvim_create_augroup('KittyScrollBackNvimPasteWindowClosed', { clear = true }),
+        pattern = tostring(p.paste_winid),
+        callback = function()
+          pcall(vim.api.nvim_win_close, p.legend_winid, true)
+        end,
+      })
+
+      vim.api.nvim_set_option_value('conceallevel', 2, {
+        win = p.legend_winid,
+      })
+      local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '|g?| Toggle Mappings' }
+      local padding = math.floor(winopts.width / #legend_msg)
+      local string_with_padding = '%' .. padding .. 's'
+      local string_with_half_padding = '%' .. math.floor(padding / 4) .. 's'
+      local first = true
+      legend_msg =
+        vim.tbl_map(function(msg)
+          if first then
+            first = false
+            return string.format(string_with_half_padding .. '%s', ' ', msg)
+          end
+          return string.format(string_with_padding, msg)
+        end, legend_msg)
+      vim.api.nvim_buf_set_lines(p.legend_bufid, 0, -1, false,
+        { table.concat(legend_msg) }
+      )
+
+      vim.api.nvim_set_option_value('winhighlight',
+        'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
+        { win = p.legend_winid, }
+      )
+    end)
+
     local normal_hl = vim.api.nvim_get_hl(0, {
       name = 'Normal',
       link = false,
@@ -235,8 +305,8 @@ local open_paste_window = function(start_insert)
       blend = 4
     })
     vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinFloatTitle', {
-      bg = normal_bg_color,
-      fg = floattitle_fg_color,
+      bg = floatborder_fg_color,
+      fg = normal_bg_color,
       blend = 4
     })
     vim.api.nvim_set_option_value('winhighlight',
@@ -253,6 +323,9 @@ local open_paste_window = function(start_insert)
       vim.fn.cursor(vim.fn.line('$', p.paste_winid), 1)
       vim.cmd.startinsert({ bang = true })
     end)
+  end
+  if type(cb) == 'function' then
+    cb()
   end
 end
 
@@ -271,7 +344,8 @@ local function get_kitty_colors(kitty_data)
   return kitty_colors
 end
 
-local function send_paste_buffer_text_to_kitty_and_quit(kitty_data)
+local function send_paste_buffer_text_to_kitty_and_quit(kitty_data, bracketed_paste_mode)
+  -- TODO clean up just hacking right now
   local cmd_str = table.concat(
     vim.tbl_filter(function(l)
         return #l > 0 -- remove empty lines
@@ -279,6 +353,10 @@ local function send_paste_buffer_text_to_kitty_and_quit(kitty_data)
       vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false)
     ),
     '\r') .. '\r'
+  cmd_str = '\x1b[200~' .. cmd_str .. '\x1b[201~' -- see https://cirw.in/blog/bracketed-paste
+  if not bracketed_paste_mode then
+    cmd_str = cmd_str .. '\r'
+  end
   vim.fn.system({
     'kitty',
     '@',
@@ -325,8 +403,75 @@ local function set_keymaps(kitty_data)
     vim.keymap.set({ 'n', 't' }, '<c-c>', function() vim.cmd.quitall({ bang = true }) end)
     vim.keymap.set({ 'n', 'i' }, '<c-cr>', function()
       if vim.api.nvim_get_current_buf() == p.paste_bufid then
-        send_paste_buffer_text_to_kitty_and_quit(kitty_data)
+        send_paste_buffer_text_to_kitty_and_quit(kitty_data, false)
+        return
       end
+      return '<c-cr>'
+    end)
+    vim.keymap.set({ 'n', 'i' }, '<s-cr>', function()
+      if vim.api.nvim_get_current_buf() == p.paste_bufid then
+        send_paste_buffer_text_to_kitty_and_quit(kitty_data, true)
+        return
+      end
+      return '<s-cr>'
+    end)
+    vim.keymap.set({ 'v' }, '<leader>Y', '"+Y', {})
+    vim.keymap.set({ 'v' }, '<leader>y', '"+y', {})
+    vim.keymap.set({ 'n' }, '<leader>Y', '"+y$', {})
+    vim.keymap.set({ 'n' }, '<leader>y', '"+y', {})
+    vim.keymap.set({ 'n' }, '<leader>yy', '"+yy', {})
+
+    vim.keymap.set({ 'n' }, 'g?', function()
+      if vim.api.nvim_get_current_buf() == p.paste_bufid then
+        if p.legend_winid then
+          pcall(vim.api.nvim_win_close, p.legend_winid, true)
+          p.legend_winid = nil
+        else
+          -- TODO move to function this is copypasta
+          vim.schedule(function()
+            p.legend_bufid = vim.api.nvim_create_buf(false, false)
+            vim.api.nvim_set_option_value('filetype', 'help', {
+              buf = p.legend_bufid,
+            })
+            local winopts = vim.api.nvim_win_get_config(p.paste_winid)
+            p.legend_winid = vim.api.nvim_open_win(p.legend_bufid, false, legend_winopts(winopts))
+            vim.api.nvim_create_autocmd('WinClosed', {
+              group = vim.api.nvim_create_augroup('KittyScrollBackNvimPasteWindowClosed', { clear = true }),
+              pattern = tostring(p.paste_winid),
+              callback = function()
+                pcall(vim.api.nvim_win_close, p.legend_winid, true)
+              end,
+            })
+
+            vim.api.nvim_set_option_value('conceallevel', 2, {
+              win = p.legend_winid,
+            })
+            local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '|g?| Toggle Mappings' }
+            local padding = math.floor(winopts.width / #legend_msg)
+            local string_with_padding = '%' .. padding .. 's'
+            local string_with_half_padding = '%' .. math.floor(padding / 4) .. 's'
+            local first = true
+            legend_msg =
+              vim.tbl_map(function(msg)
+                if first then
+                  first = false
+                  return string.format(string_with_half_padding .. '%s', ' ', msg)
+                end
+                return string.format(string_with_padding, msg)
+              end, legend_msg)
+            vim.api.nvim_buf_set_lines(p.legend_bufid, 0, -1, false,
+              { table.concat(legend_msg) }
+            )
+
+            vim.api.nvim_set_option_value('winhighlight',
+              'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
+              { win = p.legend_winid, }
+            )
+          end)
+        end
+        return
+      end
+      return 'g?'
     end)
   end
 end
@@ -348,7 +493,7 @@ local function show_status_window()
     local winopts = function()
       return {
         relative = 'editor',
-        zindex = 10,
+        zindex = 150,
         style = 'minimal',
         focusable = false,
         width = m.util.size(p.orig_columns or vim.o.columns, width),
@@ -576,6 +721,17 @@ local set_cursor_position = vim.schedule_wrap(
   end
 )
 
+local function set_paste_buffer_write_autocmd(kitty_data)
+  vim.api.nvim_create_autocmd({ 'BufWriteCmd' }, {
+    group = vim.api.nvim_create_augroup('KittyScrollBackNvimPasteBufWriteCmd', { clear = true }),
+    callback = function(paste_event)
+      if paste_event.buf == p.paste_bufid then
+        send_paste_buffer_text_to_kitty_and_quit(kitty_data, true)
+      end
+    end
+  })
+end
+
 local function set_paste_window_resized_autocmd()
   vim.api.nvim_create_autocmd({ 'WinResized' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimPasteWindowResized', { clear = true }),
@@ -586,6 +742,26 @@ local function set_paste_window_resized_autocmd()
           local row = current_winopts.row[vim.val_idx]
           local col = current_winopts.col[vim.val_idx]
           pcall(vim.api.nvim_win_set_config, p.paste_winid, paste_winopts(row, col))
+          vim.schedule(function()
+            local len_winopts = legend_winopts(current_winopts)
+            pcall(vim.api.nvim_win_set_config, p.legend_winid, len_winopts)
+            local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '|g?| Toggle Mappings' }
+            local padding = math.floor(len_winopts.width / #legend_msg)
+            local string_with_padding = '%' .. padding .. 's'
+            local string_with_half_padding = '%' .. math.floor(padding / 4) .. 's'
+            local first = true
+            legend_msg =
+              vim.tbl_map(function(msg)
+                if first then
+                  first = false
+                  return string.format(string_with_half_padding .. '%s', ' ', msg)
+                end
+                return string.format(string_with_padding, msg)
+              end, legend_msg)
+            vim.api.nvim_buf_set_lines(p.legend_bufid, 0, -1, false,
+              { table.concat(legend_msg) }
+            )
+          end)
         end
       end
     end,
@@ -613,42 +789,52 @@ local function set_term_enter_autocmd(bufid)
   })
 end
 
+local function set_colorscheme_autocmd()
+  vim.api.nvim_create_autocmd({ 'Colorscheme' }, {
+    group = vim.api.nvim_create_augroup('KittyScrollBackNvimColorscheme', { clear = true }),
+    callback = set_highlights
+  })
+end
+
 local function set_yank_post_autocmd(kitty_data)
   vim.api.nvim_create_autocmd({ 'TextYankPost' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimTextYankPost', { clear = true }),
     pattern = '*',
     callback = function(e)
-      if e.buf ~= p.bufid then
-        return
-      end
       local yankevent = vim.v.event
       if yankevent.operator ~= 'y' then
         return
       end
-      local contents = {}
-      for _, line in pairs(yankevent.regcontents) do
-        line = line:gsub('%s+$', '')
-        table.insert(contents, line)
-      end
-      if type(contents) == 'table' then
-        vim.schedule(function()
-          open_paste_window()
-          vim.fn.cursor({ vim.fn.line('$'), 0 })
-          local lastline = vim.fn.search('.', 'bnc')
-          if lastline > 0 then
-            table.insert(contents, 1, '')
-          end
-          vim.api.nvim_buf_set_lines(p.paste_bufid, lastline, lastline, false, contents)
 
-          vim.api.nvim_create_autocmd({ 'BufWriteCmd' }, {
-            group = vim.api.nvim_create_augroup('KittyScrollBackNvimBufWritePre', { clear = true }),
-            callback = function(paste_event)
-              if paste_event.buf == p.paste_bufid then
-                send_paste_buffer_text_to_kitty_and_quit(kitty_data)
+      -- contents are copied to clipboard, return to kitty
+      if yankevent.regname == '+' then
+        vim.schedule_wrap(vim.cmd.quitall)({ bang = true })
+        return
+      end
+
+      -- send contents to paste window
+      if yankevent.regname == '' then
+        if e.buf ~= p.bufid then
+          return
+        end
+
+        local contents = {}
+        for _, line in pairs(yankevent.regcontents) do
+          line = line:gsub('%s+$', '')
+          table.insert(contents, line)
+        end
+        if type(contents) == 'table' then
+          vim.schedule(function()
+            open_paste_window(false, vim.defer_fn(function()
+              vim.fn.cursor({ vim.fn.line('$'), 0 })
+              local lastline = vim.fn.search('.', 'bnc')
+              if lastline > 0 then
+                table.insert(contents, 1, '')
               end
-            end
-          })
-        end)
+              vim.api.nvim_buf_set_lines(p.paste_bufid, lastline, lastline, false, contents)
+            end, 20)) -- TODO: why do I need this delay, and remove this as a cb doesn't make sense
+          end)
+        end
       end
     end
   })
@@ -660,13 +846,15 @@ M.setup = function(kitty_data_str)
   m.util = dofile(ksb_dir .. '/lua/kitty-scrollback/util.lua')
 
   vim.schedule(function()
+    p.kitty_colors = get_kitty_colors(kitty_data)
     -- avoid terrible purple floating windows for the default colorscheme
     if not vim.g.colors_name then
       vim.api.nvim_set_hl(0, 'NormalFloat', { link = 'Normal', })
       vim.api.nvim_set_hl(0, 'FloatBorder', { link = 'Normal', })
       vim.api.nvim_set_hl(0, 'FloatTitle', { link = 'Normal', })
+      local floatborder_fg_color = m.util.darken(p.kitty_colors.foreground, 0.3, p.kitty_colors.background)
+      vim.api.nvim_set_hl(0, 'ModeMsg', { fg = floatborder_fg_color })
     end
-    p.kitty_colors = get_kitty_colors(kitty_data)
   end)
 
   local opts = {}
@@ -694,6 +882,8 @@ M.launch = function(kitty_data_str)
     set_term_enter_autocmd(p.bufid)
     set_yank_post_autocmd(kitty_data)
     set_paste_window_resized_autocmd()
+    set_paste_buffer_write_autocmd(kitty_data)
+    set_colorscheme_autocmd()
 
     local ansi = '--ansi'
     if not M.opts.kitty_get_text.ansi then
