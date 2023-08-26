@@ -1,5 +1,13 @@
 local M = {}
 
+local p
+local opts ---@diagnostic disable-line: unused-local
+
+M.setup = function(private, options)
+  p = private
+  opts = options ---@diagnostic disable-line: unused-local
+end
+
 ---@param c  string
 M.hexToRgb = function(c)
   c = string.lower(c)
@@ -42,6 +50,26 @@ end
 M.size = function(max, value)
   return value > 1 and math.min(value, max) or math.floor(max * value)
 end
+
+M.remove_process_exited = function()
+  local last_line_range = vim.api.nvim_buf_line_count(p.bufid) - vim.o.lines
+  if last_line_range < 1 then
+    last_line_range = 1
+  end
+  local last_lines = vim.api.nvim_buf_get_lines(p.bufid, last_line_range, -1, false)
+  for i, line in pairs(last_lines) do
+    local match = line:lower():gmatch('%[process exited %d+%]')
+    if match() then
+      local target_line = last_line_range - 1 + i
+      vim.api.nvim_set_option_value('modifiable', true, { buf = p.bufid, })
+      vim.api.nvim_buf_set_lines(p.bufid, target_line, target_line + 1, false, {})
+      vim.api.nvim_set_option_value('modifiable', false, { buf = p.bufid, })
+      return true
+    end
+  end
+  return false
+end
+
 
 
 return M

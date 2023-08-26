@@ -24,7 +24,7 @@ end
 local nvim_args = vim.tbl_map(function(c)
   return 'map f1 kitten ' .. kitty_scrollback_kitten .. ' ' .. c
 end, {
-  [[--no-nvim-args]],
+  [[--no-nvim-args --nvim-appname ksb-nvim]],
   [[--nvim-args +'colorscheme tokyonight']],
   [[--nvim-args +'lua vim.defer_fn(function() vim.api.nvim_set_option_value("filetype", "markdown", { buf = 0 }); vim.cmd("silent! CellularAutomaton make_it_rain") end, 1000)']],
   [[--nvim-appname altnvimconfig ]],
