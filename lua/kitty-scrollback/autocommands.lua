@@ -1,5 +1,6 @@
 local ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
 local ksb_win = require('kitty-scrollback.windows')
+local ksb_footer_win = require('kitty-scrollback.footer_win')
 local ksb_util = require('kitty-scrollback.util')
 local ksb_hl = require('kitty-scrollback.highlights')
 
@@ -40,7 +41,7 @@ M.set_scrollback_buffer_enter_autocmd = function()
     callback = function(e)
       if e.buf == p.bufid then
         pcall(vim.api.nvim_win_close, p.paste_winid, true)
-        pcall(vim.api.nvim_win_close, p.legend_winid, true)
+        pcall(vim.api.nvim_win_close, p.footer_winid, true)
       end
     end
   })
@@ -56,14 +57,14 @@ M.set_paste_window_resized_autocmd = function()
           local row = current_winopts['row'][vim.val_idx]
           local col = current_winopts['col'][vim.val_idx]
           local height_offset = 0
-          if not p.legend_winid then
+          if not p.footer_winid then
             height_offset = 3
           end
           pcall(vim.api.nvim_win_set_config, p.paste_winid, ksb_win.paste_winopts(row, col, height_offset))
           vim.schedule(function()
-            local len_winopts = ksb_win.legend_winopts(current_winopts)
-            pcall(vim.api.nvim_win_set_config, p.legend_winid, len_winopts)
-            ksb_win.open_legend_window(len_winopts, true)
+            local len_winopts = ksb_footer_win.footer_winopts(current_winopts)
+            pcall(vim.api.nvim_win_set_config, p.footer_winid, len_winopts)
+            ksb_footer_win.open_footer_window(len_winopts, true)
           end)
         end
       end
@@ -78,7 +79,7 @@ M.set_paste_window_closed = function()
     pattern = '*',
     callback = function(e)
       if e.match == tostring(p.paste_winid) then
-        pcall(vim.api.nvim_win_close, p.legend_winid, true)
+        pcall(vim.api.nvim_win_close, p.footer_winid, true)
       end
     end,
   })

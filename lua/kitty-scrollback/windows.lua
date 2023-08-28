@@ -1,7 +1,12 @@
 local ksb_util = require('kitty-scrollback.util')
+local ksb_keymaps = require('kitty-scrollback.keymaps')
+local ksb_footer_win = require('kitty-scrollback.footer_win')
 local M = {}
 
+---@type KsbPrivate
 local p
+
+---@type KsbOpts
 local opts
 
 M.setup = function(private, options)
@@ -41,64 +46,12 @@ M.paste_winopts = function(row, col, height_offset)
       winopts.col = 0
     end
   end
+
+  if opts.paste_window.winopts_overrides then
+    winopts = vim.tbl_deep_extend('force', winopts, opts.paste_window.winopts_overrides(winopts) or {})
+  end
+
   return winopts
-end
-
-M.legend_winopts = function(paste_winopts)
-  return {
-    relative = 'win',
-    win = p.paste_winid,
-    zindex = paste_winopts.zindex + 1,
-    focusable = false,
-    border = { '▏', ' ', '▕', '▕', '🭿', '▁', '🭼', '▏' },
-    height = 1,
-    width = paste_winopts.width,
-    row = paste_winopts.height + 1,
-    col = -1,
-    style = 'minimal',
-  }
-end
-
-M.open_legend_window = function(winopts, refresh_only)
-  if not p.paste_winid then
-    return
-  end
-
-  if not refresh_only or refresh_only == nil then
-    -- if buffer already exists, assume window is already created and just readjust
-    p.legend_bufid = vim.api.nvim_create_buf(false, false)
-    vim.api.nvim_set_option_value('filetype', 'help', {
-      buf = p.legend_bufid,
-    })
-
-    p.legend_winid = vim.api.nvim_open_win(p.legend_bufid, false, M.legend_winopts(winopts))
-
-    vim.api.nvim_set_option_value('conceallevel', 2, {
-      win = p.legend_winid,
-    })
-  end
-
-  local legend_msg = { '<leader>|y| Copy ', '<ctrl-enter> Execute ', '<shift-enter> Paste ', '*:w[rite]* Paste ', '*g?* Toggle Mappings' }
-  local padding = math.floor(winopts.width / #legend_msg)
-  local string_with_padding = '%' .. padding .. 's'
-  local string_with_half_padding = '%' .. math.floor(padding / 4) .. 's'
-  local first = true
-  legend_msg =
-    vim.tbl_map(function(msg)
-      if first then
-        first = false
-        return string.format(string_with_half_padding .. '%s', ' ', msg)
-      end
-      return string.format(string_with_padding, msg)
-    end, legend_msg)
-  vim.api.nvim_buf_set_lines(p.legend_bufid, 0, -1, false,
-    { table.concat(legend_msg) }
-  )
-
-  vim.api.nvim_set_option_value('winhighlight',
-    'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
-    { win = p.legend_winid, }
-  )
 end
 
 M.open_paste_window = function(start_insert)
@@ -116,6 +69,7 @@ M.open_paste_window = function(start_insert)
     vim.api.nvim_set_option_value('filetype', 'sh', {
       buf = p.paste_bufid,
     })
+    ksb_keymaps.set_buffer_local_keymaps(p.paste_bufid)
   end
   if not p.paste_winid or vim.fn.win_id2win(p.paste_winid) == 0 then
     local winopts = M.paste_winopts(lnum, col)
@@ -124,37 +78,17 @@ M.open_paste_window = function(start_insert)
       win = p.paste_winid,
     })
 
-    vim.schedule_wrap(M.open_legend_window)(winopts)
+    if not opts.paste_window.hide_footer then
+      vim.schedule_wrap(ksb_footer_win.open_footer_window)(winopts)
+    end
 
-    local normal_hl = vim.api.nvim_get_hl(0, {
-      name = 'Normal',
-      link = false,
-    })
-    local normal_bg_color = normal_hl.bg or p.kitty_colors.background
-    local floatborder_fg_color = ksb_util.darken(p.kitty_colors.foreground, 0.3, p.kitty_colors.background)
-
-    vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinNormal', {
-      bg = normal_bg_color,
-      blend = 4
-    })
-    vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinFloatBorder', {
-      bg = normal_bg_color,
-      fg = floatborder_fg_color,
-      blend = 4
-    })
-    vim.api.nvim_set_hl(0, 'KittyScrollbackNvimPasteWinFloatTitle', {
-      bg = floatborder_fg_color,
-      fg = normal_bg_color,
-      blend = 4
-    })
     vim.api.nvim_set_option_value('winhighlight',
       'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
       { win = p.paste_winid, }
     )
-    vim.api.nvim_set_option_value('winblend',
-      4,
-      { win = p.paste_winid, }
-    )
+    vim.api.nvim_set_option_value('winblend', opts.paste_window.winblend or 0, {
+      win = p.paste_winid,
+    })
   end
   if start_insert then
     vim.schedule(function()

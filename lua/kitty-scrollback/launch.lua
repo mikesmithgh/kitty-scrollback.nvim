@@ -1,6 +1,7 @@
 ---@mod kitty-scrollback.launch
 
 local ksb_win
+local ksb_footer_win
 local ksb_hl
 local ksb_keymaps
 local ksb_kitty_cmds
@@ -16,14 +17,15 @@ local M = {}
 ---@field kitty_loading_winid number?
 ---@field kitty_colors table
 ---@field paste_winid number?
----@field legend_winid number?
----@field legend_bufid number?
+---@field footer_winid number?
+---@field footer_bufid number?
 local p = {}
 
 local opts = {}
 
 ---@class KsbOpts
 ---@field callbacks KsbCallbacks
+---@field highlight_overrides KsbHighlights
 local default_opts = {
   keymaps_enabled = true,
   restore_options = false,
@@ -32,6 +34,16 @@ local default_opts = {
     style_simple = false,
     autoclose = false,
     show_timer = false,
+    winopts_overrides = function(winopts) end,
+  },
+  paste_window = {
+    highlight_as_normal_win = function()
+      return vim.g.colors_name == nil or vim.g.colors_name == 'default'
+    end,
+    hide_footer = false,
+    winblend = 0,
+    winopts_overrides = function(paste_winopts) end,
+    footer_winopts_overrides = function(footer_winopts, paste_winopts) end,
   },
   ---@class KsbKittyGetText see `kitty @ get-text --help`
   ---@field ansi boolean If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
@@ -42,15 +54,7 @@ local default_opts = {
     extent = 'all',
     clear_selection = true,
   },
-  highlight_overrides = {
-    -- KittyScrollbackNvimNormal = '#968c81',
-    -- KittyScrollbackNvimHeart = '#ff6961',
-    -- KittyScrollbackNvimSpinner = '#d3869b',
-    -- KittyScrollbackNvimReady = '#8faa80',
-    -- KittyScrollbackNvimKitty = '#754b33',
-    -- KittyScrollbackNvimVim = '#188b25',
-    -- TODO: add paste window highlight overrides
-  },
+  highlight_overrides = {},
   ---@class KsbCallbacks
   ---@field after_setup function
   ---@field after_launch function
@@ -62,18 +66,15 @@ local default_opts = {
   },
 }
 
-
 ---@class KsbModules
 ---@field util table
 local m = {}
-
 
 local function restore_orig_options()
   for option, value in pairs(p.orig_options) do
     vim.o[option] = value
   end
 end
-
 
 local function set_options()
   p.orig_options = {
@@ -171,6 +172,7 @@ local function load_requires()
   -- add to runtime to allow loading modules via require
   vim.opt.runtimepath:append(p.kitty_data.ksb_dir)
   ksb_win = require('kitty-scrollback.windows')
+  ksb_footer_win = require('kitty-scrollback.footer_win')
   ksb_hl = require('kitty-scrollback.highlights')
   ksb_keymaps = require('kitty-scrollback.keymaps')
   ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
@@ -190,9 +192,10 @@ M.setup = function(kitty_data_str)
   opts = vim.tbl_deep_extend('force', default_opts, user_opts)
 
   ksb_util.setup(p, opts)
-  ksb_autocmds.setup(p, opts)
   ksb_kitty_cmds.setup(p, opts)
   ksb_win.setup(p, opts)
+  ksb_footer_win.setup(p, opts)
+  ksb_autocmds.setup(p, opts)
   ksb_keymaps.setup(p, opts)
   ksb_hl.setup(p, opts)
   ksb_hl.set_highlights()
@@ -202,10 +205,7 @@ M.setup = function(kitty_data_str)
   if opts.callbacks.after_setup and type(opts.callbacks.after_setup) == 'function' then
     opts.callbacks.after_setup(p.kitty_data, opts)
   end
-
-  vim.schedule(ksb_hl.unpinkify_default_colorscheme)
 end
-
 
 M.launch = function()
   local kitty_data = p.kitty_data
@@ -268,6 +268,7 @@ M.launch = function()
                   local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
                   term_buf_name = term_buf_name:gsub(':kitty.*$', ':kitty-scrollback.nvim')
                   vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
+                  vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
 
                   ksb_kitty_cmds.close_kitty_loading_window()
                   if opts.restore_options then
