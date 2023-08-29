@@ -66,7 +66,8 @@ M.open_paste_window = function(start_insert)
   if not p.paste_bufid then
     p.paste_bufid = vim.api.nvim_create_buf(false, false)
     vim.api.nvim_buf_set_name(p.paste_bufid, vim.fn.tempname())
-    vim.api.nvim_set_option_value('filetype', 'sh', {
+    local ft = opts.paste_window.filetype or vim.fn.fnamemodify(vim.o.shell, ':t:r')
+    vim.api.nvim_set_option_value('filetype', ft, {
       buf = p.paste_bufid,
     })
     ksb_keymaps.set_buffer_local_keymaps(p.paste_bufid)

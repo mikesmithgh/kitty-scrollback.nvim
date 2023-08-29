@@ -16,10 +16,14 @@ local opts
 ---@field KittyScrollbackNvimPasteWinNormal table?
 ---@field KittyScrollbackNvimPasteWinFloatBorder table?
 ---@field KittyScrollbackNvimPasteWinFloatTitle table?
+---@see nvim_set_hl
 
 ---@return KsbHighlights
 local function highlight_definitions()
-  local hl_name = opts.paste_window.highlight_as_normal_win() and 'Normal' or 'NormalFloat'
+  local hl_as_normal_fn = opts.paste_window.highlight_as_normal_win or function()
+    return vim.g.colors_name == nil or vim.g.colors_name == 'default'
+  end
+  local hl_name = hl_as_normal_fn() and 'Normal' or 'NormalFloat'
   local hormal_hl = vim.api.nvim_get_hl(0, { name = hl_name, link = false, })
   local normal_bg_color = hormal_hl.bg or p.kitty_colors.background
   local floatborder_fg_color = ksb_util.darken(p.kitty_colors.foreground, 0.3, p.kitty_colors.background)
@@ -109,9 +113,10 @@ end
 
 ---Set nvim default highlights
 M.set_highlights = function()
+  local overrides = opts.highlight_overrides or {}
   for name, definition in pairs(highlight_definitions()) do
     vim.api.nvim_set_hl(0, name, definition)
-    local override = opts.highlight_overrides[name]
+    local override = overrides[name]
     if override then
       vim.api.nvim_set_hl(0, name, override)
     end

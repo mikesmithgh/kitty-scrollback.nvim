@@ -63,10 +63,10 @@ M.open_footer_window = function(winopts, refresh_only)
       return false
     end
     return km.rhs:match('^%<Plug%>%(Ksb.*%)$')
-  end, vim.api.nvim_get_keymap('n'))
+  end, vim.api.nvim_get_keymap('a'))
 
   local footer_keys = {
-    copy = vim.fn.keytrans((vim.g.mapleader or '\\') .. 'y'):gsub('<lt>', '<'),
+    ['<Plug>(KsbNormalYank)'] = vim.fn.keytrans((vim.g.mapleader or '\\') .. 'y'):gsub('<lt>', '<'),
     ['<Plug>(KsbExecuteCmd)'] = '<C-CR>',
     ['<Plug>(KsbPasteCmd)'] = '<S-CR>',
     ['<Plug>(KsbToggleFooter)'] = 'g?',
@@ -80,11 +80,12 @@ M.open_footer_window = function(winopts, refresh_only)
     end
   end
 
+  local write_msg = '`:w` *Paste* '
   local footer_msg = {
-    '`' .. footer_keys.copy .. '` *Copy* ',
+    '`' .. footer_keys['<Plug>(KsbNormalYank)'] .. '` *Yank* ',
     '`' .. footer_keys['<Plug>(KsbExecuteCmd)'] .. '` *Execute* ',
     '`' .. footer_keys['<Plug>(KsbPasteCmd)'] .. '` *Paste* ',
-    '`:w` *Paste* ',
+    write_msg,
     '`' .. footer_keys['<Plug>(KsbToggleFooter)'] .. '` *Toggle* *Mappings*'
   }
   local padding = math.floor(winopts.width / #footer_msg) - 2
@@ -99,8 +100,13 @@ M.open_footer_window = function(winopts, refresh_only)
       end
       return string.format(string_with_padding .. string_with_padding, '', msg)
     end, footer_msg)
+
+  local final_footer = string.format(string_with_padding .. string_with_padding, '', write_msg)
+  if opts.keymaps_enabled then
+    final_footer = table.concat(footer_msg)
+  end
   vim.api.nvim_buf_set_lines(p.footer_bufid, 0, -1, false,
-    { table.concat(footer_msg) }
+    { final_footer }
   )
 
   vim.api.nvim_set_option_value('winhighlight',

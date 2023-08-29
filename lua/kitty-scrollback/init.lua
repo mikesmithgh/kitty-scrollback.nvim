@@ -9,7 +9,7 @@ local top_ksb_configs = {
 }
 for _, c in pairs(vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/*.lua', true)) do
   local name = vim.fn.fnamemodify(c, ':t:r')
-  local ksb_config = require('kitty-scrollback.configs.' .. name).config()
+  local ksb_config = require('kitty-scrollback.configs.' .. name).config() or {}
   local keymap = ksb_config.kitty_keymap
   local config = (keymap or 'map f1') .. ' kitten ' .. kitty_scrollback_kitten .. ' --config-file ' .. c
   table.insert(top_ksb_configs, ksb_config.kitty_keymap_description)

@@ -10,65 +10,89 @@ local ksb_autocmds
 
 local M = {}
 
+---@class KsbKittyData
+---@field scrolled_by integer the number of lines currently scrolled in kitty
+---@field cursor_x integer position of the cusor in the column in kitty
+---@field cursor_y integer position of the cursor in the row in kitty
+---@field lines integer the number of rows of the screen in kitty
+---@field columns integer the number of columns of the screen in kitty
+---@field window_id integer the id of the window to get scrollback text
+---@field ksb_dir string the base runtime path of kitty-scrollback.nvim
+---@field config_file string? the file containing a config function with user defined options
+
 ---@class KsbPrivate
 ---@field orig_columns number
 ---@field bufid number?
 ---@field paste_bufid number?
 ---@field kitty_loading_winid number?
 ---@field kitty_colors table
+---@field kitty_data KsbKittyData
 ---@field paste_winid number?
 ---@field footer_winid number?
 ---@field footer_bufid number?
 local p = {}
 
+---@type KsbOpts
 local opts = {}
 
+---@class KsbCallbacks
+---@field after_setup fun(kitty_data:KsbKittyData, opts:KsbOpts)? callback executed after initializing kitty-scrollback.nvim
+---@field after_launch fun(kitty_data:KsbKittyData, opts:KsbOpts)? callback executed after launch started to process the scrollback buffer
+---@field after_ready fun(kitty_data:KsbKittyData, opts:KsbOpts)? callback executed after scrollback buffer is loaded and cursor is positioned
+
+---@class KsbKittyGetText
+---@field ansi boolean If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
+---@field clear_selection boolean If true, clear the selection in the matched window, if any.
+---@field extent string | 'screen' | 'selection' | 'first_cmd_output_on_screen' | 'last_cmd_output' | 'last_visited_cmd_output' | 'last_non_empty_output'     What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
+
+---@class KsbStatusWindowOpts
+---@field enabled boolean If true, show status window in upper right corner of the screen
+---@field style_simple boolean If true, use plaintext instead of nerd font icons
+---@field autoclose boolean If true, close the status window after kitty-scrollback.nvim is ready
+---@field show_timer boolean If true, show a timer in the status window while kitty-scrollback.nvim is loading
+
+---@alias KsbWinOpts table
+
+---@class KsbPasteWindowOpts
+---@field highlight_as_normal_win fun(): boolean If function returns true, use Normal highlight group. If false, use NormalFloat
+---@field filetype string The filetype of the paste window
+---@field hide_footer boolean If true, hide the footer when the paste window is initially opened
+---@field winblend integer The winblend setting of the window, see :help winblend
+---@field winopts_overrides fun(paste_winopts:KsbWinOpts): KsbWinOpts Paste float window overrides, see nvim_open_win() for configuration
+---@field footer_winopts_overrides fun(footer_winopts:KsbWinOpts, paste_winopts:KsbWinOpts): KsbWinOpts Paste footer window overrides, see nvim_open_win() for configuration
+
 ---@class KsbOpts
----@field callbacks KsbCallbacks
----@field highlight_overrides KsbHighlights
+---@field callbacks KsbCallbacks? fire and forget callback functions
+---@field keymaps_enabled boolean? if true, enabled all default keymaps
+---@field restore_options boolean? if true, restore options that were modified while processing the scrollback buffer
+---@field highlight_overrides KsbHighlights? kitty-scrollback.nvim highlight overrides
+---@field kitty_get_text KsbKittyGetText? options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
+---@field status_window KsbStatusWindowOpts? status window indicating that kitty-scrollback.nvim is ready
 local default_opts = {
+  callbacks = nil,
   keymaps_enabled = true,
   restore_options = false,
+  highlight_overrides = nil,
   status_window = {
     enabled = true,
     style_simple = false,
     autoclose = false,
     show_timer = false,
-    winopts_overrides = function(winopts) end,
   },
   paste_window = {
-    highlight_as_normal_win = function()
-      return vim.g.colors_name == nil or vim.g.colors_name == 'default'
-    end,
+    highlight_as_normal_win = nil,
+    filetype = nil,
     hide_footer = false,
     winblend = 0,
-    winopts_overrides = function(paste_winopts) end,
-    footer_winopts_overrides = function(footer_winopts, paste_winopts) end,
+    winopts_overrides = nil,
+    footer_winopts_overrides = nil,
   },
-  ---@class KsbKittyGetText see `kitty @ get-text --help`
-  ---@field ansi boolean If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
-  ---@field clear_selection boolean If true, clear the selection in the matched window, if any.
-  ---@field extent string | 'screen' | 'selection' | 'first_cmd_output_on_screen' | 'last_cmd_output' | 'last_visited_cmd_output' | 'last_non_empty_output'     What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
   kitty_get_text = {
     ansi = true,
     extent = 'all',
     clear_selection = true,
   },
-  highlight_overrides = {},
-  ---@class KsbCallbacks
-  ---@field after_setup function
-  ---@field after_launch function
-  ---@field after_ready function
-  callbacks = {
-    -- after_setup = function(kitty_data, opts) end,
-    -- after_launch = function(kitty_data, opts) end,
-    -- after_ready = function(kitty_data, opts) end,
-  },
 }
-
----@class KsbModules
----@field util table
-local m = {}
 
 local function restore_orig_options()
   for option, value in pairs(p.orig_options) do
@@ -187,7 +211,7 @@ M.setup = function(kitty_data_str)
 
   local user_opts = {}
   if p.kitty_data.config_file then
-    user_opts = dofile(p.kitty_data.config_file).config(p.kitty_data)
+    user_opts = dofile(p.kitty_data.config_file).config(p.kitty_data) or {}
   end
   opts = vim.tbl_deep_extend('force', default_opts, user_opts)
 
@@ -202,7 +226,7 @@ M.setup = function(kitty_data_str)
   ksb_kitty_cmds.open_kitty_loading_window() -- must be after opts and set highlights
   set_options()
 
-  if opts.callbacks.after_setup and type(opts.callbacks.after_setup) == 'function' then
+  if opts.callbacks and opts.callbacks.after_setup and type(opts.callbacks.after_setup) == 'function' then
     opts.callbacks.after_setup(p.kitty_data, opts)
   end
 end
@@ -274,7 +298,8 @@ M.launch = function()
                   if opts.restore_options then
                     restore_orig_options()
                   end
-                  if opts.callbacks.after_ready and type(opts.callbacks.after_ready) == 'function' then
+                  if opts.callbacks and opts.callbacks.after_ready and type(opts.callbacks.after_ready) == 'function' then
+                    vim.cmd.redraw()
                     vim.schedule(function()
                       opts.callbacks.after_ready(kitty_data, opts)
                     end)
@@ -287,7 +312,7 @@ M.launch = function()
           end,
         })
     end)
-    if opts.callbacks.after_launch and type(opts.callbacks.after_launch) == 'function' then
+    if opts.callbacks and opts.callbacks.after_launch and type(opts.callbacks.after_launch) == 'function' then
       vim.schedule(function()
         opts.callbacks.after_launch(kitty_data, opts)
       end)
