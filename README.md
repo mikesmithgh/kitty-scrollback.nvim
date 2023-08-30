@@ -27,10 +27,10 @@ mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output
 ```
 
 ## Configuration
-anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
-`--nvim-no-args` to disable default and pass no args
-`--nvim-appname` to set `NVIM_APPNAME` environment variable
-`--config-file` to set lua file with `config` function to set plugin options
+- anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
+- `--nvim-no-args` to disable default and pass no args
+- `--nvim-appname` to set `NVIM_APPNAME` environment variable
+- `--config-file` to set lua file with `config` function to set plugin options
 
 ## Roadmap
 - add quick setup to allow user to test easily before installing
@@ -40,10 +40,16 @@ anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an e
 - add support for https://github.com/m00qek/baleia.nvim
 
 ## Recommendations
--  `fladson/vim-kitty` for config syntax highlighting
-- `smart-splits`
+- [vim-kitty](https://github.com/fladson/vim-kitty) - for Kitty config syntax highlighting
+- [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) - for Kitty and Neovim split window management 
 
 ## Acknowledgements
-- https://github.com/Eandrju/cellular-automaton.nvim/tree/main
-- tokyonight
-- lazy.nvim
+- Kitty [custom kitten](https://sw.kovidgoyal.net/kitty/kittens/custom/) documentation
+- [baleia.nvim](https://github.com/m00qek/baleia.nvim) - very nice plugin to colorize Neovim buffer containing ANSI escape seqeunces. I plan to add integration with this plugin 🤝
+- Kitty issue [Feature Request: Ability to select text with the keyboard (vim-like) #719](https://github.com/kovidgoyal/kitty/issues/719) - ideas for passing the scrollback buffer to Neovim
+- Kitty discussion [Vi mode for kitty #6485](https://github.com/kovidgoyal/kitty/discussions/6485) - inpiration to leverage Neovim's terminal for the scrollback buffer
+- [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) - referenced for color darkening, thank you folke!
+- [lazy.nvim](https://github.com/folke/lazy.nvim) - referenced for window sizing, thank you folke!
+- [fzf-lua](https://github.com/ibhagwan/fzf-lua) - inspiration/reference for displaying keymapping footer
+- [cellular-automaton.nvim](https://github.com/Eandrju/cellular-automaton.nvim) - included in a fun example config
+- StackExchange [CamelCase2snake_case()](https://codegolf.stackexchange.com/a/177958/119424) - for converting Neovim highlight names to `SCREAMING_SNAKE_CASE`
