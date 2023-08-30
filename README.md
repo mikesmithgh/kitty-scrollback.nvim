@@ -7,7 +7,7 @@ Neovim plugin/Kitten to integrate Neovim with Kitty's scrollback buffer
 > [!WARNING]  
 > This project is still a work in progress and not considered stable
 
-https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/ceeff852-2e95-452d-8b4b-c05e65b38607
+https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/5aba1ba2-1883-4ac0-bad3-7ecd12f46a7e
 
 Installation
 ```sh
