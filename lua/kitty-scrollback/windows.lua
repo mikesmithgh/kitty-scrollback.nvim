@@ -66,7 +66,17 @@ M.open_paste_window = function(start_insert)
   vim.cmd.stopinsert()
 
   if not p.pos then
-    return
+    if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
+      vim.notify('kitty-scrollback.nvim: missing position with extent=' .. opts.kitty_get_text.extent, vim.log.levels.WARN, {})
+    end
+    local last_nonempty_line = vim.fn.search('.', 'nb')
+    p.pos = {
+      cursor_line = last_nonempty_line + 3, -- TODO: magic number footer
+      buf_last_line = vim.fn.line('$'),
+      win_first_line = vim.fn.line('w0'),
+      win_last_line = vim.fn.line('w$'),
+      col = 0,
+    }
   end
 
   vim.fn.cursor(p.pos.win_first_line, 1)
