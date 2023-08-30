@@ -1,3 +1,4 @@
+---@mod kitty-scrollback
 local M = {}
 
 local kitty_scrollback_kitten = vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1]
@@ -38,7 +39,14 @@ local kitten_configs = vim.list_extend(
   nvim_args
 )
 
+---Create commands for generating kitty-scrollback.nvim kitten configs
 M.setup = function()
+  ---@brief [[
+  ---:KittyScrollbackGenerateKittens something.
+  ---
+  ---    See: ~
+  ---        |render.api.explore|
+  ---@brief ]]
   vim.api.nvim_create_user_command('KittyScrollbackGenerateKittens', function()
     local bufid = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_set_option_value('filetype', 'kitty', {

@@ -1,3 +1,4 @@
+---@mod kitty-scrollback.util
 local M = {}
 
 local p

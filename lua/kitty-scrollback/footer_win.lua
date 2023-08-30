@@ -1,3 +1,4 @@
+---@mod kitty-scrollback.footer_win
 local M = {}
 
 ---@type KsbPrivate

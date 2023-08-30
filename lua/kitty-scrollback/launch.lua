@@ -3,6 +3,7 @@
 local ksb_win
 local ksb_footer_win
 local ksb_hl
+local ksb_api
 local ksb_keymaps
 local ksb_kitty_cmds
 local ksb_util
@@ -52,23 +53,24 @@ local opts = {}
 ---@field autoclose boolean If true, close the status window after kitty-scrollback.nvim is ready
 ---@field show_timer boolean If true, show a timer in the status window while kitty-scrollback.nvim is loading
 
----@alias KsbWinOpts table
+---@alias KsbWinOpts table<string, any>
 
 ---@class KsbPasteWindowOpts
----@field highlight_as_normal_win fun(): boolean If function returns true, use Normal highlight group. If false, use NormalFloat
----@field filetype string The filetype of the paste window
----@field hide_footer boolean If true, hide the footer when the paste window is initially opened
----@field winblend integer The winblend setting of the window, see :help winblend
----@field winopts_overrides fun(paste_winopts:KsbWinOpts): KsbWinOpts Paste float window overrides, see nvim_open_win() for configuration
----@field footer_winopts_overrides fun(footer_winopts:KsbWinOpts, paste_winopts:KsbWinOpts): KsbWinOpts Paste footer window overrides, see nvim_open_win() for configuration
+---@field highlight_as_normal_win? fun(): boolean If function returns true, use Normal highlight group. If false, use NormalFloat
+---@field filetype string? The filetype of the paste window
+---@field hide_footer? boolean If true, hide the footer when the paste window is initially opened
+---@field winblend? integer The winblend setting of the window, see :help winblend
+---@field winopts_overrides? fun(paste_winopts:KsbWinOpts): KsbWinOpts Paste float window overrides, see nvim_open_win() for configuration
+---@field footer_winopts_overrides? fun(footer_winopts:KsbWinOpts, paste_winopts:KsbWinOpts): KsbWinOpts Paste footer window overrides, see nvim_open_win() for configuration
 
 ---@class KsbOpts
 ---@field callbacks KsbCallbacks? fire and forget callback functions
 ---@field keymaps_enabled boolean? if true, enabled all default keymaps
 ---@field restore_options boolean? if true, restore options that were modified while processing the scrollback buffer
 ---@field highlight_overrides KsbHighlights? kitty-scrollback.nvim highlight overrides
+---@field status_window KsbStatusWindowOpts? options for status window indicating that kitty-scrollback.nvim is ready
+---@field paste_window KsbPasteWindowOpts?  options for paste window that sends commands to Kitty
 ---@field kitty_get_text KsbKittyGetText? options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
----@field status_window KsbStatusWindowOpts? status window indicating that kitty-scrollback.nvim is ready
 local default_opts = {
   callbacks = nil,
   keymaps_enabled = true,
@@ -199,20 +201,21 @@ local set_cursor_position = vim.schedule_wrap(
   end
 )
 
-
 local function load_requires()
   -- add to runtime to allow loading modules via require
   vim.opt.runtimepath:append(p.kitty_data.ksb_dir)
   ksb_win = require('kitty-scrollback.windows')
   ksb_footer_win = require('kitty-scrollback.footer_win')
   ksb_hl = require('kitty-scrollback.highlights')
+  ksb_api = require('kitty-scrollback.api')
   ksb_keymaps = require('kitty-scrollback.keymaps')
   ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
   ksb_util = require('kitty-scrollback.util')
   ksb_autocmds = require('kitty-scrollback.autocommands')
 end
 
-
+---Setup and configure kitty-scrollback.nvim
+---@param kitty_data_str string
 M.setup = function(kitty_data_str)
   p.kitty_data = vim.fn.json_decode(kitty_data_str)
   load_requires() -- must be after p.kitty_data initialized
@@ -228,6 +231,7 @@ M.setup = function(kitty_data_str)
   ksb_win.setup(p, opts)
   ksb_footer_win.setup(p, opts)
   ksb_autocmds.setup(p, opts)
+  ksb_api.setup(p, opts)
   ksb_keymaps.setup(p, opts)
   ksb_hl.setup(p, opts)
   ksb_hl.set_highlights()
@@ -239,6 +243,7 @@ M.setup = function(kitty_data_str)
   end
 end
 
+---Launch kitty-scrollack.nvim with configured scrollback buffer
 M.launch = function()
   local kitty_data = p.kitty_data
   vim.schedule(function()
@@ -330,8 +335,10 @@ M.launch = function()
 end
 
 
-M.setup_and_launch = function(...)
-  M.setup(...)
+---Setup and launch kitty-scrollback.nvim
+---@param kitty_data_str string
+M.setup_and_launch = function(kitty_data_str)
+  M.setup(kitty_data_str)
   M.launch()
 end
 

@@ -1,3 +1,4 @@
+---@mod kitty-scrollback.windows
 local ksb_util = require('kitty-scrollback.util')
 local ksb_keymaps = require('kitty-scrollback.keymaps')
 local ksb_footer_win = require('kitty-scrollback.footer_win')
@@ -7,11 +8,11 @@ local M = {}
 local p
 
 ---@type KsbOpts
-local opts
+local opts ---@diagnostic disable-line: unused-local
 
 M.setup = function(private, options)
   p = private
-  opts = options
+  opts = options ---@diagnostic disable-line: unused-local
 end
 
 -- copied from https://github.com/folke/lazy.nvim/blob/dac844ed617dda4f9ec85eb88e9629ad2add5e05/lua/lazy/view/float.lua#L70

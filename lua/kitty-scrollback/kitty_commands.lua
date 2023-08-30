@@ -1,13 +1,14 @@
+---@mod kitty-scrollback.kitty_commands
 local ksb_hl = require('kitty-scrollback.highlights')
 
 local M = {}
 
 local p
-local opts
+local opts ---@diagnostic disable-line: unused-local
 
 M.setup = function(private, options)
   p = private
-  opts = options
+  opts = options ---@diagnostic disable-line: unused-local
 end
 
 M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
