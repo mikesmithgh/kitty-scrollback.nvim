@@ -35,6 +35,7 @@ mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output
 ## Roadmap
 - add quick setup to allow user to test easily before installing
 - add documentation and examples
+- add details about relevant kitty config ( `scrollback_lines`, `scrollback_pager`, `scrollback_pager_history_size`, `scrollback_fill_enlarged_window`)
 - release v1
 - ci/cd
 - add support for https://github.com/m00qek/baleia.nvim
@@ -49,7 +50,7 @@ The `scrollback_pager` script was taken from kovidgoyal/kitty#719 comment:
 - Kitty [custom kitten](https://sw.kovidgoyal.net/kitty/kittens/custom/) documentation
 - [baleia.nvim](https://github.com/m00qek/baleia.nvim) - very nice plugin to colorize Neovim buffer containing ANSI escape seqeunces. I plan to add integration with this plugin 🤝
 - [kovidgoyal/kitty#719 Feature Request: Ability to select text with the keyboard (vim-like)](https://github.com/kovidgoyal/kitty/issues/719) - ideas for passing the scrollback buffer to Neovim
-- [kovidgoyal/kitty#6485 Vi mode for kitty #6485](https://github.com/kovidgoyal/kitty/discussions/6485) - inpiration to leverage Neovim's terminal for the scrollback buffer
+- [kovidgoyal/kitty#6485 Vi mode for kitty](https://github.com/kovidgoyal/kitty/discussions/6485) - inpiration to leverage Neovim's terminal for the scrollback buffer
 - [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) - referenced for color darkening, thank you folke!
 - [lazy.nvim](https://github.com/folke/lazy.nvim) - referenced for window sizing, thank you folke!
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) - inspiration/reference for displaying keymapping footer
