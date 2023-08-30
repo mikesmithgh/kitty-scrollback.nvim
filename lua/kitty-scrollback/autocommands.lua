@@ -52,15 +52,15 @@ M.set_paste_window_resized_autocmd = function()
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimPasteWindowResized', { clear = true }),
     callback = function()
       if p.paste_winid then
+        local lnum = p.pos.cursor_line - p.pos.win_first_line - 1
+        local col = p.pos.col + 1
         local ok, current_winopts = pcall(vim.api.nvim_win_get_config, p.paste_winid)
         if ok then
-          local row = current_winopts['row'][vim.val_idx]
-          local col = current_winopts['col'][vim.val_idx]
           local height_offset = 0
           if not p.footer_winid then
             height_offset = 3
           end
-          pcall(vim.api.nvim_win_set_config, p.paste_winid, ksb_win.paste_winopts(row, col, height_offset))
+          pcall(vim.api.nvim_win_set_config, p.paste_winid, ksb_win.paste_winopts(lnum, col, height_offset))
           vim.schedule(function()
             local len_winopts = ksb_footer_win.footer_winopts(current_winopts)
             pcall(vim.api.nvim_win_set_config, p.footer_winid, len_winopts)
@@ -84,6 +84,7 @@ M.set_paste_window_closed = function()
     end,
   })
 end
+
 
 M.set_term_enter_autocmd = function(bufid)
   vim.api.nvim_create_autocmd({ 'TermEnter' }, {

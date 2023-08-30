@@ -5,11 +5,12 @@ M.config = function(kitty_data)
     paste_window = {
       winblend = 10,
       winopts_overrides = function(paste_winopts)
+        local h = vim.o.lines - 5 -- TODO: magic number 3 for footer and 2 for border
         return {
           border = 'solid',
           row = 0,
           col = 0,
-          height = vim.o.lines - 5, -- minus paste win border and footer win
+          height = h < 1 and 3 or h, -- TODO: magic number 3 for footer
           width = vim.o.columns,
         }
       end,

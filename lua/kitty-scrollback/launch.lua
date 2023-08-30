@@ -30,6 +30,7 @@ local M = {}
 ---@field paste_winid number?
 ---@field footer_winid number?
 ---@field footer_bufid number?
+---@field pos table?
 local p = {}
 
 ---@type KsbOpts
@@ -183,6 +184,13 @@ local set_cursor_position = vim.schedule_wrap(
         bang = true
       })
     end
+    p.pos = {
+      cursor_line = vim.fn.line('.'),
+      buf_last_line = vim.fn.line('$'),
+      win_first_line = vim.fn.line('w0'),
+      win_last_line = vim.fn.line('w$'),
+      col = x,
+    }
 
     vim.o.scrolloff = orig_scrollof
     vim.o.showtabline = orig_showtabline
@@ -283,6 +291,7 @@ M.launch = function()
                 local ready = ksb_util.remove_process_exited()
                 if ready or timer_info['repeat'] == 0 then
                   vim.fn.timer_stop(t)
+
                   if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
                     set_cursor_position(kitty_data)
                   end

@@ -12,15 +12,24 @@ M.setup = function(private, options)
 end
 
 M.footer_winopts = function(paste_winopts)
+  local target_border = { '▏', ' ', '▕', '▕', '🭿', '▁', '🭼', '▏' }
+  local row_offset = 1
+  vim.schedule_wrap(vim.print)(paste_winopts.height)
+  if vim.o.lines - paste_winopts.height < 5 then
+    target_border = { '', '', '', '▕', '🭿', '▁', '🭼', '▏' }
+  end
+  if vim.o.lines - paste_winopts.height < 4 then
+    target_border = { '', '', '', '▕', '', '', '', '▏' }
+  end
   local footer_winopts = {
     relative = 'win',
     win = p.paste_winid,
     zindex = paste_winopts.zindex + 1,
     focusable = false,
-    border = { '▏', ' ', '▕', '▕', '🭿', '▁', '🭼', '▏' },
+    border = target_border,
     height = 1,
     width = paste_winopts.width,
-    row = paste_winopts.height + 1,
+    row = paste_winopts.height + row_offset,
     col = -1,
     style = 'minimal',
   }

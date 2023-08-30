@@ -20,24 +20,32 @@ M.size = function(max, value)
 end
 
 M.paste_winopts = function(row, col, height_offset)
-  local target_height    = M.size(vim.o.lines, math.floor(M.size(vim.o.lines, (vim.o.lines + 2) / 3))) + (height_offset or 0)
-  local line_height_diff = vim.o.lines - row - target_height
+  local target_height = math.floor(M.size(vim.o.lines, math.floor(M.size(vim.o.lines, (vim.o.lines + 2) / 3))))
+  local line_height_diff = vim.o.lines - row - target_height - 5 -- TODO: magic number, 3 for footer and 2 for border
   if line_height_diff < 0 then
-    row = row - target_height - 2
+    target_height = target_height - math.abs(line_height_diff)
+    if target_height <= 10 + 2 then -- TODO: magic number 2 for border
+      target_height = M.size(vim.o.lines - 3, 10) -- TODO: magic number, 3 for footer
+    end
+    row = vim.o.lines - 5 - target_height -- TODO: magic number, 3 for footer and 2 for border
+  end
+  if vim.o.lines <= 5 then
+    row = 0
+    target_height = 1
   end
   local winopts = {
     relative = 'editor',
     zindex = 40,
     focusable = true,
     border = { '🭽', '▔', '🭾', '▕', '🭿', '▁', '🭼', '▏' },
-    height = target_height,
+    height = target_height + (height_offset or 0),
   }
   if row then
     winopts.row = row
   end
   if col then
     winopts.col = col
-    winopts.width = M.size(vim.o.columns, vim.o.columns - col) - 1
+    winopts.width = M.size(vim.o.columns, vim.o.columns - col)
     if winopts.width < 0 then
       -- current line is larger than window, put window below current line
       vim.fn.setcursorcharpos({ vim.fn.line('.'), 0 })
@@ -56,13 +64,14 @@ end
 
 M.open_paste_window = function(start_insert)
   vim.cmd.stopinsert()
-  vim.fn.cursor({ vim.fn.line('$'), 0 })
-  if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
-    vim.fn.search('.', 'b')
+
+  if not p.pos then
+    return
   end
 
-  local lnum = ksb_util.size(vim.o.lines, vim.fn.winline() - 2 - vim.o.cmdheight)
-  local col = vim.fn.wincol()
+  vim.fn.cursor(p.pos.win_first_line, 1)
+  local lnum = p.pos.cursor_line - p.pos.win_first_line - 1
+  local col = p.pos.col + 1
   if not p.paste_bufid then
     p.paste_bufid = vim.api.nvim_create_buf(false, false)
     vim.api.nvim_buf_set_name(p.paste_bufid, vim.fn.tempname())
