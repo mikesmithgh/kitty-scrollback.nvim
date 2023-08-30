@@ -46,11 +46,6 @@ M.screaming_snakecase = function(s)
   return s:gsub('%f[^%l]%u', '_%1'):gsub('%f[^%a]%d', '_%1'):gsub('%f[^%d]%a', '_%1'):gsub('(%u)(%u%l)', '%1_%2'):upper()
 end
 
--- copied from https://github.com/folke/lazy.nvim/blob/dac844ed617dda4f9ec85eb88e9629ad2add5e05/lua/lazy/view/float.lua#L70
-M.size = function(max, value)
-  return value > 1 and math.min(value, max) or math.floor(max * value)
-end
-
 M.remove_process_exited = function()
   local last_line_range = vim.api.nvim_buf_line_count(p.bufid) - vim.o.lines
   if last_line_range < 1 then

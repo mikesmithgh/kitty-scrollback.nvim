@@ -129,7 +129,7 @@ M.show_status_window = function()
         zindex = 39,
         style = 'minimal',
         focusable = false,
-        width = ksb_util.size(p.orig_columns or vim.o.columns, width),
+        width = M.size(p.orig_columns or vim.o.columns, width),
         height = 1,
         row = 0,
         col = vim.o.columns,
@@ -163,7 +163,7 @@ M.show_status_window = function()
             if ok then
               vim.schedule(function()
                 pcall(vim.api.nvim_win_set_config, popup_winid, vim.tbl_deep_extend('force', winopts(), {
-                  width = ksb_util.size(p.orig_columns or vim.o.columns, winopts().width - 2)
+                  width = M.size(p.orig_columns or vim.o.columns, winopts().width - 2)
                 }))
               end)
             end
@@ -214,7 +214,7 @@ M.show_status_window = function()
                 end
                 if current_winopts.width > 2 then
                   ok, _ = pcall(vim.api.nvim_win_set_config, popup_winid, vim.tbl_deep_extend('force', winopts(), {
-                    width = ksb_util.size(p.orig_columns or vim.o.columns, current_winopts.width - 1)
+                    width = M.size(p.orig_columns or vim.o.columns, current_winopts.width - 1)
                   }))
                   if not ok then
                     vim.fn.timer_stop(close_window_timer)
@@ -259,7 +259,7 @@ M.show_status_window = function()
           return true
         end
         ok, _ = pcall(vim.api.nvim_win_set_config, popup_winid, vim.tbl_deep_extend('force', winopts(), {
-          width = ksb_util.size(vim.o.columns, current_winopts.width)
+          width = M.size(vim.o.columns, current_winopts.width)
         }))
         return not ok
       end,
