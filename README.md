@@ -9,12 +9,42 @@ Neovim plugin/Kitten to integrate Neovim with Kitty's scrollback buffer
 
 https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/5aba1ba2-1883-4ac0-bad3-7ecd12f46a7e
 
-Installation
+## Installation
 ```sh
 git clone git@github.com:mikesmithgh/kitty-scrollback.nvim.git
 cd kitty-scrollback.nvim
 ./scripts/kittyscrollbackgeneratekittens.sh # copy desired configs to kitty config
 ```
+
+### Using Neovim's built-in package support [pack](https://neovim.io/doc/user/usr_05.html#05.4)
+```bash
+mkdir -p "$HOME/.local/share/nvim/site/pack/mikesmithgh/start/"
+cd $HOME/.local/share/nvim/site/pack/mikesmithgh/start
+git clone git@github.com:mikesmithgh/kitty-scrollback.nvim.git
+nvim -u NONE -c "helptags kitty-scrollback.nvim/doc" -c q
+mkdir -p "$HOME/.config/nvim"
+echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
+```
+
+## Configuration
+- Generate default configurations
+```bash
+nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1 | head -6 > ~/.config/kitty/kitty.conf
+```
+- Reload kitty config
+```
+ctrl-shift-f5 or macos shorcut
+```
+
+
+
+
+- anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
+- `--nvim-no-args` to disable default and pass no args
+- `--nvim-appname` to set `NVIM_APPNAME` environment variable
+- `--config-file` to set lua file with `config` function to set plugin options
+
+
 
 Example:
 ```sh
@@ -25,12 +55,6 @@ map ctrl+shift+g kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_
 # Show clicked command output in nvim
 mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --config-file /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs/last_visited_cmd_output.lua
 ```
-
-## Configuration
-- anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
-- `--nvim-no-args` to disable default and pass no args
-- `--nvim-appname` to set `NVIM_APPNAME` environment variable
-- `--config-file` to set lua file with `config` function to set plugin options
 
 ## Roadmap
 - add quick setup to allow user to test easily before installing
