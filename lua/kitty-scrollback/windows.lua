@@ -147,6 +147,7 @@ M.show_status_window = function()
         border = 'none',
       }
     end
+
     local popup_winid = vim.api.nvim_open_win(popup_bufid, false,
       vim.tbl_deep_extend('force', winopts(), {
         noautocmd = true,

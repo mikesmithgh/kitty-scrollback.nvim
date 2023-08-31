@@ -127,11 +127,8 @@ M.set_yank_post_autocmd = function()
 
       -- contents are copied to clipboard, return to kitty
       if yankevent.regname == '+' then
-        -- xclip on linux may take longer to copy contents add a delay before quitting to workaround
-        -- TODO: could copy contents with kitty remote command as well
-        vim.defer_fn(function()
-          vim.cmd.quitall({ bang = true })
-        end, 100)
+        vim.schedule_wrap(ksb_kitty_cmds.send_text_to_clipboard)(yankevent.regcontents)
+        vim.schedule_wrap(vim.cmd.quitall)({ bang = true })
         return
       end
 

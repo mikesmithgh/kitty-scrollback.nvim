@@ -183,5 +183,16 @@ M.get_kitty_colors = function(kitty_data)
   return ok, kitty_colors
 end
 
+M.send_text_to_clipboard = function(text)
+  return system_handle_error({
+    'kitty',
+    '+kitten',
+    'clipboard',
+    '/dev/stdin',
+  }, {
+    stdin = text,
+  })
+end
+
 
 return M
