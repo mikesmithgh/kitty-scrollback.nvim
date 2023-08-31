@@ -28,8 +28,12 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 
 ## Configuration
 - Generate default configurations
-```bash
-nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1 | head -6 > ~/.config/kitty/kitty.conf
+```sh
+nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1 | head -6 >> ~/.config/kitty/kitty.conf
+```
+- Enable kitty remote control 
+```sh
+echo 'allow_remote_control yes' >> ~/.config/kitty/kitty.conf
 ```
 - Reload kitty config
 ```
@@ -57,6 +61,7 @@ mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output
 ```
 
 ## Roadmap
+- document setup with remote control and shell integration
 - add quick setup to allow user to test easily before installing
 - add documentation and examples
 - add details about relevant kitty config ( `scrollback_lines`, `scrollback_pager`, `scrollback_pager_history_size`, `scrollback_fill_enlarged_window`)

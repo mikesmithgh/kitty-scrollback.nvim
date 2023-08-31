@@ -245,8 +245,10 @@ M.show_status_window = function()
             if count > #spinner then
               local hl_def = vim.api.nvim_get_hl(0, {
                 name = 'KittyScrollbackNvimReady',
+                link = false,
               })
-              local fg_dec = hl_def.fg
+              hl_def = next(hl_def) and hl_def or {} -- nvim_get_hl can return vim.empty_dict() so convert to lua table
+              local fg_dec = hl_def.fg or 16777215 -- default to #ffffff
               local fg_hex = string.format('#%06x', fg_dec)
               local darken_hex = ksb_util.darken(fg_hex, 0.7)
               vim.api.nvim_set_hl(0, 'KittyScrollbackNvimReady', {

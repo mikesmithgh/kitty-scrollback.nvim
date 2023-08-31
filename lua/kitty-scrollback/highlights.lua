@@ -25,8 +25,9 @@ local function highlight_definitions()
     return vim.g.colors_name == nil or vim.g.colors_name == 'default'
   end
   local hl_name = hl_as_normal_fn() and 'Normal' or 'NormalFloat'
-  local hormal_hl = vim.api.nvim_get_hl(0, { name = hl_name, link = false, })
-  local normal_bg_color = hormal_hl.bg or p.kitty_colors.background
+  local hl_def = vim.api.nvim_get_hl(0, { name = hl_name, link = false, })
+  hl_def = next(hl_def) and hl_def or {} -- nvim_get_hl can return vim.empty_dict() so convert to lua table
+  local normal_bg_color = hl_def.bg or p.kitty_colors.background
   local floatborder_fg_color = ksb_util.darken(p.kitty_colors.foreground, 0.3, p.kitty_colors.background)
   return {
     KittyScrollbackNvimNormal = {
@@ -102,10 +103,12 @@ M.get_highlights_as_env = function()
   local env = {}
   for name, _ in pairs(highlight_definitions()) do
     table.insert(env, '--env')
+    local hl_def = vim.api.nvim_get_hl(0, { name = name, link = false, })
+    hl_def = next(hl_def) and hl_def or {} -- nvim_get_hl can return vim.empty_dict() so convert to lua table
     table.insert(env,
       string.format('%s=#%06x',
         ksb_util.screaming_snakecase(name),
-        vim.api.nvim_get_hl(0, { name = name, link = false, })['fg'] or 16777215 -- default to #ffffff
+        hl_def.fg or 16777215 -- default to #ffffff
       )
     )
   end
