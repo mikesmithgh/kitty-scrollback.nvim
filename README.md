@@ -34,6 +34,7 @@ nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelati
 - Enable kitty remote control 
 ```sh
 echo 'allow_remote_control yes' >> ~/.config/kitty/kitty.conf
+echo 'listen_on unix:/tmp/mykitty' >> ~/.config/kitty/kitty.conf
 ```
 - Reload kitty config
 ```
@@ -77,6 +78,7 @@ mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output
 - Kitty [custom kitten](https://sw.kovidgoyal.net/kitty/kittens/custom/) documentation
 - [baleia.nvim](https://github.com/m00qek/baleia.nvim) - very nice plugin to colorize Neovim buffer containing ANSI escape seqeunces. I plan to add integration with this plugin 🤝
 - [kovidgoyal/kitty#719 Feature Request: Ability to select text with the keyboard (vim-like)](https://github.com/kovidgoyal/kitty/issues/719) - ideas for passing the scrollback buffer to Neovim
+- [kovidgoyal/kitty#2426 'Failed to open controlling terminal' error when trying to remote control from vim](https://github.com/kovidgoyal/kitty/issues/2426) - workaround for issuing kitty remote commands without a tty `listen_on unix:/tmp/mykitty`
 - [kovidgoyal/kitty#6485 Vi mode for kitty](https://github.com/kovidgoyal/kitty/discussions/6485) - inpiration to leverage Neovim's terminal for the scrollback buffer
 - [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) - referenced for color darkening, thank you folke!
 - [lazy.nvim](https://github.com/folke/lazy.nvim) - referenced for window sizing, thank you folke!
