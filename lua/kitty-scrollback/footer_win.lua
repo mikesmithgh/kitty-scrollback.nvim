@@ -15,7 +15,6 @@ end
 M.footer_winopts = function(paste_winopts)
   local target_border = { '▏', ' ', '▕', '▕', '🭿', '▁', '🭼', '▏' }
   local row_offset = 1
-  vim.schedule_wrap(vim.print)(paste_winopts.height)
   if vim.o.lines - paste_winopts.height < 5 then
     target_border = { '', '', '', '▕', '🭿', '▁', '🭼', '▏' }
   end

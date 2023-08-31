@@ -75,13 +75,14 @@ local function highlight_definitions()
 end
 
 local function get_kitty_colors(kitty_data)
-  local kitty_colors = {}
-  local kitty_colors_str = vim.fn.system({
+  local kitty_cmd = {
     'kitty',
     '@',
     'get-colors',
     '--match=id:' .. kitty_data.window_id,
-  }) or ''
+  }
+  local kitty_colors_str = vim.system(kitty_cmd, { text = true }):wait().stdout or ''
+  local kitty_colors = {}
   for color_kv in kitty_colors_str:gmatch('[^\r\n]+') do
     local split_kv = color_kv:gmatch('%S+')
     kitty_colors[split_kv()] = split_kv()
