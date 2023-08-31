@@ -27,6 +27,11 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 ```
 
 ## Configuration
+- prereq
+  - see :help clipboard
+  - pbcopy and pbpaste on macos
+  - xclip or wayland on linux
+
 - Generate default configurations
 ```sh
 nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1 | head -6 >> ~/.config/kitty/kitty.conf
