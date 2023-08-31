@@ -233,14 +233,18 @@ M.setup = function(kitty_data_str)
   ksb_autocmds.setup(p, opts)
   ksb_api.setup(p, opts)
   ksb_keymaps.setup(p, opts)
-  ksb_hl.setup(p, opts)
-  ksb_hl.set_highlights()
-  ksb_kitty_cmds.open_kitty_loading_window() -- must be after opts and set highlights
+  local ok = ksb_hl.setup(p, opts)
+  if ok then
+    ksb_hl.set_highlights()
+    ksb_kitty_cmds.open_kitty_loading_window(ksb_hl.get_highlights_as_env()) -- must be after opts and set highlights
+  end
   set_options()
 
   if opts.callbacks and opts.callbacks.after_setup and type(opts.callbacks.after_setup) == 'function' then
     opts.callbacks.after_setup(p.kitty_data, opts)
   end
+
+  return true
 end
 
 ---Launch kitty-scrollack.nvim with configured scrollback buffer
@@ -338,8 +342,10 @@ end
 ---Setup and launch kitty-scrollback.nvim
 ---@param kitty_data_str string
 M.setup_and_launch = function(kitty_data_str)
-  M.setup(kitty_data_str)
-  M.launch()
+  local ok = M.setup(kitty_data_str)
+  if ok then
+    M.launch()
+  end
 end
 
 return M

@@ -1,5 +1,6 @@
 ---@mod kitty-scrollback.highlights
 local ksb_util = require('kitty-scrollback.util')
+local ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
 
 local M = {}
 
@@ -21,6 +22,9 @@ local opts ---@diagnostic disable-line: unused-local
 
 ---@return KsbHighlights
 local function highlight_definitions()
+  if not p.kitty_colors or not next(p.kitty_colors) then
+    return {}
+  end
   local hl_as_normal_fn = opts.paste_window.highlight_as_normal_win or function()
     return vim.g.colors_name == nil or vim.g.colors_name == 'default'
   end
@@ -74,26 +78,14 @@ local function highlight_definitions()
   }
 end
 
-local function get_kitty_colors(kitty_data)
-  local kitty_cmd = {
-    'kitty',
-    '@',
-    'get-colors',
-    '--match=id:' .. kitty_data.window_id,
-  }
-  local kitty_colors_str = vim.system(kitty_cmd, { text = true }):wait().stdout or ''
-  local kitty_colors = {}
-  for color_kv in kitty_colors_str:gmatch('[^\r\n]+') do
-    local split_kv = color_kv:gmatch('%S+')
-    kitty_colors[split_kv()] = split_kv()
-  end
-  return kitty_colors
-end
-
 M.setup = function(private, options)
   p = private
   opts = options ---@diagnostic disable-line: unused-local
-  p.kitty_colors = get_kitty_colors(p.kitty_data)
+  local ok, colors = ksb_kitty_cmds.get_kitty_colors(p.kitty_data)
+  if ok then
+    p.kitty_colors = colors
+  end
+  return ok
 end
 
 

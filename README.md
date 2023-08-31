@@ -31,14 +31,17 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
   - see :help clipboard
   - pbcopy and pbpaste on macos
   - xclip or wayland on linux
-
+  - nerdfonts
 - Generate default configurations
 ```sh
 nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1 | head -6 >> ~/.config/kitty/kitty.conf
 ```
-- Enable kitty remote control 
+- Enable kitty remote control
 ```sh
 echo 'allow_remote_control yes' >> ~/.config/kitty/kitty.conf
+# echo 'allow_remote_control socket' >> ~/.config/kitty/kitty.conf 
+# echo 'allow_remote_control socket-only' >> ~/.config/kitty/kitty.conf  # preferred if this is only app using remote command
+
 echo 'listen_on unix:/tmp/mykitty' >> ~/.config/kitty/kitty.conf
 ```
 - Reload kitty config
