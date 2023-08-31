@@ -22,13 +22,16 @@ M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
   if not bracketed_paste_mode then
     cmd_str = cmd_str .. '\r'
   end
-  vim.fn.system({
+  vim.system({
     'kitty',
     '@',
     'send-text',
     '--match=id:' .. p.kitty_data.window_id,
     cmd_str,
-  })
+  }, {
+    text = true,
+  }):wait()
+
   vim.cmd.quitall({ bang = true })
 end
 
