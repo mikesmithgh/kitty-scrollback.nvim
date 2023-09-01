@@ -127,8 +127,9 @@ M.set_yank_post_autocmd = function()
 
       -- contents are copied to clipboard, return to kitty
       if yankevent.regname == '+' then
-        vim.schedule_wrap(ksb_kitty_cmds.send_text_to_clipboard)(yankevent.regcontents)
-        vim.schedule_wrap(vim.cmd.quitall)({ bang = true })
+        M.run_when_safestate_autocmd('YankQuit', function()
+          vim.cmd.quitall({ bang = true })
+        end)
         return
       end
 
@@ -156,6 +157,13 @@ M.set_yank_post_autocmd = function()
         end
       end
     end
+  })
+end
+
+M.run_when_safestate_autocmd = function(name, cb)
+  vim.api.nvim_create_autocmd({ 'SafeState' }, {
+    group = vim.api.nvim_create_augroup('KittyScrollBackNvimSafeState' .. name, { clear = true }),
+    callback = cb
   })
 end
 
