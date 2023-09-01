@@ -128,7 +128,7 @@ M.set_yank_post_autocmd = function()
       -- contents are copied to clipboard, return to kitty
       if yankevent.regname == '+' then
         M.run_when_safestate_autocmd('YankQuit', function()
-          vim.cmd.quitall({ bang = true })
+          ksb_kitty_cmds.signal_term_to_kitty_child_process()
         end)
         return
       end

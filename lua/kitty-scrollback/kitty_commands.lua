@@ -134,6 +134,15 @@ M.signal_winchanged_to_kitty_child_process = function()
   })
 end
 
+M.signal_term_to_kitty_child_process = function()
+  system_handle_error({
+    'kitty',
+    '@',
+    'signal-child',
+    'SIGTERM'
+  })
+end
+
 M.open_kitty_loading_window = function(env)
   if p.kitty_loading_winid then
     M.close_kitty_loading_window()
