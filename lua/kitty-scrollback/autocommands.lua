@@ -126,9 +126,26 @@ M.set_yank_post_autocmd = function()
         return
       end
 
-      -- contents are copied to clipboard, return to kitty
       if yankevent.regname == '+' then
-        ksb_api.quit_all()
+        if vim.fn.has('clipboard') > 0 then
+          -- contents are copied to clipboard, return to kitty
+          ksb_api.quit_all()
+        else
+          vim.schedule(function()
+            local prompt_msg = 'kitty-scrollback.nvim: Error, failed to find clipboard tool. See :help clipboard-tool'
+            vim.cmd.execute([['silent noautocmd keepalt edit ]] .. vim.o.helpfile .. [[']]) -- logic from :help help-curwin
+            vim.o.conceallevel = 2
+            vim.o.concealcursor = 'n'
+            vim.api.nvim_set_option_value('buftype', 'help', { buf = vim.api.nvim_get_current_buf() })
+            vim.api.nvim_set_option_value('filetype', 'help', { buf = vim.api.nvim_get_current_buf() })
+            vim.cmd.help('clipboard-tool')
+            vim.cmd.redraw()
+            local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
+            if response ~= 2 then
+              ksb_api.quit_all()
+            end
+          end)
+        end
         return
       end
 
