@@ -4,6 +4,7 @@ local ksb_win = require('kitty-scrollback.windows')
 local ksb_footer_win = require('kitty-scrollback.footer_win')
 local ksb_util = require('kitty-scrollback.util')
 local ksb_hl = require('kitty-scrollback.highlights')
+local ksb_api = require('kitty-scrollback.api')
 
 local M = {}
 
@@ -127,9 +128,7 @@ M.set_yank_post_autocmd = function()
 
       -- contents are copied to clipboard, return to kitty
       if yankevent.regname == '+' then
-        M.run_when_safestate_autocmd('YankQuit', function()
-          ksb_kitty_cmds.signal_term_to_kitty_child_process()
-        end)
+        ksb_api.quit_all()
         return
       end
 

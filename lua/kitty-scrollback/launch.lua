@@ -126,6 +126,7 @@ local function set_options()
     hidden = vim.o.hidden,
     modifiable = vim.o.modifiable,
     wrap = vim.o.wrap,
+    report = vim.o.report,
   }
 
   -- required opts
@@ -154,6 +155,7 @@ local function set_options()
   vim.o.hidden = true
   vim.o.modifiable = true
   vim.o.wrap = false
+  vim.o.report = 999999 -- arbitrary large number to hide yank messages
 end
 
 

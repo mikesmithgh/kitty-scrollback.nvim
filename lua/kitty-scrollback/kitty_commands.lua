@@ -84,7 +84,7 @@ local system_handle_error = function(cmd, sys_opts)
     vim.cmd.redraw()
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
-      vim.cmd.quitall({ bang = true })
+      M.signal_term_to_kitty_child_process()
     end
   end
 
@@ -110,7 +110,7 @@ M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
     '--match=id:' .. p.kitty_data.window_id,
     cmd_str,
   })
-  vim.cmd.quitall({ bang = true })
+  M.signal_term_to_kitty_child_process()
 end
 
 M.close_kitty_loading_window = function()

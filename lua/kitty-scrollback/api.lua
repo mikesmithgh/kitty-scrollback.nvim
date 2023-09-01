@@ -16,9 +16,11 @@ M.setup = function(private, options)
 end
 
 ---@tag kitty-scrollback.api.close_or_quit_all
----Execute the quitall command
+---Attempt to gracefully quit Neovim. How do you exit vim? Why would you exit vim?
 M.quit_all = function()
-  vim.cmd.quitall({ bang = true })
+  -- quit causes nvim to exit early sometime interrupting underlying copy child process (.e.g, xclip)
+  -- send sigterm to gracefully terminate
+  vim.schedule(ksb_kitty_cmds.signal_term_to_kitty_child_process)
 end
 
 ---@tag kitty-scrollback.api.close_or_quit_all
