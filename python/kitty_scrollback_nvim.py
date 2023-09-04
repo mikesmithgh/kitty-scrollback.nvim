@@ -2,6 +2,7 @@
 from typing import List
 from kitty.boss import Boss
 from kittens.tui.handler import result_handler
+from kitty.fast_data_types import get_options
 
 import json
 import os
@@ -17,6 +18,7 @@ def main():
 
 # based on kitty source window.py
 def pipe_data(w, target_window_id, ksb_dir, config_file):
+    kitty_opts = get_options()
     data = {
         'scrolled_by': w.screen.scrolled_by,
         'cursor_x': w.screen.cursor.x + 1,
@@ -25,6 +27,22 @@ def pipe_data(w, target_window_id, ksb_dir, config_file):
         'columns': w.screen.columns,
         'window_id': int(target_window_id),
         'ksb_dir': ksb_dir,
+        'kitty_opts': {
+            "shell_integration":
+            w.child.environ.get('KITTY_SHELL_INTEGRATION', 'disabled').split(),  # env takes precedence over config
+            "scrollback_fill_enlarged_window":
+            kitty_opts.scrollback_fill_enlarged_window,
+            "scrollback_lines":
+            kitty_opts.scrollback_lines,
+            "scrollback_pager":
+            kitty_opts.scrollback_pager,
+            "allow_remote_control":
+            kitty_opts.allow_remote_control,
+            "listen_on":
+            kitty_opts.listen_on,
+            "scrollback_pager_history_size":
+            kitty_opts.scrollback_pager_history_size
+        }
     }
     if config_file:
         data['config_file'] = config_file
@@ -92,8 +110,7 @@ def handle_result(args: List[str],
             f'   vim.opt.runtimepath:append([[{ksb_dir}]])'
             f'   require([[kitty-scrollback.launch]]).setup_and_launch([[{kitty_data}]])'
             '  end, '
-            ' })'
-        )
+            ' })')
 
         cmd = ('launch', ) + kitty_args + ('nvim', ) + nvim_args
         boss.call_remote_control(w, cmd)

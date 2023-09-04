@@ -1,4 +1,5 @@
 ---@mod kitty-scrollback.kitty_commands
+local ksb_health = require('kitty-scrollback.health')
 local M = {}
 
 local p
@@ -17,8 +18,10 @@ local system_handle_error = function(cmd, sys_opts)
   if not ok then
     local msg = {
       '',
-      '`kitty-scrollback.nvim`',
-      '---------------------',
+      '==============================================================================',
+      'kitty-scrollback.nvim',
+      '',
+      'ERROR: failed to execute remote Kitty command',
       '',
     }
     local stdout = result.stdout or ''
@@ -46,45 +49,22 @@ local system_handle_error = function(cmd, sys_opts)
     local error_bufid = vim.api.nvim_create_buf(false, true)
     vim.o.conceallevel = 2
     vim.o.concealcursor = 'n'
-    vim.api.nvim_set_option_value('filetype', 'help', {
+    vim.api.nvim_set_option_value('filetype', 'checkhealth', {
       buf = error_bufid,
     })
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
     vim.api.nvim_set_current_buf(error_bufid)
     if stderr:match('.*allow_remote_control.*') then
-      table.insert(msg, 'Kitty must be configured to allow remote control connections. Add the configuration')
-      table.insert(msg, '*allow_remote_control* to Kitty. For example, `allow_remote_control socket-only`')
-      table.insert(msg, 'Changing *allow_remote_control* by reloading the config is not supported so you must ')
-      table.insert(msg, 'completely close and reopen Kitty for the change to take effect.')
-      table.insert(msg, '')
-      table.insert(msg, 'Compatible values with kitty-scrollback.nvim for the option *allow_remote_control* are')
-      table.insert(msg, '`yes`, `socket`, or `socket-only`.')
-      table.insert(msg, '')
-      table.insert(msg, 'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control for additional')
-      table.insert(msg, 'information on configuring the *allow_remote_control* option.')
-      table.insert(msg, '')
+      vim.list_extend(msg, ksb_health.advice.allow_remote_control)
     end
     if stderr:match('.*/dev/tty.*') then
-      table.insert(msg, 'Kitty must be configured to listen on a Unix socket for remote control connections.')
-      table.insert(msg, 'Add the configuration *listen_on* to Kitty. For example, `listen_on unix:/tmp/mykitty`')
-      table.insert(msg, 'Changing *listen_on* by reloading the config is not supported so you must completely')
-      table.insert(msg, 'close and reopen Kitty for the change to take effect.')
-      table.insert(msg, '')
-      table.insert(msg, 'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on for additional information')
-      table.insert(msg, 'on configuring the *listen_on* option.')
-      table.insert(msg, '')
-      table.insert(msg, 'If *listen_on* is properly configured, check that the option *allow_remote_control* is')
-      table.insert(msg, 'set to either `yes`, `socket`, or `socket-only`.')
-      table.insert(msg, '')
-      table.insert(msg, 'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control for additional')
-      table.insert(msg, 'information on configuring the *allow_remote_control* option.')
-      table.insert(msg, '')
+      vim.list_extend(msg, ksb_health.advice.listen_on)
     end
     vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, vim.list_extend(msg, err))
     vim.cmd.redraw()
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
-      M.signal_term_to_kitty_child_process()
+      M.signal_term_to_kitty_child_process(true)
     end
   end
 
@@ -134,13 +114,17 @@ M.signal_winchanged_to_kitty_child_process = function()
   })
 end
 
-M.signal_term_to_kitty_child_process = function()
-  system_handle_error({
-    'kitty',
-    '@',
-    'signal-child',
-    'SIGTERM'
-  })
+M.signal_term_to_kitty_child_process = function(force)
+  if force then
+    vim.cmd.quitall({ bang = true })
+  else
+    system_handle_error({
+      'kitty',
+      '@',
+      'signal-child',
+      'SIGTERM'
+    })
+  end
 end
 
 M.open_kitty_loading_window = function(env)

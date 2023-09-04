@@ -44,12 +44,8 @@ echo 'allow_remote_control yes' >> ~/.config/kitty/kitty.conf
 
 echo 'listen_on unix:/tmp/mykitty' >> ~/.config/kitty/kitty.conf
 ```
-- Reload kitty config
-```
-ctrl-shift-f5 or macos shorcut
-```
-
-
+- Completely close Kitty and reopen
+- `checkhealth: kitty-scrollback`
 
 
 - anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur

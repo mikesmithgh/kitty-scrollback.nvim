@@ -1,15 +1,34 @@
 ---@mod kitty-scrollback.launch
 
+---@module 'kitty-scrollback.windows'
 local ksb_win
+---@module 'kitty-scrollback.footer_win'
 local ksb_footer_win
+---@module 'kitty-scrollback.highlights'
 local ksb_hl
+---@module 'kitty-scrollback.api'
 local ksb_api
+---@module 'kitty-scrollback.keymaps'
 local ksb_keymaps
+---@module 'kitty-scrollback.kitty_commands'
 local ksb_kitty_cmds
+---@module 'kitty-scrollback.util'
 local ksb_util
+---@module 'kitty-scrollback.autocommands'
 local ksb_autocmds
+---@module 'kitty-scrollback.health'
+local ksb_health
 
 local M = {}
+
+---@class KsbKittyOpts
+---@field shell_integration table
+---@field scrollback_fill_enlarged_window boolean
+---@field scrollback_lines integer
+---@field scrollback_pager table
+---@field scrollback_pager_history_size integer
+---@field allow_remote_control string 'password' | 'socket-only' | 'socket' | 'no' | 'n' | 'false' | 'yes' | 'y' | 'true'
+---@field listen_on string
 
 ---@class KsbKittyData
 ---@field scrolled_by integer the number of lines currently scrolled in kitty
@@ -20,6 +39,7 @@ local M = {}
 ---@field window_id integer the id of the window to get scrollback text
 ---@field ksb_dir string the base runtime path of kitty-scrollback.nvim
 ---@field config_file string? the file containing a config function with user defined options
+---@field kitty_opts KsbKittyOpts relevent kitty configuration values
 
 ---@class KsbPrivate
 ---@field orig_columns number
@@ -45,7 +65,7 @@ local opts = {}
 ---@class KsbKittyGetText
 ---@field ansi boolean If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
 ---@field clear_selection boolean If true, clear the selection in the matched window, if any.
----@field extent string | 'screen' | 'selection' | 'first_cmd_output_on_screen' | 'last_cmd_output' | 'last_visited_cmd_output' | 'last_non_empty_output'     What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
+---@field extent string | 'screen' | 'all' | 'selection' | 'first_cmd_output_on_screen' | 'last_cmd_output' | 'last_visited_cmd_output' | 'last_non_empty_output'     What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
 
 ---@class KsbStatusWindowOpts
 ---@field enabled boolean If true, show status window in upper right corner of the screen
@@ -71,6 +91,7 @@ local opts = {}
 ---@field status_window KsbStatusWindowOpts? options for status window indicating that kitty-scrollback.nvim is ready
 ---@field paste_window KsbPasteWindowOpts?  options for paste window that sends commands to Kitty
 ---@field kitty_get_text KsbKittyGetText? options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
+---@field checkhealth boolean? if true execute :checkhealth kitty-scrollback and skip setup
 local default_opts = {
   callbacks = nil,
   keymaps_enabled = true,
@@ -95,6 +116,7 @@ local default_opts = {
     extent = 'all',
     clear_selection = true,
   },
+  checkhealth = false,
 }
 
 local function restore_orig_options()
@@ -214,6 +236,7 @@ local function load_requires()
   ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
   ksb_util = require('kitty-scrollback.util')
   ksb_autocmds = require('kitty-scrollback.autocommands')
+  ksb_health = require('kitty-scrollback.health')
 end
 
 ---Setup and configure kitty-scrollback.nvim
@@ -227,6 +250,13 @@ M.setup = function(kitty_data_str)
     user_opts = dofile(p.kitty_data.config_file).config(p.kitty_data) or {}
   end
   opts = vim.tbl_deep_extend('force', default_opts, user_opts)
+
+  ksb_health.setup(p, opts)
+  if opts.checkhealth then
+    vim.o.foldenable = false
+    vim.cmd.checkhealth('kitty-scrollback')
+    return
+  end
 
   ksb_util.setup(p, opts)
   ksb_kitty_cmds.setup(p, opts)
@@ -249,6 +279,37 @@ M.setup = function(kitty_data_str)
   return true
 end
 
+local function validate_extent(extent)
+  if ksb_health.is_valid_extent_keyword(extent) then
+    return true
+  end
+  ksb_kitty_cmds.close_kitty_loading_window()
+  local msg = vim.list_extend({
+    '',
+    '==============================================================================',
+    'kitty-scrollback.nvim',
+    '',
+    'ERROR: Kitty shell integration is disabled and/or `no-prompt-mark` is set',
+    '',
+    'The option *' .. opts.kitty_get_text.extent .. '* requires Kitty shell integration and prompt marks to be enabled. ',
+  }, ksb_health.advice().kitty_shell_integration)
+  local error_bufid = vim.api.nvim_create_buf(false, true)
+  vim.o.conceallevel = 2
+  vim.o.concealcursor = 'n'
+  vim.api.nvim_set_option_value('filetype', 'checkhealth', {
+    buf = error_bufid,
+  })
+  local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
+  vim.api.nvim_set_current_buf(error_bufid)
+  vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, msg)
+  vim.cmd.redraw()
+  local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
+  if response ~= 2 then
+    ksb_kitty_cmds.signal_term_to_kitty_child_process()
+  end
+  return false
+end
+
 ---Launch kitty-scrollack.nvim with configured scrollback buffer
 M.launch = function()
   local kitty_data = p.kitty_data
@@ -269,6 +330,9 @@ M.launch = function()
 
     local extent = '--extent=all'
     local extent_opt = opts.kitty_get_text.extent
+    if not validate_extent(extent_opt or 'all') then
+      return
+    end
     if extent_opt then
       extent = '--extent=' .. extent_opt
     end
