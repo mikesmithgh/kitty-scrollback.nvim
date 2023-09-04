@@ -70,9 +70,13 @@ local function check_has_kitty_data()
 end
 
 local function check_clipboard()
+  local function is_blank(s)
+    return s:find('^%s*$') ~= nil
+  end
   vim.health.start('kitty-scrollback: clipboard')
-  if vim.fn.has('clipboard') then
-    vim.health.ok('Neovim has clipboard provider')
+  local clipboard_tool = vim.fn['provider#clipboard#Executable']() -- copied from health.lua
+  if vim.fn.has('clipboard') and not is_blank(clipboard_tool) then
+    vim.health.ok('Clipboard tool found: *' .. clipboard_tool .. '*')
   else
     vim.health.warn(
       'Neovim does not have a clipboard provider.\n        Some functionality will not work when there is no clipboard ' ..
