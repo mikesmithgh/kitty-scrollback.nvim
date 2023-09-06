@@ -9,6 +9,17 @@ Neovim plugin/Kitten to integrate Neovim with Kitty's scrollback buffer
 
 https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/5aba1ba2-1883-4ac0-bad3-7ecd12f46a7e
 
+## 🏃 Quickstart
+
+To quickly test this plugin without changing your configuration run the command:
+```sh
+sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.nvim/main/scripts/mini.sh)"
+```
+> [!NOTE]  
+> It is good practice to first
+> [read the script](https://github.com/mikesmithgh/kitty-scrollback.nvim/blob/main/scripts/mini.sh)
+> before running `sh -c` directly from the web
+
 ## Installation
 ```sh
 git clone git@github.com:mikesmithgh/kitty-scrollback.nvim.git
