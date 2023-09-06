@@ -97,6 +97,6 @@ mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output
 - [kovidgoyal/kitty#6485 Vi mode for kitty](https://github.com/kovidgoyal/kitty/discussions/6485) - inpiration to leverage Neovim's terminal for the scrollback buffer
 - [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) - referenced for color darkening, thank you folke!
 - [lazy.nvim](https://github.com/folke/lazy.nvim) - referenced for window sizing, thank you folke!
-- [fzf-lua](https://github.com/ibhagwan/fzf-lua) - inspiration/reference for displaying keymapping footer
+- [fzf-lua](https://github.com/ibhagwan/fzf-lua) - quickstart `mini.sh` and inspiration/reference for displaying keymapping footer
 - [cellular-automaton.nvim](https://github.com/Eandrju/cellular-automaton.nvim) - included in a fun example config
 - StackExchange [CamelCase2snake_case()](https://codegolf.stackexchange.com/a/177958/119424) - for converting Neovim highlight names to `SCREAMING_SNAKE_CASE`
