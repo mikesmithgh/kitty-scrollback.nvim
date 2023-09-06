@@ -66,7 +66,7 @@ def parse_nvim_args(args):
 
 def parse_env(args):
     env_args = []
-    for idx, arg in enumerate(args):
+    for idx, arg in reversed(list(enumerate(args))):
         if arg.startswith('--env') and (idx + 1 < len(args)):
             env_args.append('--env')
             env_args.append(args[idx + 1])
@@ -75,16 +75,16 @@ def parse_env(args):
 
 
 def parse_config_file(args):
-    for idx, arg in enumerate(args):
-        if arg.startswith('--config-file') and (idx + 1 < len(args)):
-            config_args = args[idx + 1]
+    config_args = []
+    for idx, arg in reversed(list(enumerate(args))):
+        if arg.startswith('--config-file') and (idx - 1 < len(args)):
+            config_args.append(args[idx + 1])
             del args[idx:idx + 2]
-            return config_args
-    return None
+    return config_args
 
 
 def parse_cwd(args):
-    for idx, arg in enumerate(args):
+    for idx, arg in reversed(list(enumerate(args))):
         if arg.startswith('--cwd') and (idx + 1 < len(args)):
             cwd_args = args[idx + 1]
             del args[idx:idx + 2]

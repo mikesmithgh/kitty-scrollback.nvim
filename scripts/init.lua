@@ -5,3 +5,21 @@ local packpath = os.getenv('PACKPATH') or tempdir .. '/' .. plugin_name .. '.tmp
 
 vim.cmd('set packpath=' .. packpath)
 require('kitty-scrollback').setup()
+
+local mini_config_file = vim.fn.fnamemodify(vim.fn.fnamemodify(packpath, ':h'), ':h') .. '/mini_config.lua'
+if vim.fn.filereadable(mini_config_file) == 0 then
+  local style_mini = not require('kitty-scrollback.kitty_commands').try_detect_nerd_font()
+  vim.cmd.edit(mini_config_file)
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, {
+    [[return { ]],
+    [[  config = function() ]],
+    [[    return { ]],
+    [[      status_window = { ]],
+    [[        style_simple = ]] .. tostring(style_mini) .. [[,]],
+    [[      } ]],
+    [[    } ]],
+    [[  end, ]],
+    [[}]],
+  })
+  vim.cmd.write({ bang = true })
+end

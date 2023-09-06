@@ -38,7 +38,7 @@ local M = {}
 ---@field columns integer the number of columns of the screen in kitty
 ---@field window_id integer the id of the window to get scrollback text
 ---@field ksb_dir string the base runtime path of kitty-scrollback.nvim
----@field config_file string? the file containing a config function with user defined options
+---@field config_file table<string> the file containing a config function with user defined options
 ---@field kitty_opts KsbKittyOpts relevent kitty configuration values
 
 ---@class KsbPrivate
@@ -246,8 +246,11 @@ M.setup = function(kitty_data_str)
   load_requires() -- must be after p.kitty_data initialized
 
   local user_opts = {}
-  if p.kitty_data.config_file then
-    user_opts = dofile(p.kitty_data.config_file).config(p.kitty_data) or {}
+  if p.kitty_data.config_file and next(p.kitty_data.config_file) then
+    for _, config in pairs(p.kitty_data.config_file) do
+      user_opts = vim.tbl_extend('force', user_opts, dofile(config).config(p.kitty_data) or {})
+      vim.print(user_opts)
+    end
   end
   opts = vim.tbl_deep_extend('force', default_opts, user_opts)
 
