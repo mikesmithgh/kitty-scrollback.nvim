@@ -50,7 +50,7 @@ echo 'listen_on unix:/tmp/mykitty' >> ~/.config/kitty/kitty.conf
 
 - anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
 - `--nvim-no-args` to disable default and pass no args
-- `--nvim-appname` to set `NVIM_APPNAME` environment variable
+- `--env` to set environment variables e.g., `--env NVIM_APPNAME=altnvim`
 - `--config-file` to set lua file with `config` function to set plugin options
 
 

@@ -64,18 +64,31 @@ def parse_nvim_args(args):
     )
 
 
-def parse_nvim_appname(args):
+def parse_env(args):
+    env_args = []
     for idx, arg in enumerate(args):
-        if arg.startswith('--nvim-appname') and (idx + 1 < len(args)):
-            return ('--env', f'NVIM_APPNAME={args[idx + 1]}')
-    return ()
+        if arg.startswith('--env') and (idx + 1 < len(args)):
+            env_args.append('--env')
+            env_args.append(args[idx + 1])
+            del args[idx:idx + 2]
+    return tuple(env_args)
 
 
 def parse_config_file(args):
     for idx, arg in enumerate(args):
         if arg.startswith('--config-file') and (idx + 1 < len(args)):
             config_args = args[idx + 1]
+            del args[idx:idx + 2]
             return config_args
+    return None
+
+
+def parse_cwd(args):
+    for idx, arg in enumerate(args):
+        if arg.startswith('--cwd') and (idx + 1 < len(args)):
+            cwd_args = args[idx + 1]
+            del args[idx:idx + 2]
+            return cwd_args
     return None
 
 
@@ -84,9 +97,14 @@ def handle_result(args: List[str],
                   result: str,
                   target_window_id: int,
                   boss: Boss) -> None:
+    del args[0]
     w = boss.window_id_map.get(target_window_id)
     if w is not None:
-        config_file = parse_config_file(args[1:])
+        config_file = parse_config_file(args)
+        cwd = parse_cwd(args)
+        env = parse_env(args)
+        if cwd:
+            os.chdir(cwd)
         kitty_data = json.dumps(
             pipe_data(w,
                       target_window_id,
@@ -99,9 +117,9 @@ def handle_result(args: List[str],
             'overlay',
             '--title',
             'kitty-scrollback.nvim',
-        ) + parse_nvim_appname(args[1:])
+        ) + env
 
-        nvim_args = parse_nvim_args(args[1:]) + (
+        nvim_args = parse_nvim_args(args) + (
             '--cmd',
             ' lua vim.api.nvim_create_autocmd([[VimEnter]], { '
             '   group = vim.api.nvim_create_augroup([[KittyScrollBackNvimVimEnter]], { clear = true }), '
