@@ -19,9 +19,16 @@ usage() {
     echo "Usage $0"
 }
 
+if [ "${1:-}" = "reset" ]; then
+    rm -rf "${tmp_dir}"
+fi
+
 download_plugin() {
     repo="https://github.com/${1}/${2}"
     folder="${tmp_rtp}/${2}"
+    if [ "${1:-}" = "reset" ]; then
+        rm -rf "${folder}"
+    fi
     if [ ! -d "$folder" ]; then
         printf "Downloading %s into %s..." "${repo}" "${folder}"
         git clone --depth 1 "${repo}" "${folder}"
@@ -30,10 +37,6 @@ download_plugin() {
         git -C "${folder}" pull --rebase
     fi
 }
-
-if [ "${1:-}" = "reset" ]; then
-    rm -rf "${tmp_dir}"
-fi
 
 mkdir -p "$tmp_rtp"
 
