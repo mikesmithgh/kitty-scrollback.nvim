@@ -77,13 +77,13 @@ mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output
 ```
 
 ## Roadmap
-- document setup with remote control and shell integration
-- add quick setup to allow user to test easily before installing
-- add documentation and examples
-- add details about relevant kitty config ( `scrollback_lines`, `scrollback_pager`, `scrollback_pager_history_size`, `scrollback_fill_enlarged_window`)
-- release v1
-- ci/cd
-- add support for https://github.com/m00qek/baleia.nvim
+- [ ] document setup with remote control and shell integration
+- [x] add quick setup to allow user to test easily before installing
+- [ ] add documentation and examples
+- [ ] add details about relevant kitty config ( `scrollback_lines`, `scrollback_pager`, `scrollback_pager_history_size`, `scrollback_fill_enlarged_window`)
+- [ ] release v1
+- [ ] ci/cd
+- [ ] add support for https://github.com/m00qek/baleia.nvim
 
 ## Recommendations
 - [vim-kitty](https://github.com/fladson/vim-kitty) - for Kitty config syntax highlighting
