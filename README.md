@@ -49,15 +49,16 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 ```
 
 ## ✍️ Configuration
+ - Generate default configurations
+ ```sh
+ nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1 | sed 's/\r//g' >> ${KITTY_CONFIG_DIRECTORY:-$HOME/.config/kitty/kitty.conf}
+ ```
   - prereq
   - see :help clipboard
   - pbcopy and pbpaste on macos
   - xclip or wayland on linux
   - nerdfonts
-- Generate default configurations
-```sh
-nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1 | head -6 >> ~/.config/kitty/kitty.conf
-```
+
 - Enable kitty remote control
 ```sh
 echo 'allow_remote_control yes' >> ~/.config/kitty/kitty.conf
@@ -93,16 +94,6 @@ echo 'listen_on unix:/tmp/mykitty' >> ~/.config/kitty/kitty.conf
 | `<Plug>KsbNormalYankEnd`  | `<Leader>Y`     | Normal                   |                                                       | Equivalent to `"+y$` |
 | `<Plug>KsbNormalYank`     | `<Leader>y`     | Normal                   |                                                       | Equivalent to `"+y`  |
 | `<Plug>KsbNormalYankLine` | `<Leader>yy`    | Normal                   |                                                       | Equivalent to `"+yy` |
-
-Example:
-```sh
-# Browse scrollback buffer in nvim
-map ctrl+shift+h kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py
-# Browse output of the last shell command in nvim
-map ctrl+shift+g kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --config-file /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs/get_text_last_cmd_output.lua
-# Show clicked command output in nvim
-mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --config-file /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs/last_visited_cmd_output.lua
-```
 
 ## 🛣️ Roadmap
 - [ ] document setup with remote control and shell integration
