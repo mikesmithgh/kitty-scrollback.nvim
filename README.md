@@ -72,7 +72,10 @@ echo 'listen_on unix:/tmp/mykitty' >> ~/.config/kitty/kitty.conf
 - `--env` to set environment variables e.g., `--env NVIM_APPNAME=altnvim`
 - `--config-file` to set lua file with `config` function to set plugin options
 
-
+## 🫡 Commands and Lua API
+| Command                              | API                                                              | Description                                                             |
+| ------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `:KittyScrollbackGenerateKittens[!]` | `require('kitty-scrollback.api').generate_kittens(boolean\|nil)` | Generate Kitten commands used as reference for configuring `kitty.conf` |                                                                                           
 
 Example:
 ```sh
