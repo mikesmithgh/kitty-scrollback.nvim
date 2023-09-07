@@ -9,6 +9,9 @@ Neovim plugin/Kitten to integrate Neovim with Kitty's scrollback buffer
 
 https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/5aba1ba2-1883-4ac0-bad3-7ecd12f46a7e
 
+## ✨ Features
+- 😻 Navigate Kitty's scrollback buffer with Neovim
+
 ## 🏃 Quickstart
 
 To quickly test this plugin without changing your configuration run the command:
@@ -20,11 +23,16 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
 > [read the script](https://github.com/mikesmithgh/kitty-scrollback.nvim/blob/main/scripts/mini.sh)
 > before running `sh -c` directly from the web
 
-## Installation
-```sh
-git clone git@github.com:mikesmithgh/kitty-scrollback.nvim.git
-cd kitty-scrollback.nvim
-./scripts/kittyscrollbackgeneratekittens.sh # copy desired configs to kitty config
+## 📦 Installation
+
+### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
+```lua
+  {
+    "mikesmithgh/kitty-scrollback.nvim",
+    config = function()
+      require("kitty-scrollback").setup()
+    end,
+  }
 ```
 
 ### Using Neovim's built-in package support [pack](https://neovim.io/doc/user/usr_05.html#05.4)
@@ -37,8 +45,8 @@ mkdir -p "$HOME/.config/nvim"
 echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 ```
 
-## Configuration
-- prereq
+## ✍️ Configuration
+  - prereq
   - see :help clipboard
   - pbcopy and pbpaste on macos
   - xclip or wayland on linux
@@ -76,7 +84,7 @@ map ctrl+shift+g kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_
 mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --config-file /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs/last_visited_cmd_output.lua
 ```
 
-## Roadmap
+## 🛣️ Roadmap
 - [ ] document setup with remote control and shell integration
 - [x] add quick setup to allow user to test easily before installing
 - [ ] add documentation and examples
@@ -85,11 +93,11 @@ mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output
 - [ ] ci/cd
 - [ ] add support for https://github.com/m00qek/baleia.nvim
 
-## Recommendations
+## 👏 Recommendations
 - [vim-kitty](https://github.com/fladson/vim-kitty) - for Kitty config syntax highlighting
 - [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) - for Kitty and Neovim split window management 
 
-## Acknowledgements
+## 🤝 Ackowledgements
 - Kitty [custom kitten](https://sw.kovidgoyal.net/kitty/kittens/custom/) documentation
 - [baleia.nvim](https://github.com/m00qek/baleia.nvim) - very nice plugin to colorize Neovim buffer containing ANSI escape seqeunces. I plan to add integration with this plugin 🤝
 - [kovidgoyal/kitty#719 Feature Request: Ability to select text with the keyboard (vim-like)](https://github.com/kovidgoyal/kitty/issues/719) - ideas for passing the scrollback buffer to Neovim
