@@ -28,9 +28,12 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
   {
-    "mikesmithgh/kitty-scrollback.nvim",
+    'mikesmithgh/kitty-scrollback.nvim',
+    enabled = true,
+    lazy = true,
+    cmd = 'KittyScrollbackGenerateKittens',
     config = function()
-      require("kitty-scrollback").setup()
+      require('kitty-scrollback').setup()
     end,
   }
 ```
