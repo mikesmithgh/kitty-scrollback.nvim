@@ -75,7 +75,21 @@ echo 'listen_on unix:/tmp/mykitty' >> ~/.config/kitty/kitty.conf
 ## 🫡 Commands and Lua API
 | Command                              | API                                                              | Description                                                             |
 | ------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `:KittyScrollbackGenerateKittens[!]` | `require('kitty-scrollback.api').generate_kittens(boolean\|nil)` | Generate Kitten commands used as reference for configuring `kitty.conf` |                                                                                           
+| `:KittyScrollbackGenerateKittens[!]` | `require('kitty-scrollback.api').generate_kittens(boolean\|nil)` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
+
+## ⌨️ Keymaps and Lua API
+| `<Plug>` Mapping          | Default Mapping | Default Mapping Mode     | API                                                   | Description          |
+| ------------------------- | --------------- | ------------------------ | ----------------------------------------------------- | -------------------- |
+| `<Plug>KsbExecuteCmd`     | `<C-CR>`        | Normal, Insert           | `require('kitty-scrollback.api').execute_command()`   |                      |
+| `<Plug>KsbPasteCmd`       | `<S-CR>`        | Normal, Insert           | `require('kitty-scrollback.api').paste_command()`     |                      |
+| `<Plug>KsbToggleFooter`   | `g?`            | Normal                   | `require('kitty-scrollback.api').toggle_footer()`     |                      |
+| `<Plug>KsbCloseOrQuitAll` | `<Esc>`         | Normal                   | `require('kitty-scrollback.api').close_or_quit_all()` |                      |
+| `<Plug>KsbQuitAll`        | `<C-c>`         | Normal, Insert, Terminal | `require('kitty-scrollback.api').close_or_quit_all()` |                      |
+| `<Plug>KsbVisualYankLine` | `<Leader>Y`     | Visual                   |                                                       | Equivalent to `"+Y`  |
+| `<Plug>KsbVisualYank`     | `<Leader>y`     | Visual                   |                                                       | Equivalent to `"+y`  |
+| `<Plug>KsbNormalYankEnd`  | `<Leader>Y`     | Normal                   |                                                       | Equivalent to `"+y$` |
+| `<Plug>KsbNormalYank`     | `<Leader>y`     | Normal                   |                                                       | Equivalent to `"+y`  |
+| `<Plug>KsbNormalYankLine` | `<Leader>yy`    | Normal                   |                                                       | Equivalent to `"+yy` |
 
 Example:
 ```sh
