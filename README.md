@@ -31,7 +31,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     'mikesmithgh/kitty-scrollback.nvim',
     enabled = true,
     lazy = true,
-    cmd = 'KittyScrollbackGenerateKittens',
+    cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
     config = function()
       require('kitty-scrollback').setup()
     end,
@@ -49,37 +49,51 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 ```
 
 ## ✍️ Configuration
- - Generate default configurations
- ```sh
- nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1 | sed 's/\r//g' >> ${KITTY_CONFIG_DIRECTORY:-$HOME/.config/kitty/kitty.conf}
- ```
-  - prereq
-  - see :help clipboard
-  - pbcopy and pbpaste on macos
-  - xclip or wayland on linux
-  - nerdfonts
 
-- Enable kitty remote control
-```sh
-echo 'allow_remote_control yes' >> ~/.config/kitty/kitty.conf
-# echo 'allow_remote_control socket' >> ~/.config/kitty/kitty.conf 
-# echo 'allow_remote_control socket-only' >> ~/.config/kitty/kitty.conf  # preferred if this is only app using remote command
+### Kitty
+- Enable `allow_remote_control` in `kitty.conf`
+  - Valid values are `yes`, `socket`, `socket-only`
+  - See Kitty [allow_remote_control](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control) for additional details
+  - If `kitty-scrollback.nvim` is the only application controlling Kitty then `socket-only` is the preferred to continue denying TTY requests.
+- Set `listen_on` to a unix socket
+  - For example, `listen_on unix:/tmp/kitty`
+- Enable `shell_integration`
+  - Set `shell_integration` to `enabled` and do not add the option `no-prompt-mark`
+- Add `kitty-scrollback.nvim` mappings
+  - Generate default Kitten mappings
+  ```sh
+  nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
+  ```
+  - Add results to `kitty.conf`
 
-echo 'listen_on unix:/tmp/mykitty' >> ~/.config/kitty/kitty.conf
+Example `kitty.conf`
+```kitty
+allow_remote_control yes
+listen_on unix:/tmp/kitty
+shell_integration enabled
+
+# kitty-scrollback.nvim Kitten alias
+action_alias kitty_scrollback_nvim kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --cwd /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs
+ 
+# Browse scrollback buffer in nvim
+map ctrl+shift+h kitty_scrollback_nvim
+# Browse output of the last shell command in nvim
+map ctrl+shift+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
+# Show clicked command output in nvim
+mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config-file get_text_last_visited_cmd_output.lua
 ```
+
 - Completely close Kitty and reopen
-- `checkhealth: kitty-scrollback`
-
-
-- anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
-- `--nvim-no-args` to disable default and pass no args
-- `--env` to set environment variables e.g., `--env NVIM_APPNAME=altnvim`
-- `--config-file` to set lua file with `config` function to set plugin options
+- Check the health of `kitty-scrollback.nvim`
+  - Run `nvim +'KittyScrollbackCheckHealth' +'quit!'`
+  - Follow the instructions of any `ERROR` or `WARNINGS` reported during the healthcheck
+- Test `kitty-scrollback.nvim` is working by pressing `ctrl+shift+h`
 
 ## 🫡 Commands and Lua API
 | Command                              | API                                                              | Description                                                             |
 | ------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | `:KittyScrollbackGenerateKittens[!]` | `require('kitty-scrollback.api').generate_kittens(boolean\|nil)` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
+| `:KittyScrollbackCheckHealth`        | `require('kitty-scrollback.api').checkhealth()`                  | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
 
 ## ⌨️ Keymaps and Lua API
 | `<Plug>` Mapping          | Default Mapping | Default Mapping Mode     | API                                                   | Description          |
@@ -119,3 +133,13 @@ echo 'listen_on unix:/tmp/mykitty' >> ~/.config/kitty/kitty.conf
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) - quickstart `mini.sh` and inspiration/reference for displaying keymapping footer
 - [cellular-automaton.nvim](https://github.com/Eandrju/cellular-automaton.nvim) - included in a fun example config
 - StackExchange [CamelCase2snake_case()](https://codegolf.stackexchange.com/a/177958/119424) - for converting Neovim highlight names to `SCREAMING_SNAKE_CASE`
+
+- TODO doc up:
+  - see :help clipboard
+  - pbcopy and pbpaste on macos
+  - xclip or wayland on linux
+  - nerdfonts
+  - anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
+  - `--nvim-no-args` to disable default and pass no args
+  - `--env` to set environment variables e.g., `--env NVIM_APPNAME=altnvim`
+  - `--config-file` to set lua file with `config` function to set plugin options

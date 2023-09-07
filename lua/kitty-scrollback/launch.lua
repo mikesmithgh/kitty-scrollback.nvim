@@ -40,6 +40,7 @@ local M = {}
 ---@field ksb_dir string the base runtime path of kitty-scrollback.nvim
 ---@field config_file table<string> the file containing a config function with user defined options
 ---@field kitty_opts KsbKittyOpts relevent kitty configuration values
+---@field kitty_config_dir string kitty configuration directory path
 
 ---@class KsbPrivate
 ---@field orig_columns number

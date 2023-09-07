@@ -1,6 +1,10 @@
 #!/bin/sh
 # Run directly from github with:
 # sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.nvim/main/scripts/mini.sh)"
+# Other variants:
+# sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.nvim/main/scripts/mini.sh)" -- reset  # delete and reinstall
+# env LIBGL_ALWAYS_SOFTWARE=1 sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.nvim/main/scripts/mini.sh)" # useful in testing an a vm
+
 set -eu
 trap 'echo "EXIT detected with exit status $?"' EXIT
 

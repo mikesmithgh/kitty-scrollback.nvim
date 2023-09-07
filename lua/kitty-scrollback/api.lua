@@ -127,4 +127,17 @@ M.generate_kittens = function(all)
   end
 end
 
+M.checkhealth = function()
+  local kitty_scrollback_kitten = vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1]
+  local checkhealth_config = vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/checkhealth.lua', false)[1]
+  vim.system({
+    'kitty',
+    '@',
+    'kitten',
+    kitty_scrollback_kitten,
+    '--config-file',
+    checkhealth_config
+  })
+end
+
 return M

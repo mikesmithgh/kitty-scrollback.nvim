@@ -3,6 +3,7 @@ from typing import List
 from kitty.boss import Boss
 from kittens.tui.handler import result_handler
 from kitty.fast_data_types import get_options
+from kitty.constants import config_dir
 
 import json
 import os
@@ -42,7 +43,8 @@ def pipe_data(w, target_window_id, ksb_dir, config_file):
             kitty_opts.listen_on,
             "scrollback_pager_history_size":
             kitty_opts.scrollback_pager_history_size
-        }
+        },
+        'kitty_config_dir': config_dir,
     }
     if config_file:
         data['config_file'] = config_file
@@ -88,8 +90,8 @@ def parse_cwd(args):
         if arg.startswith('--cwd') and (idx + 1 < len(args)):
             cwd_args = args[idx + 1]
             del args[idx:idx + 2]
-            return cwd_args
-    return None
+            return ('--cwd', cwd_args)
+    return ()
 
 
 @result_handler(type_of_input=None, no_ui=True, has_ready_notification=False)
@@ -103,8 +105,6 @@ def handle_result(args: List[str],
         config_file = parse_config_file(args)
         cwd = parse_cwd(args)
         env = parse_env(args)
-        if cwd:
-            os.chdir(cwd)
         kitty_data = json.dumps(
             pipe_data(w,
                       target_window_id,
@@ -117,7 +117,7 @@ def handle_result(args: List[str],
             'overlay',
             '--title',
             'kitty-scrollback.nvim',
-        ) + env
+        ) + env + cwd
 
         nvim_args = parse_nvim_args(args) + (
             '--cmd',

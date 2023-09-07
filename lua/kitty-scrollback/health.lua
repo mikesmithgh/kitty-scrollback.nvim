@@ -63,8 +63,8 @@ local function check_has_kitty_data()
     local checkhealth_command = '`kitty @ kitten ' .. kitty_scrollback_kitten .. ' --config-file ' .. checkhealth_config .. '`'
     vim.health.warn('No Kitty data available unable to perform a complete healthcheck',
       {
-        'Add the config options `checkhealth = true` to your *config-file* or execute the following command to ' ..
-        'run `:checkhealth kitty-scrollback` within the context of a Kitten',
+        'Add the config options `checkhealth = true` to your *config-file* or execute the command `:KittyScrollbackCheckHealth` ' ..
+        'to run `checkhealth` within the context of a Kitten',
         checkhealth_command })
   end
 end
