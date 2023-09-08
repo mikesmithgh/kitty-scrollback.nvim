@@ -85,11 +85,13 @@ map ctrl+shift+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lu
 mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config-file get_text_last_visited_cmd_output.lua
 ```
 
-- Completely close Kitty and reopen
+- Completely close and reopen Kitty
 - Check the health of `kitty-scrollback.nvim`
-  - Run `nvim +'KittyScrollbackCheckHealth' +'quit!'`
+  ```sh
+  nvim +'KittyScrollbackCheckHealth' +'quit!'
+  ```
   - Follow the instructions of any `ERROR` or `WARNINGS` reported during the healthcheck
-- Test `kitty-scrollback.nvim` is working by pressing `ctrl+shift+h`
+- Test `kitty-scrollback.nvim` is working as expected by pressing `ctrl+shift+h` to open the scrollback buffer in Neovim
 
 ## 🫡 Commands and Lua API
 | Command                              | API                                                              | Description                                                             |
