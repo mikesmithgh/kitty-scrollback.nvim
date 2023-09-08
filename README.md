@@ -1,7 +1,7 @@
 <img src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a7357844-e0e4-4053-8c77-6d129528504f" alt="kitty-scrollback" style="width: 20%" align="right" />
 
 # 😽 kitty-scrollback.nvim
-Neovim plugin/Kitten to integrate Neovim with Kitty's scrollback buffer
+Open your Kitty scrollback buffer with Neovim. Ameowzing!
 
 ![nvim loves kitty](https://img.shields.io/static/v1?style=fl&label=%E2%9D%A4%EF%B8%8F&message=%F0%9F%90%B1&logo=neovim&labelColor=282828&logoColor=8faa80&color=282828)
 > [!WARNING]  
@@ -62,7 +62,8 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 
 ## ✍️ Configuration
 
-### [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
+### Kitty 
+The following steps outline how to properly configure [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
 
 <details>
 <summary>Enable <a href="https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control">allow_remote_control</a></summary>
@@ -93,8 +94,27 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
   ```
 
 </details>
+
 <details>
-<summary>Example <code>kitty.conf</code></summary>
+<summary>Completely close and reopen Kitty</summary>
+</details>
+
+</details>
+<details>
+<summary>Check the health of <code>kitty-scrollback.nvim</code></summary>
+
+  ```sh
+  nvim +'KittyScrollbackCheckHealth' +'quit!'
+  ```
+  - Follow the instructions of any `ERROR` or `WARNINGS` reported during the healthcheck
+
+</details>
+<details>
+<summary>Test <code>kitty-scrollback.nvim</code> is working as expected by pressing <code>ctrl+shift+h</code> to open the scrollback buffer in Neovim</summary>
+</details>
+
+<details>
+<summary>See example <code>kitty.conf</code> for reference</summary>
 
   ```sh
   allow_remote_control yes
@@ -113,14 +133,6 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
   ```
   
 </details>
-
-- Completely close and reopen Kitty
-- Check the health of `kitty-scrollback.nvim`
-  ```sh
-  nvim +'KittyScrollbackCheckHealth' +'quit!'
-  ```
-  - Follow the instructions of any `ERROR` or `WARNINGS` reported during the healthcheck
-- Test `kitty-scrollback.nvim` is working as expected by pressing `ctrl+shift+h` to open the scrollback buffer in Neovim
 
 ## 🫡 Commands and Lua API
 | Command                              | API                              | Description                                                             |
