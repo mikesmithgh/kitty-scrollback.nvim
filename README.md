@@ -28,7 +28,11 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
 
 ## 📦 Installation
 
-### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
+<details>
+
+<summary>Using lazy.nvim</summary>
+
+### [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
   {
     'mikesmithgh/kitty-scrollback.nvim',
@@ -41,7 +45,12 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
   }
 ```
 
-### Using Neovim's built-in package support [pack](https://neovim.io/doc/user/usr_05.html#05.4)
+</details>
+<details>
+
+<summary>Using Neovim's built-in package support </summary>
+
+### [pack](https://neovim.io/doc/user/usr_05.html#05.4)
 ```bash
 mkdir -p "$HOME/.local/share/nvim/site/pack/mikesmithgh/start/"
 cd $HOME/.local/share/nvim/site/pack/mikesmithgh/start
@@ -50,6 +59,8 @@ nvim -u NONE -c "helptags kitty-scrollback.nvim/doc" -c q
 mkdir -p "$HOME/.config/nvim"
 echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 ```
+
+</details>
 
 ## ✍️ Configuration
 
