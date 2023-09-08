@@ -48,7 +48,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
 </details>
 <details>
 
-<summary>Using Neovim's built-in package support </summary>
+<summary>Using Neovim's built-in package support</summary>
 
 ### [pack](https://neovim.io/doc/user/usr_05.html#05.4)
 ```bash
@@ -64,39 +64,57 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 
 ## ✍️ Configuration
 
-### Kitty
-- Enable `allow_remote_control` in `kitty.conf`
+### [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
+
+<details>
+<summary>Enable <a href="https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control">allow_remote_control</a></summary>
+
   - Valid values are `yes`, `socket`, `socket-only`
-  - See Kitty [allow_remote_control](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control) for additional details
   - If `kitty-scrollback.nvim` is the only application controlling Kitty then `socket-only` is preferred to continue denying TTY requests.
-- Set `listen_on` to a unix socket
+
+</details>
+<details>
+<summary>Set <a href="https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on">listen_on</a> to a unix socket</summary>
+
   - For example, `listen_on unix:/tmp/kitty`
-  - See Kitty [listen_on](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on) for additional details
-- Enable `shell_integration`
-  - Set `shell_integration` to `enabled` and do not add the option `no-prompt-mark`
-  - See Kitty [shell_integration](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration) for additional details
-- Add `kitty-scrollback.nvim` mappings
+
+</details>
+<details>
+<summary>Enable <a href="https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration">shell_integration</a></summary>
+
+  - Set `shell_integration` to `enabled`
+  - Do not add the option `no-prompt-mark`
+
+</details>
+<details>
+<summary>Add <code>kitty-scrollback.nvim</code> mappings</summary>
+
   - Generate default Kitten mappings and add to `kitty.conf`
   ```sh
   nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
   ```
 
-Example `kitty.conf`
-```kitty
-allow_remote_control yes
-listen_on unix:/tmp/kitty
-shell_integration enabled
+</details>
+<details>
+<summary>Example <code>kitty.conf</code></summary>
 
-# kitty-scrollback.nvim Kitten alias
-action_alias kitty_scrollback_nvim kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --cwd /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs
- 
-# Browse scrollback buffer in nvim
-map ctrl+shift+h kitty_scrollback_nvim
-# Browse output of the last shell command in nvim
-map ctrl+shift+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
-# Show clicked command output in nvim
-mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config-file get_text_last_visited_cmd_output.lua
-```
+  ```sh
+  allow_remote_control yes
+  listen_on unix:/tmp/kitty
+  shell_integration enabled
+  
+  # kitty-scrollback.nvim Kitten alias
+  action_alias kitty_scrollback_nvim kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --cwd /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs
+   
+  # Browse scrollback buffer in nvim
+  map ctrl+shift+h kitty_scrollback_nvim
+  # Browse output of the last shell command in nvim
+  map ctrl+shift+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
+  # Show clicked command output in nvim
+  mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config-file get_text_last_visited_cmd_output.lua
+  ```
+  
+</details>
 
 - Completely close and reopen Kitty
 - Check the health of `kitty-scrollback.nvim`
