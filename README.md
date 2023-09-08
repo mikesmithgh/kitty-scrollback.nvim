@@ -11,6 +11,9 @@ https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/5aba1ba2-18
 
 ## ✨ Features
 - 😻 Navigate Kitty's scrollback buffer with Neovim
+- 🐱 Copy contents from Neovim to system clipboard
+- 😺 Send contents from Neovim to Kitty shell
+- 🙀 Execute shell command from Neovim to Kitty shell
 
 ## 🏃 Quickstart
 
