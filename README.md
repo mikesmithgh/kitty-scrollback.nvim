@@ -76,11 +76,10 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
   - Set `shell_integration` to `enabled` and do not add the option `no-prompt-mark`
   - See Kitty [shell_integration](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration) for additional details
 - Add `kitty-scrollback.nvim` mappings
-  - Generate default Kitten mappings
+  - Generate default Kitten mappings and add to `kitty.conf`
   ```sh
   nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
   ```
-  - Add results to `kitty.conf`
 
 Example `kitty.conf`
 ```kitty
@@ -108,10 +107,10 @@ mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output
 - Test `kitty-scrollback.nvim` is working as expected by pressing `ctrl+shift+h` to open the scrollback buffer in Neovim
 
 ## 🫡 Commands and Lua API
-| Command                              | API                                                              | Description                                                             |
-| ------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `:KittyScrollbackGenerateKittens[!]` | `require('kitty-scrollback.api').generate_kittens(boolean\|nil)` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
-| `:KittyScrollbackCheckHealth`        | `require('kitty-scrollback.api').checkhealth()`                  | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
+| Command                              | API                              | Description                                                             |
+| :----------------------------------- | :------------------------------- | :---------------------------------------------------------------------- |
+| `:KittyScrollbackGenerateKittens[!]` | `generate_kittens(boolean\|nil)` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
+| `:KittyScrollbackCheckHealth`        | `checkhealth()`                  | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
 
 ## ⌨️ Keymaps and Lua API
 | `<Plug>` Mapping            | Default Mapping | Mode  | API                   | Description    |
