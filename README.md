@@ -54,11 +54,13 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 - Enable `allow_remote_control` in `kitty.conf`
   - Valid values are `yes`, `socket`, `socket-only`
   - See Kitty [allow_remote_control](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control) for additional details
-  - If `kitty-scrollback.nvim` is the only application controlling Kitty then `socket-only` is the preferred to continue denying TTY requests.
+  - If `kitty-scrollback.nvim` is the only application controlling Kitty then `socket-only` is preferred to continue denying TTY requests.
 - Set `listen_on` to a unix socket
   - For example, `listen_on unix:/tmp/kitty`
+  - See Kitty [listen_on](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on) for additional details
 - Enable `shell_integration`
   - Set `shell_integration` to `enabled` and do not add the option `no-prompt-mark`
+  - See Kitty [shell_integration](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration) for additional details
 - Add `kitty-scrollback.nvim` mappings
   - Generate default Kitten mappings
   ```sh
