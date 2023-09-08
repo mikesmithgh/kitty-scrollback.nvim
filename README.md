@@ -30,9 +30,8 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
 
 <details>
 
-<summary>Using lazy.nvim</summary>
+<summary>Using <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a></summary>
 
-### [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
   {
     'mikesmithgh/kitty-scrollback.nvim',
@@ -48,9 +47,8 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
 </details>
 <details>
 
-<summary>Using Neovim's built-in package support</summary>
+<summary>Using Neovim's built-in package support <a href="https://neovim.io/doc/user/usr_05.html#05.4">pack</a></summary>
 
-### [pack](https://neovim.io/doc/user/usr_05.html#05.4)
 ```bash
 mkdir -p "$HOME/.local/share/nvim/site/pack/mikesmithgh/start/"
 cd $HOME/.local/share/nvim/site/pack/mikesmithgh/start
