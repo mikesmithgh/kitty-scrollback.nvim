@@ -134,28 +134,39 @@ The following steps outline how to properly configure [kitty.conf](https://sw.ko
   
 </details>
 
+### Kitten arguments
+
+### Nerd Fonts 
+By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com) in the status window.
+
+https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/4cf5b303-5061-43da-a857-c99daea82332
+
+https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a0e1b574-59ab-4abf-93a1-f314c7cd47b3
+
 ## 🫡 Commands and Lua API
+The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 | Command                              | API                              | Description                                                             |
 | :----------------------------------- | :------------------------------- | :---------------------------------------------------------------------- |
 | `:KittyScrollbackGenerateKittens[!]` | `generate_kittens(boolean\|nil)` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
 | `:KittyScrollbackCheckHealth`        | `checkhealth()`                  | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
 
 ## ⌨️ Keymaps and Lua API
-| `<Plug>` Mapping            | Default Mapping | Mode  | API                   | Description    |
-| :-------------------------- | :-------------- | :---- | :-------------------- | :--------------|
-| `<Plug>(KsbExecuteCmd)`     | `<C-CR>`        | n,i   | `execute_command()`   |                |
-| `<Plug>(KsbPasteCmd)`       | `<S-CR>`        | n,i   | `paste_command()`     |                |
-| `<Plug>(KsbToggleFooter)`   | `g?`            | n     | `toggle_footer()`     |                |
-| `<Plug>(KsbCloseOrQuitAll)` | `<Esc>`         | n     | `close_or_quit_all()` |                |
-| `<Plug>(KsbQuitAll)`        | `<C-c>`         | n,i,t | `quit_all()`          |                |
-| `<Plug>(KsbVisualYankLine)` | `<Leader>Y`     | v     |                       | Maps to `"+Y`  |
-| `<Plug>(KsbVisualYank)`     | `<Leader>y`     | v     |                       | Maps to `"+y`  |
-| `<Plug>(KsbNormalYankEnd)`  | `<Leader>Y`     | n     |                       | Maps to `"+y$` |
-| `<Plug>(KsbNormalYank)`     | `<Leader>y`     | n     |                       | Maps to `"+y`  |
-| `<Plug>(KsbNormalYankLine)` | `<Leader>yy`    | n     |                       | Maps to `"+yy` |
+The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
+| `<Plug>` Mapping            | Default Mapping | Mode  | API                   | Description                                                                             |
+| --------------------------- | --------------- | ----- | --------------------- | --------------------------------------------------------------------------------------- |
+| `<Plug>(KsbExecuteCmd)`     | `<C-CR>`        | n,i   | `execute_command()`   | Execute the contents of the paste window in Kitty                                       |
+| `<Plug>(KsbPasteCmd)`       | `<S-CR>`        | n,i   | `paste_command()`     | Paste the contents of the paste window to Kitty without executing                       |
+| `<Plug>(KsbToggleFooter)`   | `g?`            | n     | `toggle_footer()`     | Toggle the paste window footer that displays mappings                                   |
+| `<Plug>(KsbCloseOrQuitAll)` | `<Esc>`         | n     | `close_or_quit_all()` | If the current buffer is the paste buffer, then close the window. Otherwise quit Neovim |
+| `<Plug>(KsbQuitAll)`        | `<C-c>`         | n,i,t | `quit_all()`          | Quit Neovim                                                                             |
+| `<Plug>(KsbVisualYankLine)` | `<Leader>Y`     | v     |                       | Maps to `"+Y`                                                                           |
+| `<Plug>(KsbVisualYank)`     | `<Leader>y`     | v     |                       | Maps to `"+y`                                                                           |
+| `<Plug>(KsbNormalYankEnd)`  | `<Leader>Y`     | n     |                       | Maps to `"+y$`                                                                          |
+| `<Plug>(KsbNormalYank)`     | `<Leader>y`     | n     |                       | Maps to `"+y`                                                                           |
+| `<Plug>(KsbNormalYankLine)` | `<Leader>yy`    | n     |                       | Maps to `"+yy`                                                                          |
 
 ## 🛣️ Roadmap
-- [ ] document setup with remote control and shell integration
+- [x] document setup with remote control and shell integration
 - [x] add quick setup to allow user to test easily before installing
 - [ ] add documentation and examples
 - [ ] add details about relevant kitty config ( `scrollback_lines`, `scrollback_pager`, `scrollback_pager_history_size`, `scrollback_fill_enlarged_window`)
@@ -164,8 +175,9 @@ The following steps outline how to properly configure [kitty.conf](https://sw.ko
 - [ ] add support for https://github.com/m00qek/baleia.nvim
 
 ## 👏 Recommendations
-- [vim-kitty](https://github.com/fladson/vim-kitty) - for Kitty config syntax highlighting
-- [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) - for Kitty and Neovim split window management 
+The following plugins are nice additions to your Neovim and Kitty setup.
+- [vim-kitty](https://github.com/fladson/vim-kitty) - Syntax highlighting for Kitty terminal config files
+- [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) - Seamless navigation between Neovim and Kitty split panes 
 
 ## 🤝 Ackowledgements
 - Kitty [custom kitten](https://sw.kovidgoyal.net/kitty/kittens/custom/) documentation
