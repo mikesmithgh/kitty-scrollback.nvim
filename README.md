@@ -137,11 +137,22 @@ The following steps outline how to properly configure [kitty.conf](https://sw.ko
 ### Kitten arguments
 
 ### Nerd Fonts 
-By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com) in the status window.
+By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com) in the status window. If you would like to 
+use ASCII instead, set the option `status_window.style_simple` to `true`. 
 
-https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/4cf5b303-5061-43da-a857-c99daea82332
+<details>
+  <summary>Status window with Nerd Fonts <code>opts.status_window.style_simple = false</code></summary>
+  
+  https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/4cf5b303-5061-43da-a857-c99daea82332
+  
+</details>
+<details>
+  <summary>Status window with ASCII text <code>opts.status_window.style_simple = true</code></summary>
+  
+  https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a0e1b574-59ab-4abf-93a1-f314c7cd47b3
+  
+</details>
 
-https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a0e1b574-59ab-4abf-93a1-f314c7cd47b3
 
 ## 🫡 Commands and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
@@ -195,7 +206,6 @@ The following plugins are nice additions to your Neovim and Kitty setup.
   - see :help clipboard
   - pbcopy and pbpaste on macos
   - xclip or wayland on linux
-  - nerdfonts
   - anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
   - `--nvim-no-args` to disable default and pass no args
   - `--env` to set environment variables e.g., `--env NVIM_APPNAME=altnvim`
