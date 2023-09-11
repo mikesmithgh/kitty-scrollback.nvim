@@ -3,6 +3,7 @@
 # 😽 kitty-scrollback.nvim
 Open your Kitty scrollback buffer with Neovim. Ameowzing!
 
+[![neovim: v0.10+](https://img.shields.io/static/v1?style=flat-square&label=neovim&message=v0.10%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
 ![nvim loves kitty](https://img.shields.io/static/v1?style=fl&label=%E2%9D%A4%EF%B8%8F&message=%F0%9F%90%B1&logo=neovim&labelColor=282828&logoColor=8faa80&color=282828)
 > [!WARNING]  
 > This project is still a work in progress and not considered stable
@@ -27,6 +28,9 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
 > before running `sh -c` directly from the web
 
 ## 📦 Installation
+
+### Prerequisites
+- Neovim [v0.10+](https://github.com/neovim/neovim/releases)
 
 <details>
 
