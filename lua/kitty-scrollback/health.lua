@@ -1,3 +1,4 @@
+local ksb_util = require'kitty-scrollback.util'
 ---@mod kitty-scrollback.health
 local M = {}
 
@@ -75,7 +76,7 @@ local function check_clipboard()
   end
   vim.health.start('kitty-scrollback: clipboard')
   local clipboard_tool = vim.fn['provider#clipboard#Executable']() -- copied from health.lua
-  if vim.fn.has('clipboard') and not is_blank(clipboard_tool) then
+  if vim.fn.has('clipboard') > 0 and not is_blank(clipboard_tool) then
     vim.health.ok('Clipboard tool found: *' .. clipboard_tool .. '*')
   else
     vim.health.warn(
@@ -136,23 +137,52 @@ local function check_sed()
   end
 end
 
+local function check_nvim_version()
+  vim.health.start('kitty-scrollback: Neovim version 0.10+')
+  local nvim_version = 'NVIM ' .. ksb_util.nvim_version_tostring()
+  if vim.fn.has('nvim-0.10') > 0 then
+    vim.health.ok(nvim_version)
+    return true
+  else
+    vim.health.error(nvim_version, M.advice().nvim_version)
+  end
+  return false
+end
+
 M.check = function()
-  check_has_kitty_data()
-  check_kitty_remote_control()
-  check_clipboard()
-  check_kitty_shell_integration()
-  check_sed()
+  if check_nvim_version() then
+    check_has_kitty_data()
+    check_kitty_remote_control()
+    check_clipboard()
+    check_kitty_shell_integration()
+    check_sed()
+  end
 end
 
 
+---@class KsbAdvice
+---@field allow_remote_control table
+---@field listen_on table
+---@field kitty_shell_integration table
+---@field nvim_version table
 
 ---@return KsbAdvice
 M.advice = function()
-  ---@class KsbAdvice
-  ---field allow_remote_control table
-  ---field listen_on table
-  ---field kitty_shell_integration table
+  local extent = 'nil'
+  local ansi = 'nil'
+  local clear_selection = 'nil'
+  if opts then
+    extent = opts.kitty_get_text.extent
+    ansi = tostring(opts.kitty_get_text.ansi)
+    clear_selection = tostring(opts.kitty_get_text.clear_selection)
+  end
+
+  local shell_integration = 'nil'
+  if p then
+    shell_integration = table.concat(p.kitty_data.kitty_opts.shell_integration, ' ')
+  end
   return {
+    nvim_version = { 'Neovim version 0.10 or greater is required to work with kitty-scrollback.nvim' },
     allow_remote_control =
     {
       'Kitty must be configured to allow remote control connections. Add the configuration',
@@ -189,9 +219,9 @@ M.advice = function()
       'Current *kitty_get_text* options:',
       '`    opts = {`',
       '`        kitty_get_text = {`',
-      [[`            extent = ']] .. opts.kitty_get_text.extent .. [[',`]],
-      [[`            ansi = ]] .. tostring(opts.kitty_get_text.ansi) .. [[,`]],
-      [[`            clear_selection = ]] .. tostring(opts.kitty_get_text.clear_selection) .. [[,`]],
+      [[`            extent = ']] .. extent .. [[',`]],
+      [[`            ansi = ]] .. ansi .. [[,`]],
+      [[`            clear_selection = ]] .. clear_selection .. [[,`]],
       '`        },`',
       '`    }`',
       '',
@@ -199,7 +229,7 @@ M.advice = function()
       'more information on *extent* or run `kitty @ get-text --help`',
       '',
       'Current *shell_integration* options:',
-      [[`    KITTY_SHELL_INTEGRATION=']] .. table.concat(p.kitty_data.kitty_opts.shell_integration, ' ') .. [['`]],
+      [[`    KITTY_SHELL_INTEGRATION=']] .. shell_integration .. [['`]],
       '',
       'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration for more information',
       'on *shell_integration*',
