@@ -157,11 +157,11 @@ end
 
 M.check_kitty_version = function(check_only)
   if not check_only then
-    vim.health.start('kitty-scrollback: Kitty version 0.27+')
+    vim.health.start('kitty-scrollback: Kitty version 0.29+')
   end
   local kitty_version = p.kitty_data.kitty_version
   local kitty_version_str = 'kitty ' .. table.concat(kitty_version, '.')
-  if vim.version.cmp(kitty_version, { 0, 27, 0 }) >= 0 then
+  if vim.version.cmp(kitty_version, { 0, 29, 0 }) >= 0 then
     if not check_only then
       vim.health.ok(kitty_version_str)
     end
@@ -209,7 +209,7 @@ M.advice = function()
   end
   return {
     nvim_version = { 'Neovim version 0.10 or greater is required to work with kitty-scrollback.nvim' },
-    kitty_version = { 'Kitty version 0.27 or greater is required to work with kitty-scrollback.nvim' },
+    kitty_version = { 'Kitty version 0.29 or greater is required to work with kitty-scrollback.nvim' },
     allow_remote_control =
     {
       'Kitty must be configured to allow remote control connections. Add the configuration',
