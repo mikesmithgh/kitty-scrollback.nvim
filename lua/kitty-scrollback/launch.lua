@@ -41,6 +41,7 @@ local M = {}
 ---@field config_file table<string> the file containing a config function with user defined options
 ---@field kitty_opts KsbKittyOpts relevent kitty configuration values
 ---@field kitty_config_dir string kitty configuration directory path
+---@field kitty_version table kitty version
 
 ---@class KsbPrivate
 ---@field orig_columns number
@@ -261,9 +262,17 @@ M.setup = function(kitty_data_str)
     vim.cmd.checkhealth('kitty-scrollback')
     return
   end
-  if vim.fn.has('nvim-0.10') == 0 then
+  if not ksb_health.check_nvim_version(true) then
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM ' ..
       ksb_util.nvim_version_tostring() .. '. ' .. table.concat(ksb_health.advice().nvim_version)
+    local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
+    if response ~= 2 then
+      ksb_kitty_cmds.signal_term_to_kitty_child_process(true)
+    end
+  end
+  if not ksb_health.check_kitty_version(true) then
+    local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version kitty ' ..
+      table.concat(p.kitty_data.kitty_version, '.') .. '. ' .. table.concat(ksb_health.advice().kitty_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
       ksb_kitty_cmds.signal_term_to_kitty_child_process(true)

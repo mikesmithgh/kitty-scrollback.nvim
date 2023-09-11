@@ -3,7 +3,7 @@ from typing import List
 from kitty.boss import Boss
 from kittens.tui.handler import result_handler
 from kitty.fast_data_types import get_options
-from kitty.constants import config_dir
+from kitty.constants import config_dir, version
 
 import json
 import os
@@ -45,6 +45,7 @@ def pipe_data(w, target_window_id, ksb_dir, config_file):
             kitty_opts.scrollback_pager_history_size
         },
         'kitty_config_dir': config_dir,
+        'kitty_version': version,
     }
     if config_file:
         data['config_file'] = config_file

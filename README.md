@@ -31,7 +31,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
 
 ### Prerequisites
 - Neovim [v0.10+](https://github.com/neovim/neovim/releases)
-- Kitty [v0.27+](https://github.com/kovidgoyal/kitty/releases) *I quickly tested this version, I still need to verify all functionality*
+- Kitty [v0.27+](https://github.com/kovidgoyal/kitty/releases)
 
 <details>
 

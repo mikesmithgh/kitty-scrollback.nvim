@@ -137,20 +137,45 @@ local function check_sed()
   end
 end
 
-local function check_nvim_version()
-  vim.health.start('kitty-scrollback: Neovim version 0.10+')
+M.check_nvim_version = function(check_only)
+  if not check_only then
+    vim.health.start('kitty-scrollback: Neovim version 0.10+')
+  end
   local nvim_version = 'NVIM ' .. ksb_util.nvim_version_tostring()
   if vim.fn.has('nvim-0.10') > 0 then
-    vim.health.ok(nvim_version)
+    if not check_only then
+      vim.health.ok(nvim_version)
+    end
     return true
   else
-    vim.health.error(nvim_version, M.advice().nvim_version)
+    if not check_only then
+      vim.health.error(nvim_version, M.advice().nvim_version)
+    end
+  end
+  return false
+end
+
+M.check_kitty_version = function(check_only)
+  if not check_only then
+    vim.health.start('kitty-scrollback: Kitty version 0.27+')
+  end
+  local kitty_version = p.kitty_data.kitty_version
+  local kitty_version_str = 'kitty ' .. table.concat(kitty_version, '.')
+  if vim.version.cmp(kitty_version, { 0, 27, 0 }) >= 0 then
+    if not check_only then
+      vim.health.ok(kitty_version_str)
+    end
+    return true
+  else
+    if not check_only then
+      vim.health.error(kitty_version_str, M.advice().kitty_version)
+    end
   end
   return false
 end
 
 M.check = function()
-  if check_nvim_version() then
+  if M.check_nvim_version() and M.check_kitty_version() then
     check_has_kitty_data()
     check_kitty_remote_control()
     check_clipboard()
@@ -165,6 +190,7 @@ end
 ---@field listen_on table
 ---@field kitty_shell_integration table
 ---@field nvim_version table
+---@field kitty_version table
 
 ---@return KsbAdvice
 M.advice = function()
@@ -183,6 +209,7 @@ M.advice = function()
   end
   return {
     nvim_version = { 'Neovim version 0.10 or greater is required to work with kitty-scrollback.nvim' },
+    kitty_version = { 'Kitty version 0.27 or greater is required to work with kitty-scrollback.nvim' },
     allow_remote_control =
     {
       'Kitty must be configured to allow remote control connections. Add the configuration',
