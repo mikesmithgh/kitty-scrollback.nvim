@@ -250,7 +250,7 @@ M.setup = function(kitty_data_str)
   local user_opts = {}
   if p.kitty_data.config_file and next(p.kitty_data.config_file) then
     for _, config in pairs(p.kitty_data.config_file) do
-      user_opts = vim.tbl_extend('force', user_opts, dofile(config).config(p.kitty_data) or {})
+      user_opts = vim.tbl_extend('keep', user_opts, dofile(config).config(p.kitty_data) or {})
       vim.print(user_opts)
     end
   end
