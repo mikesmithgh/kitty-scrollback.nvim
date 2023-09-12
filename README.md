@@ -79,7 +79,7 @@ The following steps outline how to properly configure [kitty.conf](https://sw.ko
 
 </details>
 <details>
-<summary>Set <a href="https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on">listen_on</a> to a unix socket</summary>
+<summary>Set <a href="https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on">listen_on</a> to a Unix socket</summary>
 
   - For example, `listen_on unix:/tmp/kitty`
 
@@ -141,6 +141,46 @@ The following steps outline how to properly configure [kitty.conf](https://sw.ko
 </details>
 
 ### Kitten arguments
+Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/).
+
+| Argument         | Description                                                                                                                                                                                                                                                                                                                                                                 |
+| :--------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--config-file`  | `kitty-scrollback.nvim` plugin configuration file. The configuration file must return a Lua table with the function `config(kitty_data): table`. You may specify multiple config files that will merge all configuration options.                                                                                                                                           |
+| `--no-nvim-args` | Do not provide any arguments to the Neovim instance that displays the scrollback buffer. The default arguments passed to Neovim are `--clean --noplugin -n`. This flag removes those options.                                                                                                                                                                               |
+| `--nvim-args`    | All arguments after this flag are passed to the Neovim instance that displays the scrollback buffer. This must be the last of the `kitty-scrollback.nvim` Kitten arguments that are configured. Otherwise, you may unintentionally send the wrong arguments to Neovim. The default arguments passed to Neovim are `--clean --noplugin -n`. This flag removes those options. |
+| `--env`          | Environment variable that is passed to the Neovim instance that displays the scrollback buffer. Format is `--env var_name=var_value`. You may specify multiple config files that will merge all configuration options. Useful for setting `NVIM_APPNAME`                                                                                                                    |
+| `--cwd`          | The current working directory of the Neovim instance that displays the scrollback buffer.                                                                                                                                                                                                                                                                                   |
+
+### `kitty-scrollback.nvim` configuration file
+- TODO add details
+```lua
+{
+  callbacks = nil,
+  keymaps_enabled = true,
+  restore_options = false,
+  highlight_overrides = nil,
+  status_window = {
+    enabled = true,
+    style_simple = false,
+    autoclose = false,
+    show_timer = false,
+  },
+  paste_window = {
+    highlight_as_normal_win = nil,
+    filetype = nil,
+    hide_footer = false,
+    winblend = 0,
+    winopts_overrides = nil,
+    footer_winopts_overrides = nil,
+  },
+  kitty_get_text = {
+    ansi = true,
+    extent = 'all',
+    clear_selection = true,
+  },
+  checkhealth = false,
+}
+```
 
 ### Nerd Fonts 
 By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com) in the status window. If you would like to 
@@ -158,7 +198,6 @@ use ASCII instead, set the option `status_window.style_simple` to `true`.
   https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a0e1b574-59ab-4abf-93a1-f314c7cd47b3
   
 </details>
-
 
 ## 🫡 Commands and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
@@ -196,7 +235,7 @@ The following plugins are nice additions to your Neovim and Kitty setup.
 - [vim-kitty](https://github.com/fladson/vim-kitty) - Syntax highlighting for Kitty terminal config files
 - [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) - Seamless navigation between Neovim and Kitty split panes 
 
-## 🤝 Ackowledgements
+## 🤝 Acknowledgements
 - Kitty [custom kitten](https://sw.kovidgoyal.net/kitty/kittens/custom/) documentation
 - [baleia.nvim](https://github.com/m00qek/baleia.nvim) - very nice plugin to colorize Neovim buffer containing ANSI escape sequences. I plan to add integration with this plugin 🤝
 - [kovidgoyal/kitty#719 Feature Request: Ability to select text with the keyboard (vim-like)](https://github.com/kovidgoyal/kitty/issues/719) - ideas for passing the scrollback buffer to Neovim
@@ -208,11 +247,3 @@ The following plugins are nice additions to your Neovim and Kitty setup.
 - [cellular-automaton.nvim](https://github.com/Eandrju/cellular-automaton.nvim) - included in a fun example config
 - StackExchange [CamelCase2snake_case()](https://codegolf.stackexchange.com/a/177958/119424) - for converting Neovim highlight names to `SCREAMING_SNAKE_CASE`
 
-- TODO doc up:
-  - see :help clipboard
-  - pbcopy and pbpaste on macos
-  - xclip or wayland on linux
-  - anything preceding `--nvim-args` will be passed to nvim, do no use --cmd or an error will occur
-  - `--nvim-no-args` to disable default and pass no args
-  - `--env` to set environment variables e.g., `--env NVIM_APPNAME=altnvim`
-  - `--config-file` to set lua file with `config` function to set plugin options

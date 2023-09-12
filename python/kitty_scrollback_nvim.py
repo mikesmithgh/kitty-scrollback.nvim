@@ -18,7 +18,7 @@ def main():
 
 
 # based on kitty source window.py
-def pipe_data(w, target_window_id, ksb_dir, config_file):
+def pipe_data(w, target_window_id, ksb_dir, config_files):
     kitty_opts = get_options()
     data = {
         'scrolled_by': w.screen.scrolled_by,
@@ -47,8 +47,8 @@ def pipe_data(w, target_window_id, ksb_dir, config_file):
         'kitty_config_dir': config_dir,
         'kitty_version': version,
     }
-    if config_file:
-        data['config_file'] = config_file
+    if config_files:
+        data['config_files'] = config_files
     return data
 
 
@@ -77,7 +77,7 @@ def parse_env(args):
     return tuple(env_args)
 
 
-def parse_config_file(args):
+def parse_config_files(args):
     config_args = []
     for idx, arg in reversed(list(enumerate(args))):
         if arg.startswith('--config-file') and (idx - 1 < len(args)):
@@ -103,14 +103,14 @@ def handle_result(args: List[str],
     del args[0]
     w = boss.window_id_map.get(target_window_id)
     if w is not None:
-        config_file = parse_config_file(args)
+        config_files = parse_config_files(args)
         cwd = parse_cwd(args)
         env = parse_env(args)
         kitty_data = json.dumps(
             pipe_data(w,
                       target_window_id,
                       ksb_dir,
-                      config_file))
+                      config_files))
 
         kitty_args = (
             '--copy-env',
