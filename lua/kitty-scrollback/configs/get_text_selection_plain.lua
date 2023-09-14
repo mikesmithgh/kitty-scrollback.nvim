@@ -5,7 +5,7 @@ M.config = function(kitty_data)
     kitty_get_text = {
       extent = 'selection',
       ansi = false,
-    }
+    },
   }
 end
 

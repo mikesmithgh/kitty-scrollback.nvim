@@ -21,7 +21,8 @@ M.size = function(max, value)
 end
 
 M.paste_winopts = function(row, col, height_offset)
-  local target_height = math.floor(M.size(vim.o.lines, math.floor(M.size(vim.o.lines, (vim.o.lines + 2) / 3))))
+  local target_height =
+    math.floor(M.size(vim.o.lines, math.floor(M.size(vim.o.lines, (vim.o.lines + 2) / 3))))
   local line_height_diff = vim.o.lines - row - target_height - 5 -- TODO: magic number, 3 for footer and 2 for border
   if line_height_diff < 0 then
     target_height = target_height - math.abs(line_height_diff)
@@ -57,7 +58,8 @@ M.paste_winopts = function(row, col, height_offset)
   end
 
   if opts.paste_window.winopts_overrides then
-    winopts = vim.tbl_deep_extend('force', winopts, opts.paste_window.winopts_overrides(winopts) or {})
+    winopts =
+      vim.tbl_deep_extend('force', winopts, opts.paste_window.winopts_overrides(winopts) or {})
   end
 
   return winopts
@@ -68,7 +70,11 @@ M.open_paste_window = function(start_insert)
 
   if not p.pos then
     if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
-      vim.notify('kitty-scrollback.nvim: missing position with extent=' .. opts.kitty_get_text.extent, vim.log.levels.WARN, {})
+      vim.notify(
+        'kitty-scrollback.nvim: missing position with extent=' .. opts.kitty_get_text.extent,
+        vim.log.levels.WARN,
+        {}
+      )
     end
     local last_nonempty_line = vim.fn.search('.', 'nb')
     p.pos = {
@@ -103,9 +109,10 @@ M.open_paste_window = function(start_insert)
       vim.schedule_wrap(ksb_footer_win.open_footer_window)(winopts)
     end
 
-    vim.api.nvim_set_option_value('winhighlight',
+    vim.api.nvim_set_option_value(
+      'winhighlight',
       'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
-      { win = p.paste_winid, }
+      { win = p.paste_winid }
     )
     vim.api.nvim_set_option_value('winblend', opts.paste_window.winblend or 0, {
       win = p.paste_winid,
@@ -148,7 +155,9 @@ M.show_status_window = function()
       }
     end
 
-    local popup_winid = vim.api.nvim_open_win(popup_bufid, false,
+    local popup_winid = vim.api.nvim_open_win(
+      popup_bufid,
+      false,
       vim.tbl_deep_extend('force', winopts(), {
         noautocmd = true,
       })
@@ -166,7 +175,15 @@ M.show_status_window = function()
       function(status_window_timer) ---@diagnostic disable-line: redundant-parameter
         count = count + 1
         local spinner_icon = count > #spinner and spinner[#spinner] or spinner[count]
-        local fmt_msg = ' ' .. spinner_icon .. ' ' .. kitty_icon .. ' ' .. love_icon .. ' ' .. vim_icon .. ' '
+        local fmt_msg = ' '
+          .. spinner_icon
+          .. ' '
+          .. kitty_icon
+          .. ' '
+          .. love_icon
+          .. ' '
+          .. vim_icon
+          .. ' '
         vim.defer_fn(function()
           if spinner_icon == '' then
             vim.fn.timer_stop(status_window_timer)
@@ -174,15 +191,19 @@ M.show_status_window = function()
             local ok, _ = pcall(vim.api.nvim_win_get_config, popup_winid)
             if ok then
               vim.schedule(function()
-                pcall(vim.api.nvim_win_set_config, popup_winid, vim.tbl_deep_extend('force', winopts(), {
-                  width = M.size(p.orig_columns or vim.o.columns, winopts().width - 2)
-                }))
+                pcall(
+                  vim.api.nvim_win_set_config,
+                  popup_winid,
+                  vim.tbl_deep_extend('force', winopts(), {
+                    width = M.size(p.orig_columns or vim.o.columns, winopts().width - 2),
+                  })
+                )
               end)
             end
           end
           vim.api.nvim_buf_set_lines(popup_bufid, 0, -1, false, {})
           vim.api.nvim_buf_set_lines(popup_bufid, 0, -1, false, {
-            fmt_msg
+            fmt_msg,
           })
 
           local nid = vim.api.nvim_create_namespace('scrollbacknvim')
@@ -191,7 +212,8 @@ M.show_status_window = function()
           if spinner_icon ~= '' then
             endcol = #spinner_icon + 2
             vim.api.nvim_buf_set_extmark(popup_bufid, nid, 0, startcol, {
-              hl_group = count >= #spinner and 'KittyScrollbackNvimReady' or 'KittyScrollbackNvimSpinner',
+              hl_group = count >= #spinner and 'KittyScrollbackNvimReady'
+                or 'KittyScrollbackNvimSpinner',
               end_col = endcol,
             })
           end
@@ -212,35 +234,43 @@ M.show_status_window = function()
             endcol = #fmt_msg
             vim.api.nvim_buf_set_extmark(popup_bufid, nid, 0, startcol, {
               hl_group = 'KittyScrollbackNvimVim',
-              end_col = endcol
+              end_col = endcol,
             })
           end
           if opts.status_window.autoclose then
             if count > #spinner then
-              vim.fn.timer_start(60, function(close_window_timer) ---@diagnostic disable-line: redundant-parameter
-                local ok, current_winopts = pcall(vim.api.nvim_win_get_config, popup_winid)
-                if not ok then
-                  vim.fn.timer_stop(close_window_timer)
-                  vim.fn.timer_stop(status_window_timer)
-                  return
-                end
-                if current_winopts.width > 2 then
-                  ok, _ = pcall(vim.api.nvim_win_set_config, popup_winid, vim.tbl_deep_extend('force', winopts(), {
-                    width = M.size(p.orig_columns or vim.o.columns, current_winopts.width - 1)
-                  }))
+              vim.fn.timer_start(
+                60,
+                function(close_window_timer) ---@diagnostic disable-line: redundant-parameter
+                  local ok, current_winopts = pcall(vim.api.nvim_win_get_config, popup_winid)
                   if not ok then
                     vim.fn.timer_stop(close_window_timer)
                     vim.fn.timer_stop(status_window_timer)
                     return
                   end
-                else
-                  pcall(vim.api.nvim_win_close, popup_winid, true)
-                  vim.fn.timer_stop(close_window_timer)
-                  vim.fn.timer_stop(status_window_timer)
-                end
-              end, {
-                ['repeat'] = -1,
-              })
+                  if current_winopts.width > 2 then
+                    ok, _ = pcall(
+                      vim.api.nvim_win_set_config,
+                      popup_winid,
+                      vim.tbl_deep_extend('force', winopts(), {
+                        width = M.size(p.orig_columns or vim.o.columns, current_winopts.width - 1),
+                      })
+                    )
+                    if not ok then
+                      vim.fn.timer_stop(close_window_timer)
+                      vim.fn.timer_stop(status_window_timer)
+                      return
+                    end
+                  else
+                    pcall(vim.api.nvim_win_close, popup_winid, true)
+                    vim.fn.timer_stop(close_window_timer)
+                    vim.fn.timer_stop(status_window_timer)
+                  end
+                end,
+                {
+                  ['repeat'] = -1,
+                }
+              )
             end
           else
             if count > #spinner then
@@ -253,7 +283,7 @@ M.show_status_window = function()
               local fg_hex = string.format('#%06x', fg_dec)
               local darken_hex = ksb_util.darken(fg_hex, 0.7)
               vim.api.nvim_set_hl(0, 'KittyScrollbackNvimReady', {
-                fg = darken_hex
+                fg = darken_hex,
               })
               if count > #spinner + (#spinner / 2) then
                 spinner[#spinner] = ''
@@ -261,20 +291,28 @@ M.show_status_window = function()
             end
           end
         end, count > #spinner and 200 or 0)
-      end, {
+      end,
+      {
         ['repeat'] = -1,
       }
     )
     vim.api.nvim_create_autocmd('WinResized', {
-      group = vim.api.nvim_create_augroup('KittyScrollBackNvimStatusWindowResized', { clear = true }),
+      group = vim.api.nvim_create_augroup(
+        'KittyScrollBackNvimStatusWindowResized',
+        { clear = true }
+      ),
       callback = function()
         local ok, current_winopts = pcall(vim.api.nvim_win_get_config, popup_winid)
         if not ok then
           return true
         end
-        ok, _ = pcall(vim.api.nvim_win_set_config, popup_winid, vim.tbl_deep_extend('force', winopts(), {
-          width = M.size(vim.o.columns, current_winopts.width)
-        }))
+        ok, _ = pcall(
+          vim.api.nvim_win_set_config,
+          popup_winid,
+          vim.tbl_deep_extend('force', winopts(), {
+            width = M.size(vim.o.columns, current_winopts.width),
+          })
+        )
         return not ok
       end,
     })

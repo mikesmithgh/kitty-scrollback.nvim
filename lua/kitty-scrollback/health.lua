@@ -1,4 +1,4 @@
-local ksb_util = require'kitty-scrollback.util'
+local ksb_util = require('kitty-scrollback.util')
 ---@mod kitty-scrollback.health
 local M = {}
 
@@ -37,16 +37,19 @@ local function check_kitty_remote_control()
       msg = M.advice().allow_remote_control
     end
     local advice = {
-      table.concat(msg, '\n')
+      table.concat(msg, '\n'),
     }
     local kitty_opts = {}
     if type(p) == 'table' and next(p.kitty_data) then
       kitty_opts = p.kitty_data.kitty_opts
-      table.insert(advice, table.concat({
-        '*allow_remote_control* and *listen_on* are currently configured as:',
-        '  `allow_remote_control ' .. kitty_opts.allow_remote_control .. '`',
-        '  `listen_on ' .. kitty_opts.listen_on .. '`',
-      }, '\n'))
+      table.insert(
+        advice,
+        table.concat({
+          '*allow_remote_control* and *listen_on* are currently configured as:',
+          '  `allow_remote_control ' .. kitty_opts.allow_remote_control .. '`',
+          '  `listen_on ' .. kitty_opts.listen_on .. '`',
+        }, '\n')
+      )
     else
       table.insert(advice, 'ERROR Failed to read `allow_remote_control` and `listen_on`')
     end
@@ -59,14 +62,20 @@ local function check_has_kitty_data()
   if type(p) == 'table' and next(p.kitty_data) then
     vim.health.ok('Kitty data available\n>lua\n' .. vim.inspect(p.kitty_data) .. '\n')
   else
-    local kitty_scrollback_kitten = vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1]
-    local checkhealth_config = vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/checkhealth.lua', false)[1]
-    local checkhealth_command = '`kitty @ kitten ' .. kitty_scrollback_kitten .. ' --config-file ' .. checkhealth_config .. '`'
-    vim.health.warn('No Kitty data available unable to perform a complete healthcheck',
-      {
-        'Add the config options `checkhealth = true` to your *config-file* or execute the command `:KittyScrollbackCheckHealth` ' ..
-        'to run `checkhealth` within the context of a Kitten',
-        checkhealth_command })
+    local kitty_scrollback_kitten =
+      vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1]
+    local checkhealth_config =
+      vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/checkhealth.lua', false)[1]
+    local checkhealth_command = '`kitty @ kitten '
+      .. kitty_scrollback_kitten
+      .. ' --config-file '
+      .. checkhealth_config
+      .. '`'
+    vim.health.warn('No Kitty data available unable to perform a complete healthcheck', {
+      'Add the config options `checkhealth = true` to your *config-file* or execute the command `:KittyScrollbackCheckHealth` '
+        .. 'to run `checkhealth` within the context of a Kitten',
+      checkhealth_command,
+    })
   end
 end
 
@@ -80,9 +89,10 @@ local function check_clipboard()
     vim.health.ok('Clipboard tool found: *' .. clipboard_tool .. '*')
   else
     vim.health.warn(
-      'Neovim does not have a clipboard provider.\n        Some functionality will not work when there is no clipboard ' ..
-      'provider, such as copying Kitty scrollback buffer text to the system clipboard.',
-      'See `:help` |provider-clipboard| for more information on enabling system clipboard integration.')
+      'Neovim does not have a clipboard provider.\n        Some functionality will not work when there is no clipboard '
+        .. 'provider, such as copying Kitty scrollback buffer text to the system clipboard.',
+      'See `:help` |provider-clipboard| for more information on enabling system clipboard integration.'
+    )
   end
 end
 
@@ -97,9 +107,10 @@ local function check_kitty_shell_integration()
     vim.health.ok('Kitty shell integration is enabled')
   else
     vim.health.warn(
-      'Kitty shell integration is disabled and/or `no-prompt-mark` is set.\n        Some functionality will not work when Kitty shell ' ..
-      'integration is disabled or `no-prompt-mark` is set, such as capturing the last command output.',
-      table.concat(M.advice().kitty_shell_integration, '\n'))
+      'Kitty shell integration is disabled and/or `no-prompt-mark` is set.\n        Some functionality will not work when Kitty shell '
+        .. 'integration is disabled or `no-prompt-mark` is set, such as capturing the last command output.',
+      table.concat(M.advice().kitty_shell_integration, '\n')
+    )
   end
 end
 
@@ -109,8 +120,12 @@ local function check_sed()
   local ok = which_sed_result.code == 0
   if not ok then
     vim.health.error(
-      '`command -v sed` exited with code *' .. which_sed_result.code .. '*\n' ..
-      '      `' .. which_sed_result.stderr .. '` '
+      '`command -v sed` exited with code *'
+        .. which_sed_result.code
+        .. '*\n'
+        .. '      `'
+        .. which_sed_result.stderr
+        .. '` '
     )
     return
   end
@@ -122,17 +137,33 @@ local function check_sed()
     '-e',
     [[s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g]],
   }
-  local result = vim.system(cmd, {
-    stdin = [[[m$ echo 'test' | grep test\n[m[1;31mtest\n[m$]]
-  }):wait()
+  local result = vim
+    .system(cmd, {
+      stdin = [[[m$ echo 'test' | grep test\n[m[1;31mtest\n[m$]],
+    })
+    :wait()
   ok = result.code == 0
   if ok then
-    vim.health.ok('`' .. table.concat(cmd, ' ') .. '` exited with code *' .. result.code .. '*\n' ..
-      '   `sed: ' .. which_sed_result.stdout:gsub('\n', '') .. '`')
+    vim.health.ok(
+      '`'
+        .. table.concat(cmd, ' ')
+        .. '` exited with code *'
+        .. result.code
+        .. '*\n'
+        .. '   `sed: '
+        .. which_sed_result.stdout:gsub('\n', '')
+        .. '`'
+    )
   else
     vim.health.error(
-      '`' .. table.concat(cmd, ' ') .. '` exited with code *' .. result.code .. '*\n' ..
-      '      `' .. result.stderr:gsub('\n', '') .. '` '
+      '`'
+        .. table.concat(cmd, ' ')
+        .. '` exited with code *'
+        .. result.code
+        .. '*\n'
+        .. '      `'
+        .. result.stderr:gsub('\n', '')
+        .. '` '
     )
   end
 end
@@ -184,7 +215,6 @@ M.check = function()
   end
 end
 
-
 ---@class KsbAdvice
 ---@field allow_remote_control table
 ---@field listen_on table
@@ -208,10 +238,13 @@ M.advice = function()
     shell_integration = table.concat(p.kitty_data.kitty_opts.shell_integration, ' ')
   end
   return {
-    nvim_version = { 'Neovim version 0.10 or greater is required to work with kitty-scrollback.nvim' },
-    kitty_version = { 'Kitty version 0.29 or greater is required to work with kitty-scrollback.nvim' },
-    allow_remote_control =
-    {
+    nvim_version = {
+      'Neovim version 0.10 or greater is required to work with kitty-scrollback.nvim',
+    },
+    kitty_version = {
+      'Kitty version 0.29 or greater is required to work with kitty-scrollback.nvim',
+    },
+    allow_remote_control = {
       'Kitty must be configured to allow remote control connections. Add the configuration',
       '*allow_remote_control* to Kitty. For example, `allow_remote_control socket-only`',
       'Changing *allow_remote_control* by reloading the config is not supported so you must ',
@@ -260,14 +293,19 @@ M.advice = function()
       '',
       'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration for more information',
       'on *shell_integration*',
-    }
+    },
   }
 end
 
 ---@param extent string
 M.is_valid_extent_keyword = function(extent)
   local standard = { 'screen', 'all', 'selection' }
-  local shell_integration_required = { 'last_cmd_output', 'first_cmd_output_on_screen', 'last_visited_cmd_output', 'last_non_empty_output' }
+  local shell_integration_required = {
+    'last_cmd_output',
+    'first_cmd_output_on_screen',
+    'last_visited_cmd_output',
+    'last_non_empty_output',
+  }
   local valid_keywords = { 'enabled', 'no-cursor', 'no-title', 'no-complete', 'no-cwd' }
   local valid = false
   for _, e in pairs(standard) do
@@ -293,6 +331,5 @@ M.is_valid_extent_keyword = function(extent)
   end
   return valid
 end
-
 
 return M

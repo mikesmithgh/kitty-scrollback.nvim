@@ -7,17 +7,26 @@ M.config = function(kitty_data)
     callbacks = {
       after_setup = function(kitty_data, opts)
         vim.defer_fn(function()
-          table.insert(msg, '# kitty-scrollback after_setup callback triggered @ ' .. vim.fn.strftime('%c'))
+          table.insert(
+            msg,
+            '# kitty-scrollback after_setup callback triggered @ ' .. vim.fn.strftime('%c')
+          )
         end, 1000)
       end,
       after_launch = function(kitty_data, opts)
         vim.defer_fn(function()
-          table.insert(msg, '# kitty-scrollback after_launch callback triggered @ ' .. vim.fn.strftime('%c'))
+          table.insert(
+            msg,
+            '# kitty-scrollback after_launch callback triggered @ ' .. vim.fn.strftime('%c')
+          )
         end, 2000)
       end,
       after_ready = function(kitty_data, opts)
         vim.defer_fn(function()
-          table.insert(msg, '# kitty-scrollback after_ready callback triggered @ ' .. vim.fn.strftime('%c'))
+          table.insert(
+            msg,
+            '# kitty-scrollback after_ready callback triggered @ ' .. vim.fn.strftime('%c')
+          )
           table.insert(msg, '# kitty_data:')
           table.insert(msg, '# ' .. vim.fn.json_encode(kitty_data))
           table.insert(msg, '# opts:')

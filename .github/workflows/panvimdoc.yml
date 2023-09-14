@@ -1,0 +1,30 @@
+name: panvimdoc
+on:
+  push:
+    branches:
+      - '**'
+    paths: 
+      - README.md
+      - .github/workflows/panvimdoc.yml
+  workflow_dispatch:
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    name: pandoc to vimdoc
+    steps:
+      - uses: actions/checkout@v2
+      - name: panvimdoc
+        uses: kdheepak/panvimdoc@main
+        with:
+          vimdoc: kitty-scrollback.nvim
+          pandoc: "README.md"
+          version: "NVIM v0.10+"
+          demojify: true
+          treesitter: true
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: ${{ github.head_ref }}
+          commit_message: "chore(build): auto-generate vimdoc"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"

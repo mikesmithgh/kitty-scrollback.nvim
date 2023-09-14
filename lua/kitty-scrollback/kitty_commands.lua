@@ -71,12 +71,14 @@ local system_handle_error = function(cmd, sys_opts)
   return ok, result
 end
 
-
 M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
   -- convert table to string separated by carriage returns
   local cmd_str = table.concat(
-    vim.tbl_filter(function(l) return #l > 0 end, vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false)
-    ), '\r')
+    vim.tbl_filter(function(l)
+      return #l > 0
+    end, vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false)),
+    '\r'
+  )
   -- wrap in bracketed paste mode
   cmd_str = '\\x1b[200~' .. cmd_str .. '\r\\x1b[201~' -- see https://cirw.in/blog/bracketed-paste
   -- if not bracketed paste mode trigger add a carriage return to execute command
@@ -110,7 +112,7 @@ M.signal_winchanged_to_kitty_child_process = function()
     'kitty',
     '@',
     'signal-child',
-    'SIGWINCH'
+    'SIGWINCH',
   })
 end
 
@@ -122,7 +124,7 @@ M.signal_term_to_kitty_child_process = function(force)
       'kitty',
       '@',
       'signal-child',
-      'SIGTERM'
+      'SIGTERM',
     })
   end
 end
@@ -131,7 +133,9 @@ M.open_kitty_loading_window = function(env)
   if p.kitty_loading_winid then
     M.close_kitty_loading_window()
   end
-  local kitty_cmd = vim.list_extend({ 'kitty',
+  local kitty_cmd = vim.list_extend(
+    {
+      'kitty',
       '@',
       'launch',
       '--type',
@@ -145,17 +149,13 @@ M.open_kitty_loading_window = function(env)
       '--env',
       'KITTY_SCROLLBACK_NVIM_SHOW_TIMER=' .. tostring(opts.status_window.show_timer),
     },
-    vim.list_extend(
-      env or {},
-      { p.kitty_data.ksb_dir .. '/python/loading.py', }
-    )
+    vim.list_extend(env or {}, { p.kitty_data.ksb_dir .. '/python/loading.py' })
   )
   local ok, result = system_handle_error(kitty_cmd)
   if ok then
     p.kitty_loading_winid = tonumber(result.stdout)
   end
 end
-
 
 M.get_kitty_colors = function(kitty_data)
   local ok, result = system_handle_error({
@@ -189,24 +189,26 @@ end
 
 M.try_detect_nerd_font = function()
   local has_nerd_font = false
-  vim.system({
-    'kitty',
-    '--debug-font-fallback',
-    '--start-as',
-    'minimized',
-    '--override',
-    'shell=sh',
-    'sh',
-    '-c',
-    'kill $PPID',
-  }, {
-    text = true,
-    stderr = function(_, data)
-      if data and data:lower():match('.*nerd.*font.*') then
-        has_nerd_font = true
-      end
-    end
-  }):wait()
+  vim
+    .system({
+      'kitty',
+      '--debug-font-fallback',
+      '--start-as',
+      'minimized',
+      '--override',
+      'shell=sh',
+      'sh',
+      '-c',
+      'kill $PPID',
+    }, {
+      text = true,
+      stderr = function(_, data)
+        if data and data:lower():match('.*nerd.*font.*') then
+          has_nerd_font = true
+        end
+      end,
+    })
+    :wait()
   return has_nerd_font
 end
 

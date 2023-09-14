@@ -44,7 +44,11 @@ end
 ---@return string
 M.screaming_snakecase = function(s)
   -- copied and modified from https://codegolf.stackexchange.com/a/177958
-  return s:gsub('%f[^%l]%u', '_%1'):gsub('%f[^%a]%d', '_%1'):gsub('%f[^%d]%a', '_%1'):gsub('(%u)(%u%l)', '%1_%2'):upper()
+  return s:gsub('%f[^%l]%u', '_%1')
+    :gsub('%f[^%a]%d', '_%1')
+    :gsub('%f[^%d]%a', '_%1')
+    :gsub('(%u)(%u%l)', '%1_%2')
+    :upper()
 end
 
 M.remove_process_exited = function()
@@ -57,9 +61,9 @@ M.remove_process_exited = function()
     local match = line:lower():gmatch('%[process exited %d+%]')
     if match() then
       local target_line = last_line_range - 1 + i
-      vim.api.nvim_set_option_value('modifiable', true, { buf = p.bufid, })
+      vim.api.nvim_set_option_value('modifiable', true, { buf = p.bufid })
       vim.api.nvim_buf_set_lines(p.bufid, target_line, target_line + 1, false, {})
-      vim.api.nvim_set_option_value('modifiable', false, { buf = p.bufid, })
+      vim.api.nvim_set_option_value('modifiable', false, { buf = p.bufid })
       return true
     end
   end
@@ -78,6 +82,5 @@ M.nvim_version_tostring = function()
   end
   return ret
 end
-
 
 return M

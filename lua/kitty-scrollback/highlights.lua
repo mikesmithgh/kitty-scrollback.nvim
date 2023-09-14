@@ -7,7 +7,6 @@ local M = {}
 local p
 local opts ---@diagnostic disable-line: unused-local
 
-
 ---@class KsbHighlights
 ---@field KittyScrollbackNvimNormal table?
 ---@field KittyScrollbackNvimHeart table?
@@ -25,14 +24,16 @@ local function highlight_definitions()
   if not p.kitty_colors or not next(p.kitty_colors) then
     return {}
   end
-  local hl_as_normal_fn = opts.paste_window.highlight_as_normal_win or function()
-    return vim.g.colors_name == nil or vim.g.colors_name == 'default'
-  end
+  local hl_as_normal_fn = opts.paste_window.highlight_as_normal_win
+    or function()
+      return vim.g.colors_name == nil or vim.g.colors_name == 'default'
+    end
   local hl_name = hl_as_normal_fn() and 'Normal' or 'NormalFloat'
-  local hl_def = vim.api.nvim_get_hl(0, { name = hl_name, link = false, })
+  local hl_def = vim.api.nvim_get_hl(0, { name = hl_name, link = false })
   hl_def = next(hl_def) and hl_def or {} -- nvim_get_hl can return vim.empty_dict() so convert to lua table
   local normal_bg_color = hl_def.bg or p.kitty_colors.background
-  local floatborder_fg_color = ksb_util.darken(p.kitty_colors.foreground, 0.3, p.kitty_colors.background)
+  local floatborder_fg_color =
+    ksb_util.darken(p.kitty_colors.foreground, 0.3, p.kitty_colors.background)
   return {
     KittyScrollbackNvimNormal = {
       default = true,
@@ -88,7 +89,6 @@ M.setup = function(private, options)
   return ok
 end
 
-
 ---Format nvim highlights to arguments passed to kitty launch command
 ---E.g., KittyScrollbackNvimVim with #188b25 to --env KITTY_SCROLLBACK_NVIM_VIM=#188b25
 ---@return table list of environment variable arguments
@@ -96,10 +96,12 @@ M.get_highlights_as_env = function()
   local env = {}
   for name, _ in pairs(highlight_definitions()) do
     table.insert(env, '--env')
-    local hl_def = vim.api.nvim_get_hl(0, { name = name, link = false, })
+    local hl_def = vim.api.nvim_get_hl(0, { name = name, link = false })
     hl_def = next(hl_def) and hl_def or {} -- nvim_get_hl can return vim.empty_dict() so convert to lua table
-    table.insert(env,
-      string.format('%s=#%06x',
+    table.insert(
+      env,
+      string.format(
+        '%s=#%06x',
         ksb_util.screaming_snakecase(name),
         hl_def.fg or 16777215 -- default to #ffffff
       )

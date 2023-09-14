@@ -9,7 +9,7 @@ M.config = function()
       after_setup = function()
         vim.loop.sleep(4000)
       end,
-    }
+    },
   }
 end
 

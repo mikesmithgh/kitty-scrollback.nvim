@@ -35,7 +35,11 @@ M.footer_winopts = function(paste_winopts)
   }
 
   if opts.paste_window.winopts_overrides then
-    footer_winopts = vim.tbl_deep_extend('force', footer_winopts, opts.paste_window.footer_winopts_overrides(footer_winopts, paste_winopts) or {})
+    footer_winopts = vim.tbl_deep_extend(
+      'force',
+      footer_winopts,
+      opts.paste_window.footer_winopts_overrides(footer_winopts, paste_winopts) or {}
+    )
   end
 
   return footer_winopts
@@ -95,32 +99,30 @@ M.open_footer_window = function(winopts, refresh_only)
     '`' .. footer_keys['<Plug>(KsbExecuteCmd)'] .. '` *Execute* ',
     '`' .. footer_keys['<Plug>(KsbPasteCmd)'] .. '` *Paste* ',
     write_msg,
-    '`' .. footer_keys['<Plug>(KsbToggleFooter)'] .. '` *Toggle* *Mappings*'
+    '`' .. footer_keys['<Plug>(KsbToggleFooter)'] .. '` *Toggle* *Mappings*',
   }
   local padding = math.floor(winopts.width / #footer_msg) - 2
   local string_with_padding = '%' .. math.floor(padding / 2) .. 's'
   local string_with_half_padding = '%' .. math.floor(padding / 4) .. 's'
   local first = true
-  footer_msg =
-    vim.tbl_map(function(msg)
-      if first then
-        first = false
-        return string.format(string_with_half_padding .. string_with_padding, '', msg)
-      end
-      return string.format(string_with_padding .. string_with_padding, '', msg)
-    end, footer_msg)
+  footer_msg = vim.tbl_map(function(msg)
+    if first then
+      first = false
+      return string.format(string_with_half_padding .. string_with_padding, '', msg)
+    end
+    return string.format(string_with_padding .. string_with_padding, '', msg)
+  end, footer_msg)
 
   local final_footer = string.format(string_with_padding .. string_with_padding, '', write_msg)
   if opts.keymaps_enabled then
     final_footer = table.concat(footer_msg)
   end
-  vim.api.nvim_buf_set_lines(p.footer_bufid, 0, -1, false,
-    { final_footer }
-  )
+  vim.api.nvim_buf_set_lines(p.footer_bufid, 0, -1, false, { final_footer })
 
-  vim.api.nvim_set_option_value('winhighlight',
+  vim.api.nvim_set_option_value(
+    'winhighlight',
     'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
-    { win = p.footer_winid, }
+    { win = p.footer_winid }
   )
 end
 

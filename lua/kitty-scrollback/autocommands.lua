@@ -33,7 +33,7 @@ M.set_paste_buffer_write_autocmd = function()
       if paste_event.buf == p.paste_bufid then
         ksb_kitty_cmds.send_paste_buffer_text_to_kitty_and_quit(true)
       end
-    end
+    end,
   })
 end
 
@@ -45,7 +45,7 @@ M.set_scrollback_buffer_enter_autocmd = function()
         pcall(vim.api.nvim_win_close, p.paste_winid, true)
         pcall(vim.api.nvim_win_close, p.footer_winid, true)
       end
-    end
+    end,
   })
 end
 
@@ -62,7 +62,11 @@ M.set_paste_window_resized_autocmd = function()
           if not p.footer_winid then
             height_offset = 3
           end
-          pcall(vim.api.nvim_win_set_config, p.paste_winid, ksb_win.paste_winopts(lnum, col, height_offset))
+          pcall(
+            vim.api.nvim_win_set_config,
+            p.paste_winid,
+            ksb_win.paste_winopts(lnum, col, height_offset)
+          )
           vim.schedule(function()
             local len_winopts = ksb_footer_win.footer_winopts(current_winopts)
             pcall(vim.api.nvim_win_set_config, p.footer_winid, len_winopts)
@@ -87,7 +91,6 @@ M.set_paste_window_closed = function()
   })
 end
 
-
 M.set_term_enter_autocmd = function(bufid)
   vim.api.nvim_create_autocmd({ 'TermEnter' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimTermEnter', { clear = true }),
@@ -105,14 +108,14 @@ M.set_term_enter_autocmd = function(bufid)
           ['repeat'] = 100,
         })
       end
-    end
+    end,
   })
 end
 
 M.set_colorscheme_autocmd = function()
   vim.api.nvim_create_autocmd({ 'Colorscheme' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimColorscheme', { clear = true }),
-    callback = ksb_hl.set_highlights
+    callback = ksb_hl.set_highlights,
   })
 end
 
@@ -132,12 +135,21 @@ M.set_yank_post_autocmd = function()
           ksb_api.quit_all()
         else
           vim.schedule(function()
-            local prompt_msg = 'kitty-scrollback.nvim: Error, failed to find clipboard tool. See :help clipboard-tool'
+            local prompt_msg =
+              'kitty-scrollback.nvim: Error, failed to find clipboard tool. See :help clipboard-tool'
             vim.cmd.execute([['silent noautocmd keepalt edit ]] .. vim.o.helpfile .. [[']]) -- logic from :help help-curwin
             vim.o.conceallevel = 2
             vim.o.concealcursor = 'n'
-            vim.api.nvim_set_option_value('buftype', 'help', { buf = vim.api.nvim_get_current_buf() })
-            vim.api.nvim_set_option_value('filetype', 'help', { buf = vim.api.nvim_get_current_buf() })
+            vim.api.nvim_set_option_value(
+              'buftype',
+              'help',
+              { buf = vim.api.nvim_get_current_buf() }
+            )
+            vim.api.nvim_set_option_value(
+              'filetype',
+              'help',
+              { buf = vim.api.nvim_get_current_buf() }
+            )
             vim.cmd.help('clipboard-tool')
             vim.cmd.redraw()
             local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
@@ -172,14 +184,14 @@ M.set_yank_post_autocmd = function()
           end)
         end
       end
-    end
+    end,
   })
 end
 
 M.run_when_safestate_autocmd = function(name, cb)
   vim.api.nvim_create_autocmd({ 'SafeState' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimSafeState' .. name, { clear = true }),
-    callback = cb
+    callback = cb,
   })
 end
 

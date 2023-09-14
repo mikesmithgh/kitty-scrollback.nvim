@@ -37,7 +37,12 @@ M.setup = function(private, options)
   opts = options ---@diagnostic disable-line: unused-local
 
   if opts.keymaps_enabled then
-    vim.keymap.set({ 'n' }, '<Plug>(KsbCloseOrQuitAll)', vim.schedule_wrap(ksb_api.close_or_quit_all), {})
+    vim.keymap.set(
+      { 'n' },
+      '<Plug>(KsbCloseOrQuitAll)',
+      vim.schedule_wrap(ksb_api.close_or_quit_all),
+      {}
+    )
     vim.keymap.set({ 'n', 't', 'i' }, '<Plug>(KsbQuitAll)', ksb_api.quit_all, {})
 
     vim.keymap.set({ 'v' }, '<Plug>(KsbVisualYankLine)>', '"+Y', {})
@@ -55,8 +60,8 @@ M.set_buffer_local_keymaps = function(bufid)
     return
   end
   bufid = bufid or true
-  vim.keymap.set({ 'n', 'i' }, '<Plug>(KsbExecuteCmd)', ksb_api.execute_command, { buffer = bufid, })
-  vim.keymap.set({ 'n', 'i' }, '<Plug>(KsbPasteCmd)', ksb_api.paste_command, { buffer = bufid, })
+  vim.keymap.set({ 'n', 'i' }, '<Plug>(KsbExecuteCmd)', ksb_api.execute_command, { buffer = bufid })
+  vim.keymap.set({ 'n', 'i' }, '<Plug>(KsbPasteCmd)', ksb_api.paste_command, { buffer = bufid })
   vim.keymap.set({ 'n' }, '<Plug>(KsbToggleFooter)', ksb_api.toggle_footer, { buffer = bufid })
 end
 

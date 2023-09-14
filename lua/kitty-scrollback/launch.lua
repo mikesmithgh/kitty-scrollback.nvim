@@ -182,50 +182,47 @@ local function set_options()
   vim.o.report = 999999 -- arbitrary large number to hide yank messages
 end
 
+local set_cursor_position = vim.schedule_wrap(function(d)
+  local x = d.cursor_x - 1
+  local y = d.cursor_y - 1
+  local scrolled_by = d.scrolled_by
+  local lines = d.lines
+  local last_line = vim.fn.line('$')
 
-local set_cursor_position = vim.schedule_wrap(
-  function(d)
-    local x = d.cursor_x - 1
-    local y = d.cursor_y - 1
-    local scrolled_by = d.scrolled_by
-    local lines = d.lines
-    local last_line = vim.fn.line('$')
+  local orig_virtualedit = vim.o.virtualedit
+  local orig_scrollof = vim.o.scrolloff
+  local orig_showtabline = vim.o.showtabline
+  local orig_laststatus = vim.o.laststatus
+  vim.o.scrolloff = 0
+  vim.o.showtabline = 0
+  vim.o.laststatus = 0
+  vim.o.virtualedit = 'all'
 
-    local orig_virtualedit = vim.o.virtualedit
-    local orig_scrollof = vim.o.scrolloff
-    local orig_showtabline = vim.o.showtabline
-    local orig_laststatus = vim.o.laststatus
-    vim.o.scrolloff = 0
-    vim.o.showtabline = 0
-    vim.o.laststatus = 0
-    vim.o.virtualedit = 'all'
-
-    vim.fn.cursor(last_line, 1) -- cursor last line
-    -- using normal commands instead of cursor pos due to virtualedit
-    vim.cmd.normal({ lines .. 'k', bang = true }) -- cursor up
-    vim.cmd.normal({ y .. 'j', bang = true }) -- cursor down
-    vim.cmd.normal({ x .. 'l', bang = true }) -- cursor right
-    if scrolled_by > 0 then
-      -- scroll up
-      vim.cmd.normal({
-        vim.api.nvim_replace_termcodes(scrolled_by .. '<C-y>', true, false, true), -- TODO: invesigate if CSI control sequence to scroll is better
-        bang = true
-      })
-    end
-    p.pos = {
-      cursor_line = vim.fn.line('.'),
-      buf_last_line = vim.fn.line('$'),
-      win_first_line = vim.fn.line('w0'),
-      win_last_line = vim.fn.line('w$'),
-      col = x,
-    }
-
-    vim.o.scrolloff = orig_scrollof
-    vim.o.showtabline = orig_showtabline
-    vim.o.laststatus = orig_laststatus
-    vim.o.virtualedit = orig_virtualedit
+  vim.fn.cursor(last_line, 1) -- cursor last line
+  -- using normal commands instead of cursor pos due to virtualedit
+  vim.cmd.normal({ lines .. 'k', bang = true }) -- cursor up
+  vim.cmd.normal({ y .. 'j', bang = true }) -- cursor down
+  vim.cmd.normal({ x .. 'l', bang = true }) -- cursor right
+  if scrolled_by > 0 then
+    -- scroll up
+    vim.cmd.normal({
+      vim.api.nvim_replace_termcodes(scrolled_by .. '<C-y>', true, false, true), -- TODO: invesigate if CSI control sequence to scroll is better
+      bang = true,
+    })
   end
-)
+  p.pos = {
+    cursor_line = vim.fn.line('.'),
+    buf_last_line = vim.fn.line('$'),
+    win_first_line = vim.fn.line('w0'),
+    win_last_line = vim.fn.line('w$'),
+    col = x,
+  }
+
+  vim.o.scrolloff = orig_scrollof
+  vim.o.showtabline = orig_showtabline
+  vim.o.laststatus = orig_laststatus
+  vim.o.virtualedit = orig_virtualedit
+end)
 
 local function load_requires()
   -- add to runtime to allow loading modules via require
@@ -263,16 +260,20 @@ M.setup = function(kitty_data_str)
     return
   end
   if not ksb_health.check_nvim_version(true) then
-    local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM ' ..
-      ksb_util.nvim_version_tostring() .. '. ' .. table.concat(ksb_health.advice().nvim_version)
+    local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM '
+      .. ksb_util.nvim_version_tostring()
+      .. '. '
+      .. table.concat(ksb_health.advice().nvim_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
       ksb_kitty_cmds.signal_term_to_kitty_child_process(true)
     end
   end
   if not ksb_health.check_kitty_version(true) then
-    local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version kitty ' ..
-      table.concat(p.kitty_data.kitty_version, '.') .. '. ' .. table.concat(ksb_health.advice().kitty_version)
+    local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version kitty '
+      .. table.concat(p.kitty_data.kitty_version, '.')
+      .. '. '
+      .. table.concat(ksb_health.advice().kitty_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
       ksb_kitty_cmds.signal_term_to_kitty_child_process(true)
@@ -293,7 +294,11 @@ M.setup = function(kitty_data_str)
   end
   set_options()
 
-  if opts.callbacks and opts.callbacks.after_setup and type(opts.callbacks.after_setup) == 'function' then
+  if
+    opts.callbacks
+    and opts.callbacks.after_setup
+    and type(opts.callbacks.after_setup) == 'function'
+  then
     opts.callbacks.after_setup(p.kitty_data, opts)
   end
 
@@ -312,7 +317,9 @@ local function validate_extent(extent)
     '',
     'ERROR: Kitty shell integration is disabled and/or `no-prompt-mark` is set',
     '',
-    'The option *' .. opts.kitty_get_text.extent .. '* requires Kitty shell integration and prompt marks to be enabled. ',
+    'The option *'
+      .. opts.kitty_get_text.extent
+      .. '* requires Kitty shell integration and prompt marks to be enabled. ',
   }, ksb_health.advice().kitty_shell_integration)
   local error_bufid = vim.api.nvim_create_buf(false, true)
   vim.o.conceallevel = 2
@@ -373,58 +380,69 @@ M.launch = function()
     end
     vim.schedule(function()
       vim.fn.termopen(
-        [[kitty @ get-text --match="id:]] .. kitty_data.window_id .. [[" ]] .. get_text_opts .. [[ | ]] ..
-        [[sed -e "s/$/\x1b[0m/g" ]] .. -- append all lines with reset to avoid unintended colors
-        [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
+        [[kitty @ get-text --match="id:]]
+          .. kitty_data.window_id
+          .. [[" ]]
+          .. get_text_opts
+          .. [[ | ]]
+          .. [[sed -e "s/$/\x1b[0m/g" ]] -- append all lines with reset to avoid unintended colors
+          .. [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
         {
           stdout_buffered = true,
           on_exit = function()
             ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
-            vim.fn.timer_start(
-              20,
-              function(t) ---@diagnostic disable-line: redundant-parameter
-                local timer_info = vim.fn.timer_info(t)[1] or {}
-                local ready = ksb_util.remove_process_exited()
-                if ready or timer_info['repeat'] == 0 then
-                  vim.fn.timer_stop(t)
+            vim.fn.timer_start(20, function(t) ---@diagnostic disable-line: redundant-parameter
+              local timer_info = vim.fn.timer_info(t)[1] or {}
+              local ready = ksb_util.remove_process_exited()
+              if ready or timer_info['repeat'] == 0 then
+                vim.fn.timer_stop(t)
 
-                  if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
-                    set_cursor_position(kitty_data)
-                  end
-                  ksb_win.show_status_window()
-
-                  -- improve buffer name to avoid displaying complex command to user
-                  local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
-                  term_buf_name = term_buf_name:gsub(':kitty.*$', ':kitty-scrollback.nvim')
-                  vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
-                  vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
-
-                  ksb_kitty_cmds.close_kitty_loading_window()
-                  if opts.restore_options then
-                    restore_orig_options()
-                  end
-                  if opts.callbacks and opts.callbacks.after_ready and type(opts.callbacks.after_ready) == 'function' then
-                    vim.cmd.redraw()
-                    vim.schedule(function()
-                      opts.callbacks.after_ready(kitty_data, opts)
-                    end)
-                  end
+                if
+                  opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all'
+                then
+                  set_cursor_position(kitty_data)
                 end
-              end,
-              {
-                ['repeat'] = 200
-              })
+                ksb_win.show_status_window()
+
+                -- improve buffer name to avoid displaying complex command to user
+                local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
+                term_buf_name = term_buf_name:gsub(':kitty.*$', ':kitty-scrollback.nvim')
+                vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
+                vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
+
+                ksb_kitty_cmds.close_kitty_loading_window()
+                if opts.restore_options then
+                  restore_orig_options()
+                end
+                if
+                  opts.callbacks
+                  and opts.callbacks.after_ready
+                  and type(opts.callbacks.after_ready) == 'function'
+                then
+                  vim.cmd.redraw()
+                  vim.schedule(function()
+                    opts.callbacks.after_ready(kitty_data, opts)
+                  end)
+                end
+              end
+            end, {
+              ['repeat'] = 200,
+            })
           end,
-        })
+        }
+      )
     end)
-    if opts.callbacks and opts.callbacks.after_launch and type(opts.callbacks.after_launch) == 'function' then
+    if
+      opts.callbacks
+      and opts.callbacks.after_launch
+      and type(opts.callbacks.after_launch) == 'function'
+    then
       vim.schedule(function()
         opts.callbacks.after_launch(kitty_data, opts)
       end)
     end
   end)
 end
-
 
 ---Setup and launch kitty-scrollback.nvim
 ---@param kitty_data_str string
