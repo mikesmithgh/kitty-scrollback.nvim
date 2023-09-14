@@ -133,24 +133,21 @@ M.open_kitty_loading_window = function(env)
   if p.kitty_loading_winid then
     M.close_kitty_loading_window()
   end
-  local kitty_cmd = vim.list_extend(
-    {
-      'kitty',
-      '@',
-      'launch',
-      '--type',
-      'overlay',
-      '--title',
-      'kitty-scrollback.nvim :: loading...',
-      '--env',
-      'KITTY_SCROLLBACK_NVIM_STYLE_SIMPLE=' .. tostring(opts.status_window.style_simple),
-      '--env',
-      'KITTY_SCROLLBACK_NVIM_STATUS_WINDOW_ENABLED=' .. tostring(opts.status_window.enabled),
-      '--env',
-      'KITTY_SCROLLBACK_NVIM_SHOW_TIMER=' .. tostring(opts.status_window.show_timer),
-    },
-    vim.list_extend(env or {}, { p.kitty_data.ksb_dir .. '/python/loading.py' })
-  )
+  local kitty_cmd = vim.list_extend({
+    'kitty',
+    '@',
+    'launch',
+    '--type',
+    'overlay',
+    '--title',
+    'kitty-scrollback.nvim :: loading...',
+    '--env',
+    'KITTY_SCROLLBACK_NVIM_STYLE_SIMPLE=' .. tostring(opts.status_window.style_simple),
+    '--env',
+    'KITTY_SCROLLBACK_NVIM_STATUS_WINDOW_ENABLED=' .. tostring(opts.status_window.enabled),
+    '--env',
+    'KITTY_SCROLLBACK_NVIM_SHOW_TIMER=' .. tostring(opts.status_window.show_timer),
+  }, vim.list_extend(env or {}, { p.kitty_data.ksb_dir .. '/python/loading.py' }))
   local ok, result = system_handle_error(kitty_cmd)
   if ok then
     p.kitty_loading_winid = tonumber(result.stdout)

@@ -11,7 +11,7 @@ if not pandoc then
 end
 
 -- if there's no pandoc.utils, create a local one
-if not pcall(require, "pandoc.utils") then
+if not pcall(require, 'pandoc.utils') then
   pandoc.utils = {}
 end
 
@@ -25,11 +25,11 @@ if not pandoc.utils.type then
       typ = value.__name
     elseif value.tag and value.t then
       typ = value.tag
-      if typ:match("^Meta.") then
+      if typ:match('^Meta.') then
         typ = typ:sub(5)
       end
-      if typ == "Map" then
-        typ = "table"
+      if typ == 'Map' then
+        typ = 'table'
       end
     end
     return typ
@@ -50,7 +50,7 @@ logging.type = function(value)
   -- spaces with periods
   -- XXX I'm not sure that this is done consistently, e.g. I don't think
   --     it's done for pandoc.Attr or pandoc.List?
-  typ = typ:gsub(" ", ".")
+  typ = typ:gsub(' ', '.')
 
   -- map Inline and Block to the tag name
   -- XXX I guess it's intentional that it doesn't already do this?
@@ -78,7 +78,7 @@ end
 local function dump_(prefix, value, maxlen, level, add)
   local buffer = {}
   if prefix == nil then
-    prefix = ""
+    prefix = ''
   end
   if level == nil then
     level = 0
@@ -88,25 +88,27 @@ local function dump_(prefix, value, maxlen, level, add)
       table.insert(buffer, item)
     end
   end
-  local indent = maxlen and "" or ("  "):rep(level)
+  local indent = maxlen and '' or ('  '):rep(level)
 
   -- get typename, mapping to pandoc tag names where possible
   local typename = logging.type(value)
 
   -- don't explicitly indicate 'obvious' typenames
-  local typ = (({ boolean = 1, number = 1, string = 1, table = 1, userdata = 1 })[typename] and "" or typename)
+  local typ = (
+    ({ boolean = 1, number = 1, string = 1, table = 1, userdata = 1 })[typename] and '' or typename
+  )
 
   -- light userdata is just a pointer (can't iterate over it)
   -- XXX is there a better way of checking for light userdata?
-  if type(value) == "userdata" and not pcall(pairs(value)) then
-    value = tostring(value):gsub("userdata:%s*", "")
+  if type(value) == 'userdata' and not pcall(pairs(value)) then
+    value = tostring(value):gsub('userdata:%s*', '')
 
     -- modify the value heuristically
   elseif ({ table = 1, userdata = 1 })[type(value)] then
     local valueCopy, numKeys, lastKey = {}, 0, nil
     for key, val in pairs(value) do
       -- pandoc >= 2.15 includes 'tag', nil values and functions
-      if key ~= "tag" and val and type(val) ~= "function" then
+      if key ~= 'tag' and val and type(val) ~= 'function' then
         valueCopy[key] = val
         numKeys = numKeys + 1
         lastKey = key
@@ -114,58 +116,67 @@ local function dump_(prefix, value, maxlen, level, add)
     end
     if numKeys == 0 then
       -- this allows empty tables to be formatted on a single line
-      value = typename == "Space" and "" or "{}"
-    elseif numKeys == 1 and lastKey == "text" then
+      value = typename == 'Space' and '' or '{}'
+    elseif numKeys == 1 and lastKey == 'text' then
       -- this allows text-only types to be formatted on a single line
       typ = typename
       value = value[lastKey]
-      typename = "string"
+      typename = 'string'
     else
       value = valueCopy
     end
   end
 
   -- output the possibly-modified value
-  local presep = #prefix > 0 and " " or ""
-  local typsep = #typ > 0 and " " or ""
+  local presep = #prefix > 0 and ' ' or ''
+  local typsep = #typ > 0 and ' ' or ''
   local valtyp = type(value)
-  if valtyp == "nil" then
-    add("nil")
+  if valtyp == 'nil' then
+    add('nil')
   elseif ({ boolean = 1, number = 1, string = 1 })[valtyp] then
-    typsep = #typ > 0 and valtyp == "string" and #value > 0 and " " or ""
+    typsep = #typ > 0 and valtyp == 'string' and #value > 0 and ' ' or ''
     -- don't use the %q format specifier; doesn't work with multi-bytes
-    local quo = typename == "string" and "\"" or ""
-    add(string.format("%s%s%s%s%s%s%s%s", indent, prefix, presep, typ, typsep, quo, value, quo))
+    local quo = typename == 'string' and '"' or ''
+    add(string.format('%s%s%s%s%s%s%s%s', indent, prefix, presep, typ, typsep, quo, value, quo))
     -- light userdata is just a pointer (can't iterate over it)
     -- XXX is there a better way of checking for light userdata?
-  elseif valtyp == "userdata" and not pcall(pairs(value)) then
-    add(string.format("%s%s%s%s %s", indent, prefix, presep, typ, tostring(value):gsub("userdata:%s*", "")))
+  elseif valtyp == 'userdata' and not pcall(pairs(value)) then
+    add(
+      string.format(
+        '%s%s%s%s %s',
+        indent,
+        prefix,
+        presep,
+        typ,
+        tostring(value):gsub('userdata:%s*', '')
+      )
+    )
   elseif ({ table = 1, userdata = 1 })[valtyp] then
-    add(string.format("%s%s%s%s%s{", indent, prefix, presep, typ, typsep))
+    add(string.format('%s%s%s%s%s{', indent, prefix, presep, typ, typsep))
     -- Attr and Attr.attributes have both numeric and string keys, so
     -- ignore the numeric ones
     -- XXX this is no longer the case for pandoc >= 2.15, so could remove
     --     the special case?
     local first = true
-    if prefix ~= "attributes:" and typ ~= "Attr" then
+    if prefix ~= 'attributes:' and typ ~= 'Attr' then
       for i, val in ipairs(value) do
-        local pre = maxlen and not first and ", " or ""
-        local text = dump_(string.format("%s[%s]", pre, i), val, maxlen, level + 1, add)
+        local pre = maxlen and not first and ', ' or ''
+        local text = dump_(string.format('%s[%s]', pre, i), val, maxlen, level + 1, add)
         first = false
       end
     end
     -- report keys in alphabetical order to ensure repeatability
     for key, val in logging.spairs(value) do
       -- pandoc >= 2.15 includes 'tag'
-      if not tonumber(key) and key ~= "tag" then
-        local pre = maxlen and not first and ", " or ""
-        local text = dump_(string.format("%s%s:", pre, key), val, maxlen, level + 1, add)
+      if not tonumber(key) and key ~= 'tag' then
+        local pre = maxlen and not first and ', ' or ''
+        local text = dump_(string.format('%s%s:', pre, key), val, maxlen, level + 1, add)
       end
       first = false
     end
-    add(string.format("%s}", indent))
+    add(string.format('%s}', indent))
   end
-  return table.concat(buffer, maxlen and "" or "\n")
+  return table.concat(buffer, maxlen and '' or '\n')
 end
 
 logging.dump = function(value, maxlen)
@@ -183,13 +194,13 @@ logging.output = function(...)
   local need_newline = false
   for i, item in ipairs({ ... }) do
     -- XXX space logic could be cleverer, e.g. no space after newline
-    local maybe_space = i > 1 and " " or ""
+    local maybe_space = i > 1 and ' ' or ''
     local text = ({ table = 1, userdata = 1 })[type(item)] and logging.dump(item) or tostring(item)
     io.stderr:write(maybe_space, text)
-    need_newline = text:sub(-1) ~= "\n"
+    need_newline = text:sub(-1) ~= '\n'
   end
   if need_newline then
-    io.stderr:write("\n")
+    io.stderr:write('\n')
   end
 end
 
@@ -206,58 +217,58 @@ end
 
 -- verbosity default is WARNING; --quiet -> ERROR and --verbose -> INFO
 -- --trace sets TRACE or DEBUG (depending on --verbose)
-if type(PANDOC_STATE) == "nil" then
+if type(PANDOC_STATE) == 'nil' then
   -- use the default level
 elseif PANDOC_STATE.trace then
-  logging.loglevel = PANDOC_STATE.verbosity == "INFO" and 3 or 2
-elseif PANDOC_STATE.verbosity == "INFO" then
+  logging.loglevel = PANDOC_STATE.verbosity == 'INFO' and 3 or 2
+elseif PANDOC_STATE.verbosity == 'INFO' then
   logging.loglevel = 1
-elseif PANDOC_STATE.verbosity == "WARNING" then
+elseif PANDOC_STATE.verbosity == 'WARNING' then
   logging.loglevel = 0
-elseif PANDOC_STATE.verbosity == "ERROR" then
+elseif PANDOC_STATE.verbosity == 'ERROR' then
   logging.loglevel = -1
 end
 
 logging.error = function(...)
   if logging.loglevel >= -1 then
-    logging.output("(E)", ...)
+    logging.output('(E)', ...)
   end
 end
 
 logging.warning = function(...)
   if logging.loglevel >= 0 then
-    logging.output("(W)", ...)
+    logging.output('(W)', ...)
   end
 end
 
 logging.info = function(...)
   if logging.loglevel >= 1 then
-    logging.output("(I)", ...)
+    logging.output('(I)', ...)
   end
 end
 
 logging.debug = function(...)
   if logging.loglevel >= 2 then
-    logging.output("(D)", ...)
+    logging.output('(D)', ...)
   end
 end
 
 logging.debug2 = function(...)
   if logging.loglevel >= 3 then
-    logging.warning("debug2() is deprecated; use trace()")
-    logging.output("(D2)", ...)
+    logging.warning('debug2() is deprecated; use trace()')
+    logging.output('(D2)', ...)
   end
 end
 
 logging.trace = function(...)
   if logging.loglevel >= 3 then
-    logging.output("(T)", ...)
+    logging.output('(T)', ...)
   end
 end
 
 -- for temporary unconditional debug output
 logging.temp = function(...)
-  logging.output("(#)", ...)
+  logging.output('(#)', ...)
 end
 
 return logging
