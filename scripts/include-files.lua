@@ -3,20 +3,20 @@
 --- Copyright: © 2019–2021 Albert Krewinkel
 --- License:   MIT – see LICENSE file for details
 -- Module pandoc.path is required and was added in version 2.12
-PANDOC_VERSION:must_be_at_least("3.0")
+PANDOC_VERSION:must_be_at_least('3.0')
 
-local List = require("pandoc.List")
-local path = require("pandoc.path")
-local system = require("pandoc.system")
+local List = require('pandoc.List')
+local path = require('pandoc.path')
+local system = require('pandoc.system')
 
 function P(s)
-  require("scripts.logging").temp(s)
+  require('scripts.logging').temp(s)
 end
 
 --- Get include auto mode
 local include_auto = false
 function get_vars(meta)
-  if meta["include-auto"] then
+  if meta['include-auto'] then
     include_auto = true
   end
 end
@@ -59,16 +59,16 @@ end
 local transclude
 function transclude(cb)
   -- ignore code blocks which are not of class "include".
-  if not cb.classes:includes("include") then
+  if not cb.classes:includes('include') then
     return
   end
 
   -- Markdown is used if this is nil.
-  local format = cb.attributes["format"]
+  local format = cb.attributes['format']
 
   -- Attributes shift headings
   local shift_heading_level_by = 0
-  local shift_input = cb.attributes["shift-heading-level-by"]
+  local shift_input = cb.attributes['shift-heading-level-by']
   if shift_input then
     shift_heading_level_by = tonumber(shift_input)
   else
@@ -82,18 +82,21 @@ function transclude(cb)
   local buffer_last_heading_level = last_heading_level
 
   local blocks = List:new()
-  for line in cb.text:gmatch("[^\n]+") do
-    if line:sub(1, 2) ~= "//" then
+  for line in cb.text:gmatch('[^\n]+') do
+    if line:sub(1, 2) ~= '//' then
       -- local fh = io.open(pandoc.system.get_working_directory() .. line)
       local mt, includecontents = pandoc.mediabag.fetch(line)
       if not includecontents then
-        io.stderr:write("Cannot open file " .. line .. " | Skipping includes\n")
+        io.stderr:write('Cannot open file ' .. line .. ' | Skipping includes\n')
       else
         local contents = pandoc.read(includecontents, format).blocks
         last_heading_level = 0
         -- recursive transclusion
         contents = system.with_working_directory(path.directory(line), function()
-          return pandoc.walk_block(pandoc.Div(contents), { Header = update_last_level, CodeBlock = transclude })
+          return pandoc.walk_block(
+            pandoc.Div(contents),
+            { Header = update_last_level, CodeBlock = transclude }
+          )
         end).content
         --- reset to level before recursion
         last_heading_level = buffer_last_heading_level
