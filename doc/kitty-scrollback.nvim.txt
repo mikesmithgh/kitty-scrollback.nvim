@@ -24,7 +24,7 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 Open your Kitty scrollback buffer with Neovim. Ameowzing!
 
 
-  [!WARNING] This project is still a work in progress and not considered stable
+  `WARNING` This project is still a work in progress and not considered stable
 
 FEATURES                                      *kitty-scrollback.nvim-features*
 
@@ -44,7 +44,7 @@ command:
 <
 
 
-  [!NOTE] It is good practice to first read the script
+  `NOTE` It is good practice to first read the script
   <https://github.com/mikesmithgh/kitty-scrollback.nvim/blob/main/scripts/mini.sh>
   before running `sh -c` directly from the web
 
@@ -56,7 +56,7 @@ PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
 
 INSTALLATION                              *kitty-scrollback.nvim-installation*
 
-Using lazy.nvim ~
+- Using lazy.nvim <https://github.com/folke/lazy.nvim>
 
 >lua
       {
@@ -70,7 +70,7 @@ Using lazy.nvim ~
       }
 <
 
-Using Neovim’s built-in package support pack ~
+- Using Neovim’s built-in package support |pack|
 
 >bash
     mkdir -p "$HOME/.local/share/nvim/site/pack/mikesmithgh/start/"
@@ -90,31 +90,30 @@ KITTY ~
 The following steps outline how to properly configure kitty.conf
 <https://sw.kovidgoyal.net/kitty/conf/>
 
-Enable allow_remote_control ~
+- Enable allow_remote_control
+    <https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control>
+    - Valid values are `yes`, `socket`, `socket-only`
+    - If `kitty-scrollback.nvim` is the only application controlling Kitty then `socket-only` is preferred to continue denying TTY requests.
 
-- Valid values are `yes`, `socket`, `socket-only`
-- If `kitty-scrollback.nvim` is the only application controlling Kitty then `socket-only` is preferred to continue denying TTY requests.
+- Set listen_on <https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on> to a
+    Unix socket
+    - For example, `listen_on unix:/tmp/kitty`
 
-Set listen_on to a Unix socket ~
+- Enable shell_integration
+    <https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration>
+    - Set `shell_integration` to `enabled`
+    - Do not add the option `no-prompt-mark`
 
-- For example, `listen_on unix:/tmp/kitty`
-
-Enable shell_integration ~
-
-- Set `shell_integration` to `enabled`
-- Do not add the option `no-prompt-mark`
-
-Add kitty-scrollback.nvim mappings ~
-
-- Generate default Kitten mappings and add to `kitty.conf`
+- Add kitty-scrollback.nvim mappings
+    - Generate default Kitten mappings and add to `kitty.conf`
 
 >sh
     nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
 <
 
-Completely close and reopen Kitty ~
+- Completely close and reopen Kitty
 
-Check the health of kitty-scrollback.nvim ~
+- Check the health of kitty-scrollback.nvim
 
 >sh
     nvim +'KittyScrollbackCheckHealth' +'quit!'
@@ -122,9 +121,9 @@ Check the health of kitty-scrollback.nvim ~
 
 - Follow the instructions of any `ERROR` or `WARNINGS` reported during the healthcheck
 
-Test kitty-scrollback.nvim is working as expected by pressing ctrl+shift+h to open the scrollback buffer in Neovim ~
+- Test kitty-scrollback.nvim is working as expected by pressing ctrl+shift+h to open the scrollback buffer in Neovim
 
-See example kitty.conf for reference ~
+- See example kitty.conf for reference
 
 >sh
     allow_remote_control yes
@@ -216,15 +215,11 @@ By default, `kitty-scrollback.nvim` uses Nerd Fonts <https://www.nerdfonts.com>
 in the status window. If you would like to use ASCII instead, set the option
 `status_window.style_simple` to `true`.
 
-Status window with Nerd Fonts opts.status_window.style_simple = false ~
+- Status window with Nerd Fonts opts.status_window.style_simple = false
+    https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/4cf5b303-5061-43da-a857-c99daea82332
 
-
-https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/4cf5b303-5061-43da-a857-c99daea82332
-
-Status window with ASCII text opts.status_window.style_simple = true ~
-
-
-https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a0e1b574-59ab-4abf-93a1-f314c7cd47b3
+- Status window with ASCII text opts.status_window.style_simple = true
+    https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a0e1b574-59ab-4abf-93a1-f314c7cd47b3
 
 
 COMMANDS AND LUA API              *kitty-scrollback.nvim-commands-and-lua-api*
