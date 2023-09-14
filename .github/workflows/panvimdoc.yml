@@ -6,6 +6,7 @@ on:
     paths: 
       - README.md
       - .github/workflows/panvimdoc.yml
+      - doc/**
   workflow_dispatch:
 jobs:
   docs:
@@ -19,7 +20,9 @@ jobs:
           vimdoc: kitty-scrollback.nvim
           pandoc: "README.md"
           version: "NVIM v0.10+"
+          toc: true
           demojify: true
+          dedupsubheadings: false
           treesitter: true
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
@@ -28,3 +31,4 @@ jobs:
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+
