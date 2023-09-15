@@ -1,7 +1,7 @@
 ---@mod kitty-scrollback.windows
-local ksb_util = require('kitty-scrollback.util')
-local ksb_keymaps = require('kitty-scrollback.keymaps')
 local ksb_footer_win = require('kitty-scrollback.footer_win')
+local ksb_keymaps = require('kitty-scrollback.keymaps')
+local ksb_util = require('kitty-scrollback.util')
 local M = {}
 
 ---@type KsbPrivate

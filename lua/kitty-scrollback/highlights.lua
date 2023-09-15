@@ -1,6 +1,6 @@
 ---@mod kitty-scrollback.highlights
-local ksb_util = require('kitty-scrollback.util')
 local ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
+local ksb_util = require('kitty-scrollback.util')
 
 local M = {}
 
