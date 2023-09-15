@@ -321,8 +321,8 @@ local function validate_extent(extent)
     'ERROR: Kitty shell integration is disabled and/or `no-prompt-mark` is set',
     '',
     'The option *'
-    .. opts.kitty_get_text.extent
-    .. '* requires Kitty shell integration and prompt marks to be enabled. ',
+      .. opts.kitty_get_text.extent
+      .. '* requires Kitty shell integration and prompt marks to be enabled. ',
   }, ksb_health.advice().kitty_shell_integration)
   local error_bufid = vim.api.nvim_create_buf(false, true)
   vim.o.conceallevel = 2
@@ -384,12 +384,12 @@ M.launch = function()
     vim.schedule(function()
       vim.fn.termopen(
         [[kitty @ get-text --match="id:]]
-        .. kitty_data.window_id
-        .. [[" ]]
-        .. get_text_opts
-        .. [[ | ]]
-        .. [[sed -e "s/$/\x1b[0m/g" ]] -- append all lines with reset to avoid unintended colors
-        .. [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
+          .. kitty_data.window_id
+          .. [[" ]]
+          .. get_text_opts
+          .. [[ | ]]
+          .. [[sed -e "s/$/\x1b[0m/g" ]] -- append all lines with reset to avoid unintended colors
+          .. [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
         {
           stdout_buffered = true,
           on_exit = function()
