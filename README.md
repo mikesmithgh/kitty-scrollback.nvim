@@ -3,6 +3,8 @@
 # 😽 kitty-scrollback.nvim
 Open your Kitty scrollback buffer with Neovim. Ameowzing!
 
+Navigate the scrollback buffer to quickly search, copy, or execute commands in Neovim.
+
 <!-- panvimdoc-ignore-start -->
 
 [![neovim: v0.10+](https://img.shields.io/static/v1?style=flat-square&label=neovim&message=v0.10%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
@@ -24,6 +26,30 @@ https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/5aba1ba2-18
 - 🐱 Copy contents from Neovim to system clipboard
 - 😺 Send contents from Neovim to Kitty shell
 - 🙀 Execute shell command from Neovim to Kitty shell
+
+## 🤯 Example use cases
+- Copy scrollback text to the clipboard
+  - Open Kitty's scrollback history (default mapping `<C-S-h>`)
+  - Search backward for a pattern in Neovim `?{pattern}<CR>`
+  - Enter Visual mode `v` and select desired text
+  - Copy selection to clipboard (default mapping `<leader>y`)
+  - `kitty-scrollback.nvim` automatically closes and returns to Kitty
+- Modify and execute command
+  - Open Kitty's scrollback history (default mapping `<C-S-h>`)
+  - Copy desired selection to clipboard (e.g., '`yy`')
+    - Alternatively, you could just enter Insert mode (`i` or `a`) to open an empty floating window (similar to `<C-x><C-e>` in Bash)
+  - `kitty-scrollback.nvim` opens a floating window in Neovim with the contents of the selection
+  - Modify the content 
+  - Execute the command (default mapping `<C-CR>`)
+  - `kitty-scrollback.nvim` automatically closes and executes the command in Kitty
+- Modify and paste content
+  - Open Kitty's scrollback history (default mapping `<C-S-h>`)
+  - Copy desired selection to clipboard (e.g., '`yy`')
+  - `kitty-scrollback.nvim` opens a floating window in Neovim with the contents of the selection
+  - Modify the content
+    - Note: you can close (default mapping `<ESC>`) and reopen (yank or enter Insert mode) the floating window multiple times
+  - Paste the content (default mapping `<S-CR>` or `:w`)
+  - `kitty-scrollback.nvim` automatically closes and paste the contents in Kitty for further editing
 
 ## 🏃 Quickstart
 
@@ -266,3 +292,4 @@ The following plugins are nice additions to your Neovim and Kitty setup.
 - StackExchange [CamelCase2snake_case()](https://codegolf.stackexchange.com/a/177958/119424) - for converting Neovim highlight names to `SCREAMING_SNAKE_CASE`
 
 ## 🐶 Alternatives
+- Coming soon to a README near you
