@@ -21,7 +21,10 @@ max_line_length = 150
 # in neovim the value 'auto' is not a valid option, please use 'unset' 
 end_of_line = lf
 
-# optional keep/never/always/smart
+#  none/ comma / semicolon / only_kv_colon
+table_separator_style = none
+
+#optional keep/never/always/smart
 trailing_table_separator = keep
 
 # keep/remove/remove_table_only/remove_string_only
@@ -71,6 +74,10 @@ space_after_comma_in_for_statement = true
 
 space_around_concat_operator = true
 
+space_around_logical_operator = true
+
+space_around_assign_operator = true
+
 # [align]
 
 align_call_args = false
@@ -81,11 +88,18 @@ align_continuous_assign_statement = true
 
 align_continuous_rect_table_field = true
 
+align_continuous_line_space = 2
+
 align_if_branch = false
 
+# option none / always / contain_curly/
 align_array_table = true
 
+align_continuous_similar_call_args = false
+
 align_continuous_inline_comment = false
+# option none / always / only_call_stmt
+align_chain_expr = none
 
 # [indent]
 
@@ -93,6 +107,7 @@ never_indent_before_if_condition = false
 
 never_indent_comment_on_if_branch = false
 
+keep_indents_on_empty_lines = false
 # [line space]
 
 # The following configuration supports four expressions
@@ -120,14 +135,16 @@ line_space_after_expression_statement = keep
 
 line_space_after_comment = keep
 
+line_space_around_block = fixed(1)
 # [line break]
 break_all_list_when_line_exceed = false
 
 auto_collapse_lines = false
 
+break_before_braces = false
 # [preference]
 ignore_space_after_colon = false
 
 remove_call_expression_list_finish_comma = false
-
-
+# keep / always / same_line / repalce_with_newline
+end_statement_with_semicolon = keep
