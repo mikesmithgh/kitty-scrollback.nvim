@@ -293,3 +293,13 @@ The following plugins are nice additions to your Neovim and Kitty setup.
 
 ## 🐶 Alternatives
 - Coming soon to a README near you
+  
+<!-- panvimdoc-ignore-start -->
+
+#
+<div align="center">
+    <img src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/50852780-b3ce-4cb2-8e88-c1ea79e3e140" alt="scared cat" />
+</div>
+
+<!-- panvimdoc-ignore-end -->
+
