@@ -46,6 +46,7 @@ EXAMPLE USE CASES                    *kitty-scrollback.nvim-example-use-cases*
     - Enter Visual mode `v` and select desired text
     - Copy selection to clipboard (default mapping `<leader>y`)
     - `kitty-scrollback.nvim` automatically closes and returns to Kitty
+
 - Modify and execute command
     - Open Kitty’s scrollback history (default mapping `<C-S-h>`)
     - Copy desired selection to clipboard (e.g., '`yy`')
@@ -54,6 +55,7 @@ EXAMPLE USE CASES                    *kitty-scrollback.nvim-example-use-cases*
     - Modify the content
     - Execute the command (default mapping `<C-CR>`)
     - `kitty-scrollback.nvim` automatically closes and executes the command in Kitty
+
 - Modify and paste content
     - Open Kitty’s scrollback history (default mapping `<C-S-h>`)
     - Copy desired selection to clipboard (e.g., '`yy`')
