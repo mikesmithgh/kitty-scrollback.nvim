@@ -7,16 +7,18 @@ local M = {}
 local p
 local opts ---@diagnostic disable-line: unused-local
 
+---see `:help nvim_set_hl()` for highlight group definition format
 ---@class KsbHighlights
----@field KittyScrollbackNvimNormal table?
----@field KittyScrollbackNvimHeart table?
----@field KittyScrollbackNvimSpinner table?
----@field KittyScrollbackNvimReady table?
----@field KittyScrollbackNvimKitty table?
----@field KittyScrollbackNvimVim table?
----@field KittyScrollbackNvimPasteWinNormal table?
----@field KittyScrollbackNvimPasteWinFloatBorder table?
----@field KittyScrollbackNvimPasteWinFloatTitle table?
+---@field KittyScrollbackNvimNormal table|nil status window Normal highlight group
+---@field KittyScrollbackNvimHeart table|nil status window heart icon highlight group
+---@field KittyScrollbackNvimSpinner table|nil status window spinner icon highlight group
+---@field KittyScrollbackNvimReady table|nil status window ready icon highlight group
+---@field KittyScrollbackNvimKitty table|nil status window kitty icon highlight group
+---@field KittyScrollbackNvimVim table|nil status window vim icon highlight group
+---@field KittyScrollbackNvimPasteWinNormal table|nil paste window Normal highlight group
+---@field KittyScrollbackNvimPasteWinFloatBorder table|nil paste window FloatBorder highlight group
+---@field KittyScrollbackNvimPasteWinFloatTitle table|nil paste window FloatTitle highlight group
+
 ---@see nvim_set_hl
 
 ---@return KsbHighlights

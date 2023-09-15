@@ -45,24 +45,24 @@ local M = {}
 
 ---@class KsbPrivate
 ---@field orig_columns number
----@field bufid number?
----@field paste_bufid number?
----@field kitty_loading_winid number?
+---@field bufid number|nil
+---@field paste_bufid number|nil
+---@field kitty_loading_winid number|nil
 ---@field kitty_colors table
 ---@field kitty_data KsbKittyData
----@field paste_winid number?
----@field footer_winid number?
----@field footer_bufid number?
----@field pos table?
+---@field paste_winid number|nil
+---@field footer_winid number|nil
+---@field footer_bufid number|nil
+---@field pos table|nil
 local p = {}
 
 ---@type KsbOpts
 local opts = {}
 
 ---@class KsbCallbacks
----@field after_setup fun(kitty_data:KsbKittyData, opts:KsbOpts)? callback executed after initializing kitty-scrollback.nvim
----@field after_launch fun(kitty_data:KsbKittyData, opts:KsbOpts)? callback executed after launch started to process the scrollback buffer
----@field after_ready fun(kitty_data:KsbKittyData, opts:KsbOpts)? callback executed after scrollback buffer is loaded and cursor is positioned
+---@field after_setup fun(kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after initializing kitty-scrollback.nvim
+---@field after_launch fun(kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after launch started to process the scrollback buffer
+---@field after_ready fun(kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after scrollback buffer is loaded and cursor is positioned
 
 ---@class KsbKittyGetText
 ---@field ansi boolean If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
@@ -77,23 +77,26 @@ local opts = {}
 
 ---@alias KsbWinOpts table<string, any>
 
+---@alias KsbWinOptsOverrideFunction fun(paste_winopts:KsbWinOpts):KsbWinOpts
+---@alias KsbFooterWinOptsOverrideFunction fun(footer_winopts:KsbWinOpts, paste_winopts:KsbWinOpts):KsbWinOpts
+
 ---@class KsbPasteWindowOpts
----@field highlight_as_normal_win? fun(): boolean If function returns true, use Normal highlight group. If false, use NormalFloat
----@field filetype string? The filetype of the paste window
----@field hide_footer? boolean If true, hide the footer when the paste window is initially opened
----@field winblend? integer The winblend setting of the window, see :help winblend
----@field winopts_overrides? fun(paste_winopts:KsbWinOpts): KsbWinOpts Paste float window overrides, see nvim_open_win() for configuration
----@field footer_winopts_overrides? fun(footer_winopts:KsbWinOpts, paste_winopts:KsbWinOpts): KsbWinOpts Paste footer window overrides, see nvim_open_win() for configuration
+---@field highlight_as_normal_win fun():boolean|nil If function returns true, use Normal highlight group. If false, use NormalFloat
+---@field filetype string|nil The filetype of the paste window
+---@field hide_footer boolean|nil If true, hide the footer when the paste window is initially opened
+---@field winblend integer|nil The winblend setting of the window, see :help winblend
+---@field winopts_overrides KsbWinOptsOverrideFunction|nil Paste float window overrides, see nvim_open_win() for configuration
+---@field footer_winopts_overrides KsbFooterWinOptsOverrideFunction|nil Paste footer window overrides, see nvim_open_win() for configuration
 
 ---@class KsbOpts
----@field callbacks KsbCallbacks? fire and forget callback functions
----@field keymaps_enabled boolean? if true, enabled all default keymaps
----@field restore_options boolean? if true, restore options that were modified while processing the scrollback buffer
----@field highlight_overrides KsbHighlights? kitty-scrollback.nvim highlight overrides
----@field status_window KsbStatusWindowOpts? options for status window indicating that kitty-scrollback.nvim is ready
----@field paste_window KsbPasteWindowOpts?  options for paste window that sends commands to Kitty
----@field kitty_get_text KsbKittyGetText? options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
----@field checkhealth boolean? if true execute :checkhealth kitty-scrollback and skip setup
+---@field callbacks KsbCallbacks|nil fire and forget callback functions
+---@field keymaps_enabled boolean|nil if true, enabled all default keymaps
+---@field restore_options boolean|nil if true, restore options that were modified while processing the scrollback buffer
+---@field highlight_overrides KsbHighlights|nil kitty-scrollback.nvim highlight overrides
+---@field status_window KsbStatusWindowOpts|nil options for status window indicating that kitty-scrollback.nvim is ready
+---@field paste_window KsbPasteWindowOpts|nil  options for paste window that sends commands to Kitty
+---@field kitty_get_text KsbKittyGetText|nil options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
+---@field checkhealth boolean|nil if true execute :checkhealth kitty-scrollback and skip setup
 local default_opts = {
   callbacks = nil,
   keymaps_enabled = true,
@@ -318,8 +321,8 @@ local function validate_extent(extent)
     'ERROR: Kitty shell integration is disabled and/or `no-prompt-mark` is set',
     '',
     'The option *'
-      .. opts.kitty_get_text.extent
-      .. '* requires Kitty shell integration and prompt marks to be enabled. ',
+    .. opts.kitty_get_text.extent
+    .. '* requires Kitty shell integration and prompt marks to be enabled. ',
   }, ksb_health.advice().kitty_shell_integration)
   local error_bufid = vim.api.nvim_create_buf(false, true)
   vim.o.conceallevel = 2
@@ -381,12 +384,12 @@ M.launch = function()
     vim.schedule(function()
       vim.fn.termopen(
         [[kitty @ get-text --match="id:]]
-          .. kitty_data.window_id
-          .. [[" ]]
-          .. get_text_opts
-          .. [[ | ]]
-          .. [[sed -e "s/$/\x1b[0m/g" ]] -- append all lines with reset to avoid unintended colors
-          .. [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
+        .. kitty_data.window_id
+        .. [[" ]]
+        .. get_text_opts
+        .. [[ | ]]
+        .. [[sed -e "s/$/\x1b[0m/g" ]] -- append all lines with reset to avoid unintended colors
+        .. [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
         {
           stdout_buffered = true,
           on_exit = function()
