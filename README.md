@@ -28,13 +28,22 @@ https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/5aba1ba2-18
 - 🙀 Execute shell command from Neovim to Kitty shell
 
 ## 🤯 Example use cases
-- Copy scrollback text to the clipboard
+
+<details> 
+
+<summary>Copy scrollback text to the clipboard</summary>
+
   - Open Kitty's scrollback history (default mapping `<C-S-h>`)
   - Search backward for a pattern in Neovim `?{pattern}<CR>`
   - Enter Visual mode `v` and select desired text
   - Copy selection to clipboard (default mapping `<leader>y`)
   - `kitty-scrollback.nvim` automatically closes and returns to Kitty
-- Modify and execute command
+
+</details>
+<details> 
+
+<summary>Modify and execute command</summary>
+
   - Open Kitty's scrollback history (default mapping `<C-S-h>`)
   - Copy desired selection to clipboard (e.g., '`yy`')
     - Alternatively, you could just enter Insert mode (`i` or `a`) to open an empty floating window (similar to `<C-x><C-e>` in Bash)
@@ -42,7 +51,12 @@ https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/5aba1ba2-18
   - Modify the content 
   - Execute the command (default mapping `<C-CR>`)
   - `kitty-scrollback.nvim` automatically closes and executes the command in Kitty
-- Modify and paste content
+
+</details>
+<details> 
+
+<summary>Modify and paste content</summary>
+
   - Open Kitty's scrollback history (default mapping `<C-S-h>`)
   - Copy desired selection to clipboard (e.g., '`yy`')
   - `kitty-scrollback.nvim` opens a floating window in Neovim with the contents of the selection
@@ -50,6 +64,8 @@ https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/5aba1ba2-18
     - Note: you can close (default mapping `<ESC>`) and reopen (yank or enter Insert mode) the floating window multiple times
   - Paste the content (default mapping `<S-CR>` or `:w`)
   - `kitty-scrollback.nvim` automatically closes and paste the contents in Kitty for further editing
+
+</details>
 
 ## 🏃 Quickstart
 
