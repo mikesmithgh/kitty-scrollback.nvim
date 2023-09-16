@@ -6,16 +6,14 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 1. kitty-scrollback.nvim         |kitty-scrollback.nvim-kitty-scrollback.nvim|
   - Features                                  |kitty-scrollback.nvim-features|
   - Example use cases                |kitty-scrollback.nvim-example-use-cases|
-  - Quickstart                              |kitty-scrollback.nvim-quickstart|
   - Prerequisites                        |kitty-scrollback.nvim-prerequisites|
+  - Quickstart                              |kitty-scrollback.nvim-quickstart|
   - Installation                          |kitty-scrollback.nvim-installation|
   - Configuration                        |kitty-scrollback.nvim-configuration|
   - Commands and Lua API          |kitty-scrollback.nvim-commands-and-lua-api|
   - Keymaps and Lua API            |kitty-scrollback.nvim-keymaps-and-lua-api|
-  - Roadmap                                    |kitty-scrollback.nvim-roadmap|
   - Recommendations                    |kitty-scrollback.nvim-recommendations|
   - Acknowledgements                  |kitty-scrollback.nvim-acknowledgements|
-  - Alternatives                          |kitty-scrollback.nvim-alternatives|
 
 
 
@@ -66,6 +64,12 @@ EXAMPLE USE CASES                    *kitty-scrollback.nvim-example-use-cases*
     - `kitty-scrollback.nvim` automatically closes and paste the contents in Kitty for further editing
 
 
+PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
+
+- Neovim v0.10+ <https://github.com/neovim/neovim/releases>
+- Kitty v0.29+ <https://github.com/kovidgoyal/kitty/releases>
+
+
 QUICKSTART                                  *kitty-scrollback.nvim-quickstart*
 
 To quickly test this plugin without changing your configuration run the
@@ -79,12 +83,6 @@ command:
   `NOTE` It is good practice to first read the script
   <https://github.com/mikesmithgh/kitty-scrollback.nvim/blob/main/scripts/mini.sh>
   before running `sh -c` directly from the web
-
-PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
-
-- Neovim v0.10+ <https://github.com/neovim/neovim/releases>
-- Kitty v0.29+ <https://github.com/kovidgoyal/kitty/releases>
-
 
 INSTALLATION                              *kitty-scrollback.nvim-installation*
 
@@ -324,15 +322,15 @@ COMMANDS AND LUA API              *kitty-scrollback.nvim-commands-and-lua-api*
 The API is available via the `kitty-scrollback.api` module. e.g.,
 `require('kitty-scrollback.api')`
 
-  ----------------------------------------------------------------------------------------------------------
-  Command                              API                              Description
-  ------------------------------------ -------------------------------- ------------------------------------
-  :KittyScrollbackGenerateKittens[!]   generate_kittens(boolean\|nil)   Generate Kitten commands used as
-                                                                        reference for configuring kitty.conf
+  ------------------------------------------------------------------------------------------------------
+  Command                              API                          Description
+  ------------------------------------ ---------------------------- ------------------------------------
+  :KittyScrollbackGenerateKittens[!]   generate_kittens(boolean?)   Generate Kitten commands used as
+                                                                    reference for configuring kitty.conf
 
-  :KittyScrollbackCheckHealth          checkhealth()                    Run :checkhealth kitty-scrollback in
-                                                                        the context of Kitty
-  ----------------------------------------------------------------------------------------------------------
+  :KittyScrollbackCheckHealth          checkhealth()                Run :checkhealth kitty-scrollback in
+                                                                    the context of Kitty
+  ------------------------------------------------------------------------------------------------------
 
 KEYMAPS AND LUA API                *kitty-scrollback.nvim-keymaps-and-lua-api*
 
@@ -369,17 +367,6 @@ The API is available via the `kitty-scrollback.api` module. e.g.,
   <Plug>(KsbNormalYankLine)   <Leader>yy   n                             Maps to "+yy
   --------------------------------------------------------------------------------------------------------------
 
-ROADMAP                                        *kitty-scrollback.nvim-roadmap*
-
-- document setup with remote control and shell integration
-- add quick setup to allow user to test easily before installing
-- add documentation and examples
-- add details about relevant kitty config ( `scrollback_lines`, `scrollback_pager`, `scrollback_pager_history_size`, `scrollback_fill_enlarged_window`)
-- release v1
-- ci/cd
-- add support for https://github.com/m00qek/baleia.nvim
-
-
 RECOMMENDATIONS                        *kitty-scrollback.nvim-recommendations*
 
 The following plugins are nice additions to your Neovim and Kitty setup.
@@ -400,11 +387,6 @@ ACKNOWLEDGEMENTS                      *kitty-scrollback.nvim-acknowledgements*
 - fzf-lua <https://github.com/ibhagwan/fzf-lua> - quickstart `mini.sh` and inspiration/reference for displaying keymapping footer
 - cellular-automaton.nvim <https://github.com/Eandrju/cellular-automaton.nvim> - included in a fun example config
 - StackExchange CamelCase2snake_case() <https://codegolf.stackexchange.com/a/177958/119424> - for converting Neovim highlight names to `SCREAMING_SNAKE_CASE`
-
-
-ALTERNATIVES                              *kitty-scrollback.nvim-alternatives*
-
-- Coming soon to a README near you
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
