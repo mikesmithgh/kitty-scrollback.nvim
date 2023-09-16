@@ -1,0 +1,29 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+      - run: |
+          npm install @semantic-release/git @semantic-release/changelog -D
+          npx semantic-release
+        env:
+          GH_TOKEN: ${{ secrets.KITTY_SCROLLBACK_CI_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.KITTY_SCROLLBACK_CI_TOKEN }}
+
