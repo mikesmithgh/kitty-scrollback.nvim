@@ -1,0 +1,170 @@
+==============================================================================
+                                                       *kitty-scrollback.launch*
+
+KsbKittyOpts                              *kitty-scrollback.launch.KsbKittyOpts*
+
+    Fields: ~
+        {shell_integration}                (table)
+        {scrollback_fill_enlarged_window}  (boolean)
+        {scrollback_lines}                 (integer)
+        {scrollback_pager}                 (table)
+        {scrollback_pager_history_size}    (integer)
+        {allow_remote_control}             (string)   'password' | 'socket-only' | 'socket' | 'no' | 'n' | 'false' | 'yes' | 'y' | 'true'
+        {listen_on}                        (string)
+
+
+KsbKittyData                              *kitty-scrollback.launch.KsbKittyData*
+
+    Fields: ~
+        {scrolled_by}   (integer)  the number of lines currently scrolled in kitty
+        {cursor_x}      (integer)  position of the cusor in the column in kitty
+        {cursor_y}      (integer)  position of the cursor in the row in kitty
+        {lines}         (integer)  the number of rows of the screen in kitty
+        {columns}       (integer)  the number of columns of the screen in kitty
+        {window_id}     (integer)  the id of the window to get scrollback text
+        {ksb_dir}       (string)   the base runtime path of kitty-scrollback.nvim
+        {config_files}  (table)
+
+
+KsbPrivate                                  *kitty-scrollback.launch.KsbPrivate*
+
+    Fields: ~
+        {orig_columns}         (number)
+        {bufid}                (number|nil)
+        {paste_bufid}          (number|nil)
+        {kitty_loading_winid}  (number|nil)
+        {kitty_colors}         (table)
+        {kitty_data}           (KsbKittyData)
+        {paste_winid}          (number|nil)
+        {footer_winid}         (number|nil)
+        {footer_bufid}         (number|nil)
+        {pos}                  (table|nil)
+
+
+KsbCallbacks                              *kitty-scrollback.launch.KsbCallbacks*
+
+    Fields: ~
+        {after_setup}   (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after initializing kitty-scrollback.nvim
+        {after_launch}  (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after launch started to process the scrollback buffer
+        {after_ready}   (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after scrollback buffer is loaded and cursor is positioned
+
+
+KsbKittyGetText                        *kitty-scrollback.launch.KsbKittyGetText*
+
+    Fields: ~
+        {ansi}             (boolean)                                                                                                                             If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
+        {clear_selection}  (boolean)                                                                                                                             If true, clear the selection in the matched window, if any.
+        {extent}           (string|"screen"|"all"|"selection"|"first_cmd_output_on_screen"|"last_cmd_output"|"last_visited_cmd_output"|"last_non_empty_output")  What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
+
+
+                                   *kitty-scrollback.launch.KsbStatusWindowOpts*
+KsbStatusWindowOpts
+
+    Fields: ~
+        {enabled}       (boolean)  If true, show status window in upper right corner of the screen
+        {style_simple}  (boolean)  If true, use plaintext instead of nerd font icons
+        {autoclose}     (boolean)  If true, close the status window after kitty-scrollback.nvim is ready
+        {show_timer}    (boolean)  If true, show a timer in the status window while kitty-scrollback.nvim is loading
+
+
+KsbWinOpts                                  *kitty-scrollback.launch.KsbWinOpts*
+
+    Type: ~
+        table<string,any>
+
+
+                            *kitty-scrollback.launch.KsbWinOptsOverrideFunction*
+KsbWinOptsOverrideFunction
+
+    Type: ~
+        fun(paste_winopts:KsbWinOpts):KsbWinOpts
+
+
+                      *kitty-scrollback.launch.KsbFooterWinOptsOverrideFunction*
+KsbFooterWinOptsOverrideFunction
+
+    Type: ~
+        fun(footer_winopts:KsbWinOpts,paste_winopts:KsbWinOpts):KsbWinOpts
+
+
+                                    *kitty-scrollback.launch.KsbPasteWindowOpts*
+KsbPasteWindowOpts
+
+    Fields: ~
+        {highlight_as_normal_win}   (fun():boolean|nil)                     If function returns true, use Normal highlight group. If false, use NormalFloat
+        {filetype}                  (string|nil)                            The filetype of the paste window
+        {hide_footer}               (boolean|nil)                           If true, hide the footer when the paste window is initially opened
+        {winblend}                  (integer|nil)                           The winblend setting of the window, see :help winblend
+        {winopts_overrides}         (KsbWinOptsOverrideFunction|nil)        Paste float window overrides, see nvim_open_win() for configuration
+        {footer_winopts_overrides}  (KsbFooterWinOptsOverrideFunction|nil)  Paste footer window overrides, see nvim_open_win() for configuration
+
+
+KsbOpts                                        *kitty-scrollback.launch.KsbOpts*
+
+    Fields: ~
+        {callbacks}            (KsbCallbacks|nil)         fire and forget callback functions
+        {keymaps_enabled}      (boolean|nil)              if true, enabled all default keymaps
+        {restore_options}      (boolean|nil)              if true, restore options that were modified while processing the scrollback buffer
+        {highlight_overrides}  (KsbHighlights|nil)        kitty-scrollback.nvim highlight overrides
+        {status_window}        (KsbStatusWindowOpts|nil)  options for status window indicating that kitty-scrollback.nvim is ready
+        {paste_window}         (KsbPasteWindowOpts|nil)   options for paste window that sends commands to Kitty
+        {kitty_get_text}       (KsbKittyGetText|nil)      options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
+        {checkhealth}          (boolean|nil)              if true execute :checkhealth kitty-scrollback and skip setup
+
+
+M.setup({kitty_data_str})                        *kitty-scrollback.launch.setup*
+    Setup and configure kitty-scrollback.nvim
+
+    Parameters: ~
+        {kitty_data_str}  (string)
+
+
+M.launch()                                      *kitty-scrollback.launch.launch*
+    Launch kitty-scrollack.nvim with configured scrollback buffer
+
+
+M.setup_and_launch({kitty_data_str})  *kitty-scrollback.launch.setup_and_launch*
+    Setup and launch kitty-scrollback.nvim
+
+    Parameters: ~
+        {kitty_data_str}  (string)
+
+
+==============================================================================
+                                                          *kitty-scrollback.api*
+
+M.setup()                                           *kitty-scrollback.api.setup*
+
+
+M.quit_all()                                     *kitty-scrollback.api.quit_all*
+    Attempt to gracefully quit Neovim. How do you exit vim? Why would you exit vim?
+
+
+M.close_or_quit_all()                   *kitty-scrollback.api.close_or_quit_all*
+    If the current buffer is the paste buffer, then close the window
+    If the current buffer is the scrollback buffer, then quitall
+    Otherwise, no operation
+
+
+M.execute_command()                       *kitty-scrollback.api.execute_command*
+    If the current buffer is the paste buffer, then quit and execute the paste
+    window contents in Kitty. Otherwise, no operation
+
+
+M.paste_command()                           *kitty-scrollback.api.paste_command*
+    If the current buffer is the paste buffer, then quit and paste the paste
+    window contents to Kitty. Otherwise, no operation
+
+
+M.toggle_footer()                           *kitty-scrollback.api.toggle_footer*
+    If the current buffer is the paste buffer, toggle the footer window
+    open or closed. Otherwise, no operation
+
+
+M.generate_kittens()                     *kitty-scrollback.api.generate_kittens*
+
+
+M.checkhealth()                               *kitty-scrollback.api.checkhealth*
+
+
+vim:tw=78:ts=8:noet:ft=help:norl:
