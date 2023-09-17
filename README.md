@@ -1,9 +1,8 @@
 <img src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a7357844-e0e4-4053-8c77-6d129528504f" alt="kitty-scrollback" style="width: 20%" align="right" />
 
 # 😽 kitty-scrollback.nvim
-Open your Kitty scrollback buffer with Neovim. Ameowzing!
 
-Navigate the scrollback buffer to quickly search, copy, or execute commands in Neovim.
+Navigate your Kitty scrollback buffer to quickly search, copy, or execute commands in Neovim.
 
 <!-- panvimdoc-ignore-start -->
 
