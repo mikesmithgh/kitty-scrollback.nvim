@@ -7,9 +7,24 @@ on:
       - README.md
       - .github/workflows/panvimdoc.yml
       - doc/**
+      - lua/kitty-scrollback/launch.lua
+      - lua/kitty-scrollback/api.lua
   workflow_dispatch:
+
 jobs:
-  docs:
+  lemmyhelp:
+    runs-on: ubuntu-latest
+    name: emmylua to vimdoc
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generating help
+        run: |
+          curl -Lq https://github.com/numToStr/lemmy-help/releases/latest/download/lemmy-help-x86_64-unknown-linux-gnu.tar.gz | tar xz
+          ./lemmy-help -c -a -f lua/kitty-scrollback/launch.lua lua/kitty-scrollback/api.lua > doc/kitty-scrollback.nvim_spec.txt 
+
+  panvimdoc:
+    needs: lemmyhelp
     runs-on: ubuntu-latest
     name: pandoc to vimdoc
     steps:
@@ -44,4 +59,5 @@ jobs:
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+          file_pattern: doc/*.txt
 

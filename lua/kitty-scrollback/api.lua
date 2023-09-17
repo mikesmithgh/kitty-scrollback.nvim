@@ -15,7 +15,6 @@ M.setup = function(private, options)
   opts = options ---@diagnostic disable-line: unused-local
 end
 
----@tag kitty-scrollback.api.close_or_quit_all
 ---Attempt to gracefully quit Neovim. How do you exit vim? Why would you exit vim?
 M.quit_all = function()
   -- quit causes nvim to exit early sometime interrupting underlying copy child process (.e.g, xclip)
@@ -23,7 +22,6 @@ M.quit_all = function()
   vim.schedule(ksb_kitty_cmds.signal_term_to_kitty_child_process)
 end
 
----@tag kitty-scrollback.api.close_or_quit_all
 ---If the current buffer is the paste buffer, then close the window
 ---If the current buffer is the scrollback buffer, then quitall
 ---Otherwise, no operation
@@ -38,7 +36,6 @@ M.close_or_quit_all = function()
   end
 end
 
----@tag kitty-scrollback.api.execute_command
 ---If the current buffer is the paste buffer, then quit and execute the paste
 ---window contents in Kitty. Otherwise, no operation
 M.execute_command = function()
@@ -47,7 +44,6 @@ M.execute_command = function()
   end
 end
 
----@tag kitty-scrollback.api.paste_command
 ---If the current buffer is the paste buffer, then quit and paste the paste
 ---window contents to Kitty. Otherwise, no operation
 M.paste_command = function()
@@ -56,7 +52,6 @@ M.paste_command = function()
   end
 end
 
----@tag kitty-scrollback.api.toggle_footer
 ---If the current buffer is the paste buffer, toggle the footer window
 ---open or closed. Otherwise, no operation
 M.toggle_footer = function()
