@@ -24,8 +24,6 @@ Navigate your Kitty scrollback buffer to quickly search, copy, or execute
 commands in Neovim.
 
 
-  `WARNING` This project is still a work in progress and not considered stable
-
 FEATURES                                      *kitty-scrollback.nvim-features*
 
 - Navigate Kitty’s scrollback buffer with Neovim
