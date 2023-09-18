@@ -306,10 +306,8 @@ The following plugins are nice additions to your Neovim and Kitty setup.
 - [panvimdoc](https://github.com/kdheepak/panvimdoc) - generating vimdocs from README
 - [lemmy-help](https://github.com/numToStr/lemmy-help) - generating vimdocs from Lua annotations
 
-<!-- TODO
 ## 🐶 Alternatives
-- Coming soon to a README near you
--->
+- [kitty_grab](https://github.com/yurikhan/kitty_grab) - Keyboard-driven screen grabber for Kitty
   
 <!-- panvimdoc-ignore-start -->
 
