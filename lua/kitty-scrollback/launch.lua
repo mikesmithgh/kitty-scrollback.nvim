@@ -388,8 +388,8 @@ M.launch = function()
           .. [[" ]]
           .. get_text_opts
           .. [[ | ]]
-          .. [[sed -e "s/$/\x1b[0m/g" ]] -- append all lines with reset to avoid unintended colors
-          .. [[-e "s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g"]], -- remove control sequence added by --add-cursor flag
+          .. [[sed -e 's/$/\x1b[0m/g' ]] -- append all lines with reset to avoid unintended colors
+          .. [[-e 's/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g']], -- remove control sequence added by --add-cursor flag
         {
           stdout_buffered = true,
           on_exit = function()
