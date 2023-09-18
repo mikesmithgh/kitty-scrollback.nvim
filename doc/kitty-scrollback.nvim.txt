@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*   For NVIM v0.10+   Last change: 2023 September 17
+*kitty-scrollback.nvim.txt*   For NVIM v0.10+   Last change: 2023 September 18
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -20,10 +20,8 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 ==============================================================================
 1. kitty-scrollback.nvim         *kitty-scrollback.nvim-kitty-scrollback.nvim*
 
-Open your Kitty scrollback buffer with Neovim. Ameowzing!
-
-Navigate the scrollback buffer to quickly search, copy, or execute commands in
-Neovim.
+Navigate your Kitty scrollback buffer to quickly search, copy, or execute
+commands in Neovim.
 
 
   `WARNING` This project is still a work in progress and not considered stable
