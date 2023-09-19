@@ -251,7 +251,6 @@ M.setup = function(kitty_data_str)
   if p.kitty_data.config_files and next(p.kitty_data.config_files) then
     for _, config in pairs(p.kitty_data.config_files) do
       user_opts = vim.tbl_extend('keep', user_opts, dofile(config).config(p.kitty_data) or {})
-      vim.print(user_opts)
     end
   end
   opts = vim.tbl_deep_extend('force', default_opts, user_opts)
@@ -389,7 +388,8 @@ M.launch = function()
           .. get_text_opts
           .. [[ | ]]
           .. [[sed -e 's/$/\x1b[0m/g' ]] -- append all lines with reset to avoid unintended colors
-          .. [[-e 's/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g']], -- remove control sequence added by --add-cursor flag
+          .. [[-e 's/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g']] -- remove control sequence added by --add-cursor flag
+          .. [[ && kitty +runpy 'sys.stdout.flush()']],
         {
           stdout_buffered = true,
           on_exit = function()
@@ -409,7 +409,7 @@ M.launch = function()
 
                 -- improve buffer name to avoid displaying complex command to user
                 local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
-                term_buf_name = term_buf_name:gsub(':kitty.*$', ':kitty-scrollback.nvim')
+                term_buf_name = term_buf_name:gsub('^(term://.-:).*', '%1kitty-scrollback.nvim')
                 vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
                 vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
 
