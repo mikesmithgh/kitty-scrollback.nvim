@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.0.1...v1.0.2) (2023-09-19)
+
+
+### Bug Fixes
+
+* explicitly flush stdout for large scrollback closes [#7](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/7) ([#11](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/11)) ([3afc5a3](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/3afc5a34cd420b04fd28f849ad5cddd17027a7a9))
+
 ## [1.0.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.0.0...v1.0.1) (2023-09-18)
 
 
