@@ -308,6 +308,7 @@ The following plugins are nice additions to your Neovim and Kitty setup.
 
 ## 🐶 Alternatives
 - [kitty_grab](https://github.com/yurikhan/kitty_grab) - Keyboard-driven screen grabber for Kitty
+- [kitty-kitten-search](https://github.com/trygveaa/kitty-kitten-search) - Kitten for the kitty terminal emulator providing live incremental search in the terminal history.
   
 <!-- panvimdoc-ignore-start -->
 
