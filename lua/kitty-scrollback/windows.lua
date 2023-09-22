@@ -91,7 +91,7 @@ M.open_paste_window = function(start_insert)
   local col = p.pos.col + 1
   if not p.paste_bufid then
     p.paste_bufid = vim.api.nvim_create_buf(false, false)
-    vim.api.nvim_buf_set_name(p.paste_bufid, vim.fn.tempname())
+    vim.api.nvim_buf_set_name(p.paste_bufid, vim.fn.tempname() .. '.ksb_pastebuf')
     local ft = opts.paste_window.filetype or vim.fn.fnamemodify(vim.o.shell, ':t:r')
     vim.api.nvim_set_option_value('filetype', ft, {
       buf = p.paste_bufid,

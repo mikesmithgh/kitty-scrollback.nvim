@@ -29,6 +29,7 @@ end
 M.set_paste_buffer_write_autocmd = function()
   vim.api.nvim_create_autocmd({ 'BufWriteCmd' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimPasteBufWriteCmd', { clear = true }),
+    pattern = '*.ksb_pastebuf',
     callback = function(paste_event)
       if paste_event.buf == p.paste_bufid then
         ksb_kitty_cmds.send_paste_buffer_text_to_kitty_and_quit(true)
