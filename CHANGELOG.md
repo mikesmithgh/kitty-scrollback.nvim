@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.0.2...v1.0.3) (2023-09-22)
+
+
+### Bug Fixes
+
+* allow file writing if not the paste buffer ([#14](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/14)) ([87ff296](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/87ff2967586715436d00026f3b722881b3ee46d9))
+
 ## [1.0.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.0.1...v1.0.2) (2023-09-19)
 
 
