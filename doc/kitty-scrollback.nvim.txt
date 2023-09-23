@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*   For NVIM v0.10+   Last change: 2023 September 20
+*kitty-scrollback.nvim.txt*   For NVIM v0.10+   Last change: 2023 September 23
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -273,6 +273,12 @@ KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
 
   paste_window.footer_winopts_overrides                        fun(footer_winopts: KsbWinOpts, paste_winopts: KsbWinOpts): table<string,any>?   Paste footer window overrides, see nvim_open_win() for
                                                                                                                                                 configuration
+
+  paste_window.yank_register                                   string?                                                                          register used during yanks to paste window, see
+                                                                                                                                                :h registers
+
+  paste_window.yank_register_enabled                           boolean?                                                                         If true, the yank_register copies content to the paste
+                                                                                                                                                window. If false, disable yank to paste window
 
   kitty_get_text                                               KsbKittyGetText?                                                                 options passed to get-text when reading scrollback buffer,
                                                                                                                                                 see kitty @ get-text --help
