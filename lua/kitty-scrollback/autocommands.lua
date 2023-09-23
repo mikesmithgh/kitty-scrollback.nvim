@@ -9,6 +9,7 @@ local ksb_win = require('kitty-scrollback.windows')
 local M = {}
 
 local p
+---@type KsbOpts
 local opts ---@diagnostic disable-line: unused-local
 
 M.setup = function(private, options)
@@ -163,7 +164,10 @@ M.set_yank_post_autocmd = function()
       end
 
       -- send contents to paste window
-      if yankevent.regname == '' then
+      if
+        opts.paste_window.yank_register_enabled
+        and yankevent.regname == opts.paste_window.yank_register
+      then
         if e.buf ~= p.bufid then
           return
         end
