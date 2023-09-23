@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.0.3...v1.1.0) (2023-09-23)
+
+
+### Features
+
+* make paste window yank register configurable closes [#15](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/15) ([#17](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/17)) ([31f75ea](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/31f75eafd772f8213233f5ed8467407b6ce71bff))
+
 ## [1.0.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.0.2...v1.0.3) (2023-09-22)
 
 
