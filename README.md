@@ -107,6 +107,25 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
 </details>
 <details>
 
+<summary>Using <a href="https://github.com/wbthomason/packer.nvim">packer.nvim</a></summary>
+
+```lua
+  use({
+    'mikesmithgh/kitty-scrollback.nvim',
+    disable = false,
+    opt = true,
+    cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
+    -- tag = '*', -- latest stable version, may have breaking changes if major version changed
+    -- tag = 'v1.0.0', -- pin specific tag
+    config = function()
+      require('kitty-scrollback').setup()
+    end,
+  })
+```
+
+</details>
+<details>
+
 <summary>Using Neovim's built-in package support <a href="https://neovim.io/doc/user/usr_05.html#05.4">pack</a></summary>
 
 ```bash
