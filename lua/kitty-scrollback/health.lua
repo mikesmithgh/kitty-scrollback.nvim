@@ -27,6 +27,7 @@ local function check_kitty_remote_control()
   local code_msg = '`kitty @ ls` exited with code *' .. result.code .. '*'
   if ok then
     vim.health.ok(code_msg)
+    return true
   else
     local stderr = result.stderr:gsub('\n', '') or ''
     local msg = {}
@@ -55,12 +56,14 @@ local function check_kitty_remote_control()
     end
     vim.health.error(code_msg .. '\n      `' .. stderr .. '` ', advice)
   end
+  return false
 end
 
 local function check_has_kitty_data()
   vim.health.start('kitty-scrollback: Kitty data')
   if type(p) == 'table' and next(p.kitty_data) then
     vim.health.ok('Kitty data available\n>lua\n' .. vim.inspect(p.kitty_data) .. '\n')
+    return true
   else
     local kitty_scrollback_kitten =
       vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1]
@@ -77,6 +80,7 @@ local function check_has_kitty_data()
       checkhealth_command,
     })
   end
+  return false
 end
 
 local function check_clipboard()
@@ -206,9 +210,12 @@ M.check_kitty_version = function(check_only)
 end
 
 M.check = function()
-  if M.check_nvim_version() and M.check_kitty_version() then
-    check_has_kitty_data()
-    check_kitty_remote_control()
+  if
+    M.check_nvim_version()
+    and check_kitty_remote_control()
+    and check_has_kitty_data()
+    and M.check_kitty_version()
+  then
     check_clipboard()
     check_kitty_shell_integration()
     check_sed()
