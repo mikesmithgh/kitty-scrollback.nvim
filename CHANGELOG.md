@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.0...v1.1.1) (2023-09-25)
+
+
+### Bug Fixes
+
+* **checkhealth:** reorganize and fix advice() ([#21](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/21)) ([c4b7ca7](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/c4b7ca7430eefe6cd8643cc7e60fdce246dd4086))
+
 # [1.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.0.3...v1.1.0) (2023-09-23)
 
 
