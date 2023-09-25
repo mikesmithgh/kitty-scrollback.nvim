@@ -135,18 +135,22 @@ M.checkhealth = function()
     vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1]
   local checkhealth_config =
     vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/checkhealth.lua', false)[1]
-  if vim.fn.has('nvim-0.10') > 0 then
-    vim
-      .system({
-        'kitty',
-        '@',
-        'kitten',
-        kitty_scrollback_kitten,
-        '--config-file',
-        checkhealth_config,
-      })
-      :wait()
-  else
+  if
+    not (
+      vim.fn.has('nvim-0.10') > 0
+      and vim
+          .system({
+            'kitty',
+            '@',
+            'kitten',
+            kitty_scrollback_kitten,
+            '--config-file',
+            checkhealth_config,
+          })
+          :wait().code
+        == 0
+    )
+  then
     -- fallback on checkhealth for earlier versions of nvim
     vim.cmd.checkhealth('kitty-scrollback')
   end

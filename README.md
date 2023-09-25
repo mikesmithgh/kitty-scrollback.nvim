@@ -184,7 +184,7 @@ nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelati
 <summary>Check the health of <code>kitty-scrollback.nvim</code></summary>
 
 ```sh
-nvim +'KittyScrollbackCheckHealth' +'quit!'
+nvim +'KittyScrollbackCheckHealth'
 ```
 
   - Follow the instructions of any `ERROR` or `WARNINGS` reported during the healthcheck

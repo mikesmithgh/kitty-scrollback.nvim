@@ -21,9 +21,11 @@ M.setup = function()
   ---    See: ~
   ---        |kitty.api.checkhealth|
   ---@brief ]]
-  vim.api.nvim_create_user_command('KittyScrollbackCheckHealth', function()
-    require('kitty-scrollback.api').checkhealth()
-  end, {})
+  vim.api.nvim_create_user_command(
+    'KittyScrollbackCheckHealth',
+    vim.schedule_wrap(require('kitty-scrollback.api').checkhealth),
+    {}
+  )
 end
 
 return M
