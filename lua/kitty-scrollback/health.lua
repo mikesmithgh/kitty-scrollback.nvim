@@ -120,54 +120,64 @@ end
 
 local function check_sed()
   vim.health.start('kitty-scrollback: sed')
-  local which_sed_result = vim.system({ 'command', '-v', 'sed' }):wait()
-  local ok = which_sed_result.code == 0
-  if not ok then
-    vim.health.error(
-      '`command -v sed` exited with code *'
-        .. which_sed_result.code
-        .. '*\n'
-        .. '      `'
-        .. which_sed_result.stderr
-        .. '` '
-    )
+  local sed_path = vim.fn.exepath('sed')
+  if not sed_path or sed_path == '' then
+    vim.health.error('*sed* : command not found\n')
     return
   end
 
+  local esc = vim.fn.eval([["\e"]])
   local cmd = {
     'sed',
+    '-E',
     '-e',
-    [[s/$/\x1b[0m/g]],
+    's/$/' .. esc .. '[0m/g',
     '-e',
-    [[s/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g]],
+    's/' .. esc .. '\\[\\?25.' .. esc .. '\\[.*;.*H' .. esc .. '\\[.*//g',
   }
-  local result = vim
-    .system(cmd, {
-      stdin = [[[m$ echo 'test' | grep test\n[m[1;31mtest\n[m$]],
-    })
-    :wait()
-  ok = result.code == 0
+  local ok, sed_proc = pcall(vim.system, cmd, {
+    stdin = 'expected' .. esc .. '[?25h' .. esc .. '[1;1H' .. esc .. '[notexpected',
+  })
+  local result = {}
+  if ok then
+    result = sed_proc:wait()
+  else
+    result.code = -999
+    result.stdout = ''
+    result.stderr = sed_proc
+  end
+  ok = ok and result.code == 0 and result.stdout == 'expected'
   if ok then
     vim.health.ok(
       '`'
         .. table.concat(cmd, ' ')
         .. '` exited with code *'
         .. result.code
-        .. '*\n'
+        .. '* and stdout `'
+        .. result.stdout
+        .. '`\n'
         .. '   `sed: '
-        .. which_sed_result.stdout:gsub('\n', '')
+        .. sed_path
         .. '`'
     )
   else
+    local result_err = result.stderr:gsub('\n', '')
+    if result_err ~= '' then
+      result_err = '      `' .. result_err .. '`'
+    end
     vim.health.error(
       '`'
         .. table.concat(cmd, ' ')
         .. '` exited with code *'
         .. result.code
-        .. '*\n'
-        .. '      `'
-        .. result.stderr:gsub('\n', '')
-        .. '` '
+        .. '* and stdout `'
+        .. result.stdout
+        .. '` (should be `expected`)\n'
+        .. result_err
+        .. '`\n'
+        .. '   `sed: '
+        .. sed_path
+        .. '`'
     )
   end
 end
@@ -209,7 +219,65 @@ M.check_kitty_version = function(check_only)
   return false
 end
 
+local function check_kitty_debug_config()
+  vim.health.start('kitty-scrollback: Kitty debug config')
+  local kitty_debug_config_kitten =
+    vim.api.nvim_get_runtime_file('python/kitty_debug_config.py', false)[1]
+  local debug_config_log = vim.fn.stdpath('data') .. '/kitty-scrollback.nvim/debug_config.log'
+  local result =
+    vim.system({ 'kitty', '@', 'kitten', kitty_debug_config_kitten, debug_config_log }):wait()
+  if result.code == 0 then
+    if vim.fn.filereadable(debug_config_log) then
+      vim.health.ok(table.concat(vim.fn.readfile(debug_config_log), '\n   '))
+    else
+      vim.health.error('cannot read ' .. debug_config_log)
+    end
+  else
+    local stderr = result.stderr:gsub('\n', '') or ''
+    vim.health.error(stderr)
+  end
+end
+
+local function check_kitty_scrollback_nvim_version()
+  local current_version = nil
+  local tag_cmd = { 'git', 'describe', '--exact-match', '--tags' }
+  local ksb_dir =
+    vim.fn.fnamemodify(vim.api.nvim_get_runtime_file('lua/kitty-scrollback', false)[1], ':h:h')
+  local tag_cmd_result = vim.system(tag_cmd, { cwd = ksb_dir }):wait()
+  if tag_cmd_result.code == 0 then
+    current_version = tag_cmd_result.stdout
+  else
+    local commit_cmd = { 'git', 'rev-parse', '--short', 'HEAD' }
+    local commit_cmd_result = vim.system(commit_cmd, { cwd = ksb_dir }):wait()
+    if commit_cmd_result.code == 0 then
+      current_version = commit_cmd_result.stdout
+    end
+  end
+  local version_found = current_version and current_version ~= ''
+  local header = '*kitty-scrollback.nvim* @ '
+    .. (
+      version_found and '`' .. current_version:gsub('%s$', '`\n') ---@diagnostic disable-line: need-check-nil
+      or 'ERROR failed to determine version\n'
+    )
+  local health_fn = not version_found and vim.health.warn
+    or function(msg)
+      vim.health.ok('     ' .. msg)
+    end
+  vim.health.start('kitty-scrollback: kitty-scrollback.nvim version')
+  health_fn([[  `|`\___/`|`       ]] .. header .. [[
+         =) `^`Y`^` (=
+          \  *^*  /       If you have any issues or questions using *kitty-scrollback.nvim* then     
+          ` )=*=( `       please create an issue at                                                    
+          /     \       https://github.com/mikesmithgh/kitty-scrollback.nvim/issues and              
+          |     |       provide the `KittyScrollbackCheckHealth` report.                               
+         /| | | |\                                                                                    
+         \| | `|`_`|`/\
+          /_// ___/     *Bonus* *points* *for* *cat* *memes*
+             \_)       ]])
+end
+
 M.check = function()
+  check_kitty_scrollback_nvim_version()
   if
     M.check_nvim_version()
     and check_kitty_remote_control()
@@ -219,6 +287,7 @@ M.check = function()
     check_clipboard()
     check_kitty_shell_integration()
     check_sed()
+    check_kitty_debug_config()
   end
 end
 

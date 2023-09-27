@@ -385,59 +385,62 @@ M.launch = function()
       vim.o.columns = min_cols
     end
     vim.schedule(function()
-      vim.fn.termopen(
-        [[kitty @ get-text --match="id:]]
-          .. kitty_data.window_id
-          .. [[" ]]
-          .. get_text_opts
-          .. [[ | ]]
-          .. [[sed -e 's/$/\x1b[0m/g' ]] -- append all lines with reset to avoid unintended colors
-          .. [[-e 's/\x1b\[\?25.\x1b\[.*;.*H\x1b\[.*//g']] -- remove control sequence added by --add-cursor flag
-          .. [[ && kitty +runpy 'sys.stdout.flush()']],
-        {
-          stdout_buffered = true,
-          on_exit = function()
-            ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
-            vim.fn.timer_start(20, function(t) ---@diagnostic disable-line: redundant-parameter
-              local timer_info = vim.fn.timer_info(t)[1] or {}
-              local ready = ksb_util.remove_process_exited()
-              if ready or timer_info['repeat'] == 0 then
-                vim.fn.timer_stop(t)
-
-                if
-                  opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all'
-                then
-                  set_cursor_position(kitty_data)
-                end
-                ksb_win.show_status_window()
-
-                -- improve buffer name to avoid displaying complex command to user
-                local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
-                term_buf_name = term_buf_name:gsub('^(term://.-:).*', '%1kitty-scrollback.nvim')
-                vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
-                vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
-
-                ksb_kitty_cmds.close_kitty_loading_window()
-                if opts.restore_options then
-                  restore_orig_options()
-                end
-                if
-                  opts.callbacks
-                  and opts.callbacks.after_ready
-                  and type(opts.callbacks.after_ready) == 'function'
-                then
-                  vim.cmd.redraw()
-                  vim.schedule(function()
-                    opts.callbacks.after_ready(kitty_data, opts)
-                  end)
-                end
-              end
-            end, {
-              ['repeat'] = 200,
-            })
-          end,
-        }
+      local esc = vim.fn.eval([["\e"]])
+      local kitty_get_text_cmd = string.format(
+        [[kitty @ get-text --match="id:%s" %s | ]],
+        kitty_data.window_id,
+        get_text_opts
       )
+      local sed_cmd = string.format(
+        [[sed -E -e 's/$/%s[0m/g' ]] -- append all lines with reset to avoid unintended colors
+          .. [[-e 's/%s\[\?25.%s\[.*;.*H%s\[.*//g']], -- remove control sequence added by --add-cursor flag
+        esc,
+        esc,
+        esc,
+        esc
+      )
+      local flush_stdout_cmd = [[ && kitty +runpy 'sys.stdout.flush()']]
+      vim.fn.termopen(kitty_get_text_cmd .. sed_cmd .. flush_stdout_cmd, {
+        stdout_buffered = true,
+        on_exit = function()
+          ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
+          vim.fn.timer_start(20, function(t) ---@diagnostic disable-line: redundant-parameter
+            local timer_info = vim.fn.timer_info(t)[1] or {}
+            local ready = ksb_util.remove_process_exited()
+            if ready or timer_info['repeat'] == 0 then
+              vim.fn.timer_stop(t)
+
+              if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
+                set_cursor_position(kitty_data)
+              end
+              ksb_win.show_status_window()
+
+              -- improve buffer name to avoid displaying complex command to user
+              local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
+              term_buf_name = term_buf_name:gsub('^(term://.-:).*', '%1kitty-scrollback.nvim')
+              vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
+              vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
+
+              ksb_kitty_cmds.close_kitty_loading_window()
+              if opts.restore_options then
+                restore_orig_options()
+              end
+              if
+                opts.callbacks
+                and opts.callbacks.after_ready
+                and type(opts.callbacks.after_ready) == 'function'
+              then
+                vim.cmd.redraw()
+                vim.schedule(function()
+                  opts.callbacks.after_ready(kitty_data, opts)
+                end)
+              end
+            end
+          end, {
+            ['repeat'] = 200,
+          })
+        end,
+      })
     end)
     if
       opts.callbacks
