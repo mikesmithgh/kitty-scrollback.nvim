@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.1...v1.1.2) (2023-09-27)
+
+
+### Bug Fixes
+
+* **healthcheck:** change sed check and add debug details ([#22](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/22)) ([dfd7f0a](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/dfd7f0a4ca0a9dbbe3cb96526ffc420f13c4dae8))
+
 ## [1.1.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.0...v1.1.1) (2023-09-25)
 
 
