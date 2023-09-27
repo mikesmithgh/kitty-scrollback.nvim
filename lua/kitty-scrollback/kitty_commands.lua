@@ -80,7 +80,8 @@ M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
     '\r'
   )
   -- wrap in bracketed paste mode
-  cmd_str = '\\x1b[200~' .. cmd_str .. '\r\\x1b[201~' -- see https://cirw.in/blog/bracketed-paste
+  local esc = vim.fn.eval([["\e"]])
+  cmd_str = esc .. '[200~' .. cmd_str .. '\r' .. esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
   -- if not bracketed paste mode trigger add a carriage return to execute command
   if not bracketed_paste_mode then
     cmd_str = cmd_str .. '\r'
