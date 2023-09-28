@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.3...v1.1.4) (2023-09-28)
+
+
+### Bug Fixes
+
+* **healthcheck:** add fallback logic for < 0.10 closes [#23](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/23) ([#26](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/26)) ([f1e8c40](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/f1e8c4048ddd5a3017424b89ace08cf59ac53848))
+
 ## [1.1.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.2...v1.1.3) (2023-09-28)
 
 
