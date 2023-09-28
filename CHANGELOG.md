@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.2...v1.1.3) (2023-09-28)
+
+
+### Bug Fixes
+
+* improve extent validation logic ([#25](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/25)) ([9772715](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/97727150343c41578b829e225fcc831845e8ba44))
+
 ## [1.1.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.1...v1.1.2) (2023-09-27)
 
 
