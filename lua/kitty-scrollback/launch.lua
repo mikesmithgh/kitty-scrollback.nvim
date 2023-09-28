@@ -315,7 +315,6 @@ local function validate_extent(extent)
   if ksb_health.is_valid_extent_keyword(extent) then
     return true
   end
-  ksb_kitty_cmds.close_kitty_loading_window()
   local msg = vim.list_extend({
     '',
     '==============================================================================',
@@ -337,6 +336,7 @@ local function validate_extent(extent)
   vim.api.nvim_set_current_buf(error_bufid)
   vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, msg)
   vim.cmd.redraw()
+  ksb_kitty_cmds.close_kitty_loading_window()
   local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
   if response ~= 2 then
     ksb_kitty_cmds.signal_term_to_kitty_child_process()
