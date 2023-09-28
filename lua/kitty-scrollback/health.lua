@@ -375,34 +375,24 @@ end
 
 ---@param extent string
 M.is_valid_extent_keyword = function(extent)
-  local standard = { 'screen', 'all', 'selection' }
-  local shell_integration_required = {
-    'last_cmd_output',
-    'first_cmd_output_on_screen',
-    'last_visited_cmd_output',
-    'last_non_empty_output',
-  }
-  local valid_keywords = { 'enabled', 'no-cursor', 'no-title', 'no-complete', 'no-cwd' }
   local valid = false
-  for _, e in pairs(standard) do
-    if e == extent:lower() then
-      return true
-    end
+
+  local standard = { 'screen', 'all', 'selection' }
+  local standard_extent = vim.tbl_filter(function(e)
+    return e == extent:lower()
+  end, standard)
+  if #standard_extent > 0 then
+    return true
   end
-  for _, e in pairs(shell_integration_required) do
-    if e == extent:lower() then
-      local shell_integration = p.kitty_data.kitty_opts.shell_integration
-      for _, keyword in pairs(shell_integration) do
-        local k = keyword:lower()
-        if k == 'disabled' or k == 'no-prompt-mark' then
-          return false
-        end
-        for _, valid_keyword in pairs(valid_keywords) do
-          if k == valid_keyword then
-            valid = true
-          end
-        end
-      end
+
+  local shell_integration = p.kitty_data.kitty_opts.shell_integration
+  for _, keyword in pairs(shell_integration) do
+    local k = keyword:lower()
+    if k == 'disabled' or k == 'no-prompt-mark' then
+      return false
+    end
+    if k == 'enabled' then
+      valid = true
     end
   end
   return valid
