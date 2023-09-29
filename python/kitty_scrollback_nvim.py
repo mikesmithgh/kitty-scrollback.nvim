@@ -27,6 +27,7 @@ def pipe_data(w, target_window_id, ksb_dir, config_files):
         'lines': w.screen.lines,
         'columns': w.screen.columns,
         'window_id': int(target_window_id),
+        'window_title': w.title,
         'ksb_dir': ksb_dir,
         'kitty_opts': {
             "shell_integration":
@@ -106,11 +107,15 @@ def handle_result(args: List[str],
         config_files = parse_config_files(args)
         cwd = parse_cwd(args)
         env = parse_env(args)
-        kitty_data = json.dumps(
-            pipe_data(w,
-                      target_window_id,
-                      ksb_dir,
-                      config_files))
+        kitty_data_str = pipe_data(w, target_window_id, ksb_dir, config_files)
+        kitty_data = json.dumps(kitty_data_str)
+
+        if w.title.startswith('kitty-scrollback.nvim'):
+            print(
+                f'[Warning] kitty-scrollback.nvim: skipping action, window {target_window_id} has title that '
+                'starts with "kitty-scrollback.nvim"')
+            print(json.dumps(kitty_data_str, indent=2))
+            return
 
         kitty_args = (
             '--copy-env',
