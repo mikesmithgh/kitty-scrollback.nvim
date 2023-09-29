@@ -387,11 +387,8 @@ M.launch = function()
     end
     vim.schedule(function()
       local esc = vim.fn.eval([["\e"]])
-      local kitty_get_text_cmd = string.format(
-        [[kitty @ get-text --match="id:%s" %s | ]],
-        kitty_data.window_id,
-        get_text_opts
-      )
+      local kitty_get_text_cmd =
+        string.format([[kitty @ get-text --match="id:%s" %s]], kitty_data.window_id, get_text_opts)
       local sed_cmd = string.format(
         [[sed -E -e 's/$/%s[0m/g' ]] -- append all lines with reset to avoid unintended colors
           .. [[-e 's/%s\[\?25.%s\[.*;.*H%s\[.*//g']], -- remove control sequence added by --add-cursor flag
@@ -400,9 +397,11 @@ M.launch = function()
         esc,
         esc
       )
-      local flush_stdout_cmd = [[ && kitty +runpy 'sys.stdout.flush()']]
-      vim.fn.termopen(kitty_get_text_cmd .. sed_cmd .. flush_stdout_cmd, {
+      local flush_stdout_cmd = [[kitty +runpy 'sys.stdout.flush()']]
+      local full_cmd = kitty_get_text_cmd .. ' | ' .. sed_cmd .. ' && ' .. flush_stdout_cmd
+      vim.fn.termopen(full_cmd, {
         stdout_buffered = true,
+        stderr_buffered = true,
         on_exit = function()
           ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
           vim.fn.timer_start(20, function(t) ---@diagnostic disable-line: redundant-parameter
@@ -422,7 +421,6 @@ M.launch = function()
               vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
               vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
 
-              ksb_kitty_cmds.close_kitty_loading_window()
               if opts.restore_options then
                 restore_orig_options()
               end
@@ -436,6 +434,7 @@ M.launch = function()
                   opts.callbacks.after_ready(kitty_data, opts)
                 end)
               end
+              ksb_kitty_cmds.close_kitty_loading_window()
             end
           end, {
             ['repeat'] = 200,

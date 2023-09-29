@@ -27,6 +27,7 @@ local system_handle_error = function(cmd, sys_opts)
     local stdout = result.stdout or ''
     local stderr = result.stderr or ''
     local err = {
+      '*entrypoint:* |vim.system()|',
       '*command:* ' .. table.concat(cmd, ' '),
       '*pid:* ' .. proc.pid,
       '*code:* ' .. result.code,

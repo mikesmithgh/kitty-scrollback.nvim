@@ -4,6 +4,7 @@ local ksb_util = require('kitty-scrollback.util')
 
 local M = {}
 
+---@type KsbPrivate
 local p
 local opts ---@diagnostic disable-line: unused-local
 
