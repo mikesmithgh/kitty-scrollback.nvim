@@ -22,6 +22,7 @@ KsbKittyData                              *kitty-scrollback.launch.KsbKittyData*
         {lines}         (integer)  the number of rows of the screen in kitty
         {columns}       (integer)  the number of columns of the screen in kitty
         {window_id}     (integer)  the id of the window to get scrollback text
+        {window_title}  (string)   the title of the window to get scrollback text
         {ksb_dir}       (string)   the base runtime path of kitty-scrollback.nvim
         {config_files}  (table)
 

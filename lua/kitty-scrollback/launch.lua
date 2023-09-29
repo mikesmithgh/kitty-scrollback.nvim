@@ -37,6 +37,7 @@ local M = {}
 ---@field lines integer the number of rows of the screen in kitty
 ---@field columns integer the number of columns of the screen in kitty
 ---@field window_id integer the id of the window to get scrollback text
+---@field window_title string the title of the window to get scrollback text
 ---@field ksb_dir string the base runtime path of kitty-scrollback.nvim
 ---@field config_files table<string> the file containing a config function with user defined options
 ---@field kitty_opts KsbKittyOpts relevent kitty configuration values
