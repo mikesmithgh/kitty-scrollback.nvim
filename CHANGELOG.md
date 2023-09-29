@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.4...v1.1.5) (2023-09-29)
+
+
+### Bug Fixes
+
+* disable opening scrollback if already open ([#27](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/27)) ([b78242d](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/b78242d7df0f597cbe64379787bdf16346b80c16))
+
 ## [1.1.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.3...v1.1.4) (2023-09-28)
 
 
