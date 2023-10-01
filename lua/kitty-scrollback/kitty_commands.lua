@@ -10,7 +10,7 @@ M.setup = function(private, options)
   opts = options ---@diagnostic disable-line: unused-local
 end
 
-local system_handle_error = function(cmd, sys_opts)
+local system_handle_error = function(cmd, sys_opts, ignore_error)
   local proc = vim.system(cmd, sys_opts or {})
   local result = proc:wait()
   local ok = result.code == 0
@@ -27,6 +27,7 @@ local system_handle_error = function(cmd, sys_opts)
     local stdout = result.stdout or ''
     local stderr = result.stderr or ''
     local err = {
+      '*entrypoint:* |vim.system()|',
       '*command:* ' .. table.concat(cmd, ' '),
       '*pid:* ' .. proc.pid,
       '*code:* ' .. result.code,
@@ -53,13 +54,18 @@ local system_handle_error = function(cmd, sys_opts)
       buf = error_bufid,
     })
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
-    vim.api.nvim_set_current_buf(error_bufid)
     if stderr:match('.*allow_remote_control.*') then
       vim.list_extend(msg, ksb_health.advice().allow_remote_control)
+      ignore_error = false -- fatal error, always report this error
     end
     if stderr:match('.*/dev/tty.*') then
       vim.list_extend(msg, ksb_health.advice().listen_on)
+      ignore_error = false -- fatal error, always report this error
     end
+    if ignore_error then
+      return ok, result
+    end
+    vim.api.nvim_set_current_buf(error_bufid)
     vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, vim.list_extend(msg, err))
     vim.cmd.redraw()
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
@@ -96,16 +102,26 @@ M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
   M.signal_term_to_kitty_child_process()
 end
 
-M.close_kitty_loading_window = function()
-  if p.kitty_loading_winid then
-    system_handle_error({
+M.list_kitty_windows = function()
+  return system_handle_error({
+    'kitty',
+    '@',
+    'ls',
+  })
+end
+
+M.close_kitty_loading_window = function(ignore_error)
+  if p and p.kitty_loading_winid then
+    local winid = p.kitty_loading_winid
+    p.kitty_loading_winid = nil
+    return system_handle_error({
       'kitty',
       '@',
       'close-window',
-      '--match=id:' .. p.kitty_loading_winid,
-    })
+      '--match=id:' .. winid,
+    }, {}, ignore_error)
   end
-  p.kitty_loading_winid = nil
+  return true
 end
 
 M.signal_winchanged_to_kitty_child_process = function()
@@ -155,15 +171,16 @@ M.open_kitty_loading_window = function(env)
   end
 end
 
-M.get_kitty_colors = function(kitty_data)
+M.get_kitty_colors = function(kitty_data, ignore_error, no_window_id)
+  local match = no_window_id and nil or '--match=id:' .. kitty_data.window_id
   local ok, result = system_handle_error({
     'kitty',
     '@',
     'get-colors',
-    '--match=id:' .. kitty_data.window_id,
-  })
+    match,
+  }, { text = true }, ignore_error)
   if not ok then
-    return ok
+    return ok, result
   end
   local kitty_colors_str = result.stdout or ''
   local kitty_colors = {}
