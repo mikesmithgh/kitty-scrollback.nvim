@@ -51,7 +51,7 @@ M.paste_winopts = function(row, col, height_offset)
     if winopts.width < 0 then
       -- current line is larger than window, put window below current line
       vim.fn.setcursorcharpos({ vim.fn.line('.'), 0 })
-      vim.cmd.redraw()
+      ksb_util.restore_and_redraw()
       winopts.width = vim.o.columns - 1
       winopts.col = 0
     end
@@ -124,7 +124,7 @@ M.open_paste_window = function(start_insert)
       vim.cmd.startinsert({ bang = true })
     end)
   end
-  vim.cmd.redraw()
+  ksb_util.restore_and_redraw()
   vim.schedule_wrap(vim.cmd.doautocmd)('WinResized')
 end
 

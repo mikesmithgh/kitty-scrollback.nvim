@@ -1,7 +1,9 @@
 ---@mod kitty-scrollback.kitty_commands
 local ksb_health = require('kitty-scrollback.health')
+local ksb_util = require('kitty-scrollback.util')
 local M = {}
 
+---@type KsbPrivate
 local p
 local opts ---@diagnostic disable-line: unused-local
 
@@ -10,66 +12,190 @@ M.setup = function(private, options)
   opts = options ---@diagnostic disable-line: unused-local
 end
 
+local error_header = {
+  '',
+  '==============================================================================',
+  'kitty-scrollback.nvim',
+  '',
+  'ERROR: failed to execute remote Kitty command',
+  '',
+}
+
+local display_error = function(cmd, r)
+  local msg = vim.list_extend({}, error_header)
+  local stdout = r.stdout or ''
+  local stderr = r.stderr or ''
+  local err = {}
+  if r.entrypoint then
+    table.insert(err, '*entrypoint:* |' .. r.entrypoint:gsub('(%s+)', '|%1|') .. '| ')
+  end
+  table.insert(err, '*command:* ' .. cmd)
+  if r.pid then
+    table.insert(err, '*pid:* ' .. r.pid)
+  end
+  if r.channel_id then
+    table.insert(err, '*channel_id:* ' .. r.channel_id)
+  end
+  if r.code then
+    table.insert(err, '*code:* ' .. r.code)
+  end
+  if r.signal then
+    table.insert(err, '*signal:* ' .. r.signal)
+  end
+
+  if r.full_cmd then
+    table.insert(err, '*full_command:* ')
+    table.insert(err, '>sh')
+    table.insert(err, '    ' .. r.full_cmd)
+    table.insert(err, '<')
+  end
+
+  table.insert(err, '*stdout:*')
+
+  local out = {}
+  for line in stdout:gmatch('[^\r\n]+') do
+    table.insert(out, '  ' .. line)
+  end
+  if next(out) then
+    table.insert(err, '')
+    vim.list_extend(err, out)
+  else
+    table.insert(err, '  <none>')
+  end
+  table.insert(err, '')
+  table.insert(err, '*stderr:*')
+  if #stderr > 0 then
+    for line in stderr:gmatch('[^\r\n]+') do
+      table.insert(err, '')
+      table.insert(err, '  ' .. line)
+    end
+  else
+    table.insert(err, '  <none>')
+  end
+  table.insert(err, '')
+  local error_bufid = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_set_current_buf(error_bufid)
+  vim.o.conceallevel = 2
+  vim.o.concealcursor = 'n'
+  vim.o.foldenable = false
+  vim.api.nvim_set_option_value('filetype', 'checkhealth', {
+    buf = error_bufid,
+  })
+  ksb_util.restore_and_redraw()
+  local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
+  if stderr:match('.*allow_remote_control.*') then
+    vim.list_extend(msg, ksb_health.advice().allow_remote_control)
+  end
+  if stderr:match('.*/dev/tty.*') then
+    vim.list_extend(msg, ksb_health.advice().listen_on)
+  end
+  vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, vim.list_extend(msg, err))
+  M.close_kitty_loading_window()
+  ksb_util.restore_and_redraw()
+  local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
+  if response ~= 2 then
+    M.signal_term_to_kitty_child_process(true)
+  end
+end
+
 local system_handle_error = function(cmd, sys_opts)
   local proc = vim.system(cmd, sys_opts or {})
   local result = proc:wait()
   local ok = result.code == 0
 
   if not ok then
-    local msg = {
-      '',
-      '==============================================================================',
-      'kitty-scrollback.nvim',
-      '',
-      'ERROR: failed to execute remote Kitty command',
-      '',
-    }
-    local stdout = result.stdout or ''
-    local stderr = result.stderr or ''
-    local err = {
-      '*entrypoint:* |vim.system()|',
-      '*command:* ' .. table.concat(cmd, ' '),
-      '*pid:* ' .. proc.pid,
-      '*code:* ' .. result.code,
-      '*signal:* ' .. result.signal,
-      '*stdout:*',
-    }
-    local out = {}
-    for line in stdout:gmatch('[^\r\n]+') do
-      table.insert(out, '  ' .. line)
-    end
-    if next(out) then
-      vim.list_extend(err, out)
-    else
-      table.insert(err, '  <none>')
-    end
-    table.insert(err, '*stderr:*')
-    for line in stderr:gmatch('[^\r\n]+') do
-      table.insert(err, '  ' .. line)
-    end
-    local error_bufid = vim.api.nvim_create_buf(false, true)
-    vim.o.conceallevel = 2
-    vim.o.concealcursor = 'n'
-    vim.api.nvim_set_option_value('filetype', 'checkhealth', {
-      buf = error_bufid,
+    display_error(table.concat(cmd, ' '), {
+      entrypoint = 'vim.system()',
+      pid = proc.pid,
+      code = result.code,
+      signal = result.signal,
+      stdout = result.stdout,
+      stderr = result.stderr,
     })
-    local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
-    vim.api.nvim_set_current_buf(error_bufid)
-    if stderr:match('.*allow_remote_control.*') then
-      vim.list_extend(msg, ksb_health.advice().allow_remote_control)
-    end
-    if stderr:match('.*/dev/tty.*') then
-      vim.list_extend(msg, ksb_health.advice().listen_on)
-    end
-    vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, vim.list_extend(msg, err))
-    vim.cmd.redraw()
-    local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
-    if response ~= 2 then
-      M.signal_term_to_kitty_child_process(true)
-    end
   end
 
   return ok, result
+end
+
+M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
+  local esc = vim.fn.eval([["\e"]])
+  local kitty_get_text_cmd =
+    string.format([[kitty @ get-text --match="id:%s" %s]], kitty_data.window_id, get_text_opts)
+  local sed_cmd = string.format(
+    [[sed -E -e 's/$/%s[0m/g' ]] -- append all lines with reset to avoid unintended colors
+      .. [[-e 's/%s\[\?25.%s\[.*;.*H%s\[.*//g']], -- remove control sequence added by --add-cursor flag
+    esc,
+    esc,
+    esc,
+    esc
+  )
+  local flush_stdout_cmd = [[kitty +runpy 'sys.stdout.flush()']]
+  local full_cmd = kitty_get_text_cmd .. ' | ' .. sed_cmd .. ' && ' .. flush_stdout_cmd
+  local stdout
+  local stderr
+  vim.fn.termopen(full_cmd, {
+    stdout_buffered = true,
+    stderr_buffered = true,
+    on_stdout = function(_, data)
+      stdout = data
+    end,
+    on_stderr = function(_, data)
+      stderr = data
+    end,
+    on_exit = function(id, exit_code, event)
+      if exit_code == 0 then
+        -- no need to check allow_remote_control or dev/tty because earlier commands would have reported the error
+        if #stdout >= 2 then
+          -- the exit code may have been lost while piping the command through sed
+          -- so search last 10 lines for and error reported by Kitty
+          local error_index = -1
+          for i = #stdout, #stdout - 10, -1 do
+            -- kitty/tools/cli/markup/prettify.go
+            --	ans.Err = fmt_ctx.SprintFunc("bold fg=bright-red")
+            if stdout[i]:match('^' .. esc .. '%[1;91mError' .. esc .. '%[221;39m: .*') then
+              error_index = i
+              break
+            end
+          end
+
+          if error_index > 0 then
+            display_error(kitty_get_text_cmd, {
+              entrypoint = 'termopen() :: exit_code = 0 and error_index > 0',
+              full_cmd = full_cmd,
+              code = 1, -- exit code is not returned through pipe but we can assume 1 due to error message
+              channel_id = id,
+              stdout = table.concat(
+                vim.tbl_map(function(line)
+                  return line
+                    :gsub('[\27\155][][()#:;?%d]*[A-PRZcf-ntqry=><~]', '')
+                    :gsub(esc .. '\\', '')
+                    :gsub(';k=s', '')
+                end, stdout),
+                '\n'
+              ),
+              stderr = stderr,
+            })
+          end
+        end
+        on_exit_cb(id, exit_code, event)
+      else
+        local out = stdout
+            and table
+              .concat(stdout, '\n', #stdout - 10, #stdout)
+              :gsub('[\27\155][][()#:;?%d]*[A-PRZcf-ntqry=><~]', '')
+              :gsub('' .. esc .. '\\', '')
+              :gsub(';k=s', '')
+          or nil
+        display_error(full_cmd, {
+          entrypoint = 'termopen() :: exit_code ~= 0',
+          code = exit_code,
+          channel_id = id,
+          stdout = out,
+          stderr = stderr,
+        })
+      end
+    end,
+  })
 end
 
 M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
