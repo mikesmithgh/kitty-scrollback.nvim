@@ -8,6 +8,7 @@ local ksb_win = require('kitty-scrollback.windows')
 
 local M = {}
 
+---@type KsbPrivate
 local p
 ---@type KsbOpts
 local opts ---@diagnostic disable-line: unused-local
@@ -153,7 +154,7 @@ M.set_yank_post_autocmd = function()
               { buf = vim.api.nvim_get_current_buf() }
             )
             vim.cmd.help('clipboard-tool')
-            vim.cmd.redraw()
+            ksb_util.restore_and_redraw()
             local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
             if response ~= 2 then
               ksb_api.quit_all()

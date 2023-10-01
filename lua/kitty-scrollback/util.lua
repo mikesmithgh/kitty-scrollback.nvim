@@ -1,6 +1,7 @@
 ---@mod kitty-scrollback.util
 local M = {}
 
+---@type KsbPrivate
 local p
 local opts ---@diagnostic disable-line: unused-local
 
@@ -81,6 +82,13 @@ M.nvim_version_tostring = function()
     ret = ret .. '+' .. nvim_ver.build
   end
   return ret
+end
+
+M.restore_and_redraw = function()
+  if p.orig_columns then
+    vim.o.columns = p.orig_columns
+  end
+  vim.cmd.redraw()
 end
 
 return M
