@@ -172,6 +172,17 @@ M.checkhealth()                               *kitty-scrollback.api.checkhealth*
 
                                *kitty-scrollback.api.close_kitty_loading_window*
 M.close_kitty_loading_window()
+     Try to close Kitty loading window
+     If the first attempt to close fails, then list all Kitty windows to see if window exists
+     If the window does exist, then reattempt to close the window and report error on failure
+
+
+M.get_kitty_colors({kitty_data})         *kitty-scrollback.api.get_kitty_colors*
+     Try to get Kitty terminal colors
+     If the first attempt fails for the given window id, then reattempt without a window id
+
+    Parameters: ~
+        {kitty_data}  (KsbKittyData)  @return boolean, vim.SystemCompleted
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
