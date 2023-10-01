@@ -1,3 +1,10 @@
+## [1.1.7](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.6...v1.1.7) (2023-10-01)
+
+
+### Bug Fixes
+
+* error handling improvements ([#29](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/29)) ([21e83f4](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/21e83f4ae15a93cc0b8f5d29fc52ad4b6098ed9b))
+
 ## [1.1.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.5...v1.1.6) (2023-10-01)
 
 
