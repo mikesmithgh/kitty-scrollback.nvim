@@ -90,7 +90,7 @@ local display_error = function(cmd, r)
     vim.list_extend(msg, ksb_health.advice().listen_on)
   end
   vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, vim.list_extend(msg, err))
-  M.close_kitty_loading_window()
+  M.close_kitty_loading_window() -- cannot use ignore parameter or will be infinite recursion
   ksb_util.restore_and_redraw()
   local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
   if response ~= 2 then
@@ -103,7 +103,7 @@ local system_handle_error = function(cmd, sys_opts, ignore_error)
   local result = proc:wait()
   local ok = result.code == 0
 
-  if not ok then
+  if not ignore_error and not ok then
     display_error(table.concat(cmd, ' '), {
       entrypoint = 'vim.system()',
       pid = proc.pid,
@@ -133,6 +133,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   local full_cmd = kitty_get_text_cmd .. ' | ' .. sed_cmd .. ' && ' .. flush_stdout_cmd
   local stdout
   local stderr
+  local tail_max = 10
   vim.fn.termopen(full_cmd, {
     stdout_buffered = true,
     stderr_buffered = true,
@@ -147,11 +148,12 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
         -- no need to check allow_remote_control or dev/tty because earlier commands would have reported the error
         if #stdout >= 2 then
           -- the exit code may have been lost while piping the command through sed
-          -- so search last 10 lines for and error reported by Kitty
+          -- so search last lines for and error reported by Kitty
           local error_index = -1
-          for i = #stdout, #stdout - 10, -1 do
-            -- kitty/tools/cli/markup/prettify.go
-            --	ans.Err = fmt_ctx.SprintFunc("bold fg=bright-red")
+          local tail_diff = #stdout - tail_max
+          local tail_count = tail_diff < 1 and 1 or math.min(tail_diff, #stdout)
+          for i = #stdout, tail_count, -1 do
+            -- see for match kitty/tools/cli/markup/prettify.go ans.Err = fmt_ctx.SprintFunc("bold fg=bright-red")
             if stdout[i]:match('^' .. esc .. '%[1;91mError' .. esc .. '%[221;39m: .*') then
               error_index = i
               break
@@ -173,7 +175,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
                 end, stdout),
                 '\n'
               ),
-              stderr = stderr,
+              stderr = stderr and table.concat(stderr, '\n') or nil,
             })
           end
         end
@@ -181,7 +183,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
       else
         local out = stdout
             and table
-              .concat(stdout, '\n', #stdout - 10, #stdout)
+              .concat(stdout, '\n', math.max(#stdout - tail_max, 1), #stdout)
               :gsub('[\27\155][][()#:;?%d]*[A-PRZcf-ntqry=><~]', '')
               :gsub('' .. esc .. '\\', '')
               :gsub(';k=s', '')
@@ -191,7 +193,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
           code = exit_code,
           channel_id = id,
           stdout = out,
-          stderr = stderr,
+          stderr = stderr and table.concat(stderr, '\n') or nil,
         })
       end
     end,
@@ -269,7 +271,7 @@ end
 
 M.open_kitty_loading_window = function(env)
   if p.kitty_loading_winid then
-    M.close_kitty_loading_window()
+    M.close_kitty_loading_window(true)
   end
   local kitty_cmd = vim.list_extend({
     'kitty',

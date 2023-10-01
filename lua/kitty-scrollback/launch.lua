@@ -337,7 +337,7 @@ local function validate_extent(extent)
   vim.api.nvim_set_current_buf(error_bufid)
   vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, msg)
   ksb_util.restore_and_redraw()
-  ksb_kitty_cmds.close_kitty_loading_window()
+  ksb_kitty_cmds.close_kitty_loading_window(true)
   local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
   if response ~= 2 then
     ksb_kitty_cmds.signal_term_to_kitty_child_process()
@@ -419,7 +419,7 @@ M.launch = function()
                 opts.callbacks.after_ready(kitty_data, opts)
               end)
             end
-            ksb_kitty_cmds.close_kitty_loading_window()
+            ksb_api.close_kitty_loading_window()
           end
         end, {
           ['repeat'] = 200,
