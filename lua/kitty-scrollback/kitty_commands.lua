@@ -98,7 +98,7 @@ local display_error = function(cmd, r)
   end
 end
 
-local system_handle_error = function(cmd, sys_opts)
+local system_handle_error = function(cmd, sys_opts, ignore_error)
   local proc = vim.system(cmd, sys_opts or {})
   local result = proc:wait()
   local ok = result.code == 0
@@ -223,16 +223,26 @@ M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
   M.signal_term_to_kitty_child_process()
 end
 
-M.close_kitty_loading_window = function()
-  if p.kitty_loading_winid then
-    system_handle_error({
+M.list_kitty_windows = function()
+  return system_handle_error({
+    'kitty',
+    '@',
+    'ls',
+  })
+end
+
+M.close_kitty_loading_window = function(ignore_error)
+  if p and p.kitty_loading_winid then
+    local winid = p.kitty_loading_winid
+    p.kitty_loading_winid = nil
+    return system_handle_error({
       'kitty',
       '@',
       'close-window',
-      '--match=id:' .. p.kitty_loading_winid,
-    })
+      '--match=id:' .. winid,
+    }, {}, ignore_error)
   end
-  p.kitty_loading_winid = nil
+  return true
 end
 
 M.signal_winchanged_to_kitty_child_process = function()
@@ -282,15 +292,16 @@ M.open_kitty_loading_window = function(env)
   end
 end
 
-M.get_kitty_colors = function(kitty_data)
+M.get_kitty_colors = function(kitty_data, ignore_error, no_window_id)
+  local match = no_window_id and nil or '--match=id:' .. kitty_data.window_id
   local ok, result = system_handle_error({
     'kitty',
     '@',
     'get-colors',
-    '--match=id:' .. kitty_data.window_id,
-  })
+    match,
+  }, { text = true }, ignore_error)
   if not ok then
-    return ok
+    return ok, result
   end
   local kitty_colors_str = result.stdout or ''
   local kitty_colors = {}

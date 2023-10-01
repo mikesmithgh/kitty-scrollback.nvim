@@ -8,6 +8,7 @@ local ksb_win = require('kitty-scrollback.windows')
 
 local M = {}
 
+---@type KsbPrivate
 local p
 ---@type KsbOpts
 local opts ---@diagnostic disable-line: unused-local

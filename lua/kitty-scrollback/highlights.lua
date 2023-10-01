@@ -1,4 +1,5 @@
 ---@mod kitty-scrollback.highlights
+local ksb_api = require('kitty-scrollback.api')
 local ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
 local ksb_util = require('kitty-scrollback.util')
 
@@ -85,7 +86,7 @@ end
 M.setup = function(private, options)
   p = private
   opts = options ---@diagnostic disable-line: unused-local
-  local ok, colors = ksb_kitty_cmds.get_kitty_colors(p.kitty_data)
+  local ok, colors = ksb_api.get_kitty_colors(p.kitty_data)
   if ok then
     p.kitty_colors = colors
   end

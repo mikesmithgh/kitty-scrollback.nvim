@@ -156,4 +156,56 @@ M.checkhealth = function()
   end
 end
 
+--- Try to close Kitty loading window
+--- If the first attempt to close fails, then list all Kitty windows to see if window exists
+--- If the window does exist, then reattempt to close the window and report error on failure
+M.close_kitty_loading_window = function()
+  local winid = p.kitty_loading_winid
+  local close_ok, close_result = ksb_kitty_cmds.close_kitty_loading_window(true)
+  if not close_ok then
+    if
+      close_result
+      and close_result.stderr
+      and close_result.stderr:match('.*No matching windows.*')
+    then
+      local ok, kitty_windows_result = ksb_kitty_cmds.list_kitty_windows()
+      if not ok then
+        return
+      end
+      local kitty_windows = vim.json.decode(kitty_windows_result.stdout)
+      for _, kitty_window in pairs(kitty_windows) do
+        for _, tab in pairs(kitty_window.tabs) do
+          for _, window in pairs(tab.windows) do
+            for env_name, env_value in pairs(window.env) do
+              if env_name == 'KITTY_WINDOW_ID' and tonumber(env_value) == winid then
+                -- the close error is valid, attempt one more time to properly display error to user
+                vim.defer_fn(ksb_kitty_cmds.close_kitty_loading_window, 500)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+--- Try to get Kitty terminal colors
+--- If the first attempt fails for the given window id, then reattempt without a window id
+---@param kitty_data KsbKittyData
+---@return boolean, vim.SystemCompleted
+M.get_kitty_colors = function(kitty_data)
+  local colors_ok, colors_result = ksb_kitty_cmds.get_kitty_colors(kitty_data, true)
+  if not colors_ok then
+    if
+      colors_result
+      and colors_result.stderr
+      and colors_result.stderr:match('.*No matching windows.*')
+    then
+      -- do not specify a window id
+      return ksb_kitty_cmds.get_kitty_colors(kitty_data, false, true)
+    end
+  end
+  return colors_ok, colors_result
+end
+
 return M
