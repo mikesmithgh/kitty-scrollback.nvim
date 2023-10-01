@@ -183,18 +183,22 @@ local function check_sed()
 end
 
 M.check_nvim_version = function(check_only)
+  -- fallback to older health report calls if using < 0.10
+  local start_fn = vim.health.start or vim.health.report_start
+  local ok_fn = vim.health.ok or vim.health.report_ok
+  local error_fn = vim.health.error or vim.health.report_error
   if not check_only then
-    vim.health.start('kitty-scrollback: Neovim version 0.10+')
+    start_fn('kitty-scrollback: Neovim version 0.10+')
   end
   local nvim_version = 'NVIM ' .. ksb_util.nvim_version_tostring()
   if vim.fn.has('nvim-0.10') > 0 then
     if not check_only then
-      vim.health.ok(nvim_version)
+      ok_fn(nvim_version)
     end
     return true
   else
     if not check_only then
-      vim.health.error(nvim_version, M.advice().nvim_version)
+      error_fn(nvim_version, M.advice().nvim_version)
     end
   end
   return false
@@ -274,12 +278,15 @@ local function check_kitty_scrollback_nvim_version()
          \| | `|`_`|`/\
           /_// ___/     *Bonus* *points* *for* *cat* *memes*
              \_)       ]])
+
+  -- Always consider true even if git version is not found to provide additional health checks
+  return true
 end
 
 M.check = function()
-  check_kitty_scrollback_nvim_version()
   if
-    M.check_nvim_version()
+    M.check_nvim_version() -- always check first to avoid undefined calls in versions < 0.10
+    and check_kitty_scrollback_nvim_version()
     and check_kitty_remote_control()
     and check_has_kitty_data()
     and M.check_kitty_version()
@@ -375,34 +382,24 @@ end
 
 ---@param extent string
 M.is_valid_extent_keyword = function(extent)
-  local standard = { 'screen', 'all', 'selection' }
-  local shell_integration_required = {
-    'last_cmd_output',
-    'first_cmd_output_on_screen',
-    'last_visited_cmd_output',
-    'last_non_empty_output',
-  }
-  local valid_keywords = { 'enabled', 'no-cursor', 'no-title', 'no-complete', 'no-cwd' }
   local valid = false
-  for _, e in pairs(standard) do
-    if e == extent:lower() then
-      return true
-    end
+
+  local standard = { 'screen', 'all', 'selection' }
+  local standard_extent = vim.tbl_filter(function(e)
+    return e == extent:lower()
+  end, standard)
+  if #standard_extent > 0 then
+    return true
   end
-  for _, e in pairs(shell_integration_required) do
-    if e == extent:lower() then
-      local shell_integration = p.kitty_data.kitty_opts.shell_integration
-      for _, keyword in pairs(shell_integration) do
-        local k = keyword:lower()
-        if k == 'disabled' or k == 'no-prompt-mark' then
-          return false
-        end
-        for _, valid_keyword in pairs(valid_keywords) do
-          if k == valid_keyword then
-            valid = true
-          end
-        end
-      end
+
+  local shell_integration = p.kitty_data.kitty_opts.shell_integration
+  for _, keyword in pairs(shell_integration) do
+    local k = keyword:lower()
+    if k == 'disabled' or k == 'no-prompt-mark' then
+      return false
+    end
+    if k == 'enabled' then
+      valid = true
     end
   end
   return valid

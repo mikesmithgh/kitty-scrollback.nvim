@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*   For NVIM v0.10+   Last change: 2023 September 27
+*kitty-scrollback.nvim.txt*   For NVIM v0.10+   Last change: 2023 September 29
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -410,6 +410,7 @@ ACKNOWLEDGEMENTS                      *kitty-scrollback.nvim-acknowledgements*
 - StackExchange CamelCase2snake_case() <https://codegolf.stackexchange.com/a/177958/119424> - for converting Neovim highlight names to `SCREAMING_SNAKE_CASE`
 - panvimdoc <https://github.com/kdheepak/panvimdoc> - generating vimdocs from README
 - lemmy-help <https://github.com/numToStr/lemmy-help> - generating vimdocs from Lua annotations
+- bob <https://github.com/MordechaiHadad/bob> - easy Neovim version management to check backward compatibility
 
 
 ALTERNATIVES                              *kitty-scrollback.nvim-alternatives*

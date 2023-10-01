@@ -1,3 +1,24 @@
+## [1.1.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.4...v1.1.5) (2023-09-29)
+
+
+### Bug Fixes
+
+* disable opening scrollback if already open ([#27](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/27)) ([b78242d](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/b78242d7df0f597cbe64379787bdf16346b80c16))
+
+## [1.1.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.3...v1.1.4) (2023-09-28)
+
+
+### Bug Fixes
+
+* **healthcheck:** add fallback logic for < 0.10 closes [#23](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/23) ([#26](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/26)) ([f1e8c40](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/f1e8c4048ddd5a3017424b89ace08cf59ac53848))
+
+## [1.1.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.2...v1.1.3) (2023-09-28)
+
+
+### Bug Fixes
+
+* improve extent validation logic ([#25](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/25)) ([9772715](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/97727150343c41578b829e225fcc831845e8ba44))
+
 ## [1.1.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.1...v1.1.2) (2023-09-27)
 
 

@@ -37,6 +37,7 @@ local M = {}
 ---@field lines integer the number of rows of the screen in kitty
 ---@field columns integer the number of columns of the screen in kitty
 ---@field window_id integer the id of the window to get scrollback text
+---@field window_title string the title of the window to get scrollback text
 ---@field ksb_dir string the base runtime path of kitty-scrollback.nvim
 ---@field config_files table<string> the file containing a config function with user defined options
 ---@field kitty_opts KsbKittyOpts relevent kitty configuration values
@@ -315,7 +316,6 @@ local function validate_extent(extent)
   if ksb_health.is_valid_extent_keyword(extent) then
     return true
   end
-  ksb_kitty_cmds.close_kitty_loading_window()
   local msg = vim.list_extend({
     '',
     '==============================================================================',
@@ -337,6 +337,7 @@ local function validate_extent(extent)
   vim.api.nvim_set_current_buf(error_bufid)
   vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, msg)
   vim.cmd.redraw()
+  ksb_kitty_cmds.close_kitty_loading_window()
   local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
   if response ~= 2 then
     ksb_kitty_cmds.signal_term_to_kitty_child_process()
@@ -386,11 +387,8 @@ M.launch = function()
     end
     vim.schedule(function()
       local esc = vim.fn.eval([["\e"]])
-      local kitty_get_text_cmd = string.format(
-        [[kitty @ get-text --match="id:%s" %s | ]],
-        kitty_data.window_id,
-        get_text_opts
-      )
+      local kitty_get_text_cmd =
+        string.format([[kitty @ get-text --match="id:%s" %s]], kitty_data.window_id, get_text_opts)
       local sed_cmd = string.format(
         [[sed -E -e 's/$/%s[0m/g' ]] -- append all lines with reset to avoid unintended colors
           .. [[-e 's/%s\[\?25.%s\[.*;.*H%s\[.*//g']], -- remove control sequence added by --add-cursor flag
@@ -399,8 +397,9 @@ M.launch = function()
         esc,
         esc
       )
-      local flush_stdout_cmd = [[ && kitty +runpy 'sys.stdout.flush()']]
-      vim.fn.termopen(kitty_get_text_cmd .. sed_cmd .. flush_stdout_cmd, {
+      local flush_stdout_cmd = [[kitty +runpy 'sys.stdout.flush()']]
+      local full_cmd = kitty_get_text_cmd .. ' | ' .. sed_cmd .. ' && ' .. flush_stdout_cmd
+      vim.fn.termopen(full_cmd, {
         stdout_buffered = true,
         on_exit = function()
           ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()

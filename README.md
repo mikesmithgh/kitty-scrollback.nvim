@@ -328,6 +328,7 @@ The following plugins are nice additions to your Neovim and Kitty setup.
 - StackExchange [CamelCase2snake_case()](https://codegolf.stackexchange.com/a/177958/119424) - for converting Neovim highlight names to `SCREAMING_SNAKE_CASE`
 - [panvimdoc](https://github.com/kdheepak/panvimdoc) - generating vimdocs from README
 - [lemmy-help](https://github.com/numToStr/lemmy-help) - generating vimdocs from Lua annotations
+- [bob](https://github.com/MordechaiHadad/bob) - easy Neovim version management to check backward compatibility
 
 ## 🐶 Alternatives
 - [kitty_grab](https://github.com/yurikhan/kitty_grab) - Keyboard-driven screen grabber for Kitty
