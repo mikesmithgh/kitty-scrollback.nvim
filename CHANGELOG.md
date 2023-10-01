@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.5...v1.1.6) (2023-10-01)
+
+
+### Bug Fixes
+
+* reattempt kitty window close and get-colors ([#28](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/28)) ([abc677a](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/abc677aa585a1af86207569a0d5dee03a8f33bd0)), closes [#20](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/20)
+
 ## [1.1.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.4...v1.1.5) (2023-09-29)
 
 
