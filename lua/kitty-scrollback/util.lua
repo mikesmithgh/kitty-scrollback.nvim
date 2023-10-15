@@ -52,7 +52,12 @@ M.screaming_snakecase = function(s)
     :upper()
 end
 
+--- @deprecated
+--- should no longer need this because we are using set title workaround
+--- to remove the process exited message
+--- see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
 M.remove_process_exited = function()
+  -- TODO: delete function after verifying no longer needed
   local last_line_range = vim.api.nvim_buf_line_count(p.bufid) - vim.o.lines
   if last_line_range < 1 then
     last_line_range = 1

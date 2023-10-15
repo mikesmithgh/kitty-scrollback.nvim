@@ -5,7 +5,7 @@ on:
       - '**'
     paths: 
       - README.md
-      - .github/workflows/panvimdoc.yml
+      - .github/workflows/vimdocs.yml
       - doc/**
       - lua/kitty-scrollback/launch.lua
       - lua/kitty-scrollback/api.lua

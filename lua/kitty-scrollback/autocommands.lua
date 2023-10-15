@@ -100,16 +100,6 @@ M.set_term_enter_autocmd = function(bufid)
     callback = function(e)
       if e.buf == bufid then
         ksb_win.open_paste_window(true)
-
-        -- when performing last cmd or visited output, every time termenter is triggered it
-        -- is restoring the process exited message, this may be a bug in neovim
-        vim.fn.timer_start(20, function(t) ---@diagnostic disable-line: redundant-parameter
-          if ksb_util.remove_process_exited() then
-            vim.fn.timer_stop(t)
-          end
-        end, {
-          ['repeat'] = 100,
-        })
       end
     end,
   })
