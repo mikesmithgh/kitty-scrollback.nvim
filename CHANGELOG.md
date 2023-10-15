@@ -1,3 +1,10 @@
+## [1.1.8](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.7...v1.1.8) (2023-10-15)
+
+
+### Bug Fixes
+
+* use set title to remove process exited msg ([#33](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/33)) ([684dd83](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/684dd833ef6a0ee0c2992b510cbe7119d44ae419))
+
 ## [1.1.7](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.6...v1.1.7) (2023-10-01)
 
 
