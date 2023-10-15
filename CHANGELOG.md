@@ -1,3 +1,10 @@
+## [1.1.9](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.8...v1.1.9) (2023-10-15)
+
+
+### Bug Fixes
+
+* set initial cursor position on pastewin close ([#34](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/34)) ([bb98562](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/bb985625db4167f988f1c90d9ddabc326d76bede))
+
 ## [1.1.8](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.7...v1.1.8) (2023-10-15)
 
 
