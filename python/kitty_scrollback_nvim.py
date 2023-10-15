@@ -24,7 +24,7 @@ def pipe_data(w, target_window_id, ksb_dir, config_files):
         'scrolled_by': w.screen.scrolled_by,
         'cursor_x': w.screen.cursor.x + 1,
         'cursor_y': w.screen.cursor.y + 1,
-        'lines': w.screen.lines,
+        'lines': w.screen.lines + 1,
         'columns': w.screen.columns,
         'window_id': int(target_window_id),
         'window_title': w.title,

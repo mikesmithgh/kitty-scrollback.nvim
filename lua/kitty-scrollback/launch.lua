@@ -389,41 +389,31 @@ M.launch = function()
     vim.schedule(function()
       ksb_kitty_cmds.get_text_term(kitty_data, get_text_opts, function()
         ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
-        vim.fn.timer_start(20, function(t) ---@diagnostic disable-line: redundant-parameter
-          local timer_info = vim.fn.timer_info(t)[1] or {}
-          local ready = ksb_util.remove_process_exited()
-          if ready or timer_info['repeat'] == 0 then
-            vim.fn.timer_stop(t)
+        if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
+          set_cursor_position(kitty_data)
+        end
+        ksb_win.show_status_window()
 
-            if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
-              set_cursor_position(kitty_data)
-            end
-            ksb_win.show_status_window()
+        -- improve buffer name to avoid displaying complex command to user
+        local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
+        term_buf_name = term_buf_name:gsub('^(term://.-:).*', '%1kitty-scrollback.nvim')
+        vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
+        vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
 
-            -- improve buffer name to avoid displaying complex command to user
-            local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
-            term_buf_name = term_buf_name:gsub('^(term://.-:).*', '%1kitty-scrollback.nvim')
-            vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
-            vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
-
-            if opts.restore_options then
-              restore_orig_options()
-            end
-            if
-              opts.callbacks
-              and opts.callbacks.after_ready
-              and type(opts.callbacks.after_ready) == 'function'
-            then
-              ksb_util.restore_and_redraw()
-              vim.schedule(function()
-                opts.callbacks.after_ready(kitty_data, opts)
-              end)
-            end
-            ksb_api.close_kitty_loading_window()
-          end
-        end, {
-          ['repeat'] = 200,
-        })
+        if opts.restore_options then
+          restore_orig_options()
+        end
+        if
+          opts.callbacks
+          and opts.callbacks.after_ready
+          and type(opts.callbacks.after_ready) == 'function'
+        then
+          ksb_util.restore_and_redraw()
+          vim.schedule(function()
+            opts.callbacks.after_ready(kitty_data, opts)
+          end)
+        end
+        ksb_api.close_kitty_loading_window()
       end)
     end)
     if
