@@ -17,9 +17,22 @@ def main():
     raise SystemExit('Must be run as kitten kitty_scrollback_nvim')
 
 
+def get_kitty_shell_integration(kitty_opts, w):
+    # KITTY_SHELL_INTEGRATION env var takes precedence over opts
+    # kitty v0.30.1 is returning empty window envs so fallback on opts
+    # see https://github.com/kovidgoyal/kitty/issues/6749
+    shell_integration_opts = kitty_opts.shell_integration or frozenset(
+        {'enabled'})
+    shell_integration = w.child.environ.get(
+        'KITTY_SHELL_INTEGRATION',
+        ' '.join(list(shell_integration_opts)))
+    return shell_integration.split()
+
+
 # based on kitty source window.py
 def pipe_data(w, target_window_id, ksb_dir, config_files):
     kitty_opts = get_options()
+    kitty_shell_integration = get_kitty_shell_integration(kitty_opts, w)
     data = {
         'scrolled_by': w.screen.scrolled_by,
         'cursor_x': w.screen.cursor.x + 1,
@@ -31,7 +44,7 @@ def pipe_data(w, target_window_id, ksb_dir, config_files):
         'ksb_dir': ksb_dir,
         'kitty_opts': {
             "shell_integration":
-            w.child.environ.get('KITTY_SHELL_INTEGRATION', 'disabled').split(),  # env takes precedence over config
+            kitty_shell_integration,
             "scrollback_fill_enlarged_window":
             kitty_opts.scrollback_fill_enlarged_window,
             "scrollback_lines":
