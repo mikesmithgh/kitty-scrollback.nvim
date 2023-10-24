@@ -1,3 +1,10 @@
+## [1.1.10](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.9...v1.1.10) (2023-10-24)
+
+
+### Bug Fixes
+
+* fallback to opts if no shell integration env ([#37](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/37)) ([858f1e3](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/858f1e3e416c0ee668fde45d7edd3dab0a5ce995))
+
 ## [1.1.9](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.8...v1.1.9) (2023-10-15)
 
 
