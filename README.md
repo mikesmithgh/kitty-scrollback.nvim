@@ -199,7 +199,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
     event = { 'User KittyScrollbackLaunch' },
     -- version = '*', -- latest stable version, may have breaking changes if major version changed
-    -- version = '^1.0.0', -- pin major version, include fixes and features that do not have breaking changes
+    -- version = '^2.0.0', -- pin major version, include fixes and features that do not have breaking changes
     config = function()
       require('kitty-scrollback').setup()
     end,
@@ -219,7 +219,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
     event = { 'User KittyScrollbackLaunch' },
     -- tag = '*', -- latest stable version, may have breaking changes if major version changed
-    -- tag = 'v1.0.0', -- pin specific tag
+    -- tag = 'v2.0.0', -- pin specific tag
     config = function()
       require('kitty-scrollback').setup()
     end,
