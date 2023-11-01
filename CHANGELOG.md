@@ -1,3 +1,22 @@
+# [2.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.10...v2.0.0) (2023-11-01)
+
+
+* feat!: use kitty_mod for keymaps ([8e652bf](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/8e652bf49f2e048450e5bb9681148f6caf5cf2ae)), closes [#30](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/30)
+* feat!: replace config-file with config name ([e16e96a](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/e16e96a7d6fa67057fc5ab1580bad30a2cf01afa)), closes [#16](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/16) [#12](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/12) [#2](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/2)
+
+
+### BREAKING CHANGES
+
+* The default mapping keys changed from `ctrl+shift` to `kitty_mod`.
+
+- If you are using the default value for `kitty_mod` of `ctrl+shift`, then no change is needed.
+- If you are using a different value for `kitty_mod`, then you should correct any potential mapping conflicts that may occur
+  now that `kitty-scrollback.nvim` is using `kitty_mod`.
+* The `--config-file` option has been removed.
+Custom configurations are now supplied in the setup() function instead
+of separate config file. The config name correspondes to the key of
+the table provided to `setup()`.
+
 ## [1.1.10](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.9...v1.1.10) (2023-10-24)
 
 
