@@ -94,9 +94,9 @@ M.generate_kittens = function(all, generate_modes)
 
   local builtin_map_configs = {
     '# Browse scrollback buffer in nvim',
-    'map ctrl+shift+h ' .. action_alias,
+    'map kitty_mod+h ' .. action_alias,
     '# Browse output of the last shell command in nvim',
-    'map ctrl+shift+g ' .. action_alias .. ' --config ksb_builtin_last_cmd_output',
+    'map kitty_mod+g ' .. action_alias .. ' --config ksb_builtin_last_cmd_output',
     '# Show clicked command output in nvim',
     'mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : '
       .. action_alias

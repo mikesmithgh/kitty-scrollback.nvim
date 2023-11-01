@@ -47,6 +47,11 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
     ```
   - Remove previous kitty-scrollback.nvim Kitten mappings in `kitty.conf`
 
+  - The default mapping keys changed from `ctrl+shift` to `kitty_mod`. The default values for `kitty_mod` in Kitty is `ctrl+shift`.
+    - If you are using the default value for `kitty_mod` of `ctrl+shift`, then no change is needed.
+    - If you are using a different value for `kitty_mod`, then you should correct any potential mapping conflicts that may occur
+      now that `kitty-scrollback.nvim` is using `kitty_mod`.
+
   - Migrate any customized configurations to the new format
     - When you define your kitty-scrollback.nvim Kitten configuration, do not use `--config-file` `yourconfigfile.lua`. Instead,
       move the contents of `yourconfigfile.lua` to an entry in the configuration passed to the kitty-scrollback.nvim setup function.
@@ -70,7 +75,7 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
         
         ```kitty
             # Browse output of the last shell command in nvim
-            map ctrl+shift+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
+            map kitty_mod+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
         ```
         
         ```lua
@@ -93,7 +98,7 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
         
         ```kitty
             # Browse output of the last shell command in nvim
-            map ctrl+shift+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
+            map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
         ```
         
         ```lua
@@ -293,7 +298,13 @@ nvim +'KittyScrollbackCheckHealth'
 
 </details>
 <details>
-<summary>Test <code>kitty-scrollback.nvim</code> is working as expected by pressing <code>ctrl+shift+h</code> to open the scrollback buffer in Neovim</summary>
+<summary>Test <code>kitty-scrollback.nvim</code> is working as expected by pressing <code>kitty_mod+h</code> to open the scrollback buffer in Neovim</summary>
+
+`kitty_mod` is a special modifier key alias for default shortcuts. You can change the value of this option to 
+alter all default shortcuts that use `kitty_mod`. See Kitty documentation [#opt-kitty.kitty_mod](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.kitty_mod).
+
+The default value of `kitty_mod` is `ctrl+shift`. In this example, `kitty_mod+h` represents `ctrl+shift+h`.
+
 </details>
 
 <details>
@@ -308,11 +319,11 @@ shell_integration enabled
 action_alias kitty_scrollback_nvim kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py
 
 # Browse scrollback buffer in nvim
-map ctrl+shift+h kitty_scrollback_nvim
+map kitty_mod+h kitty_scrollback_nvim
 # Browse output of the last shell command in nvim
-map ctrl+shift+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
+map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
 # Show clicked command output in nvim
-mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
+mouse_map kitty_mod+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
 ```
   
 </details>

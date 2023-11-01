@@ -36,7 +36,7 @@ The Kitten defined in `kitty.conf` references the configuration file `get_text_l
 
 >kitty
     # Browse output of the last shell command in nvim
-    map ctrl+shift+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
+    map kitty_mod+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
 <
 
 >lua
@@ -60,7 +60,7 @@ The Kitten defined in `kitty.conf` references the builtin configuration name `ks
 
 >kitty
     # Browse output of the last shell command in nvim
-    map ctrl+shift+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
+    map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
 <
 
 >lua
