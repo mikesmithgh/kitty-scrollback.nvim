@@ -19,6 +19,9 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
   <div align="center"><sup>(click for video)<sup></div>
 </a>
 
+> [!NOTE]\
+> 👀 Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 🎥
+
 <!-- panvimdoc-ignore-end -->
 
 ## 🚀 Migrating to v2.0.0
