@@ -14,7 +14,7 @@
   now that `kitty-scrollback.nvim` is using `kitty_mod`.
 * The `--config-file` option has been removed.
 Custom configurations are now supplied in the setup() function instead
-of separate config file. The config name correspondes to the key of
+of separate config file. The config name corresponds to the key of
 the table provided to `setup()`.
 
 ## [1.1.10](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.9...v1.1.10) (2023-10-24)
