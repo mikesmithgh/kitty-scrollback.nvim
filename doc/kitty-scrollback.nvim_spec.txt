@@ -16,15 +16,18 @@ KsbKittyOpts                              *kitty-scrollback.launch.KsbKittyOpts*
 KsbKittyData                              *kitty-scrollback.launch.KsbKittyData*
 
     Fields: ~
-        {scrolled_by}   (integer)  the number of lines currently scrolled in kitty
-        {cursor_x}      (integer)  position of the cusor in the column in kitty
-        {cursor_y}      (integer)  position of the cursor in the row in kitty
-        {lines}         (integer)  the number of rows of the screen in kitty
-        {columns}       (integer)  the number of columns of the screen in kitty
-        {window_id}     (integer)  the id of the window to get scrollback text
-        {window_title}  (string)   the title of the window to get scrollback text
-        {ksb_dir}       (string)   the base runtime path of kitty-scrollback.nvim
-        {config_files}  (table)
+        {scrolled_by}              (integer)       the number of lines currently scrolled in kitty
+        {cursor_x}                 (integer)       position of the cusor in the column in kitty
+        {cursor_y}                 (integer)       position of the cursor in the row in kitty
+        {lines}                    (integer)       the number of rows of the screen in kitty
+        {columns}                  (integer)       the number of columns of the screen in kitty
+        {window_id}                (integer)       the id of the window to get scrollback text
+        {window_title}             (string)        the title of the window to get scrollback text
+        {ksb_dir}                  (string)        the base runtime path of kitty-scrollback.nvim
+        {kitty_scrollback_config}  (string)        the config name of user config options
+        {kitty_opts}               (KsbKittyOpts)  relevent kitty configuration values
+        {kitty_config_dir}         (string)        kitty configuration directory path
+        {kitty_version}            (table)         kitty version
 
 
 KsbPrivate                                  *kitty-scrollback.launch.KsbPrivate*
@@ -94,7 +97,7 @@ KsbPasteWindowOpts
     Fields: ~
         {highlight_as_normal_win}   (nil|fun():boolean)                     If function returns true, use Normal highlight group. If false, use NormalFloat
         {filetype}                  (string|nil)                            The filetype of the paste window
-        {hide_footer}               (boolean|nil)                           If true, hide the footer when the paste window is initially opened
+        {hide_footer}               (boolean|nil)                           If true, hide mappings in the footer when the paste window is initially opened
         {winblend}                  (integer|nil)                           The winblend setting of the window, see :help winblend
         {winopts_overrides}         (KsbWinOptsOverrideFunction|nil)        Paste float window overrides, see nvim_open_win() for configuration
         {footer_winopts_overrides}  (KsbFooterWinOptsOverrideFunction|nil)  Paste footer window overrides, see nvim_open_win() for configuration
@@ -162,6 +165,12 @@ M.paste_command()                           *kitty-scrollback.api.paste_command*
 M.toggle_footer()                           *kitty-scrollback.api.toggle_footer*
     If the current buffer is the paste buffer, toggle the footer window
     open or closed. Otherwise, no operation
+
+
+KsbGenKittenModes                       *kitty-scrollback.api.KsbGenKittenModes*
+
+    Type: ~
+        string|"maps"|"commands"
 
 
 M.generate_kittens()                     *kitty-scrollback.api.generate_kittens*

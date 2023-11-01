@@ -1,8 +1,14 @@
 ---@mod kitty-scrollback
 local M = {}
 
+---@type table<string, fun(KsbKittyData):KsbOpts>
+M.configs = {}
+
 ---Create commands for generating kitty-scrollback.nvim kitten configs
-M.setup = function()
+M.setup = function(configs)
+  if configs then
+    M.configs = configs
+  end
   ---@brief [[
   ---:KittyScrollbackGenerateKittens Generate Kitten commands used as reference for configuring `kitty.conf`
   ---
@@ -10,9 +16,13 @@ M.setup = function()
   ---        |kitty.api.generate_kittens|
   ---@brief ]]
   vim.api.nvim_create_user_command('KittyScrollbackGenerateKittens', function(o)
-    require('kitty-scrollback.api').generate_kittens(o.bang)
+    require('kitty-scrollback.api').generate_kittens(o.bang, o.fargs)
   end, {
     bang = true,
+    nargs = '*',
+    complete = function()
+      return { 'maps', 'commands' }
+    end,
   })
 
   ---@brief [[
@@ -21,11 +31,15 @@ M.setup = function()
   ---    See: ~
   ---        |kitty.api.checkhealth|
   ---@brief ]]
-  vim.api.nvim_create_user_command(
-    'KittyScrollbackCheckHealth',
-    vim.schedule_wrap(require('kitty-scrollback.api').checkhealth),
-    {}
-  )
+  vim.api.nvim_create_user_command('KittyScrollbackCheckHealth', function()
+    require('kitty-scrollback.api').checkhealth()
+  end, {})
+
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'KittyScrollbackCheckLaunch',
+    once = true,
+    callback = function() end,
+  })
 end
 
 return M

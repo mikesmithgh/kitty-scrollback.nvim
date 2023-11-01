@@ -39,7 +39,7 @@ local M = {}
 ---@field window_id integer the id of the window to get scrollback text
 ---@field window_title string the title of the window to get scrollback text
 ---@field ksb_dir string the base runtime path of kitty-scrollback.nvim
----@field config_files table<string> the file containing a config function with user defined options
+---@field kitty_scrollback_config string the config name of user config options
 ---@field kitty_opts KsbKittyOpts relevent kitty configuration values
 ---@field kitty_config_dir string kitty configuration directory path
 ---@field kitty_version table kitty version
@@ -84,7 +84,7 @@ local opts = {}
 ---@class KsbPasteWindowOpts
 ---@field highlight_as_normal_win nil|fun():boolean If function returns true, use Normal highlight group. If false, use NormalFloat
 ---@field filetype string|nil The filetype of the paste window
----@field hide_footer boolean|nil If true, hide the footer when the paste window is initially opened
+---@field hide_footer boolean|nil If true, hide mappings in the footer when the paste window is initially opened
 ---@field winblend integer|nil The winblend setting of the window, see :help winblend
 ---@field winopts_overrides KsbWinOptsOverrideFunction|nil Paste float window overrides, see nvim_open_win() for configuration
 ---@field footer_winopts_overrides KsbFooterWinOptsOverrideFunction|nil Paste footer window overrides, see nvim_open_win() for configuration
@@ -252,12 +252,16 @@ M.setup = function(kitty_data_str)
   p.kitty_data = vim.fn.json_decode(kitty_data_str)
   load_requires() -- must be after p.kitty_data initialized
 
-  local user_opts = {}
-  if p.kitty_data.config_files and next(p.kitty_data.config_files) then
-    for _, config in pairs(p.kitty_data.config_files) do
-      user_opts = vim.tbl_extend('keep', user_opts, dofile(config).config(p.kitty_data) or {})
-    end
+  local config_name = p.kitty_data.kitty_scrollback_config or 'default'
+  local config_source = require('kitty-scrollback')
+  if config_name:match('^ksb_builtin_.*') then
+    config_source = require('kitty-scrollback.configs.builtin')
   end
+  if config_name:match('^ksb_example_.*') then
+    config_source = require('kitty-scrollback.configs.example')
+  end
+  local config_fn = config_source.configs[config_name]
+  local user_opts = config_fn and config_fn(p.kitty_data) or {}
   opts = vim.tbl_deep_extend('force', default_opts, user_opts)
 
   ksb_health.setup(p, opts)

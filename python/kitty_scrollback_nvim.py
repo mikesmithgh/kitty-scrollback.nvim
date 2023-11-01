@@ -30,10 +30,11 @@ def get_kitty_shell_integration(kitty_opts, w):
 
 
 # based on kitty source window.py
-def pipe_data(w, target_window_id, ksb_dir, config_files):
+def pipe_data(w, target_window_id, ksb_dir, config):
     kitty_opts = get_options()
     kitty_shell_integration = get_kitty_shell_integration(kitty_opts, w)
-    data = {
+    return {
+        'kitty_scrollback_config': config,
         'scrolled_by': w.screen.scrolled_by,
         'cursor_x': w.screen.cursor.x + 1,
         'cursor_y': w.screen.cursor.y + 1,
@@ -61,12 +62,9 @@ def pipe_data(w, target_window_id, ksb_dir, config_files):
         'kitty_config_dir': config_dir,
         'kitty_version': version,
     }
-    if config_files:
-        data['config_files'] = config_files
-    return data
 
 
-def parse_nvim_args(args):
+def parse_nvim_args(args=[]):
     for idx, arg in enumerate(args):
         if arg.startswith('--no-nvim-args'):
             return ()
@@ -91,13 +89,16 @@ def parse_env(args):
     return tuple(env_args)
 
 
-def parse_config_files(args):
+def parse_config(args):
     config_args = []
     for idx, arg in reversed(list(enumerate(args))):
-        if arg.startswith('--config-file') and (idx - 1 < len(args)):
-            config_args.append(args[idx + 1])
+        if arg.startswith('--config-file'):
+            return 'crying cat --config-file'
+        if arg.startswith('--config') and (idx + 1 < len(args)):
+            config_args = args[idx + 1]
             del args[idx:idx + 2]
-    return config_args
+            return config_args
+    return 'default'
 
 
 def parse_cwd(args):
@@ -117,10 +118,43 @@ def handle_result(args: List[str],
     del args[0]
     w = boss.window_id_map.get(target_window_id)
     if w is not None:
-        config_files = parse_config_files(args)
+        config = parse_config(args)
+        if config == 'crying cat --config-file':
+            err_cmd = (
+                'launch',
+                '--copy-env',
+                '--type',
+                'overlay',
+                '--title',
+                'kitty-scrollback.nvim',
+                'nvim',
+            ) + parse_nvim_args() + (
+                '-c',
+                'set laststatus=0',
+                '-c',
+                'set fillchars=eob:\\ ',
+                '-c',
+                'set filetype=checkhealth',
+                f'{ksb_dir}/scripts/breaking_change_config_file.txt',
+            )
+
+            err_winid = boss.call_remote_control(w, err_cmd)
+
+            set_logo_cmd = ('set-window-logo',
+                            '--no-response',
+                            '--alpha',
+                            '0.5',
+                            '--position',
+                            'bottom-right',
+                            f'{ksb_dir}/media/sad_kitty_thumbs_up.png')
+
+            err_win = boss.window_id_map.get(err_winid)
+            err_winid = boss.call_remote_control(err_win, set_logo_cmd)
+            return
+
         cwd = parse_cwd(args)
         env = parse_env(args)
-        kitty_data_str = pipe_data(w, target_window_id, ksb_dir, config_files)
+        kitty_data_str = pipe_data(w, target_window_id, ksb_dir, config)
         kitty_data = json.dumps(kitty_data_str)
 
         if w.title.startswith('kitty-scrollback.nvim'):
@@ -145,6 +179,7 @@ def handle_result(args: List[str],
             '   pattern = [[*]], '
             '   callback = function() '
             f'   vim.opt.runtimepath:append([[{ksb_dir}]])'
+            '    vim.api.nvim_exec_autocmds([[User]], { pattern = [[KittyScrollbackLaunch]], modeline = false })'
             f'   require([[kitty-scrollback.launch]]).setup_and_launch([[{kitty_data}]])'
             '  end, '
             ' })')
