@@ -68,89 +68,133 @@ M.toggle_footer = function()
   end
 end
 
-M.generate_kittens = function(all)
+---@alias KsbGenKittenModes string | 'maps' | 'commands'
+
+---Generate Kitten commands used as reference for configuring `kitty.conf`
+---@param all boolean|nil
+---@param generate_modes table<KsbGenKittenModes>|nil
+M.generate_kittens = function(all, generate_modes)
+  generate_modes = (generate_modes and next(generate_modes)) and generate_modes or { 'maps' }
+  local target_gen_modes = {}
+  for _, gen_mode in pairs(generate_modes) do
+    target_gen_modes[gen_mode] = true
+  end
+
   local kitty_scrollback_kitten =
     vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1]
-  local kitty_scrollback_configs =
-    vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs', false)[1]
+  local example_path =
+    vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/example.lua', false)[1]
 
-  local ksb_configs = { '' }
   local action_alias = 'kitty_scrollback_nvim'
-  local top_ksb_configs = {
+  local alias_config = {
     '# kitty-scrollback.nvim Kitten alias',
-    'action_alias '
-      .. action_alias
-      .. ' kitten '
-      .. kitty_scrollback_kitten
-      .. ' --cwd '
-      .. kitty_scrollback_configs,
+    'action_alias ' .. action_alias .. ' kitten ' .. kitty_scrollback_kitten,
     '',
+  }
+
+  local builtin_map_configs = {
     '# Browse scrollback buffer in nvim',
     'map ctrl+shift+h ' .. action_alias,
-  }
-  for _, c in pairs(vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/*.lua', true)) do
-    local name = vim.fn.fnamemodify(c, ':t:r')
-    local ksb_config = require('kitty-scrollback.configs.' .. name).config() or {}
-    local keymap = ksb_config.kitty_keymap
-    local config = (keymap or 'map f1')
-      .. ' '
+    '# Browse output of the last shell command in nvim',
+    'map ctrl+shift+g ' .. action_alias .. ' --config ksb_builtin_last_cmd_output',
+    '# Show clicked command output in nvim',
+    'mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : '
       .. action_alias
-      .. ' --config-file '
-      .. name
-      .. '.lua'
-    table.insert(top_ksb_configs, ksb_config.kitty_keymap_description)
-    if keymap then
-      table.insert(top_ksb_configs, config)
-    else
-      table.insert(ksb_configs, config)
+      .. ' --config ksb_builtin_last_visited_cmd_output',
+  }
+
+  local ksb_example = require('kitty-scrollback.configs.example').configs
+  local example_configs = vim.tbl_map(
+    function(name)
+      if name == '' or name:match('^#.*') then
+        return name
+      end
+      return 'map f1 ' .. action_alias .. ' --config ' .. name
+    end,
+    vim.list_extend({
+      '',
+      '# Example kitty-scrollback.nvim config overrides',
+      '# See ' .. example_path .. ' for config details',
+    }, vim.tbl_keys(ksb_example))
+  )
+
+  local nvim_args = vim.tbl_map(function(c)
+    if c == '' or c:match('^#.*') then
+      return c
+    end
+    return 'map f1 ' .. action_alias .. ' ' .. c
+  end, {
+    [[]],
+    [[# Example kitty-scrollback.nvim nvim overrides]],
+    [[--no-nvim-args --env NVIM_APPNAME=ksb-nvim]],
+    [[--nvim-args +'colorscheme tokyonight']],
+    [[--nvim-args +'lua vim.defer_fn(function() vim.api.nvim_set_option_value("filetype", "markdown", { buf = 0 }); vim.cmd("silent! CellularAutomaton make_it_rain") end, 6000)']],
+  })
+
+  local kitten_map_configs = vim.list_extend(
+    vim.list_extend(vim.tbl_extend('force', builtin_map_configs, {}), example_configs),
+    nvim_args
+  )
+
+  local builtin_command_configs = vim.tbl_map(function(config)
+    return config:gsub(
+      '^.*map%s%S+.*kitty_scrollback_nvim',
+      'kitty @ kitten ' .. kitty_scrollback_kitten
+    )
+  end, builtin_map_configs)
+
+  local kitten_command_configs = vim.tbl_map(function(config)
+    return config:gsub(
+      '^.*map%s%S+.*kitty_scrollback_nvim',
+      'kitty @ kitten ' .. kitty_scrollback_kitten
+    )
+  end, kitten_map_configs)
+
+  local configs = {}
+
+  if all then
+    if target_gen_modes['maps'] then
+      vim.list_extend(configs, alias_config)
+      vim.list_extend(configs, kitten_map_configs)
+      table.insert(configs, '')
+    end
+    if target_gen_modes['commands'] then
+      vim.list_extend(configs, kitten_command_configs)
+    end
+  else
+    if target_gen_modes['maps'] then
+      vim.list_extend(configs, alias_config)
+      vim.list_extend(configs, builtin_map_configs)
+      table.insert(configs, '')
+    end
+    if target_gen_modes['commands'] then
+      vim.list_extend(configs, builtin_command_configs)
     end
   end
 
-  local nvim_args = vim.tbl_map(function(c)
-    return 'map f1 ' .. action_alias .. ' ' .. c
-  end, {
-    [[--no-nvim-args --env NVIM_APPNAME=ksb-nvim]],
-    [[--nvim-args +'colorscheme tokyonight']],
-    [[--nvim-args +'lua vim.defer_fn(function() vim.api.nvim_set_option_value("filetype", "markdown", { buf = 0 }); vim.cmd("silent! CellularAutomaton make_it_rain") end, 1000)']],
-  })
-
-  local kitten_configs = vim.list_extend(
-    vim.list_extend(vim.tbl_extend('force', top_ksb_configs, {}), ksb_configs),
-    nvim_args
-  )
   local bufid = vim.api.nvim_create_buf(true, true)
   vim.api.nvim_set_option_value('filetype', 'kitty', {
     buf = bufid,
   })
   vim.api.nvim_set_current_buf(bufid)
-  if all then
-    vim.api.nvim_buf_set_lines(bufid, 0, -1, false, kitten_configs)
-  else
-    vim.api.nvim_buf_set_lines(bufid, 0, -1, false, top_ksb_configs)
-  end
+  vim.api.nvim_buf_set_lines(bufid, 0, -1, false, configs)
 end
 
 M.checkhealth = function()
   local kitty_scrollback_kitten =
     vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1]
-  local checkhealth_config =
-    vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/checkhealth.lua', false)[1]
-  if
-    not (
-      vim.fn.has('nvim-0.10') > 0
-      and vim
-          .system({
-            'kitty',
-            '@',
-            'kitten',
-            kitty_scrollback_kitten,
-            '--config-file',
-            checkhealth_config,
-          })
-          :wait().code
-        == 0
-    )
-  then
+  if vim.fn.has('nvim-0.10') > 0 then
+    vim
+      .system({
+        'kitty',
+        '@',
+        'kitten',
+        kitty_scrollback_kitten,
+        '--config',
+        'ksb_builtin_checkhealth',
+      })
+      :wait()
+  else
     -- fallback on checkhealth for earlier versions of nvim
     vim.cmd.checkhealth('kitty-scrollback')
   end

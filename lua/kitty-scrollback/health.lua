@@ -67,15 +67,11 @@ local function check_has_kitty_data()
   else
     local kitty_scrollback_kitten =
       vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1]
-    local checkhealth_config =
-      vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/checkhealth.lua', false)[1]
     local checkhealth_command = '`kitty @ kitten '
       .. kitty_scrollback_kitten
-      .. ' --config-file '
-      .. checkhealth_config
-      .. '`'
+      .. ' --config ksb_builtin_checkhealth`'
     vim.health.warn('No Kitty data available unable to perform a complete healthcheck', {
-      'Add the config options `checkhealth = true` to your *config-file* or execute the command `:KittyScrollbackCheckHealth` '
+      'Add the config options `checkhealth = true` to your *config* or execute the command `:KittyScrollbackCheckHealth` '
         .. 'to run `checkhealth` within the context of a Kitten',
       checkhealth_command,
     })

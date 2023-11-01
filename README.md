@@ -21,6 +21,101 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 
 <!-- panvimdoc-ignore-end -->
 
+## 🚀 Migrating to v2.0.0
+> [!IMPORTANT]\
+> v2.0.0 has breaking changes and requires steps to properly migrate from v1.X.X.
+> 
+> You can ignore this section if you have not previously installed any verions of kitty-scrollback.nvim
+
+<details>
+
+  <summary>Migration Steps</summary>
+
+  <img src="media/sad_kitty_thumbs_up.png" alt="sad-kitty-thumps-up" style="width: 20%" align="right" />
+
+  - If you are using the <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a> or <a href="https://github.com/wbthomason/packer.nvim">packer.nvim</a> package manager, then
+    add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy loading. See [Installation](#-installation) for additional details.
+    
+    ```lua
+    event = { 'User KittyScrollbackLaunch' }
+    ```
+
+  - Regenerate default Kitten mappings and add to `kitty.conf`
+
+    ```sh
+    nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
+    ```
+  - Remove previous kitty-scrollback.nvim Kitten mappings in `kitty.conf`
+
+  - Migrate any customized configurations to the new format
+    - When you define your kitty-scrollback.nvim Kitten configuration, do not use `--config-file` `yourconfigfile.lua`. Instead,
+      move the contents of `yourconfigfile.lua` to an entry in the configuration passed to the kitty-scrollback.nvim setup function.
+      ```lua
+      require('kitty-scrollback').setup({ 
+        yourconfig = function() 
+          ...
+        end, 
+      })
+      ```
+      Update your Kitten to use the name of the configuration defined in the setup function. In this example,
+      `--config-file yourconfigfile.lua` changes to `--config yourconfig`
+      <details>
+        <summary>Real example</summary>
+  
+        The configuration to view the last command output now references a builtin configuration instead of a file. The 
+        new configuation can be viewed by running `:KittyScrollbackGenerateKittens`.
+        
+        - Old configuration
+          The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
+        
+        ```kitty
+            # Browse output of the last shell command in nvim
+            map ctrl+shift+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
+        ```
+        
+        ```lua
+            -- get_text_last_cmd_output.lua
+            local M = {}
+            M.config = function()
+              return {
+                kitty_get_text = {
+                  extent = 'last_visited_cmd_output',
+                  ansi = true,
+                },
+              }
+            end
+            
+            return M
+        ```
+        
+        - New configuration
+          The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
+        
+        ```kitty
+            # Browse output of the last shell command in nvim
+            map ctrl+shift+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
+        ```
+        
+        ```lua
+            require('kitty-scrollback').setup({ 
+              ksb_builtin_last_cmd_output = function()
+                return {
+                  kitty_get_text = {
+                    extent = 'last_visited_cmd_output',
+                    ansi = true,
+                  },
+                }
+              end
+            })
+        ```
+      </details>
+
+
+
+</details>
+
+
+
 ## ✨ Features
 - 😻 Navigate Kitty's scrollback buffer with Neovim
 - 🐱 Copy contents from Neovim to system clipboard
@@ -97,6 +192,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     enabled = true,
     lazy = true,
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
+    event = { 'User KittyScrollbackLaunch' },
     -- version = '*', -- latest stable version, may have breaking changes if major version changed
     -- version = '^1.0.0', -- pin major version, include fixes and features that do not have breaking changes
     config = function()
@@ -116,6 +212,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     disable = false,
     opt = true,
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
+    event = { 'User KittyScrollbackLaunch' },
     -- tag = '*', -- latest stable version, may have breaking changes if major version changed
     -- tag = 'v1.0.0', -- pin specific tag
     config = function()
@@ -141,6 +238,10 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 </details>
 
 ## ✍️ Configuration
+
+> [!NOTE]\
+> The [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) section of the Wiki provides
+> detailed demos of each configuration option.
 
 ### Kitty 
 The following steps outline how to properly configure [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
@@ -204,14 +305,14 @@ listen_on unix:/tmp/kitty
 shell_integration enabled
 
 # kitty-scrollback.nvim Kitten alias
-action_alias kitty_scrollback_nvim kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --cwd /Users/mike/gitrepos/kitty-scrollback.nvim/lua/kitty-scrollback/configs
+action_alias kitty_scrollback_nvim kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py
 
 # Browse scrollback buffer in nvim
 map ctrl+shift+h kitty_scrollback_nvim
 # Browse output of the last shell command in nvim
-map ctrl+shift+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
+map ctrl+shift+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
 # Show clicked command output in nvim
-mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config-file get_text_last_visited_cmd_output.lua
+mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
 ```
   
 </details>
@@ -221,7 +322,7 @@ Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [k
 
 | Argument         | Description                                                                                                                                                                                                                                                                                                                                                                 |
 | :--------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--config-file`  | `kitty-scrollback.nvim` plugin configuration file. The configuration file must return a Lua table with the function `config(kitty_data): table`. You may specify multiple config files that will merge all configuration options.                                                                                                                                           |
+| `--config`       | The name of the `kitty-scrollback.nvim` plugin configuration. The configuration can be defined during plugin setup (i.e., `require('kitty-scrollback').setup({ ... })`).                                                                                                                                                                                                    |
 | `--no-nvim-args` | Do not provide any arguments to the Neovim instance that displays the scrollback buffer. The default arguments passed to Neovim are `--clean --noplugin -n`. This flag removes those options.                                                                                                                                                                               |
 | `--nvim-args`    | All arguments after this flag are passed to the Neovim instance that displays the scrollback buffer. This must be the last of the `kitty-scrollback.nvim` Kitten arguments that are configured. Otherwise, you may unintentionally send the wrong arguments to Neovim. The default arguments passed to Neovim are `--clean --noplugin -n`. This flag removes those options. |
 | `--env`          | Environment variable that is passed to the Neovim instance that displays the scrollback buffer. Format is `--env var_name=var_value`. You may specify multiple config files that will merge all configuration options. Useful for setting `NVIM_APPNAME`                                                                                                                    |
@@ -255,11 +356,11 @@ Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [k
 | paste_window                                                     | `KsbPasteWindowOpts?`                                                            | options for paste window that sends commands to Kitty                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | paste_window.highlight_as_normal_win                             | `fun(): boolean?`                                                                | If function returns true, use Normal highlight group. If false, use NormalFloat                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | paste_window.filetype                                            | `string?`                                                                        | The filetype of the paste window                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| paste_window.hide_footer                                         | `boolean?`                                                                       | If true, hide the footer when the paste window is initially opened                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| paste_window.hide_footer                                         | `boolean?`                                                                       | If true, hide mappings in the footer when the paste window is initially opened                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | paste_window.winblend                                            | `integer?`                                                                       | The winblend setting of the window, see :help winblend                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | paste_window.winopts_overrides                                   | `fun(paste_winopts: KsbWinOpts): table<string,any>?`                             | Paste float window overrides, see nvim_open_win() for configuration                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | paste_window.footer_winopts_overrides                            | `fun(footer_winopts: KsbWinOpts, paste_winopts: KsbWinOpts): table<string,any>?` | Paste footer window overrides, see nvim_open_win() for configuration                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| paste_window.yank_register                                       | `string?`                                                                        | register used during yanks to paste window, see `:h registers`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| paste_window.yank_register                                       | `string?`                                                                        | register used during yanks to paste window, see `:h registers`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | paste_window.yank_register_enabled                               | `boolean?`                                                                       | If true, the `yank_register` copies content to the paste window. If false, disable yank to paste window                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | kitty_get_text                                                   | `KsbKittyGetText?`                                                               | options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | kitty_get_text.ansi                                              | `boolean`                                                                        | If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
@@ -272,26 +373,20 @@ Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [k
 By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com) in the status window. If you would like to 
 use ASCII instead, set the option `status_window.style_simple` to `true`. 
 
-<details>
-  <summary>Status window with Nerd Fonts <code>opts.status_window.style_simple = false</code></summary>
-  
-  https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/4cf5b303-5061-43da-a857-c99daea82332
-  
-</details>
-<details>
-  <summary>Status window with ASCII text <code>opts.status_window.style_simple = true</code></summary>
-  
-  https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a0e1b574-59ab-4abf-93a1-f314c7cd47b3
-  
-</details>
+- Status window with Nerd Fonts <code>opts.status_window.style_simple = false</code>
+![style_simple_false](https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/662bf132-0b39-4028-b69f-eb85fbb69b60)
+
+- Status window with ASCII text <code>opts.status_window.style_simple = true</code>
+![style_simple_true](https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/c19a1869-e4e4-40fd-b619-fed771d0153f)
+
 
 ## 🫡 Commands and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 
-| Command                              | API                              | Description                                                             |
-| :----------------------------------- | :------------------------------- | :---------------------------------------------------------------------- |
-| `:KittyScrollbackGenerateKittens[!]` | `generate_kittens(boolean?)` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
-| `:KittyScrollbackCheckHealth`        | `checkhealth()`                  | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
+| Command                                               | API                                                              | Description                                                             |
+| :---------------------------------------------------- | :--------------------------------------------------------------- | :---------------------------------------------------------------------- |
+| `:KittyScrollbackGenerateKittens[!] [generate_modes]` | `generate_kittens(boolean?, table<string\|'commands'\|'maps'>)?` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
+| `:KittyScrollbackCheckHealth`                         | `checkhealth()`                                                  | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
 
 ## ⌨️ Keymaps and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
