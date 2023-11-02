@@ -25,7 +25,7 @@ KsbKittyData                              *kitty-scrollback.launch.KsbKittyData*
         {window_title}             (string)        the title of the window to get scrollback text
         {ksb_dir}                  (string)        the base runtime path of kitty-scrollback.nvim
         {kitty_scrollback_config}  (string)        the config name of user config options
-        {kitty_opts}               (KsbKittyOpts)  relevent kitty configuration values
+        {kitty_opts}               (KsbKittyOpts)  relevant kitty configuration values
         {kitty_config_dir}         (string)        kitty configuration directory path
         {kitty_version}            (table)         kitty version
 
