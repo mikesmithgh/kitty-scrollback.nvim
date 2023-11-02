@@ -165,7 +165,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
           local tail_diff = #stdout - tail_max
           local tail_count = tail_diff < 1 and 1 or math.min(tail_diff, #stdout)
           for i = #stdout, tail_count, -1 do
-            -- see for match kitty/tools/cli/markup/prettify.go ans.Err = fmt_ctx.SprintFunc("bold fg=bright-red")
+            -- see for match kitty/tools/cli/markup/prettify.go ans.Err = fmt_ctx.SprintFunc("bold fg=bright-red") -- cspell:disable-linea
             if stdout[i]:match('^' .. esc .. '%[1;91mError' .. esc .. '%[221;39m: .*') then
               error_index = i
               break

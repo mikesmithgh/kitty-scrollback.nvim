@@ -40,7 +40,7 @@ local M = {}
 ---@field window_title string the title of the window to get scrollback text
 ---@field ksb_dir string the base runtime path of kitty-scrollback.nvim
 ---@field kitty_scrollback_config string the config name of user config options
----@field kitty_opts KsbKittyOpts relevent kitty configuration values
+---@field kitty_opts KsbKittyOpts relevant kitty configuration values
 ---@field kitty_config_dir string kitty configuration directory path
 ---@field kitty_version table kitty version
 

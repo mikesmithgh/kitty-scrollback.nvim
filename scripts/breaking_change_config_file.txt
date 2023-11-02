@@ -28,7 +28,7 @@ Update your Kitten to use the name of the configuration defined in the setup fun
 Real example ~
 
 The configuration to view the last command output now references a builtin configuration instead of a file. The 
-new configuation can be viewed by running `:KittyScrollbackGenerateKittens`.
+new configuration can be viewed by running `:KittyScrollbackGenerateKittens`.
 
 *Old* *configuration*
 
