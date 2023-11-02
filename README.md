@@ -28,7 +28,7 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 > [!IMPORTANT]\
 > v2.0.0 has breaking changes and requires steps to properly migrate from v1.X.X.
 > 
-> You can ignore this section if you have not previously installed any verions of kitty-scrollback.nvim
+> You can ignore this section if you have not previously installed any version of kitty-scrollback.nvim
 
 <details>
 
@@ -71,7 +71,7 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
         <summary>Real example</summary>
   
         The configuration to view the last command output now references a builtin configuration instead of a file. The 
-        new configuation can be viewed by running `:KittyScrollbackGenerateKittens`.
+        new configuration can be viewed by running `:KittyScrollbackGenerateKittens`.
         
         - Old configuration
           The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
@@ -430,7 +430,7 @@ The following plugins are nice additions to your Neovim and Kitty setup.
 - [baleia.nvim](https://github.com/m00qek/baleia.nvim) - very nice plugin to colorize Neovim buffer containing ANSI escape sequences. I plan to add integration with this plugin 🤝
 - [kovidgoyal/kitty#719 Feature Request: Ability to select text with the keyboard (vim-like)](https://github.com/kovidgoyal/kitty/issues/719) - ideas for passing the scrollback buffer to Neovim
   - [kovidgoyal/kitty#719 Comment 952039731 ](https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731) - very detailed solution to opening the Kitty scrollback buffer in Neovim. In particular, I used the `set title` escape code to hide the `[Process exited]` message
-- [kovidgoyal/kitty#2426 'Failed to open controlling terminal' error when trying to remote control from vim](https://github.com/kovidgoyal/kitty/issues/2426) - workaround for issuing kitty remote commands without a tty `listen_on unix:/tmp/mykitty`
+- [kovidgoyal/kitty#2426 'Failed to open controlling terminal' error when trying to remote control from vim](https://github.com/kovidgoyal/kitty/issues/2426) - workaround for issuing kitty remote commands without a TTY `listen_on unix:/tmp/mykitty`
 - [kovidgoyal/kitty#6485 Vi mode for kitty](https://github.com/kovidgoyal/kitty/discussions/6485) - inspiration to leverage Neovim's terminal for the scrollback buffer
 - [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) - referenced for color darkening, thank you folke!
 - [lazy.nvim](https://github.com/folke/lazy.nvim) - referenced for window sizing, thank you folke!

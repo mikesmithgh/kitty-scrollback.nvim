@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*    For NVIM v0.10+   Last change: 2023 November 01
+*kitty-scrollback.nvim.txt*    For NVIM v0.10+   Last change: 2023 November 02
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -31,7 +31,7 @@ MIGRATING TO V2.0.0                *kitty-scrollback.nvim-migrating-to-v2.0.0*
 
   `IMPORTANT` v2.0.0 has breaking changes and requires steps to properly migrate
   from v1.X.X.
-  You can ignore this section if you have not previously installed any verions of
+  You can ignore this section if you have not previously installed any version of
   kitty-scrollback.nvim
 - Migration Steps
 
@@ -71,7 +71,7 @@ MIGRATING TO V2.0.0                *kitty-scrollback.nvim-migrating-to-v2.0.0*
         `--config yourconfig`
         - Real example
             The configuration to view the last command output now references a builtin
-            configuration instead of a file. The new configuation can be viewed by running
+            configuration instead of a file. The new configuration can be viewed by running
             `:KittyScrollbackGenerateKittens`.
             - Old configuration
                 The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
@@ -502,7 +502,7 @@ ACKNOWLEDGEMENTS                      *kitty-scrollback.nvim-acknowledgements*
 - baleia.nvim <https://github.com/m00qek/baleia.nvim> - very nice plugin to colorize Neovim buffer containing ANSI escape sequences. I plan to add integration with this plugin 
 - kovidgoyal/kitty#719Feature Request: Ability to select text with the keyboard (vim-like) <https://github.com/kovidgoyal/kitty/issues/719> - ideas for passing the scrollback buffer to Neovim
     - kovidgoyal/kitty#719 Comment 952039731 <https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731> - very detailed solution to opening the Kitty scrollback buffer in Neovim. In particular, I used the `set title` escape code to hide the `[Process exited]` message
-- kovidgoyal/kitty#2426 'Failed to open controlling terminal' error when trying to remote control from vim <https://github.com/kovidgoyal/kitty/issues/2426> - workaround for issuing kitty remote commands without a tty `listen_on unix:/tmp/mykitty`
+- kovidgoyal/kitty#2426 'Failed to open controlling terminal' error when trying to remote control from vim <https://github.com/kovidgoyal/kitty/issues/2426> - workaround for issuing kitty remote commands without a TTY `listen_on unix:/tmp/mykitty`
 - kovidgoyal/kitty#6485 Vi mode for kitty <https://github.com/kovidgoyal/kitty/discussions/6485> - inspiration to leverage Neovim’s terminal for the scrollback buffer
 - tokyonight.nvim <https://github.com/folke/tokyonight.nvim> - referenced for color darkening, thank you folke!
 - lazy.nvim <https://github.com/folke/lazy.nvim> - referenced for window sizing, thank you folke!
