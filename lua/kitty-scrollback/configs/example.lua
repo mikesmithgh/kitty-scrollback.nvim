@@ -178,7 +178,16 @@ return {
           KittyScrollbackNvimPasteWinFloatTitle = {
             link = 'IncSearch',
           },
+          KittyScrollbackNvimVisual = {
+            bg = 'Pink',
+            fg = 'Black',
+          },
         },
+      }
+    end,
+    [prefix .. 'visual_selection_highlight_mode_reverse'] = function()
+      return {
+        visual_selection_highlight_mode = 'reverse',
       }
     end,
     [prefix .. 'keymaps_custom'] = function()
