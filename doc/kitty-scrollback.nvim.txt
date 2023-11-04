@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*    For NVIM v0.10+   Last change: 2023 November 02
+*kitty-scrollback.nvim.txt*    For NVIM v0.10+   Last change: 2023 November 04
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -424,6 +424,15 @@ KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
 
   checkhealth                                                  boolean?                                                                         if true execute :checkhealth kitty-scrollback and skip
                                                                                                                                                 setup
+
+  visual_selection_highlight_mode                              string \| 'darken' \| 'kitty' \| 'nvim' \| 'reverse'                             Sets the mode for coloring the Visual highlight group in
+                                                                                                                                                the scrollback buffer window. darken uses a darkened
+                                                                                                                                                version of the Normal highlight group to improve
+                                                                                                                                                readability. kitty uses the colors defined for
+                                                                                                                                                selection_foreground and selection_background in your Kitty
+                                                                                                                                                configuration. nvim uses the default colors defined in the
+                                                                                                                                                Visual highlight group. reverse reverses the foreground and
+                                                                                                                                                background colors of the visual selection.
   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 NERD FONTS ~
