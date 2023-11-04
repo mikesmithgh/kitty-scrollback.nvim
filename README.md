@@ -39,15 +39,15 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
   - If you are using the <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a> or <a href="https://github.com/wbthomason/packer.nvim">packer.nvim</a> package manager, then
     add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy loading. See [Installation](#-installation) for additional details.
     
-    ```lua
-    event = { 'User KittyScrollbackLaunch' }
-    ```
+```lua
+event = { 'User KittyScrollbackLaunch' }
+```
 
   - Regenerate default Kitten mappings and add to `kitty.conf`
 
-    ```sh
-    nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
-    ```
+```sh
+nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
+```
   - Remove previous kitty-scrollback.nvim Kitten mappings in `kitty.conf`
 
   - The default mapping keys changed from `ctrl+shift` to `kitty_mod`. The default values for `kitty_mod` in Kitty is `ctrl+shift`.
@@ -58,71 +58,67 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
   - Migrate any customized configurations to the new format
     - When you define your kitty-scrollback.nvim Kitten configuration, do not use `--config-file` `yourconfigfile.lua`. Instead,
       move the contents of `yourconfigfile.lua` to an entry in the configuration passed to the kitty-scrollback.nvim setup function.
-      ```lua
-      require('kitty-scrollback').setup({ 
-        yourconfig = function() 
-          ...
-        end, 
-      })
-      ```
-      Update your Kitten to use the name of the configuration defined in the setup function. In this example,
-      `--config-file yourconfigfile.lua` changes to `--config yourconfig`
-      <details>
-        <summary>Real example</summary>
+```lua
+require('kitty-scrollback').setup({ 
+yourconfig = function() 
+  ...
+end, 
+})
+```
+  Update your Kitten to use the name of the configuration defined in the setup function. In this example,
+  `--config-file yourconfigfile.lua` changes to `--config yourconfig`
+  <details>
+    <summary>Real example</summary>
+
+  The configuration to view the last command output now references a builtin configuration instead of a file. The 
+  new configuration can be viewed by running `:KittyScrollbackGenerateKittens`.
   
-        The configuration to view the last command output now references a builtin configuration instead of a file. The 
-        new configuration can be viewed by running `:KittyScrollbackGenerateKittens`.
-        
-        - Old configuration
-          The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
-        
-        ```kitty
-            # Browse output of the last shell command in nvim
-            map kitty_mod+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
-        ```
-        
-        ```lua
-            -- get_text_last_cmd_output.lua
-            local M = {}
-            M.config = function()
-              return {
-                kitty_get_text = {
-                  extent = 'last_visited_cmd_output',
-                  ansi = true,
-                },
-              }
-            end
-            
-            return M
-        ```
-        
-        - New configuration
-          The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
-        
-        ```kitty
-            # Browse output of the last shell command in nvim
-            map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
-        ```
-        
-        ```lua
-            require('kitty-scrollback').setup({ 
-              ksb_builtin_last_cmd_output = function()
-                return {
-                  kitty_get_text = {
-                    extent = 'last_visited_cmd_output',
-                    ansi = true,
-                  },
-                }
-              end
-            })
-        ```
-      </details>
+  - Old configuration
+    The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
+    
+```kitty
+# Browse output of the last shell command in nvim
+map kitty_mod+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
+```
+    
+```lua
+-- get_text_last_cmd_output.lua
+local M = {}
+M.config = function()
+  return {
+    kitty_get_text = {
+      extent = 'last_visited_cmd_output',
+      ansi = true,
+    },
+  }
+end
 
-
+return M
+```
+    
+  - New configuration
+    The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
+    
+```kitty
+# Browse output of the last shell command in nvim
+map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
+```
+    
+```lua
+require('kitty-scrollback').setup({ 
+  ksb_builtin_last_cmd_output = function()
+    return {
+      kitty_get_text = {
+        extent = 'last_visited_cmd_output',
+        ansi = true,
+      },
+    }
+  end
+})
+```
+  </details>
 
 </details>
-
-
 
 ## ✨ Features
 - 😻 Navigate Kitty's scrollback buffer with Neovim
