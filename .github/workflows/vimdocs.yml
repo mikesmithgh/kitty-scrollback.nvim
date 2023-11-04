@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir tmp_preformat_readme
           cp README.md tmp_preformat_readme/README.md
-          sed -E -e 's/\[!(NOTE|WARNING|IMPORTANT)\]/`\1`/Ig' -e 's/<summary>(.+)<\/summary>/\r- \1\r/g' \
+          sed -E -e 's/\[!(NOTE|WARNING|IMPORTANT)\]/`\1`/Ig' -e 's/<summary>(.+)<\/summary>/<br\/>- \1<br\/>/g' \
             -e 's/<a.*href.*"(.+)".*>(.+)<\/a>/[\2](\1)/g' < README.md > tmp_preformat_readme/README.md
 
       - name: panvimdoc
