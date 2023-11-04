@@ -31,31 +31,45 @@ MIGRATING TO V2.0.0                *kitty-scrollback.nvim-migrating-to-v2.0.0*
 
   `IMPORTANT` v2.0.0 has breaking changes and requires steps to properly migrate
   from v1.X.X.
-  You can ignore this section if you have not previously installed any version of
-  kitty-scrollback.nvim
-- Migration Steps
+  You can ignore this section if you have not previously installed any version of kitty-scrollback.nvim
+   
+  - Migration Steps
 
-- If you are using the packer.nvim <https://github.com/wbthomason/packer.nvim> package manager, then
-    add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy loading. See |kitty-scrollback.nvim-installation| for additional details.
+
+
+
+
+
+>
+      - If you are using the [packer.nvim](https://github.com/wbthomason/packer.nvim) package manager, then
+        add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy loading. See [Installation](#-installation) for additional details.
+<
 
 >lua
     event = { 'User KittyScrollbackLaunch' }
 <
 
-- Regenerate default Kitten mappings and add to `kitty.conf`
+>
+      - Regenerate default Kitten mappings and add to `kitty.conf`
+<
 
 >sh
     nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
 <
 
-- Remove previous kitty-scrollback.nvim Kitten mappings in `kitty.conf`
-    - The default mapping keys changed from `ctrl+shift` to `kitty_mod`. The default values for `kitty_mod` in Kitty is `ctrl+shift`.
+>
+      - Remove previous kitty-scrollback.nvim Kitten mappings in `kitty.conf`
+    
+      - The default mapping keys changed from `ctrl+shift` to `kitty_mod`. The default values for `kitty_mod` in Kitty is `ctrl+shift`.
         - If you are using the default value for `kitty_mod` of `ctrl+shift`, then no change is needed.
         - If you are using a different value for `kitty_mod`, then you should correct any potential mapping conflicts that may occur
-            now that `kitty-scrollback.nvim` is using `kitty_mod`.
-    - Migrate any customized configurations to the new format
+          now that `kitty-scrollback.nvim` is using `kitty_mod`.
+    
+      - Migrate any customized configurations to the new format
         - When you define your kitty-scrollback.nvim Kitten configuration, do not use `--config-file` `yourconfigfile.lua`. Instead,
-            move the contents of `yourconfigfile.lua` to an entry in the configuration passed to the kitty-scrollback.nvim setup function.
+          move the contents of `yourconfigfile.lua` to an entry in the configuration passed to the kitty-scrollback.nvim setup function.
+      
+<
 
 >lua
     require('kitty-scrollback').setup({ 
@@ -65,11 +79,12 @@ MIGRATING TO V2.0.0                *kitty-scrollback.nvim-migrating-to-v2.0.0*
     })
 <
 
-Update your Kitten to use the name of the configuration defined in the setup
-function. In this example, `--config-file yourconfigfile.lua` changes to
-`--config yourconfig`
+>
+      Update your Kitten to use the name of the configuration defined in the setup function. In this example,
+      `--config-file yourconfigfile.lua` changes to `--config yourconfig`
+<
 
-- Real example
+-Real example
 
 
   `NOTE` The configuration to view the last command output now references a
