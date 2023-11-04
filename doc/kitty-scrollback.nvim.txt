@@ -429,7 +429,7 @@ KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
   checkhealth                                                  boolean?                                                                         if true execute :checkhealth kitty-scrollback and skip
                                                                                                                                                 setup
 
-  visual_selection_highlight_mode                              string \| 'darken' \| 'kitty' \| 'nvim' \| 'reverse'                             Sets the mode for coloring the Visual highlight group in
+  visual_selection_highlight_mode                              string?                                                                          Sets the mode for coloring the Visual highlight group in
                                                                                                                                                 the scrollback buffer window. darken uses a darkened
                                                                                                                                                 version of the Normal highlight group to improve
                                                                                                                                                 readability. kitty uses the colors defined for
