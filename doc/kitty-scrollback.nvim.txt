@@ -35,10 +35,10 @@ MIGRATING TO V2.0.0                *kitty-scrollback.nvim-migrating-to-v2.0.0*
   kitty-scrollback.nvim
 
 `-` `Migration Steps`
-    - If you are using the packer.nvim <https://github.com/wbthomason/packer.nvim>
-        package manager, then add the custom `User` event `KittyScrollbackLaunch` as a
-        trigger for lazy loading. See |kitty-scrollback.nvim-installation| for
-        additional details.
+    - If you are using the lazy.nvim <https://github.com/folke/lazy.nvim> or
+        packer.nvim <https://github.com/wbthomason/packer.nvim> package manager, then
+        add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy
+        loading. See |kitty-scrollback.nvim-installation| for additional details.
 
 >lua
             event = { 'User KittyScrollbackLaunch' }
