@@ -40,7 +40,7 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
   
   <!-- panvimdoc-ignore-end -->
 
-  - If you are using the <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a> or <a href="https://github.com/wbthomason/packer.nvim">packer.nvim</a> package manager, then
+  - If you are using the [lazy.nvim](https://github.com/folke/lazy.nvim) or [packer.nvim](https://github.com/wbthomason/packer.nvim) package manager, then
     add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy loading. 
     See [Installation](#-installation) for additional details.
 
