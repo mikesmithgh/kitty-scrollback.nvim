@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# dev utilty to generate vimdoc from README
+# dev utility to generate vimdoc from README
 
 # preformat README.md
 mkdir -p tmp_vimdoc_workdir
