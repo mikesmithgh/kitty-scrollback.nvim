@@ -102,7 +102,7 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
         ```
         
         - New configuration
-          The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
+          - The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
         
         ```kitty
             # Browse output of the last shell command in nvim
