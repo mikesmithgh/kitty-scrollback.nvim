@@ -25,25 +25,37 @@ jobs:
 
       - name: preformat README.md
         run: |
-          mkdir tmp_preformat_readme
-          cp README.md tmp_preformat_readme/README.md
-          sed -E -e 's/\[!(NOTE|WARNING|IMPORTANT)\]/`\1`/Ig' -e 's/<summary>(.+)<\/summary>/<br\/>- \1<br\/>/g' \
-            -e 's/<a.*href.*"(.+)".*>(.+)<\/a>/[\2](\1)/g' < README.md > tmp_preformat_readme/README.md
+          mkdir -p tmp_vimdoc_workdir
+          cp README.md tmp_vimdoc_workdir/README.md
+          sed -E -e's/\[!(NOTE|WARNING|IMPORTANT)].*/[!\1]\n>/Ig' -e 's/.*<summary>(.+)<\/summary>/- VIMDOC_SUMMARY_HEADER `\1`\n/g' \
+            -e 's/<a.*href.*"(.+)".*>(.+)<\/a>/[\2](\1)/g' <README.md >tmp_vimdoc_workdir/README.md
 
       - name: panvimdoc
         uses: kdheepak/panvimdoc@main
         with:
           vimdoc: kitty-scrollback.nvim
-          pandoc: "tmp_preformat_readme/README.md"
+          pandoc: "tmp_vimdoc_workdir/README.md"
           version: "NVIM v0.10+"
           toc: true
           demojify: true
           dedupsubheadings: false
           treesitter: true
 
+      - name: postformat kitty-scrollback.nvim.txt
+        run: |
+          cp doc/kitty-scrollback.nvim.txt tmp_vimdoc_workdir/kitty-scrollback.nvim.txt
+          sed -E \
+            -e 's/\[!(IMPORTANT)\]/|‼| |\1|/Ig' \
+            -e 's/\[!(NOTE)\]/`ℹ` `\1` /Ig' \
+            -e 's/\[!(WARNING)\]/*⚠* *\1* /Ig' \
+            -e 's/^- VIMDOC_SUMMARY_HEADER(.*)/`-`\1/g' \
+            -e 's/^[[:space:]]+(>.*)/\n\1/g' \
+            -e 's/^[[:space:]]+(<.*)/\1/g' \
+            <tmp_vimdoc_workdir/kitty-scrollback.nvim.txt >doc/kitty-scrollback.nvim.txt
+
       - name: cleanup preformat README.md
         run: |
-          rm -rf tmp_preformat_readme
+          rm -rf tmp_vimdoc_workdir
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
