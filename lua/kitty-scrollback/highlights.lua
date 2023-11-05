@@ -21,7 +21,7 @@ local opts
 ---@field KittyScrollbackNvimPasteWinNormal table|nil paste window Normal highlight group
 ---@field KittyScrollbackNvimPasteWinFloatBorder table|nil paste window FloatBorder highlight group
 ---@field KittyScrollbackNvimPasteWinFloatTitle table|nil paste window FloatTitle highlight group
----@field KittyScrollbackNvimVisual table|nil Visual selection
+---@field KittyScrollbackNvimVisual table|nil scrollback buffer window visual selection highlight group
 
 ---@see nvim_set_hl
 
