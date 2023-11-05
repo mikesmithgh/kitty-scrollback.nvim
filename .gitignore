@@ -1,5 +1,4 @@
 *.orig
 .worktrees/
 .DS_Store
-tmp_
 tmp_vimdoc_workdir/
