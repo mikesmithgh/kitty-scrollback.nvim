@@ -385,6 +385,8 @@ KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
 
   highlight_overrides.KittyScrollbackNvimPasteWinFloatTitle    table?                                                                           paste window FloatTitle highlight group
 
+  highlight_overrides.KittyScrollbackNvimVisual                table?                                                                           scrollback buffer window visual selection highlight group
+
   status_window                                                KsbStatusWindowOpts?                                                             options for status window indicating that
                                                                                                                                                 kitty-scrollback.nvim is ready
 
