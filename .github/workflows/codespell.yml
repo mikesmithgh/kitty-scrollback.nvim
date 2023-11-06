@@ -1,4 +1,4 @@
-name: stylua
+name: codespell
 on:
   push:
     branches:
