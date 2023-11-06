@@ -12,9 +12,9 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 
 <a href="https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/kitty_scrollback_nvim">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/6dd229dd-0206-4d50-b627-f5f0f5fe8cd1">
-    <source media="(prefers-color-scheme: light)" srcset="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/6dd229dd-0206-4d50-b627-f5f0f5fe8cd1">
-    <img alt="kitty-scrollback.nvim demo" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/6dd229dd-0206-4d50-b627-f5f0f5fe8cd1">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/3513aada-c19c-4e4a-bd9e-91b9907a2c8d">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/3513aada-c19c-4e4a-bd9e-91b9907a2c8d">
+    <img alt="kitty-scrollback.nvim demo" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/3513aada-c19c-4e4a-bd9e-91b9907a2c8d">
   </picture>
   <div align="center"><sup>(click for video)<sup></div>
 </a>
@@ -33,12 +33,17 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 <details>
 
   <summary>Migration Steps</summary>
-
+  
+  <!-- panvimdoc-ignore-start -->
+  
   <img src="media/sad_kitty_thumbs_up.png" alt="sad-kitty-thumps-up" style="width: 20%" align="right" />
+  
+  <!-- panvimdoc-ignore-end -->
 
-  - If you are using the <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a> or <a href="https://github.com/wbthomason/packer.nvim">packer.nvim</a> package manager, then
-    add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy loading. See [Installation](#-installation) for additional details.
-    
+  - If you are using the [lazy.nvim](https://github.com/folke/lazy.nvim) or [packer.nvim](https://github.com/wbthomason/packer.nvim) package manager, then
+    add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy loading. 
+    See [Installation](#-installation) for additional details.
+
     ```lua
     event = { 'User KittyScrollbackLaunch' }
     ```
@@ -67,62 +72,62 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
       ```
       Update your Kitten to use the name of the configuration defined in the setup function. In this example,
       `--config-file yourconfigfile.lua` changes to `--config yourconfig`
-      <details>
-        <summary>Real example</summary>
-  
-        The configuration to view the last command output now references a builtin configuration instead of a file. The 
-        new configuration can be viewed by running `:KittyScrollbackGenerateKittens`.
-        
-        - Old configuration
-          The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
-        
-        ```kitty
-            # Browse output of the last shell command in nvim
-            map kitty_mod+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
-        ```
-        
-        ```lua
-            -- get_text_last_cmd_output.lua
-            local M = {}
-            M.config = function()
-              return {
-                kitty_get_text = {
-                  extent = 'last_visited_cmd_output',
-                  ansi = true,
-                },
-              }
-            end
-            
-            return M
-        ```
-        
-        - New configuration
-          The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
-        
-        ```kitty
-            # Browse output of the last shell command in nvim
-            map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
-        ```
-        
-        ```lua
-            require('kitty-scrollback').setup({ 
-              ksb_builtin_last_cmd_output = function()
-                return {
-                  kitty_get_text = {
-                    extent = 'last_visited_cmd_output',
-                    ansi = true,
-                  },
-                }
-              end
-            })
-        ```
-      </details>
 
+<details>
 
+  <summary>Real example</summary>
+
+  - > [!NOTE]\
+    > The configuration to view the last command output now references a builtin configuration instead of a file. The 
+    > new configuration can be viewed by running `:KittyScrollbackGenerateKittens`.
+
+  - Old configuration
+    - The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
+
+  ```kitty
+      # Browse output of the last shell command in nvim
+      map kitty_mod+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
+  ```
+
+  ```lua
+      -- get_text_last_cmd_output.lua
+      local M = {}
+      M.config = function()
+        return {
+          kitty_get_text = {
+            extent = 'last_visited_cmd_output',
+            ansi = true,
+          },
+        }
+      end
+      
+      return M
+  ```
+
+  - New configuration
+    - The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
+
+  ```kitty
+      # Browse output of the last shell command in nvim
+      map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
+  ```
+
+  ```lua
+      require('kitty-scrollback').setup({ 
+        ksb_builtin_last_cmd_output = function()
+          return {
+            kitty_get_text = {
+              extent = 'last_visited_cmd_output',
+              ansi = true,
+            },
+          }
+        end
+      })
+  ```
 
 </details>
 
-
+</details>
 
 ## ✨ Features
 - 😻 Navigate Kitty's scrollback buffer with Neovim
@@ -381,11 +386,14 @@ Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [k
 | kitty_get_text.clear_selection                                   | `boolean`                                                                        | If true, clear the selection in the matched window, if any.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | kitty_get_text.extent                                            | `string`                                                                         | What text to get. The default of screen means all text currently on the screen. all means all the `screen+scrollback` and selection means the currently selected text. `first_cmd_output_on_screen` means the output of the first command that was run in the window on screen. `last_cmd_output` means the output of the last command that was run in the window. `last_visited_cmd_output` means the first command output below the last scrolled position via scroll_to_prompt. `last_non_empty_output` is the output from the last command run in the window that had some non empty output. The last four require `shell_integration` to be enabled. Choices: `screen`, `all`, `first_cmd_output_on_screen`, `last_cmd_output`, `last_non_empty_output`, `last_visited_cmd_output`, `selection` |
 | checkhealth                                                      | `boolean?`                                                                       | if true execute :checkhealth kitty-scrollback and skip setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| visual_selection_highlight_mode                                  | `string?`                                                                        | Sets the mode for coloring the Visual highlight group in the scrollback buffer window. `darken` uses a darkened version of the Normal highlight group to improve readability. `kitty` uses the colors defined for `selection_foreground` and `selection_background` in your Kitty configuration. `nvim` uses the default colors defined in the `Visual` highlight group. `reverse` reverses the foreground and background colors of the visual selection.                                                                                                                                                                                                                                                                                                                                            |
 
 ### Nerd Fonts 
 
 By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com) in the status window. If you would like to 
 use ASCII instead, set the option `status_window.style_simple` to `true`. 
+
+<!-- panvimdoc-ignore-start -->
 
 - Status window with Nerd Fonts <code>opts.status_window.style_simple = false</code>
 ![style_simple_false](https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/662bf132-0b39-4028-b69f-eb85fbb69b60)
@@ -393,6 +401,7 @@ use ASCII instead, set the option `status_window.style_simple` to `true`.
 - Status window with ASCII text <code>opts.status_window.style_simple = true</code>
 ![style_simple_true](https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/c19a1869-e4e4-40fd-b619-fed771d0153f)
 
+<!-- panvimdoc-ignore-end -->
 
 ## 🫡 Commands and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`

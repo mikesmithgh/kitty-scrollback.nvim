@@ -100,6 +100,7 @@ local opts = {}
 ---@field paste_window KsbPasteWindowOpts|nil  options for paste window that sends commands to Kitty
 ---@field kitty_get_text KsbKittyGetText|nil options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
 ---@field checkhealth boolean|nil if true execute :checkhealth kitty-scrollback and skip setup
+---@field visual_selection_highlight_mode string | 'darken' | 'kitty' | 'nvim' | 'reverse'
 local default_opts = {
   callbacks = nil,
   keymaps_enabled = true,
@@ -127,6 +128,7 @@ local default_opts = {
     clear_selection = true,
   },
   checkhealth = false,
+  visual_selection_highlight_mode = 'darken',
 }
 
 local function restore_orig_options()
@@ -402,6 +404,11 @@ M.launch = function()
         local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
         term_buf_name = term_buf_name:gsub('^(term://.-:).*', '%1kitty-scrollback.nvim')
         vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
+        vim.api.nvim_set_option_value(
+          'winhighlight',
+          'Visual:KittyScrollbackNvimVisual',
+          { win = 0 }
+        )
         vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
 
         if opts.restore_options then

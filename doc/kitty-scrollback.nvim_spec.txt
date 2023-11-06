@@ -108,14 +108,15 @@ KsbPasteWindowOpts
 KsbOpts                                        *kitty-scrollback.launch.KsbOpts*
 
     Fields: ~
-        {callbacks}            (KsbCallbacks|nil)         fire and forget callback functions
-        {keymaps_enabled}      (boolean|nil)              if true, enabled all default keymaps
-        {restore_options}      (boolean|nil)              if true, restore options that were modified while processing the scrollback buffer
-        {highlight_overrides}  (KsbHighlights|nil)        kitty-scrollback.nvim highlight overrides
-        {status_window}        (KsbStatusWindowOpts|nil)  options for status window indicating that kitty-scrollback.nvim is ready
-        {paste_window}         (KsbPasteWindowOpts|nil)   options for paste window that sends commands to Kitty
-        {kitty_get_text}       (KsbKittyGetText|nil)      options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
-        {checkhealth}          (boolean|nil)              if true execute :checkhealth kitty-scrollback and skip setup
+        {callbacks}                        (KsbCallbacks|nil)                          fire and forget callback functions
+        {keymaps_enabled}                  (boolean|nil)                               if true, enabled all default keymaps
+        {restore_options}                  (boolean|nil)                               if true, restore options that were modified while processing the scrollback buffer
+        {highlight_overrides}              (KsbHighlights|nil)                         kitty-scrollback.nvim highlight overrides
+        {status_window}                    (KsbStatusWindowOpts|nil)                   options for status window indicating that kitty-scrollback.nvim is ready
+        {paste_window}                     (KsbPasteWindowOpts|nil)                    options for paste window that sends commands to Kitty
+        {kitty_get_text}                   (KsbKittyGetText|nil)                       options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
+        {checkhealth}                      (boolean|nil)                               if true execute :checkhealth kitty-scrollback and skip setup
+        {visual_selection_highlight_mode}  (string|"darken"|"kitty"|"nvim"|"reverse")
 
 
 M.setup({kitty_data_str})                        *kitty-scrollback.launch.setup*

@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*    For NVIM v0.10+   Last change: 2023 November 02
+*kitty-scrollback.nvim.txt*    For NVIM v0.10+   Last change: 2023 November 06
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -29,88 +29,96 @@ commands in Neovim.
 MIGRATING TO V2.0.0                *kitty-scrollback.nvim-migrating-to-v2.0.0*
 
 
-  `IMPORTANT` v2.0.0 has breaking changes and requires steps to properly migrate
-  from v1.X.X.
+  |‼| |IMPORTANT|
+  v2.0.0 has breaking changes and requires steps to properly migrate from v1.X.X.
   You can ignore this section if you have not previously installed any version of
   kitty-scrollback.nvim
-- Migration Steps
+
+`-` `Migration Steps`
+    - If you are using the lazy.nvim <https://github.com/folke/lazy.nvim> or
+        packer.nvim <https://github.com/wbthomason/packer.nvim> package manager, then
+        add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy
+        loading. See |kitty-scrollback.nvim-installation| for additional details.
+
+>lua
+            event = { 'User KittyScrollbackLaunch' }
+<
+    - Regenerate default Kitten mappings and add to `kitty.conf`
+
+>sh
+            nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
+<
+    - Remove previous kitty-scrollback.nvim Kitten mappings in `kitty.conf`
+    - The default mapping keys changed from `ctrl+shift` to `kitty_mod`. The default
+        values for `kitty_mod` in Kitty is `ctrl+shift`.
+        - If you are using the default value for `kitty_mod` of `ctrl+shift`, then no change is needed.
+        - If you are using a different value for `kitty_mod`, then you should correct any potential mapping conflicts that may occur
+            now that `kitty-scrollback.nvim` is using `kitty_mod`.
+    - Migrate any customized configurations to the new format
+        - When you define your kitty-scrollback.nvim Kitten configuration, do not use
+            `--config-file` `yourconfigfile.lua`. Instead, move the contents of
+            `yourconfigfile.lua` to an entry in the configuration passed to the
+            kitty-scrollback.nvim setup function.
+
+>lua
+                require('kitty-scrollback').setup({ 
+                  yourconfig = function() 
+                    ...
+                  end, 
+                })
+<
+            Update your Kitten to use the name of the configuration defined in the setup
+            function. In this example, `--config-file yourconfigfile.lua` changes to
+            `--config yourconfig`
 
 
+`-` `Real example`
+    -   `ℹ` `NOTE` 
+          The configuration to view the last command output now references a builtin
+          configuration instead of a file. The new configuration can be viewed by running
+          `:KittyScrollbackGenerateKittens`.
+    - Old configuration
+        - The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
 
-- If you are using the packer.nvim <https://github.com/wbthomason/packer.nvim>
-    package manager, then add the custom `User` event `KittyScrollbackLaunch` as a
-    trigger for lazy loading. See |kitty-scrollback.nvim-installation| for
-    additional details.
-    >lua
-        event = { 'User KittyScrollbackLaunch' }
-    <
-- Regenerate default Kitten mappings and add to `kitty.conf`
-    >sh
-        nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
-    <
-- Remove previous kitty-scrollback.nvim Kitten mappings in `kitty.conf`
-- The default mapping keys changed from `ctrl+shift` to `kitty_mod`. The default
-    values for `kitty_mod` in Kitty is `ctrl+shift`.
-    - If you are using the default value for `kitty_mod` of `ctrl+shift`, then no change is needed.
-    - If you are using a different value for `kitty_mod`, then you should correct any potential mapping conflicts that may occur
-        now that `kitty-scrollback.nvim` is using `kitty_mod`.
-- Migrate any customized configurations to the new format
-    - When you define your kitty-scrollback.nvim Kitten configuration, do not use
-        `--config-file` `yourconfigfile.lua`. Instead, move the contents of
-        `yourconfigfile.lua` to an entry in the configuration passed to the
-        kitty-scrollback.nvim setup function.
-        >lua
+>kitty
+            # Browse output of the last shell command in nvim
+            map kitty_mod+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
+<
+
+>lua
+            -- get_text_last_cmd_output.lua
+            local M = {}
+            M.config = function()
+              return {
+                kitty_get_text = {
+                  extent = 'last_visited_cmd_output',
+                  ansi = true,
+                },
+              }
+            end
+        
+            return M
+<
+    - New configuration
+        - The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
+
+>kitty
+            # Browse output of the last shell command in nvim
+            map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
+<
+
+>lua
             require('kitty-scrollback').setup({ 
-              yourconfig = function() 
-                ...
-              end, 
+              ksb_builtin_last_cmd_output = function()
+                return {
+                  kitty_get_text = {
+                    extent = 'last_visited_cmd_output',
+                    ansi = true,
+                  },
+                }
+              end
             })
-        <
-        Update your Kitten to use the name of the configuration defined in the setup
-        function. In this example, `--config-file yourconfigfile.lua` changes to
-        `--config yourconfig`
-        - Real example
-            The configuration to view the last command output now references a builtin
-            configuration instead of a file. The new configuration can be viewed by running
-            `:KittyScrollbackGenerateKittens`.
-            - Old configuration
-                The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
-            >kitty
-                    # Browse output of the last shell command in nvim
-                    map kitty_mod+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
-            <
-            >lua
-                    -- get_text_last_cmd_output.lua
-                    local M = {}
-                    M.config = function()
-                      return {
-                        kitty_get_text = {
-                          extent = 'last_visited_cmd_output',
-                          ansi = true,
-                        },
-                      }
-                    end
-                
-                    return M
-            <
-            - New configuration
-                The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
-            >kitty
-                    # Browse output of the last shell command in nvim
-                    map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
-            <
-            >lua
-                    require('kitty-scrollback').setup({ 
-                      ksb_builtin_last_cmd_output = function()
-                        return {
-                          kitty_get_text = {
-                            extent = 'last_visited_cmd_output',
-                            ansi = true,
-                          },
-                        }
-                      end
-                    })
-            <
+<
 
 
 FEATURES                                      *kitty-scrollback.nvim-features*
@@ -123,14 +131,16 @@ FEATURES                                      *kitty-scrollback.nvim-features*
 
 EXAMPLE USE CASES                    *kitty-scrollback.nvim-example-use-cases*
 
-- Copy scrollback text to the clipboard
+
+`-` `Copy scrollback text to the clipboard`
     - Open Kitty’s scrollback history (default mapping `<C-S-h>`)
     - Search backward for a pattern in Neovim `?{pattern}<CR>`
     - Enter Visual mode `v` and select desired text
     - Copy selection to clipboard (default mapping `<leader>y`)
     - `kitty-scrollback.nvim` automatically closes and returns to Kitty
 
-- Modify and execute command
+
+`-` `Modify and execute command`
     - Open Kitty’s scrollback history (default mapping `<C-S-h>`)
     - Copy desired selection to clipboard (e.g., `yy`)
         - Alternatively, you could just enter Insert mode (`i` or `a`) to open an empty floating window (similar to `<C-x><C-e>` in Bash)
@@ -139,7 +149,8 @@ EXAMPLE USE CASES                    *kitty-scrollback.nvim-example-use-cases*
     - Execute the command (default mapping `<C-CR>`)
     - `kitty-scrollback.nvim` automatically closes and executes the command in Kitty
 
-- Modify and paste content
+
+`-` `Modify and paste content`
     - Open Kitty’s scrollback history (default mapping `<C-S-h>`)
     - Copy desired selection to clipboard (e.g., `yy`)
     - `kitty-scrollback.nvim` opens a floating window in Neovim with the contents of the selection
@@ -165,13 +176,15 @@ command:
 <
 
 
-  `NOTE` It is good practice to first read the script
-  <https://github.com/mikesmithgh/kitty-scrollback.nvim/blob/main/scripts/mini.sh>
+  `ℹ` `NOTE` 
+  It is good practice to first read the script
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/blob/main/scripts/mini.sh>
   before running `sh -c` directly from the web
 
 INSTALLATION                              *kitty-scrollback.nvim-installation*
 
-- Using lazy.nvim <https://github.com/folke/lazy.nvim>
+
+`-` `Using lazy.nvim <https://github.com/folke/lazy.nvim>`
 
 >lua
       {
@@ -188,7 +201,8 @@ INSTALLATION                              *kitty-scrollback.nvim-installation*
       }
 <
 
-- Using packer.nvim <https://github.com/wbthomason/packer.nvim>
+
+`-` `Using packer.nvim <https://github.com/wbthomason/packer.nvim>`
 
 >lua
       use({
@@ -205,7 +219,8 @@ INSTALLATION                              *kitty-scrollback.nvim-installation*
       })
 <
 
-- Using Neovim’s built-in package support |pack|
+
+`-` `Using Neovim's built-in package support pack <https://neovim.io/doc/user/usr_05.html#05.4>`
 
 >bash
     mkdir -p "$HOME/.local/share/nvim/site/pack/mikesmithgh/start/"
@@ -220,8 +235,9 @@ INSTALLATION                              *kitty-scrollback.nvim-installation*
 CONFIGURATION                            *kitty-scrollback.nvim-configuration*
 
 
-  `NOTE` The Advanced Configuration
-  <https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration>
+  `ℹ` `NOTE` 
+  The Advanced Configuration
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration>
   section of the Wiki provides detailed demos of each configuration option.
 
 KITTY ~
@@ -229,30 +245,36 @@ KITTY ~
 The following steps outline how to properly configure kitty.conf
 <https://sw.kovidgoyal.net/kitty/conf/>
 
-- Enable allow_remote_control
-    <https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control>
+
+`-` `Enable allow_remote_control
+<https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control>`
     - Valid values are `yes`, `socket`, `socket-only`
     - If `kitty-scrollback.nvim` is the only application controlling Kitty then `socket-only` is preferred to continue denying TTY requests.
 
-- Set listen_on <https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on> to a
-    Unix socket
+
+`-` `Set listen_on
+<https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on> to a Unix socket`
     - For example, `listen_on unix:/tmp/kitty`
 
-- Enable shell_integration
-    <https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration>
+
+`-` `Enable shell_integration
+<https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration>`
     - Set `shell_integration` to `enabled`
     - Do not add the option `no-prompt-mark`
 
-- Add kitty-scrollback.nvim mappings
+
+`-` `Add <code>kitty-scrollback.nvim</code> mappings`
     - Generate default Kitten mappings and add to `kitty.conf`
 
 >sh
     nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
 <
 
-- Completely close and reopen Kitty
 
-- Check the health of kitty-scrollback.nvim
+`-` `Completely close and reopen Kitty`
+
+
+`-` `Check the health of <code>kitty-scrollback.nvim</code>`
 
 >sh
     nvim +'KittyScrollbackCheckHealth'
@@ -260,7 +282,8 @@ The following steps outline how to properly configure kitty.conf
 
 - Follow the instructions of any `ERROR` or `WARNINGS` reported during the healthcheck
 
-- Test kitty-scrollback.nvim is working as expected by pressing kitty_mod+h to open the scrollback buffer in Neovim
+
+`-` `Test <code>kitty-scrollback.nvim</code> is working as expected by pressing <code>kitty_mod+h</code> to open the scrollback buffer in Neovim`
 
 `kitty_mod` is a special modifier key alias for default shortcuts. You can
 change the value of this option to alter all default shortcuts that use
@@ -270,7 +293,8 @@ change the value of this option to alter all default shortcuts that use
 The default value of `kitty_mod` is `ctrl+shift`. In this example,
 `kitty_mod+h` represents `ctrl+shift+h`.
 
-- See example kitty.conf for reference
+
+`-` `See example <code>kitty.conf</code> for reference`
 
 >sh
     allow_remote_control yes
@@ -424,6 +448,15 @@ KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
 
   checkhealth                                                  boolean?                                                                         if true execute :checkhealth kitty-scrollback and skip
                                                                                                                                                 setup
+
+  visual_selection_highlight_mode                              string?                                                                          Sets the mode for coloring the Visual highlight group in
+                                                                                                                                                the scrollback buffer window. darken uses a darkened
+                                                                                                                                                version of the Normal highlight group to improve
+                                                                                                                                                readability. kitty uses the colors defined for
+                                                                                                                                                selection_foreground and selection_background in your Kitty
+                                                                                                                                                configuration. nvim uses the default colors defined in the
+                                                                                                                                                Visual highlight group. reverse reverses the foreground and
+                                                                                                                                                background colors of the visual selection.
   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 NERD FONTS ~
@@ -431,9 +464,6 @@ NERD FONTS ~
 By default, `kitty-scrollback.nvim` uses Nerd Fonts <https://www.nerdfonts.com>
 in the status window. If you would like to use ASCII instead, set the option
 `status_window.style_simple` to `true`.
-
-- Status window with Nerd Fonts opts.status_window.style_simple = false
-- Status window with ASCII text opts.status_window.style_simple = true
 
 
 COMMANDS AND LUA API              *kitty-scrollback.nvim-commands-and-lua-api*
@@ -459,33 +489,33 @@ The API is available via the `kitty-scrollback.api` module. e.g.,
 `require('kitty-scrollback.api')`
 
   --------------------------------------------------------------------------------------------------------------
-  <Plug> Mapping              Default      Mode    API                   Description
+<Plug> Mapping              Default      Mode    API                   Description
                               Mapping                                    
   --------------------------- ------------ ------- --------------------- ---------------------------------------
-  <Plug>(KsbExecuteCmd)       <C-CR>       n,i     execute_command()     Execute the contents of the paste
+<Plug>(KsbExecuteCmd)       <C-CR>       n,i     execute_command()     Execute the contents of the paste
                                                                          window in Kitty
 
-  <Plug>(KsbPasteCmd)         <S-CR>       n,i     paste_command()       Paste the contents of the paste window
+<Plug>(KsbPasteCmd)         <S-CR>       n,i     paste_command()       Paste the contents of the paste window
                                                                          to Kitty without executing
 
-  <Plug>(KsbToggleFooter)     g?           n       toggle_footer()       Toggle the paste window footer that
+<Plug>(KsbToggleFooter)     g?           n       toggle_footer()       Toggle the paste window footer that
                                                                          displays mappings
 
-  <Plug>(KsbCloseOrQuitAll)   <Esc>        n       close_or_quit_all()   If the current buffer is the paste
+<Plug>(KsbCloseOrQuitAll)   <Esc>        n       close_or_quit_all()   If the current buffer is the paste
                                                                          buffer, then close the window.
                                                                          Otherwise quit Neovim
 
-  <Plug>(KsbQuitAll)          <C-c>        n,i,t   quit_all()            Quit Neovim
+<Plug>(KsbQuitAll)          <C-c>        n,i,t   quit_all()            Quit Neovim
 
-  <Plug>(KsbVisualYankLine)   <Leader>Y    v                             Maps to "+Y
+<Plug>(KsbVisualYankLine)   <Leader>Y    v                             Maps to "+Y
 
-  <Plug>(KsbVisualYank)       <Leader>y    v                             Maps to "+y
+<Plug>(KsbVisualYank)       <Leader>y    v                             Maps to "+y
 
-  <Plug>(KsbNormalYankEnd)    <Leader>Y    n                             Maps to "+y$
+<Plug>(KsbNormalYankEnd)    <Leader>Y    n                             Maps to "+y$
 
-  <Plug>(KsbNormalYank)       <Leader>y    n                             Maps to "+y
+<Plug>(KsbNormalYank)       <Leader>y    n                             Maps to "+y
 
-  <Plug>(KsbNormalYankLine)   <Leader>yy   n                             Maps to "+yy
+<Plug>(KsbNormalYankLine)   <Leader>yy   n                             Maps to "+yy
   --------------------------------------------------------------------------------------------------------------
 
 RECOMMENDATIONS                        *kitty-scrollback.nvim-recommendations*
@@ -520,12 +550,6 @@ ALTERNATIVES                              *kitty-scrollback.nvim-alternatives*
 - Neovim scrollback pager by page-down <https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731> - Linux only solution to open Kitty scrollback buffer in Neovim
 - kitty_grab <https://github.com/yurikhan/kitty_grab> - Keyboard-driven screen grabber for Kitty
 - kitty-kitten-search <https://github.com/trygveaa/kitty-kitten-search> - Kitten for the kitty terminal emulator providing live incremental search in the terminal history.
-
-==============================================================================
-2. Links                                         *kitty-scrollback.nvim-links*
-
-1. *style_simple_false*: https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/662bf132-0b39-4028-b69f-eb85fbb69b60
-2. *style_simple_true*: https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/c19a1869-e4e4-40fd-b619-fed771d0153f
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
