@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.0.0...v2.1.0) (2023-11-06)
+
+
+### Features
+
+* add ability to customize Visual highlight ([#45](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/45)) ([b2ca294](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/b2ca294fb3b2655e8f6e55daf128cedc0413680b))
+
 # [2.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v1.1.10...v2.0.0) (2023-11-01)
 
 
