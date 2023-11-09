@@ -157,6 +157,11 @@ M.set_highlights = function()
       vim.api.nvim_set_hl(0, name, override)
     end
   end
+
+  -- set terminal colors
+  for i = 0, 15 do
+    vim.b['terminal_color_' .. i] = p.kitty_colors['color' .. i]
+  end
 end
 
 return M
