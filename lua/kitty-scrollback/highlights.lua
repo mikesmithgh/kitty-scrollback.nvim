@@ -147,8 +147,9 @@ M.get_highlights_as_env = function()
   return env
 end
 
----Set nvim default highlights
+---Set nvim default highlights and terminal colors
 M.set_highlights = function()
+  -- set highlight groups
   local overrides = opts.highlight_overrides or {}
   for name, definition in pairs(highlight_definitions()) do
     vim.api.nvim_set_hl(0, name, definition)
@@ -157,8 +158,7 @@ M.set_highlights = function()
       vim.api.nvim_set_hl(0, name, override)
     end
   end
-
-  -- set terminal colors
+  -- set terminal colors (see :help terminal-config)
   for i = 0, 15 do
     vim.b['terminal_color_' .. i] = p.kitty_colors['color' .. i]
   end
