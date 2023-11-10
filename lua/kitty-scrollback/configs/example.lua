@@ -143,6 +143,9 @@ return {
       }
     end,
     [prefix .. 'highlight_overrides'] = function()
+      for i = 0, 15 do
+        vim.g['terminal_color_' .. i] = 'Cyan'
+      end
       return {
         highlight_overrides = {
           KittyScrollbackNvimNormal = {
