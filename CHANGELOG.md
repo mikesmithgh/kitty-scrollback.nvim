@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.1.0...v2.1.1) (2023-11-10)
+
+
+### Bug Fixes
+
+* set nvim terminal colors to match kitty ([#51](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/51)) ([0971ab0](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/0971ab05879eb6193128b4361d55b2f6591c0651)), closes [#49](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/49)
+
 # [2.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.0.0...v2.1.0) (2023-11-06)
 
 
