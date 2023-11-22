@@ -21,7 +21,7 @@ local function check_kitty_remote_control()
     'ls',
   }
   local sys_opts = {}
-  local proc = vim.system(cmd, sys_opts or {})
+  local proc = ksb_util.vim_system(cmd, sys_opts or {})
   local result = proc:wait()
   local ok = result.code == 0
   local code_msg = '`kitty @ ls` exited with code *' .. result.code .. '*'
@@ -131,7 +131,7 @@ local function check_sed()
     '-e',
     's/' .. esc .. '\\[\\?25.' .. esc .. '\\[.*;.*H' .. esc .. '\\[.*//g',
   }
-  local ok, sed_proc = pcall(vim.system, cmd, {
+  local ok, sed_proc = pcall(ksb_util.vim_system, cmd, {
     stdin = 'expected' .. esc .. '[?25h' .. esc .. '[1;1H' .. esc .. '[notexpected',
   })
   local result = {}
@@ -225,7 +225,7 @@ local function check_kitty_debug_config()
     vim.api.nvim_get_runtime_file('python/kitty_debug_config.py', false)[1]
   local debug_config_log = vim.fn.stdpath('data') .. '/kitty-scrollback.nvim/debug_config.log'
   local result =
-    vim.system({ 'kitty', '@', 'kitten', kitty_debug_config_kitten, debug_config_log }):wait()
+    ksb_util.vim_system({ 'kitty', '@', 'kitten', kitty_debug_config_kitten, debug_config_log }):wait()
   if result.code == 0 then
     if vim.fn.filereadable(debug_config_log) then
       vim.health.ok(table.concat(vim.fn.readfile(debug_config_log), '\n   '))
@@ -243,12 +243,12 @@ local function check_kitty_scrollback_nvim_version()
   local tag_cmd = { 'git', 'describe', '--exact-match', '--tags' }
   local ksb_dir =
     vim.fn.fnamemodify(vim.api.nvim_get_runtime_file('lua/kitty-scrollback', false)[1], ':h:h')
-  local tag_cmd_result = vim.system(tag_cmd, { cwd = ksb_dir }):wait()
+  local tag_cmd_result = ksb_util.vim_system(tag_cmd, { cwd = ksb_dir }):wait()
   if tag_cmd_result.code == 0 then
     current_version = tag_cmd_result.stdout
   else
     local commit_cmd = { 'git', 'rev-parse', '--short', 'HEAD' }
-    local commit_cmd_result = vim.system(commit_cmd, { cwd = ksb_dir }):wait()
+    local commit_cmd_result = ksb_util.vim_system(commit_cmd, { cwd = ksb_dir }):wait()
     if commit_cmd_result.code == 0 then
       current_version = commit_cmd_result.stdout
     end

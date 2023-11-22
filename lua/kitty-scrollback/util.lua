@@ -96,4 +96,12 @@ M.restore_and_redraw = function()
   vim.cmd.redraw()
 end
 
+M.vim_system = function(cmd, opts, on_exit)
+  if vim['system'] ~= nil then
+    return vim.system(cmd, opts, on_exit)
+  end
+  local sys = require('kitty-scrollback._system')
+  return sys.run(cmd, opts, on_exit)
+end
+
 return M
