@@ -161,6 +161,7 @@ local function set_options()
     modifiable = vim.o.modifiable,
     wrap = vim.o.wrap,
     report = vim.o.report,
+    shell = vim.o.shell,
   }
 
   -- required opts
