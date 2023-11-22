@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.1.1...v2.1.2) (2023-11-22)
+
+
+### Bug Fixes
+
+* set shell to sh before executing termopen ([#59](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/59)) ([cabb1f2](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/cabb1f2c5fe32bd39bc0b2f29d64e14d45da4ad9)), closes [#56](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/56)
+
 ## [2.1.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.1.0...v2.1.1) (2023-11-10)
 
 
