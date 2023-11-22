@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*    For NVIM v0.10+   Last change: 2023 November 06
+*kitty-scrollback.nvim.txt*    For NVIM v0.10+   Last change: 2023 November 21
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
