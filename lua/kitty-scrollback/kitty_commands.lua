@@ -146,6 +146,10 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   local stdout
   local stderr
   local tail_max = 10
+
+  -- set the shell used for termopen to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
+  vim.o.shell = 'sh'
+
   vim.fn.termopen(full_cmd, {
     stdout_buffered = true,
     stderr_buffered = true,
@@ -210,6 +214,9 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
       end
     end,
   })
+
+  -- restore the original shell after processing termopen
+  vim.o.shell = p.orig_options.shell
 end
 
 M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
