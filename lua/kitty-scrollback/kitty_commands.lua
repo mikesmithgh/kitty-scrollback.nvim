@@ -99,7 +99,7 @@ local display_error = function(cmd, r)
 end
 
 local system_handle_error = function(cmd, sys_opts, ignore_error)
-  local proc = ksb_util.vim_system(cmd, sys_opts or {})
+  local proc = vim.system(cmd, sys_opts or {})
   local result = proc:wait()
   local ok = result.code == 0
 

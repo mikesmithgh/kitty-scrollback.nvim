@@ -1,5 +1,4 @@
--- https://github.com/neovim/neovim/blob/master/runtime/lua/vim/_system.lua
-local uv = require('luv')
+local uv = vim.uv
 
 --- @class SystemOpts
 --- @field stdin? string|string[]|true
@@ -373,3 +372,4 @@ function M.run(cmd, opts, on_exit)
 end
 
 return M
+

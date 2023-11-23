@@ -13,20 +13,25 @@ M.setup = function(private, options)
   opts = options ---@diagnostic disable-line: unused-local
 end
 
+local start_health = vim.health.start or vim.health.report_start
+local ok_health = vim.health.ok or vim.health.report_ok
+local warn_health = vim.health.warn or vim.health.report_warn
+local error_health = vim.health.error or vim.health.report_error
+
 local function check_kitty_remote_control()
-  vim.health.start('kitty-scrollback: Kitty remote control')
+  start_health('kitty-scrollback: Kitty remote control')
   local cmd = {
     'kitty',
     '@',
     'ls',
   }
   local sys_opts = {}
-  local proc = ksb_util.vim_system(cmd, sys_opts or {})
+  local proc = vim.system(cmd, sys_opts or {})
   local result = proc:wait()
   local ok = result.code == 0
   local code_msg = '`kitty @ ls` exited with code *' .. result.code .. '*'
   if ok then
-    vim.health.ok(code_msg)
+    ok_health(code_msg)
     return true
   else
     local stderr = result.stderr:gsub('\n', '') or ''
@@ -54,15 +59,15 @@ local function check_kitty_remote_control()
     else
       table.insert(advice, 'ERROR Failed to read `allow_remote_control` and `listen_on`')
     end
-    vim.health.error(code_msg .. '\n      `' .. stderr .. '` ', advice)
+    error_health(code_msg .. '\n      `' .. stderr .. '` ', advice)
   end
   return false
 end
 
 local function check_has_kitty_data()
-  vim.health.start('kitty-scrollback: Kitty data')
+  start_health('kitty-scrollback: Kitty data')
   if type(p) == 'table' and next(p.kitty_data) then
-    vim.health.ok('Kitty data available\n>lua\n' .. vim.inspect(p.kitty_data) .. '\n')
+    ok_health('Kitty data available\n>lua\n' .. vim.inspect(p.kitty_data) .. '\n')
     return true
   else
     local kitty_scrollback_kitten =
@@ -70,7 +75,7 @@ local function check_has_kitty_data()
     local checkhealth_command = '`kitty @ kitten '
       .. kitty_scrollback_kitten
       .. ' --config ksb_builtin_checkhealth`'
-    vim.health.warn('No Kitty data available unable to perform a complete healthcheck', {
+    warn_health('No Kitty data available unable to perform a complete healthcheck', {
       'Add the config options `checkhealth = true` to your *config* or execute the command `:KittyScrollbackCheckHealth` '
         .. 'to run `checkhealth` within the context of a Kitten',
       checkhealth_command,
@@ -83,12 +88,12 @@ local function check_clipboard()
   local function is_blank(s)
     return s:find('^%s*$') ~= nil
   end
-  vim.health.start('kitty-scrollback: clipboard')
+  start_health('kitty-scrollback: clipboard')
   local clipboard_tool = vim.fn['provider#clipboard#Executable']() -- copied from health.lua
   if vim.fn.has('clipboard') > 0 and not is_blank(clipboard_tool) then
-    vim.health.ok('Clipboard tool found: *' .. clipboard_tool .. '*')
+    ok_health('Clipboard tool found: *' .. clipboard_tool .. '*')
   else
-    vim.health.warn(
+    warn_health(
       'Neovim does not have a clipboard provider.\n        Some functionality will not work when there is no clipboard '
         .. 'provider, such as copying Kitty scrollback buffer text to the system clipboard.',
       'See `:help` |provider-clipboard| for more information on enabling system clipboard integration.'
@@ -97,16 +102,16 @@ local function check_clipboard()
 end
 
 local function check_kitty_shell_integration()
-  vim.health.start('kitty-scrollback: Kitty shell integration')
+  start_health('kitty-scrollback: Kitty shell integration')
   if not next(p or {}) then
-    vim.health.error('No Kitty data')
+    error_health('No Kitty data')
     return
   end
   -- use last_cmd_output because it is valid and requires shell integration
   if M.is_valid_extent_keyword('last_cmd_output') then
-    vim.health.ok('Kitty shell integration is enabled')
+    ok_health('Kitty shell integration is enabled')
   else
-    vim.health.warn(
+    warn_health(
       'Kitty shell integration is disabled and/or `no-prompt-mark` is set.\n        Some functionality will not work when Kitty shell '
         .. 'integration is disabled or `no-prompt-mark` is set, such as capturing the last command output.',
       table.concat(M.advice().kitty_shell_integration, '\n')
@@ -115,10 +120,10 @@ local function check_kitty_shell_integration()
 end
 
 local function check_sed()
-  vim.health.start('kitty-scrollback: sed')
+  start_health('kitty-scrollback: sed')
   local sed_path = vim.fn.exepath('sed')
   if not sed_path or sed_path == '' then
-    vim.health.error('*sed* : command not found\n')
+    error_health('*sed* : command not found\n')
     return
   end
 
@@ -131,7 +136,7 @@ local function check_sed()
     '-e',
     's/' .. esc .. '\\[\\?25.' .. esc .. '\\[.*;.*H' .. esc .. '\\[.*//g',
   }
-  local ok, sed_proc = pcall(ksb_util.vim_system, cmd, {
+  local ok, sed_proc = pcall(vim.system, cmd, {
     stdin = 'expected' .. esc .. '[?25h' .. esc .. '[1;1H' .. esc .. '[notexpected',
   })
   local result = {}
@@ -144,7 +149,7 @@ local function check_sed()
   end
   ok = ok and result.code == 0 and result.stdout == 'expected'
   if ok then
-    vim.health.ok(
+    ok_health(
       '`'
         .. table.concat(cmd, ' ')
         .. '` exited with code *'
@@ -161,7 +166,7 @@ local function check_sed()
     if result_err ~= '' then
       result_err = '      `' .. result_err .. '`'
     end
-    vim.health.error(
+    error_health(
       '`'
         .. table.concat(cmd, ' ')
         .. '` exited with code *'
@@ -178,23 +183,21 @@ local function check_sed()
   end
 end
 
-M.check_nvim_version = function(check_only)
+M.check_nvim_version = function(version, check_only)
+  -- TODO: check min nvim version now
   -- fallback to older health report calls if using < 0.10
-  local start_fn = vim.health.start or vim.health.report_start
-  local ok_fn = vim.health.ok or vim.health.report_ok
-  local error_fn = vim.health.error or vim.health.report_error
   if not check_only then
-    start_fn('kitty-scrollback: Neovim version 0.10+')
+    start_health('kitty-scrollback: Neovim version 0.9+')
   end
   local nvim_version = 'NVIM ' .. ksb_util.nvim_version_tostring()
-  if vim.fn.has('nvim-0.10') > 0 then
+  if vim.fn.has(version) > 0 then
     if not check_only then
-      ok_fn(nvim_version)
+      ok_health(nvim_version)
     end
     return true
   else
     if not check_only then
-      error_fn(nvim_version, M.advice().nvim_version)
+      error_health(nvim_version, M.advice().nvim_version)
     end
   end
   return false
@@ -202,40 +205,39 @@ end
 
 M.check_kitty_version = function(check_only)
   if not check_only then
-    vim.health.start('kitty-scrollback: Kitty version 0.29+')
+    start_health('kitty-scrollback: Kitty version 0.29+')
   end
   local kitty_version = p.kitty_data.kitty_version
   local kitty_version_str = 'kitty ' .. table.concat(kitty_version, '.')
   if vim.version.cmp(kitty_version, { 0, 29, 0 }) >= 0 then
     if not check_only then
-      vim.health.ok(kitty_version_str)
+      ok_health(kitty_version_str)
     end
     return true
   else
     if not check_only then
-      vim.health.error(kitty_version_str, M.advice().kitty_version)
+      error_health(kitty_version_str, M.advice().kitty_version)
     end
   end
   return false
 end
 
 local function check_kitty_debug_config()
-  vim.health.start('kitty-scrollback: Kitty debug config')
+  start_health('kitty-scrollback: Kitty debug config')
   local kitty_debug_config_kitten =
     vim.api.nvim_get_runtime_file('python/kitty_debug_config.py', false)[1]
   local debug_config_log = vim.fn.stdpath('data') .. '/kitty-scrollback.nvim/debug_config.log'
-  local result = ksb_util
-    .vim_system({ 'kitty', '@', 'kitten', kitty_debug_config_kitten, debug_config_log })
-    :wait()
+  local result =
+    vim.system({ 'kitty', '@', 'kitten', kitty_debug_config_kitten, debug_config_log }):wait()
   if result.code == 0 then
     if vim.fn.filereadable(debug_config_log) then
-      vim.health.ok(table.concat(vim.fn.readfile(debug_config_log), '\n   '))
+      ok_health(table.concat(vim.fn.readfile(debug_config_log), '\n   '))
     else
-      vim.health.error('cannot read ' .. debug_config_log)
+      error_health('cannot read ' .. debug_config_log)
     end
   else
     local stderr = result.stderr:gsub('\n', '') or ''
-    vim.health.error(stderr)
+    error_health(stderr)
   end
 end
 
@@ -244,12 +246,12 @@ local function check_kitty_scrollback_nvim_version()
   local tag_cmd = { 'git', 'describe', '--exact-match', '--tags' }
   local ksb_dir =
     vim.fn.fnamemodify(vim.api.nvim_get_runtime_file('lua/kitty-scrollback', false)[1], ':h:h')
-  local tag_cmd_result = ksb_util.vim_system(tag_cmd, { cwd = ksb_dir }):wait()
+  local tag_cmd_result = vim.system(tag_cmd, { cwd = ksb_dir }):wait()
   if tag_cmd_result.code == 0 then
     current_version = tag_cmd_result.stdout
   else
     local commit_cmd = { 'git', 'rev-parse', '--short', 'HEAD' }
-    local commit_cmd_result = ksb_util.vim_system(commit_cmd, { cwd = ksb_dir }):wait()
+    local commit_cmd_result = vim.system(commit_cmd, { cwd = ksb_dir }):wait()
     if commit_cmd_result.code == 0 then
       current_version = commit_cmd_result.stdout
     end
@@ -260,11 +262,11 @@ local function check_kitty_scrollback_nvim_version()
       version_found and '`' .. current_version:gsub('%s$', '`\n') ---@diagnostic disable-line: need-check-nil
       or 'ERROR failed to determine version\n'
     )
-  local health_fn = not version_found and vim.health.warn
+  local health_fn = not version_found and warn_health
     or function(msg)
-      vim.health.ok('     ' .. msg)
+      ok_health('     ' .. msg)
     end
-  vim.health.start('kitty-scrollback: kitty-scrollback.nvim version')
+  start_health('kitty-scrollback: kitty-scrollback.nvim version')
   health_fn([[  `|`\___/`|`       ]] .. header .. [[
          =) `^`Y`^` (=
           \  *^*  /       If you have any issues or questions using *kitty-scrollback.nvim* then     
@@ -282,7 +284,7 @@ end
 
 M.check = function()
   if
-    M.check_nvim_version() -- always check first to avoid undefined calls in versions < 0.10
+    M.check_nvim_version('nvim-0.9') -- always check first to avoid undefined calls in versions < 0.10
     and check_kitty_scrollback_nvim_version()
     and check_kitty_remote_control()
     and check_has_kitty_data()
@@ -319,7 +321,7 @@ M.advice = function()
   end
   return {
     nvim_version = {
-      'Neovim version 0.10 or greater is required to work with kitty-scrollback.nvim',
+      'Neovim version 0.9 or greater is required to work with kitty-scrollback.nvim',
     },
     kitty_version = {
       'Kitty version 0.29 or greater is required to work with kitty-scrollback.nvim',

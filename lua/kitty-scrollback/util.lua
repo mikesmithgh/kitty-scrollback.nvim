@@ -81,8 +81,10 @@ M.nvim_version_tostring = function()
   local nvim_ver = vim.version()
   local ret = table.concat({ nvim_ver.major, nvim_ver.minor, nvim_ver.patch }, '.')
   if nvim_ver.prerelease then
-    ret = ret .. '-' .. nvim_ver.prerelease
+    local prerelease = type(nvim_ver.prerelease) == 'boolean' and 'dev' or nvim_ver.prerelease
+    ret = ret .. '-' .. prerelease
   end
+  vim.print(nvim_ver)
   if nvim_ver.build and nvim_ver.build ~= vim.NIL then
     ret = ret .. '+' .. nvim_ver.build
   end
@@ -96,12 +98,13 @@ M.restore_and_redraw = function()
   vim.cmd.redraw()
 end
 
-M.vim_system = function(cmd, opts, on_exit)
-  if vim['system'] ~= nil then
-    return vim.system(cmd, opts, on_exit)
+-- copied from _editor.lua
+M.vendored_vim_system = function(cmd, o, on_exit)
+  if type(o) == 'function' then
+    on_exit = o
+    o = nil
   end
-  local sys = require('kitty-scrollback._system')
-  return sys.run(cmd, opts, on_exit)
+  return require('kitty-scrollback.vendor._system').run(cmd, o, on_exit)
 end
 
 return M

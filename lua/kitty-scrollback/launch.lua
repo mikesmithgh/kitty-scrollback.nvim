@@ -273,7 +273,7 @@ M.setup = function(kitty_data_str)
     vim.cmd.checkhealth('kitty-scrollback')
     return
   end
-  if not ksb_health.check_nvim_version(true) then
+  if not ksb_health.check_nvim_version('nvim-0.9', true) then
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM '
       .. ksb_util.nvim_version_tostring()
       .. '. '
@@ -281,6 +281,15 @@ M.setup = function(kitty_data_str)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
       ksb_kitty_cmds.signal_term_to_kitty_child_process(true)
+    end
+  end
+  if not ksb_health.check_nvim_version('nvim-0.10', true) then
+    -- assume nvim-0.9 and vendor required nvim-0.10 dependencies
+    if not vim.uv then
+      vim.uv = vim.loop
+    end
+    if not vim.system then
+      vim.system = ksb_util.vendored_vim_system
     end
   end
   if not ksb_health.check_kitty_version(true) then
@@ -386,8 +395,6 @@ M.launch = function()
     -- increase the number of columns temporary so that the width is used during the
     -- terminal command kitty @ get-text. this avoids hard wrapping lines to the
     -- current window size. Note: a larger min_cols appears to impact performance
-    -- do not worry about setting vim.o.columns back to original value that is taken
-    -- care of when we trigger kitty to send a SIGWINCH to the nvim process
     local min_cols = 300
     p.orig_columns = vim.o.columns
     if vim.o.columns < min_cols then
@@ -395,6 +402,12 @@ M.launch = function()
     end
     vim.schedule(function()
       ksb_kitty_cmds.get_text_term(kitty_data, get_text_opts, function()
+        -- NOTE(#58): nvim v0.9 support
+        -- vim.o.columns is resized automatically in nvim v0.9.1 when we trigger kitty so send a SIGWINCH signal
+        -- vim.o.columns is explicitly set to resize appropriatley on v0.9.0
+        -- see https://github.com/neovim/neovim/pull/23503
+        vim.o.columns = p.orig_columns
+
         ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
         if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
           set_cursor_position(kitty_data)
