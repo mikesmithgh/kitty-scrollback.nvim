@@ -395,6 +395,12 @@ M.launch = function()
     end
     vim.schedule(function()
       ksb_kitty_cmds.get_text_term(kitty_data, get_text_opts, function()
+        -- NOTE(#58): nvim v0.9 support
+        -- vim.o.columns is resized automatically in nvim v0.9.1 when we trigger kitty so send a SIGWINCH signal
+        -- vim.o.columns is explicitly set to resize appropriatley on v0.9.0
+        -- see https://github.com/neovim/neovim/pull/23503
+        vim.o.columns = p.orig_columns
+
         ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
         if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
           set_cursor_position(kitty_data)
