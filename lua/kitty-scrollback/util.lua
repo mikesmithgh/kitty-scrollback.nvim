@@ -76,19 +76,6 @@ M.remove_process_exited = function()
   return false
 end
 
--- nvim 0.10+ has tostring builtin but need this for previous versions during healthcheck
-M.nvim_version_tostring = function()
-  local nvim_ver = vim.version()
-  local ret = table.concat({ nvim_ver.major, nvim_ver.minor, nvim_ver.patch }, '.')
-  if nvim_ver.prerelease then
-    ret = ret .. '-' .. nvim_ver.prerelease
-  end
-  if nvim_ver.build and nvim_ver.build ~= vim.NIL then
-    ret = ret .. '+' .. nvim_ver.build
-  end
-  return ret
-end
-
 M.restore_and_redraw = function()
   if p.orig_columns then
     vim.o.columns = p.orig_columns

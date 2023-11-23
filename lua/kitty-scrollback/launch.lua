@@ -18,6 +18,8 @@ local ksb_util
 local ksb_autocmds
 ---@module 'kitty-scrollback.health'
 local ksb_health
+---@module 'kitty-scrollback.backport'
+local ksb_backport
 
 local M = {}
 
@@ -247,6 +249,7 @@ local function load_requires()
   ksb_util = require('kitty-scrollback.util')
   ksb_autocmds = require('kitty-scrollback.autocommands')
   ksb_health = require('kitty-scrollback.health')
+  ksb_backport = require('kitty-scrollback.backport')
 end
 
 ---Setup and configure kitty-scrollback.nvim
@@ -267,15 +270,16 @@ M.setup = function(kitty_data_str)
   local user_opts = config_fn and config_fn(p.kitty_data) or {}
   opts = vim.tbl_deep_extend('force', default_opts, user_opts)
 
+  ksb_backport.setup()
   ksb_health.setup(p, opts)
   if opts.checkhealth then
     vim.o.foldenable = false
     vim.cmd.checkhealth('kitty-scrollback')
     return
   end
-  if not ksb_health.check_nvim_version(true) then
+  if not ksb_health.check_nvim_version('nvim-0.10', true) then
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM '
-      .. ksb_util.nvim_version_tostring()
+      .. tostring(vim.version())
       .. '. '
       .. table.concat(ksb_health.advice().nvim_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
@@ -386,8 +390,6 @@ M.launch = function()
     -- increase the number of columns temporary so that the width is used during the
     -- terminal command kitty @ get-text. this avoids hard wrapping lines to the
     -- current window size. Note: a larger min_cols appears to impact performance
-    -- do not worry about setting vim.o.columns back to original value that is taken
-    -- care of when we trigger kitty to send a SIGWINCH to the nvim process
     local min_cols = 300
     p.orig_columns = vim.o.columns
     if vim.o.columns < min_cols then
