@@ -148,16 +148,14 @@ M.show_status_window = function()
     end
     local popup_bufid = vim.api.nvim_create_buf(false, true)
     local winopts = function()
-      local w = M.size((p.orig_columns or vim.o.columns), width)
       return {
         relative = 'editor',
         zindex = 39,
         style = 'minimal',
         focusable = false,
-        width = w,
+        width = M.size(p.orig_columns or vim.o.columns, width),
         height = 1,
         row = 0,
-        -- col = (p.orig_columns or vim.o.columns) - 10, v0.9.0
         col = vim.o.columns,
         border = 'none',
       }
