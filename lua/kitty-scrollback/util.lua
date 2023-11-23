@@ -83,13 +83,4 @@ M.restore_and_redraw = function()
   vim.cmd.redraw()
 end
 
--- copied from _editor.lua
-M.vendored_vim_system = function(cmd, o, on_exit)
-  if type(o) == 'function' then
-    on_exit = o
-    o = nil
-  end
-  return require('kitty-scrollback.vendor._system').run(cmd, o, on_exit)
-end
-
 return M

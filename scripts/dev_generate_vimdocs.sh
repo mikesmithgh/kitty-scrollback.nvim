@@ -10,7 +10,7 @@ sed -E -e's/\[!(NOTE|WARNING|IMPORTANT)\].*/[!\1]\n>/Ig' -e 's/.*<summary>(.+)<\
 	-e 's/<a.*href.*"(.+)".*>(.+)<\/a>/\2 <\1>/g' <README.md >tmp_vimdoc_workdir/README.md
 
 # panvimdoc
-~/gitrepos/panvimdoc/panvimdoc.sh --project-name kitty-scrollback.nvim --input-file tmp_vimdoc_workdir/README.md --demojify true --vim-version 'NVIM v0.9+' --toc true --dedup-subheadings false --treesitter true
+~/gitrepos/panvimdoc/panvimdoc.sh --project-name kitty-scrollback.nvim --input-file tmp_vimdoc_workdir/README.md --demojify true --vim-version 'NVIM v0.10+' --toc true --dedup-subheadings false --treesitter true
 
 # postformat kitty-scrollback.nvim.txt
 
