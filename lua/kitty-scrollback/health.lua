@@ -281,7 +281,7 @@ end
 
 M.check = function()
   if
-    M.check_nvim_version('nvim-0.9') -- always check first to avoid undefined calls in versions < 0.10
+    M.check_nvim_version('nvim-0.9')
     and check_kitty_scrollback_nvim_version()
     and check_kitty_remote_control()
     and check_has_kitty_data()
