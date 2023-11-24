@@ -345,6 +345,10 @@ M.send_text_to_clipboard = function(text)
 end
 
 M.try_detect_nerd_font = function()
+  -- setup backports for v0.9 because try_detect_nerd_font can be called outside of standard setup flow
+  if vim.fn.has('nvim-0.10') <= 0 then
+    require('kitty-scrollback.backport').setup()
+  end
   local has_nerd_font = false
   vim
     .system({
