@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.1.2...v2.2.0) (2023-11-24)
+
+
+### Features
+
+* add support for neovim v0.9 ([#60](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/60)) ([30fffc0](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/30fffc0060c8d8c0a84b0465b3cc49feace29a65))
+
 ## [2.1.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.1.1...v2.1.2) (2023-11-22)
 
 
