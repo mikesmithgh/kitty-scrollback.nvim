@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*    For NVIM v0.10+   Last change: 2023 November 23
+*kitty-scrollback.nvim.txt*    For NVIM v0.9+    Last change: 2023 November 24
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -162,7 +162,7 @@ EXAMPLE USE CASES                    *kitty-scrollback.nvim-example-use-cases*
 
 PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
 
-- Neovim v0.10+ <https://github.com/neovim/neovim/releases>
+- Neovim v0.9+ <https://github.com/neovim/neovim/releases>
 - Kitty v0.29+ <https://github.com/kovidgoyal/kitty/releases>
 
 
