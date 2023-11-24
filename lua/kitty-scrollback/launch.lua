@@ -277,7 +277,7 @@ M.setup = function(kitty_data_str)
     vim.cmd.checkhealth('kitty-scrollback')
     return
   end
-  if not ksb_health.check_nvim_version('nvim-0.10', true) then
+  if not ksb_health.check_nvim_version('nvim-0.9', true) then
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM '
       .. tostring(vim.version())
       .. '. '

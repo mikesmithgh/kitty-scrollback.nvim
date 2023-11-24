@@ -1,3 +1,6 @@
+---@mod kitty-scrollback.backport
+-- NOTE(#58): nvim v0.9 support
+
 local ksb_health = require('kitty-scrollback.health')
 
 local M = {}
@@ -19,6 +22,9 @@ local function backport_version()
       return ret
     end
 
+    if type(vim.version) == 'function' then -- nvim 0.8 vim.version is a table instead of function
+      vim.version = vim.version()
+    end
     setmetatable(vim.version, {
       --- Returns the current Nvim version.
       __call = function()
@@ -39,12 +45,32 @@ local function backport_health()
   vim.health.error = vim.health.error or vim.health.report_error
 end
 
+local function backport_uv()
+  if not vim.uv then
+    vim.uv = vim.loop
+  end
+end
+
+local function backport_system()
+  -- copied from _editor.lua
+  ---@diagnostic disable-next-line: duplicate-set-field
+  vim.system = function(cmd, opts, on_exit)
+    if type(opts) == 'function' then
+      on_exit = opts
+      opts = nil
+    end
+    return require('kitty-scrollback.backport._system').run(cmd, opts, on_exit)
+  end
+end
+
 M.setup = function()
+  backport_uv()
+  backport_health()
   if ksb_health.check_nvim_version('nvim-0.10', true) then
     return
   end
   backport_version()
-  backport_health()
+  backport_system()
 end
 
 return M

@@ -179,7 +179,7 @@ end
 
 M.check_nvim_version = function(version, check_only)
   if not check_only then
-    vim.health.start('kitty-scrollback: Neovim version 0.10+')
+    vim.health.start('kitty-scrollback: Neovim version 0.9+')
   end
   local nvim_version = 'NVIM ' .. tostring(vim.version())
   if vim.fn.has(version) > 0 then
@@ -281,7 +281,7 @@ end
 
 M.check = function()
   if
-    M.check_nvim_version('nvim-0.10') -- always check first to avoid undefined calls in versions < 0.10
+    M.check_nvim_version('nvim-0.9')
     and check_kitty_scrollback_nvim_version()
     and check_kitty_remote_control()
     and check_has_kitty_data()
@@ -318,7 +318,7 @@ M.advice = function()
   end
   return {
     nvim_version = {
-      'Neovim version 0.10 or greater is required to work with kitty-scrollback.nvim',
+      'Neovim version 0.9 or greater is required to work with kitty-scrollback.nvim',
     },
     kitty_version = {
       'Kitty version 0.29 or greater is required to work with kitty-scrollback.nvim',
