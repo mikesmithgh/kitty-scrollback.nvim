@@ -1,3 +1,7 @@
+-- NOTE: copied from
+-- https://github.com/neovim/neovim/blob/a8a93e517f9eb988ee86170d9a77382637dd24a3/runtime/lua/vim/_system.lua
+
+---@diagnostic disable
 local uv = vim.uv
 
 --- @class SystemOpts
@@ -372,4 +376,3 @@ function M.run(cmd, opts, on_exit)
 end
 
 return M
-

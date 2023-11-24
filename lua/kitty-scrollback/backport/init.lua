@@ -59,7 +59,7 @@ local function backport_system()
       on_exit = opts
       opts = nil
     end
-    return require('kitty-scrollback.vendor._system').run(cmd, opts, on_exit)
+    return require('kitty-scrollback.backport._system').run(cmd, opts, on_exit)
   end
 end
 
