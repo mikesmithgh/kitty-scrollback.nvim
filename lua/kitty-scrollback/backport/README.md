@@ -6,5 +6,5 @@
 
 ## Backport sha256s
 - backport-sha.json contains the file and sha256 checksums at the time of copy
-- TODO: add a cron to have a nighlty check if these files changes in Neovim 
+- TODO: add a cron to have a nightly check if these files changes in Neovim 
 
