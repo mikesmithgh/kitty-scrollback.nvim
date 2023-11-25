@@ -136,14 +136,14 @@ end
 
 M.show_status_window = function()
   if opts.status_window.enabled then
-    local kitty_icon = '󰄛'
-    local love_icon = ''
-    local vim_icon = ''
+    local kitty_icon = opts.icons.kitty
+    local love_icon = opts.icons.heart
+    local nvim_icon = opts.icons.nvim
     local width = 9
     if opts.status_window.style_simple then
       kitty_icon = 'kitty-scrollback.nvim'
       love_icon = ''
-      vim_icon = ''
+      nvim_icon = ''
       width = 25
     end
     local popup_bufid = vim.api.nvim_create_buf(false, true)
@@ -188,12 +188,12 @@ M.show_status_window = function()
           .. ' '
           .. love_icon
           .. ' '
-          .. vim_icon
+          .. nvim_icon
           .. ' '
         vim.defer_fn(function()
           if spinner_icon == '' then
             vim.fn.timer_stop(status_window_timer)
-            fmt_msg = ' ' .. kitty_icon .. ' ' .. love_icon .. ' ' .. vim_icon .. ' '
+            fmt_msg = ' ' .. kitty_icon .. ' ' .. love_icon .. ' ' .. nvim_icon .. ' '
             local ok, _ = pcall(vim.api.nvim_win_get_config, popup_winid)
             if ok then
               vim.schedule(function()

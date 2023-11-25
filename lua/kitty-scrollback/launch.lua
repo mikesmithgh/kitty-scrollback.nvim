@@ -102,7 +102,7 @@ local opts = {}
 ---@field paste_window KsbPasteWindowOpts|nil  options for paste window that sends commands to Kitty
 ---@field kitty_get_text KsbKittyGetText|nil options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
 ---@field checkhealth boolean|nil if true execute :checkhealth kitty-scrollback and skip setup
----@field visual_selection_highlight_mode string | 'darken' | 'kitty' | 'nvim' | 'reverse'
+---@field visual_selection_highlight_mode string | 'darken' | 'kitty' | 'nvim' | 'reverse' | nil
 local default_opts = {
   callbacks = nil,
   keymaps_enabled = true,
@@ -131,6 +131,11 @@ local default_opts = {
   },
   checkhealth = false,
   visual_selection_highlight_mode = 'darken',
+  icons = {
+    kitty = '󰄛',
+    heart = '󰣐', -- variants 󰣐 |  |  | ♥ |  | 󱢠 | 
+    nvim = '', -- variants  |  |  | 
+  },
 }
 
 local function restore_orig_options()

@@ -76,7 +76,7 @@ local function highlight_definitions()
     },
     KittyScrollbackNvimHeart = {
       default = true,
-      fg = '#ff6961',
+      fg = '#F57A74',
     },
     KittyScrollbackNvimSpinner = {
       default = true,
@@ -88,11 +88,11 @@ local function highlight_definitions()
     },
     KittyScrollbackNvimKitty = {
       default = true,
-      fg = '#754b33',
+      fg = '#84624e',
     },
     KittyScrollbackNvimVim = {
       default = true,
-      fg = '#188b25',
+      fg = '#99af8d',
     },
     KittyScrollbackNvimPasteWinNormal = {
       default = true,

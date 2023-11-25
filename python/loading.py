@@ -30,12 +30,17 @@ time_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_NORMAL')
 heart_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_HEART')
 spinner_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_SPINNER')
 kitty_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_KITTY')
-vim_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_VIM')
+nvim_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_VIM')
 reset = '\x1b[0m'
+heart_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_HEART_ICON', '󰣐')
+kitty_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_KITTY_ICON', '󰄛')
+# nvim_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_NVIM_ICON', '')
+nvim_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_NVIM_ICON', '')
+kitty_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_KITTY_ICON', '󰄛')
 
-kitty = kitty_color + '󰄛' + reset
-heart = heart_color + '' + reset
-vim = vim_color + '' + reset
+kitty = kitty_color + kitty_icon + reset
+heart = heart_color + heart_icon + reset
+vim = nvim_color + nvim_icon + reset
 
 if style_simple:
     spinner = itertools.cycle(['-', '-', '\\', '\\', '|', '|', '/', '/'])
@@ -74,7 +79,7 @@ while True:
         line = f'{time_progress} {spin} {msg}'.rjust(
             size.columns + (len(time_color + reset)) +
             (len(spinner_color + reset)) + (len(kitty_color + reset)) +
-            (len(heart_color + reset)) + (len(vim_color + reset)))
+            (len(heart_color + reset)) + (len(nvim_color + reset)))
     if status_window_enabled:
         print(line)
     time.sleep(0.08)
