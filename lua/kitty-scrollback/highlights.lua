@@ -88,7 +88,7 @@ local function highlight_definitions()
     },
     KittyScrollbackNvimKitty = {
       default = true,
-      fg = '#84624e',
+      fg = '#715545',
     },
     KittyScrollbackNvimVim = {
       default = true,
