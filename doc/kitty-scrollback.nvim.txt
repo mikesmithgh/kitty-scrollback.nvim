@@ -401,15 +401,15 @@ KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
   status_window.show_timer                                     boolean                                                                          If true, show a timer in the status window while
                                                                                                                                                 kitty-scrollback.nvim is loading
 
-  status_window.icons                                          KsbStatusWindowIcons?                                                            Icons displayed in the status window, defaults to 󰄛 󰣐
+  status_window.icons                                          KsbStatusWindowIcons?                                                            Icons displayed in the status window
 
-  status_window.icons.kitty                                    string                                                                           kittystatus window icon, defaults to 󰄛
+  status_window.icons.kitty                                    string                                                                           kitty status window icon
 
-  status_window.icons.heart                                    string                                                                           heart string heart status window icon, defaults to 󰣐
+  status_window.icons.heart                                    string                                                                           heart string heart status window icon
 
-  status_window.icons.nvim                                     string                                                                           nvim status window icon, defaults to
+  status_window.icons.nvim                                     string                                                                           nvim status window icon
 
-  paste_window                                                 KsbPasteWindowOpts?                                                              optionsfor paste window that sends commands to Kitty
+  paste_window                                                 KsbPasteWindowOpts?                                                              options for paste window that sends commands to Kitty
 
   paste_window.highlight_as_normal_win                         fun(): boolean?                                                                  If function returns true, use Normal highlight group. If
                                                                                                                                                 false, use NormalFloat
