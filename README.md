@@ -406,13 +406,28 @@ Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [k
 ### Nerd Fonts 
 
 By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com) in the status window. If you would like to 
-use ASCII instead, set the option `status_window.style_simple` to `true`. 
+use ASCII instead, set the option `status_window.style_simple` to `true`.
+
+> [!NOTE]\
+> Nerd Fonts release v3.1.0 added the Neovim icon! 
 
 <!-- panvimdoc-ignore-start -->
 
 - Status window with Nerd Fonts <code>v3.1.0+</code> <code>opts.status_window.icons.nvim = ''</code> <code>opts.status_window.style_simple = false</code>
+<div align="center">
+    <img width="75%" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/44d3abf2-345b-4667-aca9-cf816e37ebfa" alt="status-win-icon-nvim" />
+</div>
+
 - Status window with Nerd Fonts <code>< v3.1.0</code> <code>opts.status_window.icons.nvim = ''</code> <code>opts.status_window.style_simple = false</code>
+<div align="center">
+    <img width="75%" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/00341b56-719c-48a2-b9c0-6604423c14be" alt="status-win-icon-vim" />
+</div>
+
 - Status window with ASCII text <code>opts.status_window.style_simple = true</code>
+<div align="center">
+    <img width="75%" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/4b91428e-7d89-4aa2-b034-a0dfc431ae63" alt="status-win-icon-simple" />
+</div>
+
 
 <!-- panvimdoc-ignore-end -->
 
