@@ -343,6 +343,15 @@ return {
         },
       }
     end,
+    [prefix .. 'status_win_nvim'] = function()
+      return {
+        status_window = {
+          icons = {
+            nvim = '',
+          },
+        },
+      }
+    end,
     [prefix .. 'status_win_simple'] = function()
       return {
         status_window = {
