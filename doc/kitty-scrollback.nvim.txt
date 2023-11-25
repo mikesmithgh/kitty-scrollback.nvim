@@ -476,6 +476,9 @@ in the status window. If you would like to use ASCII instead, set the option
 `status_window.style_simple` to `true`.
 
 
+  `ℹ` `NOTE` 
+  Nerd Fonts release v3.1.0 added the Neovim icon!
+
 COMMANDS AND LUA API              *kitty-scrollback.nvim-commands-and-lua-api*
 
 The API is available via the `kitty-scrollback.api` module. e.g.,
