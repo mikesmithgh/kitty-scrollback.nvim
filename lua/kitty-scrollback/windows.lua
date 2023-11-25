@@ -136,9 +136,9 @@ end
 
 M.show_status_window = function()
   if opts.status_window.enabled then
-    local kitty_icon = opts.icons.kitty
-    local love_icon = opts.icons.heart
-    local nvim_icon = opts.icons.nvim
+    local kitty_icon = opts.status_window.icons.kitty
+    local love_icon = opts.status_window.icons.heart
+    local nvim_icon = opts.status_window.icons.nvim
     local width = 9
     if opts.status_window.style_simple then
       kitty_icon = 'kitty-scrollback.nvim'

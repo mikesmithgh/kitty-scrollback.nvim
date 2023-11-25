@@ -32,11 +32,10 @@ spinner_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_SPINNER')
 kitty_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_KITTY')
 nvim_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_VIM')
 reset = '\x1b[0m'
+
+kitty_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_KITTY_ICON', '󰄛')
 heart_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_HEART_ICON', '󰣐')
-kitty_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_KITTY_ICON', '󰄛')
-# nvim_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_NVIM_ICON', '')
-nvim_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_NVIM_ICON', '')
-kitty_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_KITTY_ICON', '󰄛')
+nvim_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_NVIM_ICON', '')
 
 kitty = kitty_color + kitty_icon + reset
 heart = heart_color + heart_icon + reset

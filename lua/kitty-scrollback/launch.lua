@@ -72,11 +72,17 @@ local opts = {}
 ---@field clear_selection boolean If true, clear the selection in the matched window, if any.
 ---@field extent string | 'screen' | 'all' | 'selection' | 'first_cmd_output_on_screen' | 'last_cmd_output' | 'last_visited_cmd_output' | 'last_non_empty_output'     What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
 
+---@class KsbStatusWindowIcons
+---@field kitty string kitty status window icon, defaults to 󰄛
+---@field heart string heart status window icon, defaults to 󰣐
+---@field nvim string nvim status window icon, defaults to 
+
 ---@class KsbStatusWindowOpts
 ---@field enabled boolean If true, show status window in upper right corner of the screen
 ---@field style_simple boolean If true, use plaintext instead of nerd font icons
 ---@field autoclose boolean If true, close the status window after kitty-scrollback.nvim is ready
 ---@field show_timer boolean If true, show a timer in the status window while kitty-scrollback.nvim is loading
+---@field icons KsbStatusWindowIcons Icons displayed in the status window, defaults to 󰄛 󰣐 
 
 ---@alias KsbWinOpts table<string, any>
 
@@ -113,6 +119,11 @@ local default_opts = {
     style_simple = false,
     autoclose = false,
     show_timer = false,
+    icons = {
+      kitty = '󰄛',
+      heart = '󰣐', -- variants 󰣐 |  |  | ♥ |  | 󱢠 | 
+      nvim = '', -- variants  |  |  | 
+    },
   },
   paste_window = {
     highlight_as_normal_win = nil,
@@ -131,11 +142,6 @@ local default_opts = {
   },
   checkhealth = false,
   visual_selection_highlight_mode = 'darken',
-  icons = {
-    kitty = '󰄛',
-    heart = '󰣐', -- variants 󰣐 |  |  | ♥ |  | 󱢠 | 
-    nvim = '', -- variants  |  |  | 
-  },
 }
 
 local function restore_orig_options()

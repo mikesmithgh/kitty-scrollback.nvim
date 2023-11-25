@@ -5,7 +5,9 @@ local M = {}
 
 ---@type KsbPrivate
 local p
-local opts ---@diagnostic disable-line: unused-local
+
+---@type KsbOpts
+local opts
 
 M.setup = function(private, options)
   p = private
@@ -306,6 +308,12 @@ M.open_kitty_loading_window = function(env)
     'KITTY_SCROLLBACK_NVIM_STATUS_WINDOW_ENABLED=' .. tostring(opts.status_window.enabled),
     '--env',
     'KITTY_SCROLLBACK_NVIM_SHOW_TIMER=' .. tostring(opts.status_window.show_timer),
+    '--env',
+    'KITTY_SCROLLBACK_NVIM_KITTY_ICON=' .. tostring(opts.status_window.icons.kitty),
+    '--env',
+    'KITTY_SCROLLBACK_NVIM_HEART_ICON=' .. tostring(opts.status_window.icons.heart),
+    '--env',
+    'KITTY_SCROLLBACK_NVIM_NVIM_ICON=' .. tostring(opts.status_window.icons.nvim),
   }, vim.list_extend(env or {}, { p.kitty_data.ksb_dir .. '/python/loading.py' }))
   local ok, result = system_handle_error(kitty_cmd)
   if ok then
