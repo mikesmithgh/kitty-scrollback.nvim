@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*    For NVIM v0.9+    Last change: 2023 November 24
+*kitty-scrollback.nvim.txt*    For NVIM v0.9+    Last change: 2023 November 25
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -401,7 +401,15 @@ KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
   status_window.show_timer                                     boolean                                                                          If true, show a timer in the status window while
                                                                                                                                                 kitty-scrollback.nvim is loading
 
-  paste_window                                                 KsbPasteWindowOpts?                                                              options for paste window that sends commands to Kitty
+  status_window.icons                                          KsbStatusWindowIcons?                                                            Icons displayed in the status window, defaults to 󰄛 󰣐
+
+  status_window.icons.kitty                                    string                                                                           kittystatus window icon, defaults to 󰄛
+
+  status_window.icons.heart                                    string                                                                           heart string heart status window icon, defaults to 󰣐
+
+  status_window.icons.nvim                                     string                                                                           nvim status window icon, defaults to
+
+  paste_window                                                 KsbPasteWindowOpts?                                                              optionsfor paste window that sends commands to Kitty
 
   paste_window.highlight_as_normal_win                         fun(): boolean?                                                                  If function returns true, use Normal highlight group. If
                                                                                                                                                 false, use NormalFloat
