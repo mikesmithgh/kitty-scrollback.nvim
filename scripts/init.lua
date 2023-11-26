@@ -6,7 +6,7 @@ vim.cmd('set packpath=' .. packpath)
 
 local mini_opts = {
   status_window = {
-    style_simple = not require('kitty-scrollback.kitty_commands').try_detect_nerd_font(),
+    style_simple = true, -- user may not have Nerd Fonts installed
   },
 }
 require('kitty-scrollback').setup({

@@ -352,33 +352,4 @@ M.send_text_to_clipboard = function(text)
   })
 end
 
-M.try_detect_nerd_font = function()
-  -- setup backports for v0.9 because try_detect_nerd_font can be called outside of standard setup flow
-  if vim.fn.has('nvim-0.10') <= 0 then
-    require('kitty-scrollback.backport').setup()
-  end
-  local has_nerd_font = false
-  vim
-    .system({
-      'kitty',
-      '--debug-font-fallback',
-      '--start-as',
-      'minimized',
-      '--override',
-      'shell=sh',
-      'sh',
-      '-c',
-      'kill $PPID',
-    }, {
-      text = true,
-      stderr = function(_, data)
-        if data and data:lower():match('.*nerd.*font.*') then
-          has_nerd_font = true
-        end
-      end,
-    })
-    :wait()
-  return has_nerd_font
-end
-
 return M
