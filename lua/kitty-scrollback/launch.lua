@@ -269,8 +269,15 @@ M.setup = function(kitty_data_str)
   p.kitty_data = vim.fn.json_decode(kitty_data_str)
   load_requires() -- must be after p.kitty_data initialized
 
+  -- if a config named 'global' is found, that will be applied to all configurations regardless of prefix
+  -- if a config name is prefixed 'ksb_builtin_', only configs in configs/builtin.lua will be referenced. The one exception is the config named 'global'
+  -- if a config name is prefixed 'ksb_example_', only configs in configs/example.lua will be referenced. The one exception is the config named 'global'
+  -- if a config does not meet the above criteria, check if a user had defined a configuration with the given config name and use that
+
   local config_name = p.kitty_data.kitty_scrollback_config or 'default'
   local config_source = require('kitty-scrollback')
+  local global_fn = config_source.configs['global']
+  local global_opts = global_fn and global_fn(p.kitty_data) or {}
   if config_name:match('^ksb_builtin_.*') then
     config_source = require('kitty-scrollback.configs.builtin')
   end
@@ -279,7 +286,8 @@ M.setup = function(kitty_data_str)
   end
   local config_fn = config_source.configs[config_name]
   local user_opts = config_fn and config_fn(p.kitty_data) or {}
-  opts = vim.tbl_deep_extend('force', default_opts, user_opts)
+  opts = vim.tbl_deep_extend('force', default_opts, global_opts, user_opts)
+  vim.print(opts.status_window.icons)
 
   ksb_backport.setup()
   ksb_health.setup(p, opts)
