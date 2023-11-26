@@ -409,7 +409,31 @@ By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com)
 use ASCII instead, set the option `status_window.style_simple` to `true`.
 
 > [!NOTE]\
-> Nerd Fonts release v3.1.0 added the Neovim icon! 
+> Nerd Fonts release v3.1.0 added the Neovim icon! See **ksb_example_status_win_nvim** in [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for a demo and example configuration.
+>
+> *The following example configuration sets a global kitty-scrollback.nvim configuration to use the neovim icon instead of vim icon*
+>
+> **kitty.conf**
+>  ```kitty
+>  action_alias kitty_scrollback_nvim kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --nvim-args -u kitty-scrollback-nvim-kitten-config.lua
+>  ```
+>  
+> **kitty-scrollback-nvim-kitten-config.lua**
+>  ```lua
+>  -- I am still working on a better experience for configuring kitty-scrollback.nvim, but this works for now
+>  vim.opt.runtimepath:append(vim.fn.stdpath('data') .. '/lazy/kitty-scrollback.nvim') -- assuming lazy.nvim setup
+>  require('kitty-scrollback').setup({
+>    global = function()
+>      return {
+>        status_window = {
+>          icons = {
+>            nvim = '',
+>          },
+>        },
+>      }
+>    end,
+>  })
+>  ```
 
 <!-- panvimdoc-ignore-start -->
 
