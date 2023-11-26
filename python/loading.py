@@ -58,27 +58,28 @@ else:
 
 start = time.time()
 while True:
-    os.system('cls' if os.name == 'nt' else 'clear')
-    size = os.get_terminal_size(sys.__stdout__.fileno())
-    time_elapsed = ''
-    if show_timer:
-        time_elapsed = '{:.1f}s'.format(time.time() - start)
-    time_progress = f'{time_color}{time_elapsed}{reset}'
-    if style_simple:
-        spin = spinner_color + next(
-            spinner) + reset + time_color + ' kitty-scrollback.nvim' + reset
-        ll = f'{time_progress} {spin} '
-        line = ll.rjust(size.columns + (len(time_color + reset)) +
-                        (len(time_color + reset)) +
-                        (len(spinner_color + reset)))
-
-    else:
-        spin = spinner_color + next(spinner) + reset
-        msg = f'{kitty} {heart} {vim} '
-        line = f'{time_progress} {spin} {msg}'.rjust(
-            size.columns + (len(time_color + reset)) +
-            (len(spinner_color + reset)) + (len(kitty_color + reset)) +
-            (len(heart_color + reset)) + (len(nvim_color + reset)))
     if status_window_enabled:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        size = os.get_terminal_size(sys.__stdout__.fileno())
+        time_elapsed = ''
+        if show_timer:
+            time_elapsed = '{:.1f}s'.format(time.time() - start)
+        time_progress = f'{time_color}{time_elapsed}{reset}'
+        if style_simple:
+            spin = spinner_color + next(
+                spinner
+            ) + reset + time_color + ' kitty-scrollback.nvim' + reset
+            ll = f'{time_progress} {spin} '
+            line = ll.rjust(size.columns + (len(time_color + reset)) +
+                            (len(time_color + reset)) +
+                            (len(spinner_color + reset)))
+
+        else:
+            spin = spinner_color + next(spinner) + reset
+            msg = f'{kitty} {heart} {vim} '
+            line = f'{time_progress} {spin} {msg}'.rjust(
+                size.columns + (len(time_color + reset)) +
+                (len(spinner_color + reset)) + (len(kitty_color + reset)) +
+                (len(heart_color + reset)) + (len(nvim_color + reset)))
         print(line)
     time.sleep(0.08)
