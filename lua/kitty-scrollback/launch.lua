@@ -72,11 +72,17 @@ local opts = {}
 ---@field clear_selection boolean If true, clear the selection in the matched window, if any.
 ---@field extent string | 'screen' | 'all' | 'selection' | 'first_cmd_output_on_screen' | 'last_cmd_output' | 'last_visited_cmd_output' | 'last_non_empty_output'     What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
 
+---@class KsbStatusWindowIcons
+---@field kitty string kitty status window icon, defaults to 󰄛
+---@field heart string heart status window icon, defaults to 󰣐
+---@field nvim string nvim status window icon, defaults to 
+
 ---@class KsbStatusWindowOpts
 ---@field enabled boolean If true, show status window in upper right corner of the screen
 ---@field style_simple boolean If true, use plaintext instead of nerd font icons
 ---@field autoclose boolean If true, close the status window after kitty-scrollback.nvim is ready
 ---@field show_timer boolean If true, show a timer in the status window while kitty-scrollback.nvim is loading
+---@field icons KsbStatusWindowIcons Icons displayed in the status window, defaults to 󰄛 󰣐 
 
 ---@alias KsbWinOpts table<string, any>
 
@@ -102,7 +108,7 @@ local opts = {}
 ---@field paste_window KsbPasteWindowOpts|nil  options for paste window that sends commands to Kitty
 ---@field kitty_get_text KsbKittyGetText|nil options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
 ---@field checkhealth boolean|nil if true execute :checkhealth kitty-scrollback and skip setup
----@field visual_selection_highlight_mode string | 'darken' | 'kitty' | 'nvim' | 'reverse'
+---@field visual_selection_highlight_mode string | 'darken' | 'kitty' | 'nvim' | 'reverse' | nil
 local default_opts = {
   callbacks = nil,
   keymaps_enabled = true,
@@ -113,6 +119,11 @@ local default_opts = {
     style_simple = false,
     autoclose = false,
     show_timer = false,
+    icons = {
+      kitty = '󰄛',
+      heart = '󰣐', -- variants 󰣐 |  |  | ♥ |  | 󱢠 | 
+      nvim = '', -- variants  |  |  | 
+    },
   },
   paste_window = {
     highlight_as_normal_win = nil,
@@ -258,8 +269,15 @@ M.setup = function(kitty_data_str)
   p.kitty_data = vim.fn.json_decode(kitty_data_str)
   load_requires() -- must be after p.kitty_data initialized
 
+  -- if a config named 'global' is found, that will be applied to all configurations regardless of prefix
+  -- if a config name is prefixed 'ksb_builtin_', only configs in configs/builtin.lua will be referenced. The one exception is the config named 'global'
+  -- if a config name is prefixed 'ksb_example_', only configs in configs/example.lua will be referenced. The one exception is the config named 'global'
+  -- if a config does not meet the above criteria, check if a user had defined a configuration with the given config name and use that
+
   local config_name = p.kitty_data.kitty_scrollback_config or 'default'
   local config_source = require('kitty-scrollback')
+  local global_fn = config_source.configs['global']
+  local global_opts = global_fn and global_fn(p.kitty_data) or {}
   if config_name:match('^ksb_builtin_.*') then
     config_source = require('kitty-scrollback.configs.builtin')
   end
@@ -268,7 +286,8 @@ M.setup = function(kitty_data_str)
   end
   local config_fn = config_source.configs[config_name]
   local user_opts = config_fn and config_fn(p.kitty_data) or {}
-  opts = vim.tbl_deep_extend('force', default_opts, user_opts)
+  opts = vim.tbl_deep_extend('force', default_opts, global_opts, user_opts)
+  vim.print(opts.status_window.icons)
 
   ksb_backport.setup()
   ksb_health.setup(p, opts)

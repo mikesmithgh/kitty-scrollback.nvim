@@ -343,17 +343,19 @@ return {
         },
       }
     end,
+    [prefix .. 'status_win_nvim'] = function()
+      return {
+        status_window = {
+          icons = {
+            nvim = '',
+          },
+        },
+      }
+    end,
     [prefix .. 'status_win_simple'] = function()
       return {
         status_window = {
           style_simple = true,
-        },
-      }
-    end,
-    [prefix .. 'status_win_try_detect_nerd_fonts'] = function()
-      return {
-        status_window = {
-          style_simple = not require('kitty-scrollback.kitty_commands').try_detect_nerd_font(),
         },
       }
     end,

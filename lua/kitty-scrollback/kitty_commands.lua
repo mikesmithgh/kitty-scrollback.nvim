@@ -5,7 +5,9 @@ local M = {}
 
 ---@type KsbPrivate
 local p
-local opts ---@diagnostic disable-line: unused-local
+
+---@type KsbOpts
+local opts
 
 M.setup = function(private, options)
   p = private
@@ -306,6 +308,12 @@ M.open_kitty_loading_window = function(env)
     'KITTY_SCROLLBACK_NVIM_STATUS_WINDOW_ENABLED=' .. tostring(opts.status_window.enabled),
     '--env',
     'KITTY_SCROLLBACK_NVIM_SHOW_TIMER=' .. tostring(opts.status_window.show_timer),
+    '--env',
+    'KITTY_SCROLLBACK_NVIM_KITTY_ICON=' .. tostring(opts.status_window.icons.kitty),
+    '--env',
+    'KITTY_SCROLLBACK_NVIM_HEART_ICON=' .. tostring(opts.status_window.icons.heart),
+    '--env',
+    'KITTY_SCROLLBACK_NVIM_NVIM_ICON=' .. tostring(opts.status_window.icons.nvim),
   }, vim.list_extend(env or {}, { p.kitty_data.ksb_dir .. '/python/loading.py' }))
   local ok, result = system_handle_error(kitty_cmd)
   if ok then
@@ -342,35 +350,6 @@ M.send_text_to_clipboard = function(text)
   }, {
     stdin = text,
   })
-end
-
-M.try_detect_nerd_font = function()
-  -- setup backports for v0.9 because try_detect_nerd_font can be called outside of standard setup flow
-  if vim.fn.has('nvim-0.10') <= 0 then
-    require('kitty-scrollback.backport').setup()
-  end
-  local has_nerd_font = false
-  vim
-    .system({
-      'kitty',
-      '--debug-font-fallback',
-      '--start-as',
-      'minimized',
-      '--override',
-      'shell=sh',
-      'sh',
-      '-c',
-      'kill $PPID',
-    }, {
-      text = true,
-      stderr = function(_, data)
-        if data and data:lower():match('.*nerd.*font.*') then
-          has_nerd_font = true
-        end
-      end,
-    })
-    :wait()
-  return has_nerd_font
 end
 
 return M

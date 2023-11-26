@@ -383,6 +383,10 @@ Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [k
 | status_window.style_simple                                       | `boolean`                                                                        | If true, use plaintext instead of nerd font icons                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | status_window.autoclose                                          | `boolean`                                                                        | If true, close the status window after kitty-scrollback.nvim is ready                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | status_window.show_timer                                         | `boolean`                                                                        | If true, show a timer in the status window while kitty-scrollback.nvim is loading                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| status_window.icons                                              | `KsbStatusWindowIcons?`                                                          | Icons displayed in the status window                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| status_window.icons.kitty                                        | `string`                                                                         | kitty status window icon                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| status_window.icons.heart                                        | `string`                                                                         | heart string heart status window icon                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| status_window.icons.nvim                                         | `string`                                                                         | nvim status window icon                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | paste_window                                                     | `KsbPasteWindowOpts?`                                                            | options for paste window that sends commands to Kitty                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | paste_window.highlight_as_normal_win                             | `fun(): boolean?`                                                                | If function returns true, use Normal highlight group. If false, use NormalFloat                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | paste_window.filetype                                            | `string?`                                                                        | The filetype of the paste window                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
@@ -402,15 +406,52 @@ Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [k
 ### Nerd Fonts 
 
 By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com) in the status window. If you would like to 
-use ASCII instead, set the option `status_window.style_simple` to `true`. 
+use ASCII instead, set the option `status_window.style_simple` to `true`.
+
+> [!NOTE]\
+> Nerd Fonts release v3.1.0 added the Neovim icon! See **ksb_example_status_win_nvim** in [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for a demo and example configuration.
+>
+> *The following example configuration sets a global kitty-scrollback.nvim configuration to use the neovim icon instead of vim icon*
+>
+> **kitty.conf**
+>  ```kitty
+>  action_alias kitty_scrollback_nvim kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --nvim-args -u kitty-scrollback-nvim-kitten-config.lua
+>  ```
+>  
+> **kitty-scrollback-nvim-kitten-config.lua**
+>  ```lua
+>  -- I am still working on a better experience for configuring kitty-scrollback.nvim, but this works for now
+>  vim.opt.runtimepath:append(vim.fn.stdpath('data') .. '/lazy/kitty-scrollback.nvim') -- assuming lazy.nvim setup
+>  require('kitty-scrollback').setup({
+>    global = function()
+>      return {
+>        status_window = {
+>          icons = {
+>            nvim = '',
+>          },
+>        },
+>      }
+>    end,
+>  })
+>  ```
 
 <!-- panvimdoc-ignore-start -->
 
-- Status window with Nerd Fonts <code>opts.status_window.style_simple = false</code>
-![style_simple_false](https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/662bf132-0b39-4028-b69f-eb85fbb69b60)
+- Status window with Nerd Fonts <code>v3.1.0+</code> <code>opts.status_window.icons.nvim = ''</code> <code>opts.status_window.style_simple = false</code>
+<div align="center">
+    <img width="75%" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/44d3abf2-345b-4667-aca9-cf816e37ebfa" alt="status-win-icon-nvim" />
+</div>
+
+- Status window with Nerd Fonts <code>< v3.1.0</code> <code>opts.status_window.icons.nvim = ''</code> <code>opts.status_window.style_simple = false</code>
+<div align="center">
+    <img width="75%" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/00341b56-719c-48a2-b9c0-6604423c14be" alt="status-win-icon-vim" />
+</div>
 
 - Status window with ASCII text <code>opts.status_window.style_simple = true</code>
-![style_simple_true](https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/c19a1869-e4e4-40fd-b619-fed771d0153f)
+<div align="center">
+    <img width="75%" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/4b91428e-7d89-4aa2-b034-a0dfc431ae63" alt="status-win-icon-simple" />
+</div>
+
 
 <!-- panvimdoc-ignore-end -->
 

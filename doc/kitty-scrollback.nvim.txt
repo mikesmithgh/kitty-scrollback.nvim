@@ -1,4 +1,4 @@
-*kitty-scrollback.nvim.txt*    For NVIM v0.9+    Last change: 2023 November 24
+*kitty-scrollback.nvim.txt*    For NVIM v0.9+    Last change: 2023 November 26
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -401,6 +401,14 @@ KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
   status_window.show_timer                                     boolean                                                                          If true, show a timer in the status window while
                                                                                                                                                 kitty-scrollback.nvim is loading
 
+  status_window.icons                                          KsbStatusWindowIcons?                                                            Icons displayed in the status window
+
+  status_window.icons.kitty                                    string                                                                           kitty status window icon
+
+  status_window.icons.heart                                    string                                                                           heart string heart status window icon
+
+  status_window.icons.nvim                                     string                                                                           nvim status window icon
+
   paste_window                                                 KsbPasteWindowOpts?                                                              options for paste window that sends commands to Kitty
 
   paste_window.highlight_as_normal_win                         fun(): boolean?                                                                  If function returns true, use Normal highlight group. If
@@ -467,6 +475,23 @@ By default, `kitty-scrollback.nvim` uses Nerd Fonts <https://www.nerdfonts.com>
 in the status window. If you would like to use ASCII instead, set the option
 `status_window.style_simple` to `true`.
 
+
+  `ℹ` `NOTE` 
+  Nerd Fonts release v3.1.0 added the Neovim icon! See
+  **ksb_example_status_win_nvim** in Advanced Configuration
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration>
+  for a demo and example configuration.
+  _The following example configuration sets a global kitty-scrollback.nvim
+  configuration to use the neovim icon instead of vim icon_
+  **kitty.conf** `kitty action_alias kitty_scrollback_nvim kitten
+  /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py
+  --nvim-args -u kitty-scrollback-nvim-kitten-config.lua`
+  **kitty-scrollback-nvim-kitten-config.lua** `lua -- I am still working on a
+  better experience for configuring kitty-scrollback.nvim, but this works for now
+  vim.opt.runtimepath:append(vim.fn.stdpath('data') ..
+  '/lazy/kitty-scrollback.nvim') -- assuming lazy.nvim setup
+  require('kitty-scrollback').setup({ global = function() return { status_window
+  = { icons = { nvim = '', }, }, } end, })`
 
 COMMANDS AND LUA API              *kitty-scrollback.nvim-commands-and-lua-api*
 
