@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.2.0...v2.3.0) (2023-11-26)
+
+
+### Features
+
+* add neovim nerd font icon ([#67](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/67)) ([70bb2ae](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/70bb2aea9cb77a46874740583e7881ddc98eb4e5)), closes [#38](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/38)
+
 # [2.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.1.2...v2.2.0) (2023-11-24)
 
 
