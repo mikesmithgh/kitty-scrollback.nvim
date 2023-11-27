@@ -342,39 +342,6 @@ M.setup = function(kitty_data_str)
   return true
 end
 
-local function validate_extent(extent)
-  if ksb_health.is_valid_extent_keyword(extent) then
-    return true
-  end
-  local msg = vim.list_extend({
-    '',
-    '==============================================================================',
-    'kitty-scrollback.nvim',
-    '',
-    'ERROR: Kitty shell integration is disabled and/or `no-prompt-mark` is set',
-    '',
-    'The option *'
-      .. opts.kitty_get_text.extent
-      .. '* requires Kitty shell integration and prompt marks to be enabled. ',
-  }, ksb_health.advice().kitty_shell_integration)
-  local error_bufid = vim.api.nvim_create_buf(false, true)
-  vim.o.conceallevel = 2
-  vim.o.concealcursor = 'n'
-  vim.api.nvim_set_option_value('filetype', 'checkhealth', {
-    buf = error_bufid,
-  })
-  local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
-  vim.api.nvim_set_current_buf(error_bufid)
-  vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, msg)
-  ksb_util.restore_and_redraw()
-  ksb_kitty_cmds.close_kitty_loading_window(true)
-  local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
-  if response ~= 2 then
-    ksb_kitty_cmds.signal_term_to_kitty_child_process()
-  end
-  return false
-end
-
 ---Launch kitty-scrollack.nvim with configured scrollback buffer
 M.launch = function()
   local kitty_data = p.kitty_data
@@ -395,9 +362,6 @@ M.launch = function()
 
     local extent = '--extent=all'
     local extent_opt = opts.kitty_get_text.extent
-    if not validate_extent(extent_opt or 'all') then
-      return
-    end
     if extent_opt then
       extent = '--extent=' .. extent_opt
     end
