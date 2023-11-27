@@ -287,7 +287,6 @@ M.setup = function(kitty_data_str)
   local config_fn = config_source.configs[config_name]
   local user_opts = config_fn and config_fn(p.kitty_data) or {}
   opts = vim.tbl_deep_extend('force', default_opts, global_opts, user_opts)
-  vim.print(opts.status_window.icons)
 
   ksb_backport.setup()
   ksb_health.setup(p, opts)
@@ -406,6 +405,9 @@ M.launch = function()
         if opts.restore_options then
           restore_orig_options()
         end
+        vim.api.nvim_set_option_value('filetype', 'kitty-scrollback', {
+          buf = p.bufid,
+        })
         if
           opts.callbacks
           and opts.callbacks.after_ready
