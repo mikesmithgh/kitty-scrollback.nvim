@@ -95,24 +95,6 @@ local function check_clipboard()
   end
 end
 
-local function check_kitty_shell_integration()
-  vim.health.start('kitty-scrollback: Kitty shell integration')
-  if not next(p or {}) then
-    vim.health.error('No Kitty data')
-    return
-  end
-  -- use last_cmd_output because it is valid and requires shell integration
-  if M.is_valid_extent_keyword('last_cmd_output') then
-    vim.health.ok('Kitty shell integration is enabled')
-  else
-    vim.health.warn(
-      'Kitty shell integration is disabled and/or `no-prompt-mark` is set.\n        Some functionality will not work when Kitty shell '
-        .. 'integration is disabled or `no-prompt-mark` is set, such as capturing the last command output.',
-      table.concat(M.advice().kitty_shell_integration, '\n')
-    )
-  end
-end
-
 local function check_sed()
   vim.health.start('kitty-scrollback: sed')
   local sed_path = vim.fn.exepath('sed')
@@ -288,7 +270,6 @@ M.check = function()
     and M.check_kitty_version()
   then
     check_clipboard()
-    check_kitty_shell_integration()
     check_sed()
     check_kitty_debug_config()
   end
@@ -374,31 +355,6 @@ M.advice = function()
       'on *shell_integration*',
     },
   }
-end
-
----@param extent string
-M.is_valid_extent_keyword = function(extent)
-  local valid = false
-
-  local standard = { 'screen', 'all', 'selection' }
-  local standard_extent = vim.tbl_filter(function(e)
-    return e == extent:lower()
-  end, standard)
-  if #standard_extent > 0 then
-    return true
-  end
-
-  local shell_integration = p.kitty_data.kitty_opts.shell_integration
-  for _, keyword in pairs(shell_integration) do
-    local k = keyword:lower()
-    if k == 'disabled' or k == 'no-prompt-mark' then
-      return false
-    end
-    if k == 'enabled' then
-      valid = true
-    end
-  end
-  return valid
 end
 
 return M
