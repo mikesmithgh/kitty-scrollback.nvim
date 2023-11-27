@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.3.0...v2.3.1) (2023-11-27)
+
+
+### Bug Fixes
+
+* remove shell integration validation ([#71](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/71)) ([357c1f5](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/357c1f52f3e779674e29a6dd5236be4fe45c44bf)), closes [#66](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/66)
+
 # [2.3.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.2.0...v2.3.0) (2023-11-26)
 
 
