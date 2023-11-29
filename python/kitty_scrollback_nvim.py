@@ -66,17 +66,11 @@ def pipe_data(w, target_window_id, ksb_dir, config):
 
 def parse_nvim_args(args=[]):
     for idx, arg in enumerate(args):
-        if arg.startswith('--no-nvim-args'):
-            return ()
         if arg.startswith('--nvim-args'):
             if idx + 1 < len(args):
                 return tuple(filter(None, args[idx + 1:]))
             return ()
-    return (
-        '--clean',
-        '--noplugin',
-        '-n',
-    )
+    return ()
 
 
 def parse_env(args):

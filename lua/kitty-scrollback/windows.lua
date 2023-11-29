@@ -43,7 +43,7 @@ M.paste_winopts = function(row, col, height_offset)
     height = target_height + (height_offset or 0),
   }
   if row then
-    winopts.row = row
+    winopts.row = row + 1 -- TODO: why does this fix winpos
   end
   if col then
     winopts.col = col
