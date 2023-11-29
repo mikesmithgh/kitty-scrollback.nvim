@@ -172,12 +172,12 @@ M.show_status_window = function()
       win = popup_winid,
     })
     local count = 0
-    local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏', '✔' }
+    local spinner = { '', '', '', '', '', '', '󰄴' }
     if opts.status_window.style_simple then
-      spinner = { '-', '-', '\\', '\\', '|', '|', '/', '/', '-', '-', '*' }
+      spinner = { '-', '-', '\\', '\\', '|', '|', '*' }
     end
     vim.fn.timer_start(
-      80,
+      100,
       function(status_window_timer) ---@diagnostic disable-line: redundant-parameter
         count = count + 1
         local spinner_icon = count > #spinner and spinner[#spinner] or spinner[count]
