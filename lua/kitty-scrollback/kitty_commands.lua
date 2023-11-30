@@ -221,21 +221,29 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   vim.o.shell = p.orig_options.shell
 end
 
-M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
+M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
   -- convert table to string separated by carriage returns
   local cmd_str = table.concat(
     vim.tbl_filter(function(l)
-      return #l > 0
+      return #l > 0 -- remove empty lines
     end, vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false)),
     '\r'
   )
-  -- wrap in bracketed paste mode
   local esc = vim.fn.eval([["\e"]])
-  cmd_str = esc .. '[200~' .. cmd_str .. '\r' .. esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
-  -- if not bracketed paste mode trigger add a carriage return to execute command
-  if not bracketed_paste_mode then
+  local enquiry = '\x05' -- see https://en.wikipedia.org/wiki/Enquiry_character
+  local start_bracketed_paste = esc .. '[200~' -- see https://cirw.in/blog/bracketed-paste
+  local stop_bracketed_paste = esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
+
+  -- the beginning enquiry is used to separate any existing commands in kitty that may end with escape
+  -- if escape is present, then bash autocompletion will be triggered because bracketed paste mode starts with an escape
+  -- the ending enquiry is used to remove deselect the text after pasting to the terminal
+  cmd_str = enquiry .. start_bracketed_paste .. cmd_str .. stop_bracketed_paste .. enquiry
+
+  if not execute_command then
+    -- add a carriage return to execute command
     cmd_str = cmd_str .. '\r'
   end
+
   system_handle_error({
     'kitty',
     '@',
