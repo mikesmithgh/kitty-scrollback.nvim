@@ -338,7 +338,7 @@ return {
         },
         callbacks = {
           after_setup = function()
-            vim.loop.sleep(4000)
+            vim.loop.sleep(8000)
           end,
         },
       }
