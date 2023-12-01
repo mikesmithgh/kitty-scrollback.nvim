@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.3.1...v2.4.0) (2023-12-01)
+
+
+### Features
+
+* clear selection in kitty after paste ([#84](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/84)) ([7cc5814](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/7cc581409cbd6bd601e4a66f3b3a21af81c22bf5)), closes [#76](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/76)
+
 ## [2.3.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.3.0...v2.3.1) (2023-11-27)
 
 
