@@ -42,8 +42,16 @@ M.paste_winopts = function(row, col, height_offset)
     border = { '🭽', '▔', '🭾', '▕', '🭿', '▁', '🭼', '▏' },
     height = target_height + (height_offset or 0),
   }
+
+  local tab_offset = 0
+  -- if always displaying a tabline or if displaying a tabline when more than one tab exists
+  if vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr('$') > 1) then
+    tab_offset = 1
+  end
+
   if row then
-    winopts.row = row + 1 -- TODO: why does this fix winpos
+    -- winopts.row = row + 1 -- TODO: why does this fix winpos
+    winopts.row = row + tab_offset
   end
   if col then
     winopts.col = col
