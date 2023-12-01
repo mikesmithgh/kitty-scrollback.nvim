@@ -1,3 +1,10 @@
+## [2.4.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.0...v2.4.1) (2023-12-01)
+
+
+### Bug Fixes
+
+* update orig_columns during WinResized event ([#85](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/85)) ([88e2063](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/88e20631e55fc37a7926b597636897e058eaa783)), closes [#75](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/75)
+
 # [2.4.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.3.1...v2.4.0) (2023-12-01)
 
 
