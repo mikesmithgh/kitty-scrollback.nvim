@@ -5,10 +5,6 @@ from kitty.debug_config import debug_config
 from kittens.tui.handler import result_handler
 import re
 import os
-import inspect
-
-ksb_dir = os.path.dirname(
-    os.path.dirname(os.path.abspath(inspect.getfile(lambda: None))))
 
 
 def main():

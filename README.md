@@ -12,9 +12,9 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 
 <a href="https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/kitty_scrollback_nvim">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/3513aada-c19c-4e4a-bd9e-91b9907a2c8d">
-    <source media="(prefers-color-scheme: light)" srcset="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/3513aada-c19c-4e4a-bd9e-91b9907a2c8d">
-    <img alt="kitty-scrollback.nvim demo" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/3513aada-c19c-4e4a-bd9e-91b9907a2c8d">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_00_kitty_scrollback_nvim.gif">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_00_kitty_scrollback_nvim.gif">
+    <img alt="kitty-scrollback.nvim demo" src="https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_00_kitty_scrollback_nvim.gif">
   </picture>
   <div align="center"><sup>(click for video)<sup></div>
 </a>

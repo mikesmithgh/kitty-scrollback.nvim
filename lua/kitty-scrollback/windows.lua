@@ -172,9 +172,9 @@ M.show_status_window = function()
       win = popup_winid,
     })
     local count = 0
-    local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏', '✔' }
+    local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '✔' }
     if opts.status_window.style_simple then
-      spinner = { '-', '-', '\\', '\\', '|', '|', '/', '/', '-', '-', '*' }
+      spinner = { '-', '-', '\\', '\\', '|', '|', '*' }
     end
     vim.fn.timer_start(
       80,
@@ -308,6 +308,7 @@ M.show_status_window = function()
         { clear = true }
       ),
       callback = function()
+        p.orig_columns = vim.o.columns
         local ok, current_winopts = pcall(vim.api.nvim_win_get_config, popup_winid)
         if not ok then
           return true
