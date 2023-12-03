@@ -258,3 +258,9 @@ M.get_kitty_colors = function(kitty_data)
 end
 
 return M
+-- demo
+-- demo
+-- demo
+-- demo
+-- demo
+-- demo
