@@ -302,9 +302,11 @@ M.assert_screen_equals = function(actual, expected, ...)
     actual = actual,
     actual_rstrip = actual_rstrip,
     actual_length = #actual,
+    actual_rstrip_length = #actual_rstrip,
     expected = expected,
     expected_rstrip = expected_rstrip,
     expected_length = #expected,
+    expected_rstrip_length = #expected_rstrip,
   })
   if actual_rstrip ~= expected_rstrip then
     print_differences(actual_rstrip, expected_rstrip)
