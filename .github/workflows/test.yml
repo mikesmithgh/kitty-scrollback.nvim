@@ -5,7 +5,7 @@ on:
       - 'main'
   workflow_dispatch:
   schedule:
-    # Daily 2PM EST
+    # daily 9AM EST
     - cron: "0 14 * * *"
 
 jobs:
