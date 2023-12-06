@@ -63,7 +63,7 @@ describe('kitty-scrollback.nvim', function()
         [[__open_ksb]],
       }),
       [[
-$ echo meow                                                                 󰄛 󰣐  
+$ echo ooow                                                                 󰄛 󰣐  
 meow
 $
 ]],
