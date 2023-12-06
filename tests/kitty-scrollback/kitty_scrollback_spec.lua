@@ -15,7 +15,7 @@ h.debug({
   minimal_kitty_conf = ksb_dir .. 'tests/minimal_kitty.conf',
 })
 
-local tmpsock = h.tempsocket()
+local tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
 local kitty_instance
 
 local shell =
