@@ -12,3 +12,13 @@
 - `./scripts/make_video_markdown_files.sh`
 - `./scripts/make_adv_config_markdown_file.lua &> Advanced-Configuration.md`
 
+## Troubleshooting
+
+### Github Actions
+- Interactive debug the action by temporarily adding the build step
+```yml
+- name: Setup tmate session
+  uses: mxschmitt/action-tmate@v3
+```
+- Enable verbose logging by running the action with [debug logging](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging) enabled.
+

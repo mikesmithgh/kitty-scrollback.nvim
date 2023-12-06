@@ -1,0 +1,42 @@
+name: test
+on: 
+  pull_request:
+    branches:
+      - 'main'
+  workflow_dispatch:
+  schedule:
+    # Daily 2PM EST
+    - cron: "0 14 * * *"
+
+jobs:
+  plenary:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Neovim nightly
+      uses: rhysd/action-setup-vim@v1
+      with:
+        neovim: true
+        version: nightly
+
+    - name: Setup Kitty
+      run: |
+        curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y xfce4 libxcb-xkb1
+
+    - name: Test kitty-scrollback.nvim
+      run: |
+        Xvfb :1 -screen 0 1024x768x16 &
+        export PATH=$HOME/.local/kitty.app/bin:$PATH
+        export DISPLAY=:1
+        echo "export PATH=$HOME/.local/kitty.app/bin:$PATH" >> "$HOME/.bashrc"
+        echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
+        echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"
+        make test
+
