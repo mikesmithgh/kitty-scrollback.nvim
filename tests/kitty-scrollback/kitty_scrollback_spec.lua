@@ -15,7 +15,7 @@ h.debug({
   minimal_kitty_conf = ksb_dir .. 'tests/minimal_kitty.conf',
 })
 
-local tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
+local tmpsock = h.tempsocket()
 local kitty_instance
 
 local shell =
@@ -63,7 +63,7 @@ describe('kitty-scrollback.nvim', function()
         [[__open_ksb]],
       }),
       [[
-$ echo chowwow                                                                 󰄛 󰣐  
+$ echo meow                                                                 󰄛 󰣐  
 meow
 $
 ]],
