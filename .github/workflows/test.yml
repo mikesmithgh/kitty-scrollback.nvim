@@ -32,6 +32,10 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y xfce4 libxcb-xkb1
+        # homebrew is not used but is required to reproduce an issue for a test case
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/runner/.bashrc
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
     - name: Test kitty-scrollback.nvim
       run: |
@@ -41,7 +45,5 @@ jobs:
         echo "export PATH=$HOME/.local/kitty.app/bin:$PATH" >> "$HOME/.bashrc"
         echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
         echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"
-        make test || true
+        make test
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
