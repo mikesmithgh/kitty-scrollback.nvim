@@ -1,3 +1,10 @@
+## [2.4.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.1...v2.4.2) (2023-12-07)
+
+
+### Bug Fixes
+
+* read kitty executable from path ([#94](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/94)) ([acdc317](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/acdc3170f20252ba2a4c4bb114b698d85995ae70)), closes [#95](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/95)
+
 ## [2.4.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.0...v2.4.1) (2023-12-01)
 
 
