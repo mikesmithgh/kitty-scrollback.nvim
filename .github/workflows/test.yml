@@ -39,7 +39,7 @@ jobs:
 
     - name: Start Xvfb
       run: |
-        Xvfb :1 -screen 0 1024x768x16 &
+        nohup Xvfb :1 -screen 0 1024x768x16 &
         echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
 
     - name: Test kitty-scrollback.nvim
