@@ -70,4 +70,19 @@ $
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
+
+  -- during brew search a, the PATH env changes. if we are not pointing to the correct kitty executable, it will error out
+  it('should use correct kitty path during brew command', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[brew search a]],
+        [[\n]], -- enter
+        [[__open_ksb]],
+      }),
+      [[
+$ brew search a                                                             󰄛 󰣐  
+]],
+      'kitty-scrollback.nvim content did not match the terminal screen'
+    )
+  end)
 end)
