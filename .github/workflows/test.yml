@@ -42,6 +42,9 @@ jobs:
         nohup Xvfb :1 -screen 0 1024x768x16 &
         echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
 
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+
     - name: Test kitty-scrollback.nvim
       run: |
         echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"
