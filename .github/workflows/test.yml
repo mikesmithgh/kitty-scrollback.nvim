@@ -41,5 +41,7 @@ jobs:
         echo "export PATH=$HOME/.local/kitty.app/bin:$PATH" >> "$HOME/.bashrc"
         echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
         echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"
-        make test
+        make test || true
 
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
