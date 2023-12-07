@@ -41,11 +41,12 @@ jobs:
 
     - name: Test kitty-scrollback.nvim
       run: |
-        echo "export PATH=$HOME/.local/kitty.app/bin:$PATH" >> "$HOME/.bashrc"
-        (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> "$HOME/.bashrc"
+        export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH
+        export DISPLAY=:1
+        export PS1="\[\e[34m\]$ \[\e[m\]"
+        echo 'export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH' >> "$HOME/.bashrc"
         echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
         echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"
-        source "$HOME/.bashrc"
         make test || true
 
     - name: Setup tmate session
