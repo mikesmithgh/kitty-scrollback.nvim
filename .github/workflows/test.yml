@@ -32,13 +32,20 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y xfce4 libxcb-xkb1
+        # homebrew is not used but is required to reproduce an issue for a test case
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    - name: Start Xvfb
+      run: |
+        Xvfb :1 -screen 0 1024x768x16 &
 
     - name: Test kitty-scrollback.nvim
       run: |
-        Xvfb :1 -screen 0 1024x768x16 &
-        export PATH=$HOME/.local/kitty.app/bin:$PATH
+        # TODO: improve the env var exports, github actions are making it hard so I gave up for now
+        export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH
         export DISPLAY=:1
-        echo "export PATH=$HOME/.local/kitty.app/bin:$PATH" >> "$HOME/.bashrc"
+        export PS1="\[\e[34m\]$ \[\e[m\]"
+        echo 'export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH' >> "$HOME/.bashrc"
         echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
         echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"
         make test

@@ -191,7 +191,7 @@ M.checkhealth = function()
   if vim.fn.has('nvim-0.9') > 0 then
     vim
       .system({
-        'kitty',
+        p.kitty_data.kitty_path,
         '@',
         'kitten',
         kitty_scrollback_kitten,

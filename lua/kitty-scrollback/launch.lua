@@ -45,6 +45,7 @@ local M = {}
 ---@field kitty_opts KsbKittyOpts relevant kitty configuration values
 ---@field kitty_config_dir string kitty configuration directory path
 ---@field kitty_version table kitty version
+---@field kitty_path string kitty executable path
 
 ---@class KsbPrivate
 ---@field orig_columns number
