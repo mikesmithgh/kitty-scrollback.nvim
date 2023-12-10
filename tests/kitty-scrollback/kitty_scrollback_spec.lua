@@ -86,7 +86,7 @@ $ brew search a                                                             󰄛
     )
   end)
 
-  it('should succesfully open checkhealth', function()
+  it('should successfully open checkhealth', function()
     h.assert_screen_starts_with(
       h.feed_kitty({
         [[nvim +'KittyScrollbackCheckHealth']],

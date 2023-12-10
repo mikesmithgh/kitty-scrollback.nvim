@@ -191,7 +191,8 @@ M.checkhealth = function()
   if vim.fn.has('nvim-0.9') > 0 then
     vim
       .system({
-        p.kitty_data.kitty_path,
+        -- fallback to 'kitty' because checkhealth can be called outside of standard setup flow
+        (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path or 'kitty',
         '@',
         'kitten',
         kitty_scrollback_kitten,
