@@ -89,7 +89,7 @@ $ brew search a                                                             󰄛
   it('should successfully open checkhealth', function()
     h.assert_screen_starts_with(
       h.feed_kitty({
-        [[nvim +'KittyScrollbackCheckHealth']],
+        [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']],
         [[\n]], -- enter
       }),
       [[
