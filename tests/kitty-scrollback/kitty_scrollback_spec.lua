@@ -34,6 +34,7 @@ local kitty_cmd = h.debug({
 
 describe('kitty-scrollback.nvim', function()
   before_each(function()
+    vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
     kitty_instance = vim.system(kitty_cmd, {
       stdin = 'cd ' .. ksb_dir .. 'tests/workdir',
     })
