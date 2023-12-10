@@ -49,6 +49,7 @@ local M = {}
 
 ---@class KsbPrivate
 ---@field orig_columns number
+---@field orig_normal_hl table|nil
 ---@field bufid number|nil
 ---@field paste_bufid number|nil
 ---@field kitty_loading_winid number|nil
@@ -183,6 +184,7 @@ local function set_options()
   vim.o.termguicolors = true
 
   -- preferred optional opts
+  vim.opt.shortmess:append('I') -- no intro message
   vim.o.laststatus = 0
   vim.o.scrolloff = 0
   vim.o.cmdheight = 0
@@ -317,6 +319,8 @@ M.setup = function(kitty_data_str)
     end
   end
 
+  set_options()
+
   ksb_util.setup(p, opts)
   ksb_kitty_cmds.setup(p, opts)
   ksb_win.setup(p, opts)
@@ -324,12 +328,15 @@ M.setup = function(kitty_data_str)
   ksb_autocmds.setup(p, opts)
   ksb_api.setup(p, opts)
   ksb_keymaps.setup(p, opts)
+
   local ok = ksb_hl.setup(p, opts)
   if ok then
     ksb_hl.set_highlights()
     ksb_kitty_cmds.open_kitty_loading_window(ksb_hl.get_highlights_as_env()) -- must be after opts and set highlights
+    if ksb_hl.has_default_or_vim_colorscheme() then
+      vim.api.nvim_set_hl(0, 'Normal', p.orig_normal_hl)
+    end
   end
-  set_options()
 
   if
     opts.callbacks
@@ -398,8 +405,11 @@ M.launch = function()
         vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
         vim.api.nvim_set_option_value(
           'winhighlight',
-          'Visual:KittyScrollbackNvimVisual',
-          { win = 0 }
+          'Normal:KittyScrollbackNvimNormal,Visual:KittyScrollbackNvimVisual',
+          {
+            scope = 'local',
+            win = 0,
+          }
         )
         vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
 

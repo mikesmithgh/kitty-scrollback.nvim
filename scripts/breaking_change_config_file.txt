@@ -94,3 +94,4 @@ https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki
             /_// ___/     
                \_)       
 
+vim:ft=checkhealth:laststatus=0:fillchars=eob\:\ :termguicolors

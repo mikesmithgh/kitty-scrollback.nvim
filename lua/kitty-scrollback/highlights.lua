@@ -1,6 +1,5 @@
 ---@mod kitty-scrollback.highlights
 local ksb_api = require('kitty-scrollback.api')
-local ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
 local ksb_util = require('kitty-scrollback.util')
 
 local M = {}
@@ -12,38 +11,72 @@ local opts
 
 ---see `:help nvim_set_hl()` for highlight group definition format
 ---@class KsbHighlights
----@field KittyScrollbackNvimNormal table|nil status window Normal highlight group
----@field KittyScrollbackNvimHeart table|nil status window heart icon highlight group
----@field KittyScrollbackNvimSpinner table|nil status window spinner icon highlight group
----@field KittyScrollbackNvimReady table|nil status window ready icon highlight group
----@field KittyScrollbackNvimKitty table|nil status window kitty icon highlight group
----@field KittyScrollbackNvimVim table|nil status window vim icon highlight group
+---@field KittyScrollbackNvimStatusWinNormal table|nil status window Normal highlight group
+---@field KittyScrollbackNvimStatusWinHeartIcon table|nil status window heart icon highlight group
+---@field KittyScrollbackNvimStatusWinSpinnerIcon table|nil status window spinner icon highlight group
+---@field KittyScrollbackNvimStatusWinReadyIcon table|nil status window ready icon highlight group
+---@field KittyScrollbackNvimStatusWinKittyIcon table|nil status window kitty icon highlight group
+---@field KittyScrollbackNvimStatusWinNvimIcon table|nil status window vim icon highlight group
 ---@field KittyScrollbackNvimPasteWinNormal table|nil paste window Normal highlight group
 ---@field KittyScrollbackNvimPasteWinFloatBorder table|nil paste window FloatBorder highlight group
 ---@field KittyScrollbackNvimPasteWinFloatTitle table|nil paste window FloatTitle highlight group
 ---@field KittyScrollbackNvimVisual table|nil scrollback buffer window visual selection highlight group
+---@field KittyScrollbackNvimNormal table|nil scrollback buffer window normal highlight group
 
----@see nvim_set_hl
+-- local function has_vim_colorscheme()
+--   return vim.fn.getcompletion('vim$', 'color')[1] ~= nil
+-- end
+
+M.has_default_or_vim_colorscheme = function()
+  return vim.g.colors_name == nil or vim.g.colors_name == 'default' or vim.g.colors_name == 'vim'
+end
+
+local function fg_or_fallback(hl_def)
+  local fg = type(hl_def.fg) == 'number' and string.format('#%06x', hl_def.fg) or hl_def.fg
+  return hl_def.fg and fg or (vim.o.background == 'dark' and '#ffffff' or '#000000')
+end
+
+local function bg_or_fallback(hl_def)
+  local bg = type(hl_def.bg) == 'number' and string.format('#%06x', hl_def.bg) or hl_def.bg
+  return hl_def.bg and bg or (vim.o.background == 'dark' and '#000000' or '#ffffff')
+end
+
+local function normal_color()
+  local hl_def = vim.api.nvim_get_hl(0, { name = 'Normal', link = false })
+  hl_def = next(hl_def) and hl_def or {} -- can return vim.empty_dict() so convert to lua table
+  local normal_fg_color = M.has_default_or_vim_colorscheme() and p.kitty_colors.foreground
+    or fg_or_fallback(hl_def)
+  local normal_bg_color = M.has_default_or_vim_colorscheme() and p.kitty_colors.background
+    or bg_or_fallback(hl_def)
+  return {
+    fg = normal_fg_color,
+    bg = normal_bg_color,
+  }
+end
+
+local function pastewin_color()
+  local hl_as_normal = opts.paste_window.highlight_as_normal_win
+    or M.has_default_or_vim_colorscheme()
+  local hl_name = hl_as_normal and 'Normal' or 'NormalFloat'
+  local hl_def = vim.api.nvim_get_hl(0, { name = hl_name, link = false })
+  local pastewin_hl = next(hl_def) and hl_def or {} -- can return vim.empty_dict() so convert to lua table
+  if hl_as_normal then
+    pastewin_hl = normal_color()
+  end
+  return pastewin_hl
+end
 
 ---@return KsbHighlights
 local function highlight_definitions()
   if not p.kitty_colors or not next(p.kitty_colors) then
     return {}
   end
-  local hl_as_normal_fn = opts.paste_window.highlight_as_normal_win
-    or function()
-      return vim.g.colors_name == nil or vim.g.colors_name == 'default'
-    end
-  local hl_name = hl_as_normal_fn() and 'Normal' or 'NormalFloat'
-  local hl_def = vim.api.nvim_get_hl(0, { name = hl_name, link = false })
-  hl_def = next(hl_def) and hl_def or {} -- can return vim.empty_dict() so convert to lua table
-  local normal_bg_color = hl_def.bg and string.format('#%06x', hl_def.bg)
-    or p.kitty_colors.background
   local floatborder_fg_color =
     ksb_util.darken(p.kitty_colors.foreground, 0.3, p.kitty_colors.background)
 
   local visual_hl_def = vim.api.nvim_get_hl(0, { name = 'Visual', link = false })
   visual_hl_def = next(visual_hl_def) and visual_hl_def or {} -- can return vim.empty_dict() so convert to lua table
+  local pastewin_hl = pastewin_color()
   local visual_hl_configs = {
     reverse = {
       default = true,
@@ -57,67 +90,84 @@ local function highlight_definitions()
     },
     darken = {
       default = true,
-      bg = ksb_util.darken(
-        hl_def.fg and string.format('#%06x', hl_def.fg)
-          or (vim.o.background == 'dark' and '#ffffff' or '#000000'),
-        0.2,
-        normal_bg_color
-      ),
+      bg = ksb_util.darken(fg_or_fallback(pastewin_hl), 0.2, pastewin_hl.bg),
     },
     nvim = visual_hl_def,
   }
   local visual_hl = visual_hl_configs[opts.visual_selection_highlight_mode]
     or visual_hl_configs.nvim
+  local normal_hl = normal_color()
 
   return {
+    KittyScrollbackNvimVisual = visual_hl,
     KittyScrollbackNvimNormal = {
       default = true,
-      fg = '#968c81',
+      fg = normal_hl.fg,
+      bg = normal_hl.bg,
     },
-    KittyScrollbackNvimHeart = {
+    -- status window
+    KittyScrollbackNvimStatusWinNormal = {
+      default = true,
+      fg = '#968c81',
+      bg = normal_hl.bg,
+    },
+    KittyScrollbackNvimStatusWinHeartIcon = {
       default = true,
       fg = '#d55b54',
+      bg = normal_hl.bg,
     },
-    KittyScrollbackNvimSpinner = {
+    KittyScrollbackNvimStatusWinSpinnerIcon = {
       default = true,
       fg = '#d3869b',
+      bg = normal_hl.bg,
     },
-    KittyScrollbackNvimReady = {
+    KittyScrollbackNvimStatusWinReadyIcon = {
       default = true,
       fg = '#8faa80',
+      bg = normal_hl.bg,
     },
-    KittyScrollbackNvimKitty = {
+    KittyScrollbackNvimStatusWinKittyIcon = {
       default = true,
       fg = '#754b33',
+      bg = normal_hl.bg,
     },
-    KittyScrollbackNvimVim = {
+    KittyScrollbackNvimStatusWinNvimIcon = {
       default = true,
       fg = '#87987e',
+      bg = normal_hl.bg,
     },
+    -- paste window
     KittyScrollbackNvimPasteWinNormal = {
       default = true,
-      bg = normal_bg_color,
+      bg = pastewin_hl.bg,
       blend = opts.paste_window.winblend or 0,
     },
     KittyScrollbackNvimPasteWinFloatBorder = {
       default = true,
-      bg = normal_bg_color,
+      bg = pastewin_hl.bg,
       fg = floatborder_fg_color,
       blend = opts.paste_window.winblend or 0,
     },
     KittyScrollbackNvimPasteWinFloatTitle = {
       default = true,
       bg = floatborder_fg_color,
-      fg = normal_bg_color,
+      fg = pastewin_hl.bg,
       blend = opts.paste_window.winblend or 0,
     },
-    KittyScrollbackNvimVisual = visual_hl,
   }
 end
 
+---@param private KsbPrivate
+---@param options KsbOpts
+---@return true|false
 M.setup = function(private, options)
   p = private
   opts = options ---@diagnostic disable-line: unused-local
+  p.orig_normal_hl = vim.api.nvim_get_hl(0, { name = 'Normal', link = false })
+  if M.has_default_or_vim_colorscheme() then
+    -- clear Normal highlight to avoid flicker when bg color is set
+    vim.api.nvim_set_hl(0, 'Normal', {})
+  end
   local ok, colors = ksb_api.get_kitty_colors(p.kitty_data)
   if ok then
     p.kitty_colors = colors
@@ -126,7 +176,7 @@ M.setup = function(private, options)
 end
 
 ---Format nvim highlights to arguments passed to kitty launch command
----E.g., KittyScrollbackNvimVim with #188b25 to --env KITTY_SCROLLBACK_NVIM_VIM=#188b25
+---E.g., KittyScrollbackNvimStatusWinNvimIcon with #188b25 to --env KITTY_SCROLLBACK_NVIM_VIM=#188b25
 ---@return table list of environment variable arguments
 M.get_highlights_as_env = function()
   local env = {}
@@ -136,12 +186,7 @@ M.get_highlights_as_env = function()
     hl_def = next(hl_def) and hl_def or {} -- nvim_get_hl can return vim.empty_dict() so convert to lua table
     table.insert(
       env,
-      string.format(
-        '%s=#%06x',
-        ksb_util.screaming_snakecase(name),
-        hl_def.fg
-          or (vim.o.background == 'dark' and tonumber('ffffff', 16) or tonumber('000000', 16))
-      )
+      string.format('%s_HIGHLIGHT=%s', ksb_util.screaming_snakecase(name), fg_or_fallback(hl_def))
     )
   end
   return env

@@ -16,3 +16,4 @@ Failed to find kitty executable. Please check your environment variable `PATH`.
             /_// ___/     
                \_)       
 
+vim:ft=checkhealth:laststatus=0:fillchars=eob\:\ :termguicolors
