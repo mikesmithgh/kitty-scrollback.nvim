@@ -327,9 +327,6 @@ M.assert_screen_starts_with = function(actual, expected, ...)
     expected_length = #expected,
     expected_rstrip_length = #expected_rstrip,
   })
-  if actual_rstrip:sub(1, #expected_rstrip) == expected_rstrip then
-    print_differences(actual_rstrip, expected_rstrip)
-  end
   assert(actual_rstrip:sub(1, #expected_rstrip) == expected_rstrip, ...)
 end
 
