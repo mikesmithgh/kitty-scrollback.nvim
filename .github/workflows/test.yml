@@ -39,6 +39,9 @@ jobs:
       run: |
         Xvfb :1 -screen 0 1024x768x16 &
 
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+
     - name: Test kitty-scrollback.nvim
       run: |
         # TODO: improve the env var exports, github actions are making it hard so I gave up for now
