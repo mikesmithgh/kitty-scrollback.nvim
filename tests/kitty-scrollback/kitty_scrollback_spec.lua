@@ -85,4 +85,21 @@ $ brew search a                                                             󰄛
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
+
+  it('should succesfully open checkhealth', function()
+    h.assert_screen_starts_with(
+      h.feed_kitty({
+        [[nvim +'KittyScrollbackCheckHealth']],
+        [[\n]], -- enter
+      }),
+      [[
+
+──────────────────────────────────────────────────────────────────────────────
+kitty-scrollback: require("kitty-scrollback.health").check()
+
+kitty-scrollback: Neovim version
+]],
+      'kitty-scrollback.nvim content start with expected checkhealth'
+    )
+  end)
 end)
