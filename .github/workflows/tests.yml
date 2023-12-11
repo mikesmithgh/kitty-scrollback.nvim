@@ -74,10 +74,11 @@ jobs:
         cd "$GITHUB_WORKSPACE" || exit 1
         export PATH="$GITHUB_WORKSPACE/tmp/bin:$PATH"
         ngrok config add-authtoken "$NGROK_AUTH_TOKEN"
-        ngrok tcp 22
-        # client steps
-        # ssh -L 59000:localhost:5901 -C -N -p 19034 -l runner 2.tcp.ngrok.io
-        # open vnc client at localhost:59000
+        ngrok tcp 22 --log=stdout > "$GITHUB_WORKSPACE/tmp/ngrok.log" & 
+        NGROK_TLS_URL="$(curl --silent http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url')"
+        host="$(echo $NGROK_TLS_URL | awk -F:// '{print $2}' | awk -F: ' {print $1}')"
+        port="$(echo $NGROK_TLS_URL | awk -F:// '{print $2}' | awk -F: ' {print $2}')"
+        printf '\n\nngrok agent running avaible at %s\n\nRun the following command on your machine:\n\n  ssh -L 59000:localhost:5901 -C -N -p %s -l runner %s\n\nConnect on your machine at: localhost:59000\n\n' $NGROK_TLS_URL $port $host
 
     - name: (debug) Setup tmate session
       if: ${{ inputs.enable_debug_tmate || inputs.enable_debug_vnc }}
