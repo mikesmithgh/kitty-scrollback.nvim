@@ -58,9 +58,9 @@ jobs:
         sudo dpkg -i turbovnc.deb
         sudo apt update
         sudo apt install -f
+        cd "$GITHUB_WORKSPACE" || exit 1
         export PATH="/opt/TurboVNC/bin:$PATH"
         vncserver -SecurityTypes None
-        cd "$GITHUB_WORKSPACE" || exit 1
 
     - name: (debug) Setup ngrok session
       if: ${{ inputs.enable_debug_vnc }}
@@ -69,7 +69,9 @@ jobs:
       run: |
         mkdir -p "$GITHUB_WORKSPACE/tmp/bin"
         curl -s -L https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -o "$GITHUB_WORKSPACE/tmp/ngrok.tgz"
+        cd "$GITHUB_WORKSPACE/tmp" || exit 1
         tar -xvf ngrok.tgz -C "$GITHUB_WORKSPACE/tmp/bin"
+        cd "$GITHUB_WORKSPACE" || exit 1
         export PATH="$GITHUB_WORKSPACE/tmp/bin:$PATH"
         ngrok config add-authtoken "$NGROK_AUTH_TOKEN"
         ngrok tcp 22
