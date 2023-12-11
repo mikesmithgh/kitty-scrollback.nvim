@@ -8,16 +8,14 @@ on:
       - 'main'
   workflow_dispatch:
     inputs:
-      build_id:
-        required: true
-        type: string
-      deploy_target:
-        required: true
-        type: string
-      perform_deploy:
-        required: true
+      enable_debug_vnc:
+        required: false
         type: boolean
-        default: true
+        default: false
+      enable_debug_tmate:
+        required: false
+        type: boolean
+        default: false
   schedule:
     # daily 9AM EST
     - cron: "0 14 * * *"
@@ -28,11 +26,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-
-    - name: Testing1234
-      if: ${{ inputs.perform_deploy }}
-      run: |
-        echo build_id ${{ inputs.build_id }} deploy_target ${{ inputs.deploy_target }}
 
     - name: Setup Neovim nightly
       uses: rhysd/action-setup-vim@v1
@@ -52,8 +45,13 @@ jobs:
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
     - name: Start Xvfb
+      if: ${{ ! inputs.enable_debug_vnc }}
       run: |
         Xvfb :1 -screen 0 1024x768x16 &
+
+    - name: Setup tmate session
+      if: ${{ inputs.enable_debug_tmate || inputs.enable_debug_vnc }}
+      uses: mxschmitt/action-tmate@v3
 
     - name: Test kitty-scrollback.nvim
       run: |
