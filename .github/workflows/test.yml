@@ -39,16 +39,14 @@ jobs:
       run: |
         Xvfb :1 -screen 0 1024x768x16 &
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-
     - name: Test kitty-scrollback.nvim
       run: |
         # TODO: improve the env var exports, github actions are making it hard so I gave up for now
-        export KITTY_CONFIG_DIRECTORY="$GITHUB_WORKSPACE/tests/minimal_kitty.conf"
+        export KITTY_CONFIG_DIRECTORY="$GITHUB_WORKSPACE/tests"
         export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH
         export DISPLAY=:1
         export PS1="\[\e[34m\]$ \[\e[m\]"
+        echo 'export KITTY_CONFIG_DIRECTORY="$GITHUB_WORKSPACE/tests"' >> "$HOME/.bashrc"
         echo 'export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH' >> "$HOME/.bashrc"
         echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
         echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"

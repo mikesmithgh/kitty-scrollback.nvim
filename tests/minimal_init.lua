@@ -9,6 +9,3 @@ vim.opt.rtp:append(plenary_dir)
 
 vim.cmd('runtime plugin/plenary.vim')
 require('plenary.busted')
-
-vim.opt.rtp:append('kitty-scrollback.nvim')
-require('kitty-scrollback').setup()
