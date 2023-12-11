@@ -1,0 +1,76 @@
+name: test
+on: 
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+  workflow_dispatch:
+  schedule:
+    # daily 9AM EST
+    - cron: "0 14 * * *"
+
+jobs:
+  plenary:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Neovim nightly
+      uses: rhysd/action-setup-vim@v1
+      with:
+        neovim: true
+        version: nightly
+
+    - name: Setup Kitty
+      run: |
+        curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y xfce4 libxcb-xkb1
+        # homebrew is not used but is required to reproduce an issue for a test case
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    - name: Start TurboVNC
+      run: |
+        mkdir -p "$GITHUB_WORKSPACE/tmp"
+        curl -s -L https://github.com/TurboVNC/turbovnc/releases/download/3.1/turbovnc_3.1_amd64.deb -o "$GITHUB_WORKSPACE/tmp/turbovnc.deb"
+        cd "$GITHUB_WORKSPACE/tmp" || exit 1
+        sudo dpkg -i turbovnc.deb
+        sudo apt update
+        sudo apt install -f
+        export PATH="/opt/TurboVNC/bin:$PATH"
+        vncserver -SecurityTypes None
+        cd "$GITHUB_WORKSPACE" || exit 1
+
+    - name: Setup ngrok session
+      env:
+        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+      run: |
+        mkdir -p "$GITHUB_WORKSPACE/tmp/bin"
+        curl -s -L https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -o "$GITHUB_WORKSPACE/tmp/ngrok.tgz"
+        tar -xvf ngrok.tgz -C "$GITHUB_WORKSPACE/tmp/bin"
+        export PATH="$GITHUB_WORKSPACE/tmp/bin:$PATH"
+        ngrok config add-authtoken "$NGROK_AUTH_TOKEN"
+        ngrok tcp 22
+        # client steps
+        # ssh -L 59000:localhost:5901 -C -N -p 19034 -l runner 2.tcp.ngrok.io
+        # open vnc client at localhost:59000
+
+    - name: Test kitty-scrollback.nvim
+      run: |
+        # TODO: improve the env var exports, github actions are making it hard so I gave up for now
+        export KITTY_CONFIG_DIRECTORY="$GITHUB_WORKSPACE/tests"
+        export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH
+        export DISPLAY=:1
+        export PS1="\[\e[34m\]$ \[\e[m\]"
+        echo 'export KITTY_CONFIG_DIRECTORY="$GITHUB_WORKSPACE/tests"' >> "$HOME/.bashrc"
+        echo 'export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH' >> "$HOME/.bashrc"
+        echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
+        echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"
+        make test
+
