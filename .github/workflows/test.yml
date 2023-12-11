@@ -7,6 +7,17 @@ on:
     branches:
       - 'main'
   workflow_dispatch:
+    inputs:
+      build_id:
+        required: true
+        type: string
+      deploy_target:
+        required: true
+        type: string
+      perform_deploy:
+        required: true
+        type: boolean
+        default: true
   schedule:
     # daily 9AM EST
     - cron: "0 14 * * *"
@@ -17,6 +28,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    if: ${{ inputs.perform_deploy }}
+    steps:
+      - name: Testing1234
+        run: echo "build_id ${{ inputs.build_id }} deploy_target ${{ inputs.deploy_target }}"
 
     - name: Setup Neovim nightly
       uses: rhysd/action-setup-vim@v1
