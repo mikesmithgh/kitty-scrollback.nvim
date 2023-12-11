@@ -88,11 +88,17 @@ $ brew search a                                                             󰄛
   end)
 
   it('should successfully open checkhealth', function()
+    local stdtout = h.feed_kitty({
+      [[nvim +'KittyScrollbackCheckHealth']],
+      [[\n]], -- enter
+    })
+    h.assert_screen_not_match(
+      stdtout,
+      'ERROR',
+      'kitty-scrollback.nvim checkhealth had an unexpected health check ERROR'
+    )
     h.assert_screen_starts_with(
-      h.feed_kitty({
-        [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']],
-        [[\n]], -- enter
-      }),
+      stdtout,
       [[
 
 ──────────────────────────────────────────────────────────────────────────────
@@ -100,7 +106,7 @@ kitty-scrollback: require("kitty-scrollback.health").check()
 
 kitty-scrollback: Neovim version
 ]],
-      'kitty-scrollback.nvim content start with expected checkhealth'
+      'kitty-scrollback.nvim checkhealth content did not start with expected content'
     )
   end)
 end)
