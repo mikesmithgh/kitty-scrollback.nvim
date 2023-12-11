@@ -49,7 +49,7 @@ jobs:
       run: |
         Xvfb :1 -screen 0 1024x768x16 &
 
-    - name: [debug] Start TurboVNC
+    - name: (debug) Start TurboVNC
       if: ${{ inputs.enable_debug_vnc }}
       run: |
         mkdir -p "$GITHUB_WORKSPACE/tmp"
@@ -62,7 +62,7 @@ jobs:
         vncserver -SecurityTypes None
         cd "$GITHUB_WORKSPACE" || exit 1
 
-    - name: [debug] Setup ngrok session
+    - name: (debug) Setup ngrok session
       if: ${{ inputs.enable_debug_vnc }}
       env:
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
@@ -77,7 +77,7 @@ jobs:
         # ssh -L 59000:localhost:5901 -C -N -p 19034 -l runner 2.tcp.ngrok.io
         # open vnc client at localhost:59000
 
-    - name: [debug] Setup tmate session
+    - name: (debug) Setup tmate session
       if: ${{ inputs.enable_debug_tmate || inputs.enable_debug_vnc }}
       uses: mxschmitt/action-tmate@v3
 
