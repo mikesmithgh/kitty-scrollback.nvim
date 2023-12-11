@@ -12,7 +12,7 @@ local ksb_dir = vim.fn.fnamemodify(
 )
 h.debug({
   ksb_dir = ksb_dir,
-  minimal_kitty_conf = ksb_dir .. 'tests/minimal_kitty.conf',
+  kitty_conf = ksb_dir .. 'tests/kitty.conf',
 })
 
 local tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
@@ -25,7 +25,7 @@ local kitty_cmd = h.debug({
   'kitty',
   '--listen-on=unix:' .. tmpsock,
   '--config',
-  ksb_dir .. 'tests/minimal_kitty.conf',
+  ksb_dir .. 'tests/kitty.conf',
   '--override',
   'shell=' .. shell,
   '--session',
@@ -34,6 +34,7 @@ local kitty_cmd = h.debug({
 
 describe('kitty-scrollback.nvim', function()
   before_each(function()
+    vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
     kitty_instance = vim.system(kitty_cmd, {
       stdin = 'cd ' .. ksb_dir .. 'tests/workdir',
     })
@@ -83,6 +84,29 @@ $
 $ brew search a                                                             󰄛 󰣐  
 ]],
       'kitty-scrollback.nvim content did not match the terminal screen'
+    )
+  end)
+
+  it('should successfully open checkhealth', function()
+    local stdtout = h.feed_kitty({
+      [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']],
+      [[\n]], -- enter
+    })
+    h.assert_screen_not_match(
+      stdtout,
+      'ERROR',
+      'kitty-scrollback.nvim checkhealth had an unexpected health check ERROR'
+    )
+    h.assert_screen_starts_with(
+      stdtout,
+      [[
+
+──────────────────────────────────────────────────────────────────────────────
+kitty-scrollback: require("kitty-scrollback.health").check()
+
+kitty-scrollback: Neovim version
+]],
+      'kitty-scrollback.nvim checkhealth content did not start with expected content'
     )
   end)
 end)
