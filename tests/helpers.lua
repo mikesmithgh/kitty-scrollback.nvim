@@ -314,4 +314,47 @@ M.assert_screen_equals = function(actual, expected, ...)
   assert(actual_rstrip == expected_rstrip, ...)
 end
 
+M.assert_screen_starts_with = function(actual, expected, ...)
+  local expected_rstrip = expected:gsub('%s*\n', '\n'):gsub('\n$', '')
+  local actual_rstrip = actual:gsub('%s*\n', '\n'):sub(1, #expected_rstrip)
+  M.debug({
+    actual = actual,
+    actual_rstrip = actual_rstrip,
+    actual_length = #actual,
+    actual_rstrip_length = #actual_rstrip,
+    expected = expected,
+    expected_rstrip = expected_rstrip,
+    expected_length = #expected,
+    expected_rstrip_length = #expected_rstrip,
+  })
+  if actual_rstrip ~= expected_rstrip then
+    print_differences(actual_rstrip, expected_rstrip)
+  end
+  assert(actual_rstrip == expected_rstrip, ...)
+end
+
+M.assert_screen_match = function(actual, pattern, ...)
+  local actual_rstrip = actual:gsub('%s*\n', '\n')
+  M.debug({
+    actual = actual,
+    actual_rstrip = actual_rstrip,
+    actual_length = #actual,
+    actual_rstrip_length = #actual_rstrip,
+    match = pattern,
+  })
+  assert(actual_rstrip:match(pattern), ...)
+end
+
+M.assert_screen_not_match = function(actual, pattern, ...)
+  local actual_rstrip = actual:gsub('%s*\n', '\n')
+  M.debug({
+    actual = actual,
+    actual_rstrip = actual_rstrip,
+    actual_length = #actual,
+    actual_rstrip_length = #actual_rstrip,
+    match = pattern,
+  })
+  assert(not actual_rstrip:match(pattern), ...)
+end
+
 return M
