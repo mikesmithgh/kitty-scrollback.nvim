@@ -75,6 +75,7 @@ jobs:
         export PATH="$GITHUB_WORKSPACE/tmp/bin:$PATH"
         ngrok config add-authtoken "$NGROK_AUTH_TOKEN"
         ngrok tcp 22 --log=stdout > "$GITHUB_WORKSPACE/tmp/ngrok.log" & 
+        sleep 1 # wait for ngrok to start
         NGROK_TLS_URL="$(curl --silent http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url')"
         host="$(echo $NGROK_TLS_URL | awk -F:// '{print $2}' | awk -F: ' {print $1}')"
         port="$(echo $NGROK_TLS_URL | awk -F:// '{print $2}' | awk -F: ' {print $2}')"
