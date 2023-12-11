@@ -29,10 +29,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    if: ${{ inputs.perform_deploy }}
-    steps:
-      - name: Testing1234
-        run: echo "build_id ${{ inputs.build_id }} deploy_target ${{ inputs.deploy_target }}"
+    - name: Testing1234
+      if: ${{ inputs.perform_deploy }}
+      run: |
+        echo build_id ${{ inputs.build_id }} deploy_target ${{ inputs.deploy_target }}
 
     - name: Setup Neovim nightly
       uses: rhysd/action-setup-vim@v1
