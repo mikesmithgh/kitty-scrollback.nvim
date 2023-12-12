@@ -1,3 +1,10 @@
+## [2.4.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.3...v2.4.4) (2023-12-12)
+
+
+### Bug Fixes
+
+* explicitly set colorscheme to vim ([#106](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/106)) ([6e2bd60](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/6e2bd60d14fdfb9839a7ac6e352c880f463cc9ba)), closes [#93](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/93)
+
 ## [2.4.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.2...v2.4.3) (2023-12-11)
 
 

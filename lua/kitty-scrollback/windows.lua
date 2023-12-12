@@ -178,7 +178,7 @@ M.show_status_window = function()
       spinner = { '-', '-', '\\', '\\', '|', '|', '*' }
     end
     vim.fn.timer_start(
-      100,
+      80,
       function(status_window_timer) ---@diagnostic disable-line: redundant-parameter
         count = count + 1
         local spinner_icon = count > #spinner and spinner[#spinner] or spinner[count]

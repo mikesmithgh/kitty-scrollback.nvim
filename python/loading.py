@@ -44,7 +44,17 @@ vim = nvim_color + nvim_icon + reset
 if style_simple:
     spinner = itertools.cycle(['-', '-', '\\', '\\', '|', '|', '/', '/'])
 else:
-    spinner = itertools.cycle(['', '', '', '', '', ''])
+    spinner = itertools.cycle(
+        ['⠋',
+         '⠙',
+         '⠹',
+         '⠸',
+         '⠼',
+         '⠴',
+         '⠦',
+         '⠧',
+         '⠇',
+         '⠏'])
 
 start = time.time()
 quit_msg = f'{timer_color}(ctrl+c to quit)'
