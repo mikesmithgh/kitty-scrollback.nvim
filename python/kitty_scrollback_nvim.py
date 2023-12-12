@@ -186,12 +186,11 @@ def handle_result(args: List[str],
 
         nvim_args = parse_nvim_args(args) + (
             '--cmd',
-            ' lua '
+            ' lua'
             ' vim.api.nvim_create_autocmd([[VimEnter]], {'
             '  group = vim.api.nvim_create_augroup([[KittyScrollBackNvimVimEnter]], { clear = true }),'
             '  pattern = [[*]],'
             '  callback = function()'
-            '   vim.cmd.colorscheme({ args = {[[vim]]}, mods = { emsg_silent = true }})'
             f'  vim.opt.runtimepath:append([[{ksb_dir}]])'
             '   vim.api.nvim_exec_autocmds([[User]], { pattern = [[KittyScrollbackLaunch]], modeline = false })'
             f'  require([[kitty-scrollback.launch]]).setup_and_launch([[{kitty_data}]])'
