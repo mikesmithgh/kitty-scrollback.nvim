@@ -122,7 +122,7 @@ M.open_footer_window = function(winopts, refresh_only)
   vim.api.nvim_set_option_value(
     'winhighlight',
     'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
-    { win = p.footer_winid }
+    { win = p.footer_winid, scope = 'local' }
   )
 end
 
