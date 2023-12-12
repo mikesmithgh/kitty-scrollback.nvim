@@ -118,7 +118,7 @@ M.open_paste_window = function(start_insert)
     vim.api.nvim_set_option_value(
       'winhighlight',
       'Normal:KittyScrollbackNvimPasteWinNormal,FloatBorder:KittyScrollbackNvimPasteWinFloatBorder,FloatTitle:KittyScrollbackNvimPasteWinFloatTitle',
-      { win = p.paste_winid }
+      { win = p.paste_winid, scope = 'local' }
     )
     vim.api.nvim_set_option_value('winblend', opts.paste_window.winblend or 0, {
       win = p.paste_winid,
@@ -170,9 +170,10 @@ M.show_status_window = function()
     )
     vim.api.nvim_set_option_value('winhighlight', 'NormalFloat:KittyScrollbackNvimNormal', {
       win = popup_winid,
+      scope = 'local',
     })
     local count = 0
-    local spinner = { '', '', '', '', '', '', '󰄴' }
+    local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '✔' }
     if opts.status_window.style_simple then
       spinner = { '-', '-', '\\', '\\', '|', '|', '*' }
     end
@@ -308,6 +309,7 @@ M.show_status_window = function()
         { clear = true }
       ),
       callback = function()
+        p.orig_columns = vim.o.columns
         local ok, current_winopts = pcall(vim.api.nvim_win_get_config, popup_winid)
         if not ok then
           return true

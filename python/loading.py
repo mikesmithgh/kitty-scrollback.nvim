@@ -26,7 +26,7 @@ status_window_enabled = os.environ.get(
 show_timer = os.environ.get('KITTY_SCROLLBACK_NVIM_SHOW_TIMER',
                             False).lower() == 'true'
 
-time_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_NORMAL')
+timer_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_NORMAL')
 heart_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_HEART')
 spinner_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_SPINNER')
 kitty_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_KITTY')
@@ -47,29 +47,45 @@ else:
     spinner = itertools.cycle(['', '', '', '', '', ''])
 
 start = time.time()
-while True:
+quit_msg = f'{timer_color}(ctrl+c to quit)'
+time_elapsed = 0
+close_threshold_seconds = 14.5
+hide_timer_threshold_seconds = 4.5
+while True and time_elapsed < close_threshold_seconds:
     if status_window_enabled:
         os.system('cls' if os.name == 'nt' else 'clear')
         size = os.get_terminal_size(sys.__stdout__.fileno())
-        time_elapsed = ''
-        if show_timer:
-            time_elapsed = '{:.1f}s'.format(time.time() - start)
-        time_progress = f'{time_color}{time_elapsed}{reset}'
+        time_elapsed = time.time() - start
+        time_elapsed_secs = '{:.1f}s'.format(time_elapsed)
+        time_progress = f'{timer_color}{time_elapsed_secs}{reset}'
         if style_simple:
+            actual_timer = time_progress if (show_timer and time_progress) or (
+                time_elapsed
+                and time_elapsed) > hide_timer_threshold_seconds else ''
+            actual_timer_color = timer_color if actual_timer else ''
             spin = spinner_color + next(
                 spinner
-            ) + reset + time_color + ' kitty-scrollback.nvim' + reset
-            ll = f'{time_progress} {spin} '
-            line = ll.rjust(size.columns + (len(time_color + reset)) +
-                            (len(time_color + reset)) +
+            ) + reset + timer_color + ' kitty-scrollback.nvim' + reset
+            ll = f'{actual_timer} {spin} '
+            line = ll.rjust(size.columns +
+                            (len(actual_timer_color +
+                                 reset if actual_timer_color else '')) +
+                            (len(timer_color + reset)) +
                             (len(spinner_color + reset)))
 
         else:
             spin = spinner_color + next(spinner) + reset
             msg = f'{kitty} {heart} {vim} '
-            line = f'{time_progress} {spin} {msg}'.rjust(
-                size.columns + (len(time_color + reset)) +
+            actual_timer = time_progress if (show_timer and time_progress) or (
+                time_elapsed
+                and time_elapsed) > hide_timer_threshold_seconds else ''
+            actual_timer_color = timer_color if actual_timer else ''
+            line = f'{actual_timer} {spin} {msg}'.rjust(
+                size.columns + (len(actual_timer_color +
+                                    reset if actual_timer_color else '')) +
                 (len(spinner_color + reset)) + (len(kitty_color + reset)) +
                 (len(heart_color + reset)) + (len(nvim_color + reset)))
         print(line)
-    time.sleep(0.1)
+        if time_elapsed > 4.9:
+            print(quit_msg.rjust(size.columns + len(timer_color)))
+    time.sleep(0.08)

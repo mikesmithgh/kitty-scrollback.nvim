@@ -26,7 +26,7 @@ M.setup = function(configs)
   })
 
   ---@brief [[
-  ---:KittyScrollbackGenerateKittens Run `:checkhealth kitty-scrollback` in the context of Kitty
+  ---:KittyScrollbackCheckHealth Run `:checkhealth kitty-scrollback` in the context of Kitty
   ---
   ---    See: ~
   ---        |kitty.api.checkhealth|

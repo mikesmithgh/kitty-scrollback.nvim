@@ -121,8 +121,12 @@ end
 
 M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   local esc = vim.fn.eval([["\e"]])
-  local kitty_get_text_cmd =
-    string.format([[kitty @ get-text --match="id:%s" %s]], kitty_data.window_id, get_text_opts)
+  local kitty_get_text_cmd = string.format(
+    [[%s @ get-text --match="id:%s" %s]],
+    p.kitty_data.kitty_path,
+    kitty_data.window_id,
+    get_text_opts
+  )
   local sed_cmd = string.format(
     [[sed -E ]]
       .. [[-e 's/%s\[\?25.%s\[.*;.*H%s\[.*//g' ]] -- remove control sequence added by --add-cursor flag
@@ -132,7 +136,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
     esc,
     esc
   )
-  local flush_stdout_cmd = [[kitty +runpy 'sys.stdout.flush()']]
+  local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
   local start_set_title_cmd = string.format([[printf '%s]2;']], esc)
   local full_cmd = kitty_get_text_cmd
@@ -221,23 +225,31 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   vim.o.shell = p.orig_options.shell
 end
 
-M.send_paste_buffer_text_to_kitty_and_quit = function(bracketed_paste_mode)
+M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
   -- convert table to string separated by carriage returns
   local cmd_str = table.concat(
     vim.tbl_filter(function(l)
-      return #l > 0
+      return #l > 0 -- remove empty lines
     end, vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false)),
     '\r'
   )
-  -- wrap in bracketed paste mode
   local esc = vim.fn.eval([["\e"]])
-  cmd_str = esc .. '[200~' .. cmd_str .. '\r' .. esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
-  -- if not bracketed paste mode trigger add a carriage return to execute command
-  if not bracketed_paste_mode then
+  local enquiry = '\x05' -- see https://en.wikipedia.org/wiki/Enquiry_character
+  local start_bracketed_paste = esc .. '[200~' -- see https://cirw.in/blog/bracketed-paste
+  local stop_bracketed_paste = esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
+
+  -- the beginning enquiry is used to separate any existing commands in kitty that may end with escape
+  -- if escape is present, then bash autocompletion will be triggered because bracketed paste mode starts with an escape
+  -- the ending enquiry is used to remove deselect the text after pasting to the terminal
+  cmd_str = enquiry .. start_bracketed_paste .. cmd_str .. stop_bracketed_paste .. enquiry
+
+  if not execute_command then
+    -- add a carriage return to execute command
     cmd_str = cmd_str .. '\r'
   end
+
   system_handle_error({
-    'kitty',
+    p.kitty_data.kitty_path,
     '@',
     'send-text',
     '--match=id:' .. p.kitty_data.window_id,
@@ -248,7 +260,7 @@ end
 
 M.list_kitty_windows = function()
   return system_handle_error({
-    'kitty',
+    p.kitty_data.kitty_path,
     '@',
     'ls',
   })
@@ -259,7 +271,7 @@ M.close_kitty_loading_window = function(ignore_error)
     local winid = p.kitty_loading_winid
     p.kitty_loading_winid = nil
     return system_handle_error({
-      'kitty',
+      p.kitty_data.kitty_path,
       '@',
       'close-window',
       '--match=id:' .. winid,
@@ -270,7 +282,7 @@ end
 
 M.signal_winchanged_to_kitty_child_process = function()
   system_handle_error({
-    'kitty',
+    p.kitty_data.kitty_path,
     '@',
     'signal-child',
     'SIGWINCH',
@@ -282,7 +294,7 @@ M.signal_term_to_kitty_child_process = function(force)
     vim.cmd.quitall({ bang = true })
   else
     system_handle_error({
-      'kitty',
+      p.kitty_data.kitty_path,
       '@',
       'signal-child',
       'SIGTERM',
@@ -295,7 +307,7 @@ M.open_kitty_loading_window = function(env)
     M.close_kitty_loading_window(true)
   end
   local kitty_cmd = vim.list_extend({
-    'kitty',
+    p.kitty_data.kitty_path,
     '@',
     'launch',
     '--type',
@@ -324,7 +336,7 @@ end
 M.get_kitty_colors = function(kitty_data, ignore_error, no_window_id)
   local match = no_window_id and nil or '--match=id:' .. kitty_data.window_id
   local ok, result = system_handle_error({
-    'kitty',
+    p.kitty_data.kitty_path,
     '@',
     'get-colors',
     match,
@@ -343,7 +355,7 @@ end
 
 M.send_text_to_clipboard = function(text)
   return system_handle_error({
-    'kitty',
+    p.kitty_data.kitty_path,
     '+kitten',
     'clipboard',
     '/dev/stdin',
