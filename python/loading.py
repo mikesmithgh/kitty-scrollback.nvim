@@ -26,11 +26,16 @@ status_window_enabled = os.environ.get(
 show_timer = os.environ.get('KITTY_SCROLLBACK_NVIM_SHOW_TIMER',
                             False).lower() == 'true'
 
-timer_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_NORMAL')
-heart_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_HEART')
-spinner_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_SPINNER')
-kitty_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_KITTY')
-nvim_color = env_to_fg_color('KITTY_SCROLLBACK_NVIM_VIM')
+timer_color = env_to_fg_color(
+    'KITTY_SCROLLBACK_NVIM_STATUS_WIN_NORMAL_HIGHLIGHT')
+heart_color = env_to_fg_color(
+    'KITTY_SCROLLBACK_NVIM_STATUS_WIN_HEART_ICON_HIGHLIGHT')
+spinner_color = env_to_fg_color(
+    'KITTY_SCROLLBACK_NVIM_STATUS_WIN_SPINNER_ICON_HIGHLIGHT')
+kitty_color = env_to_fg_color(
+    'KITTY_SCROLLBACK_NVIM_STATUS_WIN_KITTY_ICON_HIGHLIGHT')
+nvim_color = env_to_fg_color(
+    'KITTY_SCROLLBACK_NVIM_STATUS_WIN_NVIM_ICON_HIGHLIGHT')
 reset = '\x1b[0m'
 
 kitty_icon = os.environ.get('KITTY_SCROLLBACK_NVIM_KITTY_ICON', '󰄛')
