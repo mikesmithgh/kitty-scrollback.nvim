@@ -148,27 +148,27 @@ return {
       end
       return {
         highlight_overrides = {
-          KittyScrollbackNvimNormal = {
+          KittyScrollbackNvimStatusWinNormal = {
             fg = '#ee82ee',
             bg = '#ee82ee',
           },
-          KittyScrollbackNvimHeart = {
+          KittyScrollbackNvimStatusWinHeartIcon = {
             fg = '#ff0000',
             bg = '#4b0082',
           },
-          KittyScrollbackNvimSpinner = {
+          KittyScrollbackNvimStatusWinSpinnerIcon = {
             fg = '#000099',
             bg = '#4b0082',
           },
-          KittyScrollbackNvimReady = {
+          KittyScrollbackNvimStatusWinReadyIcon = {
             fg = '#4b0082',
             bg = '#ffa500',
           },
-          KittyScrollbackNvimKitty = {
+          KittyScrollbackNvimStatusWinKittyIcon = {
             fg = '#ffa500',
             bg = '#000099',
           },
-          KittyScrollbackNvimVim = {
+          KittyScrollbackNvimStatusWinNvimIcon = {
             fg = '#008000',
             bg = '#000099',
           },

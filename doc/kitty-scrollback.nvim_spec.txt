@@ -35,6 +35,7 @@ KsbPrivate                                  *kitty-scrollback.launch.KsbPrivate*
 
     Fields: ~
         {orig_columns}         (number)
+        {orig_normal_hl}       (table|nil)
         {bufid}                (number|nil)
         {paste_bufid}          (number|nil)
         {kitty_loading_winid}  (number|nil)
