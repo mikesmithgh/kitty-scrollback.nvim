@@ -36,9 +36,9 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 
 <!-- panvimdoc-ignore-end -->
 
-## 🚀 Migrating to v2.0.0
+## 🚀 Migrating to v3.0.0
 > [!IMPORTANT]\
-> v2.0.0 has breaking changes and requires steps to properly migrate from v1.X.X.
+> v3.0.0 has breaking changes and requires steps to properly migrate from v2.X.X.
 > 
 > You can ignore this section if you have not previously installed any version of kitty-scrollback.nvim
 
@@ -52,92 +52,18 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
   
   <!-- panvimdoc-ignore-end -->
 
-  - If you are using the [lazy.nvim](https://github.com/folke/lazy.nvim) or [packer.nvim](https://github.com/wbthomason/packer.nvim) package manager, then
-    add the custom `User` event `KittyScrollbackLaunch` as a trigger for lazy loading. 
-    See [Installation](#-installation) for additional details.
+  ## Highlight Groups
 
-    ```lua
-    event = { 'User KittyScrollbackLaunch' }
-    ```
+  - Existing highlight groups were renamed. If you were overriding any kitty-scrollback.nvim highlight groups, please update the names referencing the table below.
 
-  - Regenerate default Kitten mappings and add to `kitty.conf`
-
-    ```sh
-    nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
-    ```
-  - Remove previous kitty-scrollback.nvim Kitten mappings in `kitty.conf`
-
-  - The default mapping keys changed from `ctrl+shift` to `kitty_mod`. The default values for `kitty_mod` in Kitty is `ctrl+shift`.
-    - If you are using the default value for `kitty_mod` of `ctrl+shift`, then no change is needed.
-    - If you are using a different value for `kitty_mod`, then you should correct any potential mapping conflicts that may occur
-      now that `kitty-scrollback.nvim` is using `kitty_mod`.
-
-  - Migrate any customized configurations to the new format
-    - When you define your kitty-scrollback.nvim Kitten configuration, do not use `--config-file` `yourconfigfile.lua`. Instead,
-      move the contents of `yourconfigfile.lua` to an entry in the configuration passed to the kitty-scrollback.nvim setup function.
-      ```lua
-      require('kitty-scrollback').setup({ 
-        yourconfig = function() 
-          ...
-        end, 
-      })
-      ```
-      Update your Kitten to use the name of the configuration defined in the setup function. In this example,
-      `--config-file yourconfigfile.lua` changes to `--config yourconfig`
-
-<details>
-
-  <summary>Real example</summary>
-
-  - > [!NOTE]\
-    > The configuration to view the last command output now references a builtin configuration instead of a file. The 
-    > new configuration can be viewed by running `:KittyScrollbackGenerateKittens`.
-
-  - Old configuration
-    - The Kitten defined in `kitty.conf` references the configuration file `get_text_last_cmd_output.lua`
-
-  ```kitty
-      # Browse output of the last shell command in nvim
-      map kitty_mod+g kitty_scrollback_nvim --config-file get_text_last_cmd_output.lua
-  ```
-
-  ```lua
-      -- get_text_last_cmd_output.lua
-      local M = {}
-      M.config = function()
-        return {
-          kitty_get_text = {
-            extent = 'last_visited_cmd_output',
-            ansi = true,
-          },
-        }
-      end
-      
-      return M
-  ```
-
-  - New configuration
-    - The Kitten defined in `kitty.conf` references the builtin configuration name `ksb_builtin_last_cmd_output`
-
-  ```kitty
-      # Browse output of the last shell command in nvim
-      map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
-  ```
-
-  ```lua
-      require('kitty-scrollback').setup({ 
-        ksb_builtin_last_cmd_output = function()
-          return {
-            kitty_get_text = {
-              extent = 'last_visited_cmd_output',
-              ansi = true,
-            },
-          }
-        end
-      })
-  ```
-
-</details>
+    | Previous highlight name    | New highlight name                      |
+    | -------------------------- | --------------------------------------- |
+    | KittyScrollbackNvimNormal  | KittyScrollbackNvimStatusWinNormal      |       
+    | KittyScrollbackNvimHeart   | KittyScrollbackNvimStatusWinHeartIcon   |       
+    | KittyScrollbackNvimSpinner | KittyScrollbackNvimStatusWinSpinnerIcon |       
+    | KittyScrollbackNvimReady   | KittyScrollbackNvimStatusWinReadyIcon   |       
+    | KittyScrollbackNvimKitty   | KittyScrollbackNvimStatusWinKittyIcon   |       
+    | KittyScrollbackNvimVim     | KittyScrollbackNvimStatusWinNvimIcon    |       
 
 </details>
 
