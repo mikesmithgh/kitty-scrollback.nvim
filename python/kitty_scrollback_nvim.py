@@ -194,7 +194,7 @@ def handle_result(args: List[str],
             f'  vim.opt.runtimepath:append([[{ksb_dir}]])'
             '   vim.api.nvim_exec_autocmds([[User]], { pattern = [[KittyScrollbackLaunch]], modeline = false })'
             f'  require([[kitty-scrollback.launch]]).setup_and_launch([[{kitty_data}]])'
-            '  end,'
+            ' end,'
             ' })')
 
         cmd = ('launch', ) + kitty_args + ('nvim', ) + nvim_args
