@@ -168,10 +168,14 @@ M.show_status_window = function()
         noautocmd = true,
       })
     )
-    vim.api.nvim_set_option_value('winhighlight', 'NormalFloat:KittyScrollbackNvimNormal', {
-      win = popup_winid,
-      scope = 'local',
-    })
+    vim.api.nvim_set_option_value(
+      'winhighlight',
+      'NormalFloat:KittyScrollbackNvimStatusWinNormal',
+      {
+        win = popup_winid,
+        scope = 'local',
+      }
+    )
     local count = 0
     local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '✔' }
     if opts.status_window.style_simple then
@@ -219,8 +223,8 @@ M.show_status_window = function()
           if spinner_icon ~= '' then
             endcol = #spinner_icon + 2
             vim.api.nvim_buf_set_extmark(popup_bufid, nid, 0, startcol, {
-              hl_group = count >= #spinner and 'KittyScrollbackNvimReady'
-                or 'KittyScrollbackNvimSpinner',
+              hl_group = count >= #spinner and 'KittyScrollbackNvimStatusWinReadyIcon'
+                or 'KittyScrollbackNvimStatusWinSpinnerIcon',
               end_col = endcol,
             })
           end
@@ -228,19 +232,19 @@ M.show_status_window = function()
             startcol = endcol
             endcol = endcol + #kitty_icon + 1
             vim.api.nvim_buf_set_extmark(popup_bufid, nid, 0, startcol, {
-              hl_group = 'KittyScrollbackNvimKitty',
+              hl_group = 'KittyScrollbackNvimStatusWinKittyIcon',
               end_col = endcol,
             })
             startcol = endcol
             endcol = endcol + #love_icon + 1
             vim.api.nvim_buf_set_extmark(popup_bufid, nid, 0, startcol, {
-              hl_group = 'KittyScrollbackNvimHeart',
+              hl_group = 'KittyScrollbackNvimStatusWinHeartIcon',
               end_col = endcol,
             })
             startcol = endcol
             endcol = #fmt_msg
             vim.api.nvim_buf_set_extmark(popup_bufid, nid, 0, startcol, {
-              hl_group = 'KittyScrollbackNvimVim',
+              hl_group = 'KittyScrollbackNvimStatusWinNvimIcon',
               end_col = endcol,
             })
           end
@@ -282,14 +286,14 @@ M.show_status_window = function()
           else
             if count > #spinner then
               local hl_def = vim.api.nvim_get_hl(0, {
-                name = 'KittyScrollbackNvimReady',
+                name = 'KittyScrollbackNvimStatusWinReadyIcon',
                 link = false,
               })
               hl_def = next(hl_def) and hl_def or {} -- nvim_get_hl can return vim.empty_dict() so convert to lua table
               local fg_dec = hl_def.fg or 16777215 -- default to #ffffff
               local fg_hex = string.format('#%06x', fg_dec)
               local darken_hex = ksb_util.darken(fg_hex, 0.7)
-              vim.api.nvim_set_hl(0, 'KittyScrollbackNvimReady', {
+              vim.api.nvim_set_hl(0, 'KittyScrollbackNvimStatusWinReadyIcon', {
                 fg = darken_hex,
               })
               if count > #spinner + (#spinner / 2) then
