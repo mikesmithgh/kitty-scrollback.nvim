@@ -234,7 +234,8 @@ M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
     '\r'
   )
   local esc = vim.fn.eval([["\e"]])
-  local enquiry = '\x05' -- see https://en.wikipedia.org/wiki/Enquiry_character
+  -- TODO: investigate enquiry, causes issues over kitten ssh
+  local enquiry = '' -- see https://en.wikipedia.org/wiki/Enquiry_character
   local start_bracketed_paste = esc .. '[200~' -- see https://cirw.in/blog/bracketed-paste
   local stop_bracketed_paste = esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
 
