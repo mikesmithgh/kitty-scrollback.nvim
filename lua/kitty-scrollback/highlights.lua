@@ -1,6 +1,5 @@
 ---@mod kitty-scrollback.highlights
 local ksb_api = require('kitty-scrollback.api')
-local ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
 local ksb_util = require('kitty-scrollback.util')
 
 local M = {}
@@ -32,7 +31,9 @@ local function highlight_definitions()
   end
   local hl_as_normal_fn = opts.paste_window.highlight_as_normal_win
     or function()
-      return vim.g.colors_name == nil or vim.g.colors_name == 'default'
+      return vim.g.colors_name == nil
+        or vim.g.colors_name == 'default'
+        or vim.g.colors_name == 'vim'
     end
   local hl_name = hl_as_normal_fn() and 'Normal' or 'NormalFloat'
   local hl_def = vim.api.nvim_get_hl(0, { name = hl_name, link = false })
