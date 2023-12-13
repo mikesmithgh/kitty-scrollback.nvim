@@ -23,8 +23,6 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 
 > [!NOTE]\
 > 👀 Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 🎥
->
-> ⚡️ Lightning Talk @ Neovim Conf 2023 [Developing kitty-scrollback.nvim](https://neovimconf.live/speakers/mikesmith/) will soon be available on [NeovimConf YouTube](https://www.youtube.com/@neovimconf)
 
 <!-- panvimdoc-ignore-end -->
 
