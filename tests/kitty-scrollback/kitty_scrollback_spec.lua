@@ -63,11 +63,11 @@ describe('kitty-scrollback.nvim', function()
         [[\n]], -- enter
         [[__open_ksb]],
       }),
-      [[
-$ echo meow                                                                 󰄛 󰣐  
+      h.with_status_win([[
+$ echo meow
 meow
 $
-]],
+]]),
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
@@ -80,9 +80,9 @@ $
         [[\n]], -- enter
         [[__open_ksb]],
       }),
-      [[
-$ brew search a                                                             󰄛 󰣐  
-]],
+      h.with_status_win([[
+$ brew search a
+]]),
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)

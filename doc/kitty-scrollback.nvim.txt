@@ -478,10 +478,12 @@ The API is available via the `kitty-scrollback.api` module. e.g.,
 
 RECOMMENDATIONS                        *kitty-scrollback.nvim-recommendations*
 
-The following plugins are nice additions to your Neovim and Kitty setup.
-
-- vim-kitty <https://github.com/fladson/vim-kitty> - Syntax highlighting for Kitty terminal config files
-- smart-splits.nvim <https://github.com/mrjones2014/smart-splits.nvim> - Seamless navigation between Neovim and Kitty split panes
+- My Lightning Talk @ Neovim Conf 2023 Developing kitty-scrollback.nvim
+<https://neovimconf.live/speakers/mikesmith/> will soon be available on
+    NeovimConf YouTube <https://www.youtube.com/@neovimconf>
+- The following plugins are nice additions to your Neovim and Kitty setup.
+    - vim-kitty <https://github.com/fladson/vim-kitty> - Syntax highlighting for Kitty terminal config files
+    - smart-splits.nvim <https://github.com/mrjones2014/smart-splits.nvim> - Seamless navigation between Neovim and Kitty split panes
 
 
 ACKNOWLEDGEMENTS                      *kitty-scrollback.nvim-acknowledgements*
