@@ -52,7 +52,7 @@ describe('kitty-scrollback.nvim', function()
   end)
 
   after_each(function()
-    -- kitty_instance:kill(2)
+    kitty_instance:kill(2)
     kitty_instance = nil
   end)
 
@@ -62,87 +62,169 @@ describe('kitty-scrollback.nvim', function()
         [[echo meow]],
         [[\n]], -- enter
         [[__open_ksb]],
-        [[:set showtabline=2]],
-        [[\n]], -- enter
-        [[:set tabline=tabline-test]],
-        [[\n]], -- enter
-        [[a]],
-        [[\n]], -- enter
       }),
       h.with_status_win([[
-tabline-test
 $ echo meow
-m🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
-$▏                                                                               ▕
- ▏                                                                               ▕
- ▏                                                                               ▕
- ▏                                                                               ▕
- ▏                                                                               ▕
- ▏                                                                               ▕
- ▏                                                                               ▕
- ▏                                                                               ▕
- ▏                                                                               ▕
- ▏                                                                               ▕
- 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
- ▏                                                                               ▕
- ▏   \y Yank       <C-CR> Execute       <S-CR> Paste       :w Paste       g? Togg▕
- 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+meow
+$
 ]]),
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
 
-  --   it('should show the terminal screen in nvim', function()
-  --     h.assert_screen_equals(
-  --       h.feed_kitty({
-  --         [[echo meow]],
-  --         [[\n]], -- enter
-  --         [[__open_ksb]],
-  --       }),
-  --       h.with_status_win([[
-  -- $ echo meow
-  -- meow
-  -- $
-  -- ]]),
-  --       'kitty-scrollback.nvim content did not match the terminal screen'
-  --     )
-  --   end)
-  --
-  --   -- during brew search a, the PATH env changes. if we are not pointing to the correct kitty executable, it will error out
-  --   it('should use correct kitty path during brew command', function()
-  --     h.assert_screen_equals(
-  --       h.feed_kitty({
-  --         [[brew search a]],
-  --         [[\n]], -- enter
-  --         [[__open_ksb]],
-  --       }),
-  --       h.with_status_win([[
-  -- $ brew search a
-  -- ]]),
-  --       'kitty-scrollback.nvim content did not match the terminal screen'
-  --     )
-  --   end)
-  --
-  --   it('should successfully open checkhealth', function()
-  --     local stdtout = h.feed_kitty({
-  --       [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']],
-  --       [[\n]], -- enter
-  --     })
-  --     h.assert_screen_not_match(
-  --       stdtout,
-  --       'ERROR',
-  --       'kitty-scrollback.nvim checkhealth had an unexpected health check ERROR'
-  --     )
-  --     h.assert_screen_starts_with(
-  --       stdtout,
-  --       [[
-  --
-  -- ──────────────────────────────────────────────────────────────────────────────
-  -- kitty-scrollback: require("kitty-scrollback.health").check()
-  --
-  -- kitty-scrollback: Neovim version
-  -- ]],
-  --       'kitty-scrollback.nvim checkhealth content did not start with expected content'
-  --     )
-  --   end)
+  -- during brew search a, the PATH env changes. if we are not pointing to the correct kitty executable, it will error out
+  it('should use correct kitty path during brew command', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[brew search a]],
+        [[\n]], -- enter
+        [[__open_ksb]],
+      }),
+      h.with_status_win([[
+$ brew search a
+]]),
+      'kitty-scrollback.nvim content did not match the terminal screen'
+    )
+  end)
+
+  it('should successfully open checkhealth', function()
+    local stdtout = h.feed_kitty({
+      [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']],
+      [[\n]], -- enter
+    })
+    h.assert_screen_not_match(
+      stdtout,
+      'ERROR',
+      'kitty-scrollback.nvim checkhealth had an unexpected health check ERROR'
+    )
+    h.assert_screen_starts_with(
+      stdtout,
+      [[
+
+──────────────────────────────────────────────────────────────────────────────
+kitty-scrollback: require("kitty-scrollback.health").check()
+
+kitty-scrollback: Neovim version
+]],
+      'kitty-scrollback.nvim checkhealth content did not start with expected content'
+    )
+  end)
+
+  it('should position paste window at prompt when showtabline=0', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[__open_ksb]],
+        [[:set showtabline=0]],
+        [[\n]], -- enter
+        [[a]],
+      }),
+      [[
+$🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+ ▏                                                                                                        ▕
+ ▏    \y Yank          <C-CR> Execute          <S-CR> Paste          :w Paste          g? Toggle Mappings ▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+]],
+      'kitty-scrollback.nvim content did not match the terminal screen'
+    )
+  end)
+
+  it('should position paste window at prompt when showtabline=1 and one tab', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[__open_ksb]],
+        [[:set showtabline=1]],
+        [[\n]], -- enter
+        [[a]],
+      }),
+      [[
+$🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+ ▏                                                                                                        ▕
+ ▏    \y Yank          <C-CR> Execute          <S-CR> Paste          :w Paste          g? Toggle Mappings ▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+]],
+      'kitty-scrollback.nvim content did not match the terminal screen'
+    )
+  end)
+
+  it('should position paste window at prompt when showtabline=1 and two tabs', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[__open_ksb]],
+        [[:set showtabline=1]],
+        [[\n]], -- enter
+        [[:tab new]],
+        [[\n]], -- enter
+        [[gta]],
+      }),
+      [[
+ 🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
+$▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+ ▏                                                                                                        ▕
+ ▏    \y Yank          <C-CR> Execute          <S-CR> Paste          :w Paste          g? Toggle Mappings ▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+]],
+      'kitty-scrollback.nvim content did not match the terminal screen'
+    )
+  end)
+
+  it('should position paste window at prompt when showtabline=2', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[__open_ksb]],
+        [[:set showtabline=2]],
+        [[\n]], -- enter
+        [[a]],
+      }),
+      [[
+ 🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
+$▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+ ▏                                                                                                        ▕
+ ▏    \y Yank          <C-CR> Execute          <S-CR> Paste          :w Paste          g? Toggle Mappings ▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+]],
+      'kitty-scrollback.nvim content did not match the terminal screen'
+    )
+  end)
 end)
