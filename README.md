@@ -517,7 +517,3 @@ The following plugins are nice additions to your Neovim and Kitty setup.
 
 <!-- panvimdoc-ignore-end -->
 
--- demo
--- demo
--- demo
--- demo
