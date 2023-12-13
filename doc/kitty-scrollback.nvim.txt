@@ -5,6 +5,7 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 
 1. kitty-scrollback.nvim         |kitty-scrollback.nvim-kitty-scrollback.nvim|
   - Migrating to v3.0.0            |kitty-scrollback.nvim-migrating-to-v3.0.0|
+  - Neovim Nerd Font Icon        |kitty-scrollback.nvim-neovim-nerd-font-icon|
   - Highlight Groups                  |kitty-scrollback.nvim-highlight-groups|
   - Features                                  |kitty-scrollback.nvim-features|
   - Example use cases                |kitty-scrollback.nvim-example-use-cases|
@@ -36,6 +37,8 @@ MIGRATING TO V3.0.0                *kitty-scrollback.nvim-migrating-to-v3.0.0*
   kitty-scrollback.nvim
 
 `-` `Migration Steps`
+    NEOVIM NERD FONT ICON            *kitty-scrollback.nvim-neovim-nerd-font-icon*
+    - The Neovim icon is now the default icon in the status window. Update your Nerd Font to the latest version or at least version v3.1.0 <https://github.com/ryanoasis/nerd-fonts/releases/tag/v3.1.0>.
     HIGHLIGHT GROUPS                      *kitty-scrollback.nvim-highlight-groups*
     - Existing highlight groups were renamed. If you were overriding any
         kitty-scrollback.nvim highlight groups, please update the names referencing the
