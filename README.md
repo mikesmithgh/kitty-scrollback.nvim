@@ -23,6 +23,8 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 
 > [!NOTE]\
 > 👀 Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 🎥
+>
+> ⚡️ Lightning Talk @ Neovim Conf 2023 [Developing kitty-scrollback.nvim](https://neovimconf.live/speakers/mikesmith/) will soon be available on [NeovimConf YouTube](https://www.youtube.com/@neovimconf)
 
 <!-- panvimdoc-ignore-end -->
 
@@ -473,10 +475,11 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 ## 👏 Recommendations
 
-The following plugins are nice additions to your Neovim and Kitty setup.
+- My ⚡️ Lightning Talk @ Neovim Conf 2023 [Developing kitty-scrollback.nvim](https://neovimconf.live/speakers/mikesmith/) will soon be available on [NeovimConf YouTube](https://www.youtube.com/@neovimconf)
 
-- [vim-kitty](https://github.com/fladson/vim-kitty) - Syntax highlighting for Kitty terminal config files
-- [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) - Seamless navigation between Neovim and Kitty split panes 
+- The following plugins are nice additions to your Neovim and Kitty setup.
+  - [vim-kitty](https://github.com/fladson/vim-kitty) - Syntax highlighting for Kitty terminal config files
+  - [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) - Seamless navigation between Neovim and Kitty split panes 
 
 ## 🤝 Acknowledgements
 - Kitty [custom kitten](https://sw.kovidgoyal.net/kitty/kittens/custom/) documentation
