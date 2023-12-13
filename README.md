@@ -24,16 +24,6 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 > [!NOTE]\
 > 👀 Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 🎥
 
-## ⚡️ Neovim Conf 2023: Developing kitty-scrollback.nvim
-> Check out my lighting talk on Dec 8<sup>th</sup> at Neovim Conf 2023 about kitty-scrollback.nvim!
-<a href="https://neovimconf.live/speakers/mikesmith">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mikesmithgh/mikesmithgh/assets/10135646/2e356e56-611b-4353-adbf-31dfa9e7dd8f">
-    <source media="(prefers-color-scheme: light)" srcset="https://github.com/mikesmithgh/mikesmithgh/assets/10135646/2e356e56-611b-4353-adbf-31dfa9e7dd8f">
-    <img alt="mike at nvimconf" src="https://github.com/mikesmithgh/mikesmithgh/assets/10135646/2e356e56-611b-4353-adbf-31dfa9e7dd8f">
-  </picture>
-</a>
-
 <!-- panvimdoc-ignore-end -->
 
 ## 🚀 Migrating to v3.0.0
@@ -386,10 +376,11 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 ## 👏 Recommendations
 
-The following plugins are nice additions to your Neovim and Kitty setup.
+- My ⚡️ Lightning Talk @ Neovim Conf 2023 [Developing kitty-scrollback.nvim](https://neovimconf.live/speakers/mikesmith/) will soon be available on [NeovimConf YouTube](https://www.youtube.com/@neovimconf)
 
-- [vim-kitty](https://github.com/fladson/vim-kitty) - Syntax highlighting for Kitty terminal config files
-- [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) - Seamless navigation between Neovim and Kitty split panes 
+- The following plugins are nice additions to your Neovim and Kitty setup.
+  - [vim-kitty](https://github.com/fladson/vim-kitty) - Syntax highlighting for Kitty terminal config files
+  - [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) - Seamless navigation between Neovim and Kitty split panes 
 
 ## 🤝 Acknowledgements
 - Kitty [custom kitten](https://sw.kovidgoyal.net/kitty/kittens/custom/) documentation
