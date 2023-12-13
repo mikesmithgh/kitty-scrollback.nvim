@@ -124,7 +124,7 @@ local default_opts = {
     icons = {
       kitty = '󰄛',
       heart = '󰣐', -- variants 󰣐 |  |  | ♥ |  | 󱢠 | 
-      nvim = '', -- variants  |  |  | 
+      nvim = '', -- variants  |  |  | 
     },
   },
   paste_window = {
