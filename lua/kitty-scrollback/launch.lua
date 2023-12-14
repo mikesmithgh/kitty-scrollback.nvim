@@ -151,6 +151,10 @@ local function restore_orig_options()
   end
 end
 
+local function set_env()
+  vim.env.KITTY_KITTEN_RUN_MODULE = nil
+end
+
 local function set_options()
   p.orig_options = {
     virtualedit = vim.o.virtualedit,
@@ -318,6 +322,7 @@ M.setup = function(kitty_data_str)
     end
   end
 
+  set_env()
   set_options()
 
   ksb_util.setup(p, opts)
