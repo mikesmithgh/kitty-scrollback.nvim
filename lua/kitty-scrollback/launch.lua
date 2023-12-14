@@ -151,6 +151,17 @@ local function restore_orig_options()
   end
 end
 
+local function set_env()
+  -- kitten ssh prompts for the user's password if KITTY_KITTEN_RUN_MODULE is ssh_askpass
+  -- which causes kitty-scrollback.nvim to hang waiting on input that is not visible.
+  -- Clear KITTY_KITTEN_RUN_MODULE to avoid this issue over kitten ssh.
+  -- See:
+  --   - https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/99
+  --   - https://sw.kovidgoyal.net/kitty/kittens/ssh/
+  --   - https://github.com/kovidgoyal/kitty/blob/b2587c1d54ff674d2c925ff28b2e16e394794838/tools/cmd/main.go#L15
+  vim.env.KITTY_KITTEN_RUN_MODULE = nil
+end
+
 local function set_options()
   p.orig_options = {
     virtualedit = vim.o.virtualedit,
@@ -318,6 +329,7 @@ M.setup = function(kitty_data_str)
     end
   end
 
+  set_env()
   set_options()
 
   ksb_util.setup(p, opts)
