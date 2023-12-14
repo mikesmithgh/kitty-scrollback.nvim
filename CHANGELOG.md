@@ -1,3 +1,10 @@
+## [2.4.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.5...v2.4.6) (2023-12-14)
+
+
+### Bug Fixes
+
+* unset KITTY_KITTEN_RUN_MODULE ([#113](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/113)) ([9984d10](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/9984d10873fa00088259265362e1c937c804e837))
+
 ## [2.4.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.4...v2.4.5) (2023-12-13)
 
 

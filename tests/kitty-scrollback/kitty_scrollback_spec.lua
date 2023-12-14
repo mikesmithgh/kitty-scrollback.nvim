@@ -227,4 +227,77 @@ $▏                                                                            
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
+
+  it('should paste command to kitty in bracketed paste mode', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[\n]], -- enter
+        [[\n]], -- enter
+        [[\n]], -- enter
+        [[__open_ksb]],
+        [[acat <<EOF]], -- enter
+        [[\n]], -- enter
+        [[line1]], -- enter
+        [[\n]], -- enter
+        [[line2]], -- enter
+        [[\n]], -- enter
+        [[line3]], -- enter
+        [[\x1b[13;2u]], -- shift+enter
+        [[\n]], -- enter
+        [[EOF]],
+        [[\n]], -- enter
+      }),
+      [[
+$
+$
+$
+$ cat <<EOF
+line1
+line2
+line3
+> EOF
+line1
+line2
+line3
+$
+]],
+      'kitty-scrollback.nvim did not have expected bracketed paste results'
+    )
+  end)
+
+  it('should execute command in kitty with bracketed paste mode', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[\n]], -- enter
+        [[\n]], -- enter
+        [[\n]], -- enter
+        [[__open_ksb]],
+        [[acat <<EOF]], -- enter
+        [[\n]], -- enter
+        [[line1]], -- enter
+        [[\n]], -- enter
+        [[line2]], -- enter
+        [[\n]], -- enter
+        [[line3]], -- enter
+        [[\n]], -- enter
+        [[EOF]],
+        [[\x1b[13;5u]], -- control+enter
+      }),
+      [[
+$ 
+$ 
+$ 
+$ cat <<EOF
+line1
+line2
+line3
+EOF
+line1
+line2
+line3
+$ 
+]],
+      'kitty-scrollback.nvim did not have expected bracketed paste results'
+    )
+  end)
 end)
