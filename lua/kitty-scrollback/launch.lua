@@ -203,7 +203,6 @@ local function set_options()
   vim.o.relativenumber = false
   vim.o.scrollback = 100000
   vim.o.list = false
-  vim.o.showtabline = 0
   vim.o.showmode = false
   vim.o.ignorecase = true
   vim.o.smartcase = true
@@ -217,33 +216,44 @@ local function set_options()
   vim.o.modifiable = true
   vim.o.wrap = false
   vim.o.report = 999999 -- arbitrary large number to hide yank messages
+
+  -- not necessary to set vim.o.showtabline because tab offset is taken into account during positioning
 end
 
 local set_cursor_position = vim.schedule_wrap(function(d)
+  local tab_offset = ksb_util.tab_offset()
   local x = d.cursor_x - 1
-  local y = d.cursor_y - 1
+  local y = d.cursor_y - 1 - tab_offset
   local scrolled_by = d.scrolled_by
-  local lines = d.lines
+  local lines = d.lines - tab_offset
+  if y < 0 then
+    -- adjust when on first line of terminal
+    lines = lines + math.abs(y)
+    y = 0
+  end
   local last_line = vim.fn.line('$')
 
   local orig_virtualedit = vim.o.virtualedit
-  local orig_scrollof = vim.o.scrolloff
-  local orig_showtabline = vim.o.showtabline
+  local orig_scrolloff = vim.o.scrolloff
   local orig_laststatus = vim.o.laststatus
   vim.o.scrolloff = 0
-  vim.o.showtabline = 0
   vim.o.laststatus = 0
   vim.o.virtualedit = 'all'
-
   vim.fn.cursor(last_line, 1) -- cursor last line
   -- using normal commands instead of cursor pos due to virtualedit
-  vim.cmd.normal({ lines .. 'k', bang = true }) -- cursor up
-  vim.cmd.normal({ y .. 'j', bang = true }) -- cursor down
-  vim.cmd.normal({ x .. 'l', bang = true }) -- cursor right
+  if lines ~= 0 then
+    vim.cmd.normal({ lines .. 'k', bang = true }) -- cursor up
+  end
+  if y ~= 0 then
+    vim.cmd.normal({ y .. 'j', bang = true }) -- cursor down
+  end
+  if x ~= 0 then
+    vim.cmd.normal({ x .. 'l', bang = true }) -- cursor right
+  end
   if scrolled_by > 0 then
     -- scroll up
     vim.cmd.normal({
-      vim.api.nvim_replace_termcodes(scrolled_by .. '<C-y>', true, false, true), -- TODO: invesigate if CSI control sequence to scroll is better
+      vim.api.nvim_replace_termcodes(scrolled_by .. '<C-y>', true, false, true),
       bang = true,
     })
   end
@@ -255,8 +265,7 @@ local set_cursor_position = vim.schedule_wrap(function(d)
     col = x,
   }
 
-  vim.o.scrolloff = orig_scrollof
-  vim.o.showtabline = orig_showtabline
+  vim.o.scrolloff = orig_scrolloff
   vim.o.laststatus = orig_laststatus
   vim.o.virtualedit = orig_virtualedit
 end)

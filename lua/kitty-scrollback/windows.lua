@@ -105,7 +105,7 @@ M.open_paste_window = function(start_insert)
     ksb_keymaps.set_buffer_local_keymaps(p.paste_bufid)
   end
   if not p.paste_winid or vim.fn.win_id2win(p.paste_winid) == 0 then
-    local winopts = M.paste_winopts(lnum, col)
+    local winopts = M.paste_winopts(lnum + ksb_util.tab_offset(), col)
     p.paste_winid = vim.api.nvim_open_win(p.paste_bufid, true, winopts)
     vim.api.nvim_set_option_value('scrolloff', 2, {
       win = p.paste_winid,
