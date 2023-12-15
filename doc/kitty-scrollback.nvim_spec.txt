@@ -69,7 +69,7 @@ KsbStatusWindowIcons
     Fields: ~
         {kitty}  (string)  kitty status window icon, defaults to 󰄛
         {heart}  (string)  heart status window icon, defaults to 󰣐
-        {nvim}   (string)  nvim status window icon, defaults to 
+        {nvim}   (string)  nvim status window icon, defaults to 
 
 
                                    *kitty-scrollback.launch.KsbStatusWindowOpts*
@@ -80,7 +80,7 @@ KsbStatusWindowOpts
         {style_simple}  (boolean)               If true, use plaintext instead of nerd font icons
         {autoclose}     (boolean)               If true, close the status window after kitty-scrollback.nvim is ready
         {show_timer}    (boolean)               If true, show a timer in the status window while kitty-scrollback.nvim is loading
-        {icons}         (KsbStatusWindowIcons)  Icons displayed in the status window, defaults to 󰄛 󰣐 
+        {icons}         (KsbStatusWindowIcons)  Icons displayed in the status window, defaults to 󰄛 󰣐 
 
 
 KsbWinOpts                                  *kitty-scrollback.launch.KsbWinOpts*
