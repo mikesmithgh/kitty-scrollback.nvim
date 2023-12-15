@@ -1,5 +1,19 @@
 # kitty-scrollback.nvim
 
+## Runnings tests
+kitty-scrollback.nvim uses [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)'s [plenary.tests_harness](https://github.com/nvim-lua/plenary.nvim?tab=readme-ov-file#plenarytest_harness) as its
+testing harness.
+
+- Execute tests from the command line (preferred)
+```sh
+make test
+```
+
+- Execute tests from Neovim
+```vim
+:PlenaryBustedDirectory tests
+```
+
 ## Generating demos and wiki content (requires MacOS)
 
 - `git clone git@github.com/mikesmithgh/kitty-scrollback.nvim.wiki.git`

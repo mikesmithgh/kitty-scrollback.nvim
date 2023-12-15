@@ -1,5 +1,6 @@
 local M = {}
 local current_tmpsocket
+local assert = require('luassert.assert')
 
 M.debug_enabled = vim.env.RUNNER_DEBUG == '1'
 M.is_github_action = vim.env.GITHUB_ACTIONS == 'true'
@@ -19,7 +20,6 @@ M.debug({
 
 M.setup_backport = function()
   if vim.fn.has('nvim-0.10') <= 0 then
-    -- vim.opt.runtimepath:append('/Users/mike/gitrepos/kitty-scrollback.nvim') -- TODO remove if not needed
     require('kitty-scrollback.backport').setup()
   end
 end
@@ -255,44 +255,46 @@ local color_string = function(color, str)
   )
 end
 
-local function print_differences(actual, expected)
-  local minLength = math.min(#actual, #expected)
-  local maxLength = math.max(#actual, #expected)
+local function debug_print_differences(actual, expected)
+  if M.debug_enabled then
+    local minLength = math.min(#actual, #expected)
+    local maxLength = math.max(#actual, #expected)
 
-  local actual_result = ''
-  local expected_result = ''
+    local actual_result = ''
+    local expected_result = ''
 
-  for i = 1, minLength do
-    if actual:sub(i, i) ~= expected:sub(i, i) then
-      actual_result = actual_result .. color_string('red', actual:sub(i, i))
-      expected_result = expected_result .. color_string('green', expected:sub(i, i))
-    else
-      actual_result = actual_result .. actual:sub(i, i)
-      expected_result = expected_result .. expected:sub(i, i)
+    for i = 1, minLength do
+      if actual:sub(i, i) ~= expected:sub(i, i) then
+        actual_result = actual_result .. color_string('red', actual:sub(i, i))
+        expected_result = expected_result .. color_string('green', expected:sub(i, i))
+      else
+        actual_result = actual_result .. actual:sub(i, i)
+        expected_result = expected_result .. expected:sub(i, i)
+      end
     end
-  end
 
-  for i = minLength + 1, maxLength do
-    actual_result = actual_result .. string.format('[%s]', actual:sub(i, i))
-    expected_result = expected_result .. string.format('[%s]', expected:sub(i, i))
-  end
+    for i = minLength + 1, maxLength do
+      actual_result = actual_result .. string.format('[%s]', actual:sub(i, i))
+      expected_result = expected_result .. string.format('[%s]', expected:sub(i, i))
+    end
 
-  print(
-    color_string(
-      'red',
-      '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+    print(
+      color_string(
+        'red',
+        '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+      )
     )
-  )
-  print(color_string('green', 'Expected:'))
-  print(expected_result)
-  print(color_string('red', 'Actual:'))
-  print(actual_result)
-  print(
-    color_string(
-      'red',
-      '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+    print(color_string('green', 'Expected:'))
+    print(expected_result)
+    print(color_string('red', 'Actual:'))
+    print(actual_result)
+    print(
+      color_string(
+        'red',
+        '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+      )
     )
-  )
+  end
 end
 
 M.with_status_win = function(scrollback_buffer, width, status_win)
@@ -319,9 +321,9 @@ M.assert_screen_equals = function(actual, expected, ...)
     expected_rstrip_length = #expected_rstrip,
   })
   if actual_rstrip ~= expected_rstrip then
-    print_differences(actual_rstrip, expected_rstrip)
+    debug_print_differences(actual_rstrip, expected_rstrip)
   end
-  assert(actual_rstrip == expected_rstrip, ...)
+  assert.are.equal(actual_rstrip, expected_rstrip, ...)
 end
 
 M.assert_screen_starts_with = function(actual, expected, ...)
@@ -338,9 +340,9 @@ M.assert_screen_starts_with = function(actual, expected, ...)
     expected_rstrip_length = #expected_rstrip,
   })
   if actual_rstrip ~= expected_rstrip then
-    print_differences(actual_rstrip, expected_rstrip)
+    debug_print_differences(actual_rstrip, expected_rstrip)
   end
-  assert(actual_rstrip == expected_rstrip, ...)
+  assert.are.equal(actual_rstrip, expected_rstrip, ...)
 end
 
 M.assert_screen_match = function(actual, pattern, ...)
@@ -352,7 +354,7 @@ M.assert_screen_match = function(actual, pattern, ...)
     actual_rstrip_length = #actual_rstrip,
     match = pattern,
   })
-  assert(actual_rstrip:match(pattern), ...)
+  assert.is_true(actual_rstrip:match(pattern), ...)
 end
 
 M.assert_screen_not_match = function(actual, pattern, ...)
@@ -364,7 +366,7 @@ M.assert_screen_not_match = function(actual, pattern, ...)
     actual_rstrip_length = #actual_rstrip,
     match = pattern,
   })
-  assert(not actual_rstrip:match(pattern), ...)
+  assert.is_not_true(actual_rstrip:match(pattern), ...)
 end
 
 return M
