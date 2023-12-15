@@ -77,14 +77,14 @@ local opts = {}
 ---@class KsbStatusWindowIcons
 ---@field kitty string kitty status window icon, defaults to 󰄛
 ---@field heart string heart status window icon, defaults to 󰣐
----@field nvim string nvim status window icon, defaults to 
+---@field nvim string nvim status window icon, defaults to 
 
 ---@class KsbStatusWindowOpts
 ---@field enabled boolean If true, show status window in upper right corner of the screen
 ---@field style_simple boolean If true, use plaintext instead of nerd font icons
 ---@field autoclose boolean If true, close the status window after kitty-scrollback.nvim is ready
 ---@field show_timer boolean If true, show a timer in the status window while kitty-scrollback.nvim is loading
----@field icons KsbStatusWindowIcons Icons displayed in the status window, defaults to 󰄛 󰣐 
+---@field icons KsbStatusWindowIcons Icons displayed in the status window, defaults to 󰄛 󰣐 
 
 ---@alias KsbWinOpts table<string, any>
 

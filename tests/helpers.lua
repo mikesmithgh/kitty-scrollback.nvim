@@ -313,7 +313,7 @@ local function debug_print_differences(actual, expected)
 end
 
 M.with_status_win = function(scrollback_buffer, width, status_win)
-  width = width or 89
+  width = width or 114
   status_win = status_win or '󰄛 󰣐 '
   local _, _, first_line, rest = scrollback_buffer:find('(.-)\n(.*)')
   local first_line_with_status_win = first_line
