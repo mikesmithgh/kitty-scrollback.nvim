@@ -1,3 +1,10 @@
+## [2.4.7](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.6...v2.4.7) (2023-12-15)
+
+
+### Bug Fixes
+
+* adjust pastewin position depending on showtabline values ([#112](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/112)) ([9d66c4c](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/9d66c4cc1c6def697f38be954ec70442a8deaf22))
+
 ## [2.4.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.5...v2.4.6) (2023-12-14)
 
 
