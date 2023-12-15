@@ -704,17 +704,17 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     h.kitty_remote_close_window()
   end)
 
-  it('ksb_example_status_win_nvim', function()
+  it('ksb_example_status_win_vim', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--config',
-      'ksb_example_status_win_nvim',
+      'ksb_example_status_win_vim',
     })
     h.assert_screen_equals(
       h.feed_kitty({
         h.with_pause_seconds_before(h.send_without_newline([[a]])),
         h.send_without_newline(h.send_as_string([[
-# example > --config ksb_example_status_win_show_timer
-status_window icons nvim is '', use nerd font icon '' instead of nerd font icon ''
+# example > --config ksb_example_status_win_vim 
+status_window icons nvim is '', use nerd font icon '' instead of nerd font icon ''
 ]])),
         h.send_without_newline(h.esc()),
         h.send_without_newline(h.send_as_string([[gg0]])),
@@ -738,8 +738,8 @@ $ lolbanner
         |    \_ __|__    |       |       |        ______| |_____  |    \_ |_____| |_____ |_____ |_____] |     | |_____  |    \_ . |  \_|   \/   __|__ |  |  |
                    
 $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
-N▏# example > --config ksb_example_status_win_show_timer                                                                                                        ▕
-\▏# status_window icons nvim is '', use nerd font icon '' instead of nerd font icon ''                                                                       ▕
+N▏# example > --config ksb_example_status_win_vim                                                                                                               ▕
+\▏# status_window icons nvim is '', use nerd font icon '' instead of nerd font icon ''                                                                       ▕
 \▏#                                                                                                                                                             ▕
 \▏                                                                                                                                                              ▕
 \▏                                                                                                                                                              ▕
@@ -754,7 +754,7 @@ $▏         \y Yank               <C-CR> Execute               <S-CR> Paste    
 $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
 ]],
           168,
-          '󰄛 󰣐 '
+          '󰄛 󰣐 '
         ),
         cursor_y = 17,
         cursor_x = 3,
@@ -772,7 +772,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
       h.feed_kitty({
         h.with_pause_seconds_before(h.send_without_newline([[a]])),
         h.send_without_newline(h.send_as_string([[
-# example > --config ksb_example_status_win_show_timer
+# example > --config ksb_example_status_win_simple
 status_window style_simple is true, use plaintext instead of nerd font icons
 ]])),
         h.send_without_newline(h.esc()),
@@ -797,7 +797,7 @@ $ lolbanner
         |    \_ __|__    |       |       |        ______| |_____  |    \_ |_____| |_____ |_____ |_____] |     | |_____  |    \_ . |  \_|   \/   __|__ |  |  |
                    
 $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
-N▏# example > --config ksb_example_status_win_show_timer                                                                                                        ▕
+N▏# example > --config ksb_example_status_win_simple                                                                                                            ▕
 \▏# status_window style_simple is true, use plaintext instead of nerd font icons                                                                                ▕
 \▏#                                                                                                                                                             ▕
 \▏                                                                                                                                                              ▕
