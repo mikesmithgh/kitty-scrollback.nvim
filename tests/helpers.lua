@@ -42,7 +42,10 @@ M.kitty_remote_cmd = function(tmpsock)
 end
 
 M.kitty_remote_get_text_cmd = function(args)
-  return vim.list_extend(M.kitty_remote_cmd(), vim.list_extend({ 'get-text' }, args or {}))
+  return vim.list_extend(
+    M.kitty_remote_cmd(),
+    vim.list_extend({ 'get-text', '--add-cursor', '--extent=all' }, args or {})
+  )
 end
 
 M.kitty_remote_get_text = function(args, ...)
@@ -229,7 +232,15 @@ M.feed_kitty = function(input)
   end
   M.pause(3) -- longer pause for linux
 
-  return M.debug(M.kitty_remote_get_text()).stdout
+  local stdout = M.debug(M.kitty_remote_get_text()).stdout
+  local last_line = stdout:match('.*\n(.*)\n')
+  local start_of_line, cursor_y, cursor_x =
+    last_line:match('^(.*)\x1b%[%?25h\x1b%[(%d+);(%d+)H\x1b.*$')
+  return {
+    stdout = stdout:gsub('[^\n]*\n$', start_of_line .. '\n'),
+    cursor_x = tonumber(cursor_x),
+    cursor_y = tonumber(cursor_y),
+  }
 end
 
 -- copied from plenary.busted
@@ -308,65 +319,91 @@ M.with_status_win = function(scrollback_buffer, width, status_win)
 end
 
 M.assert_screen_equals = function(actual, expected, ...)
-  local actual_rstrip = actual:gsub('%s*\n', '\n')
-  local expected_rstrip = expected:gsub('%s*\n', '\n')
+  local actual_rstrip = actual.stdout:gsub('%s*\n', '\n')
+  local expected_rstrip = expected.stdout:gsub('%s*\n', '\n')
   M.debug({
-    actual = actual,
-    actual_rstrip = actual_rstrip,
-    actual_length = #actual,
+    actual_stdout = actual.stdout,
+    actual_stdout_rstrip = actual_rstrip,
+    actual_stdout_length = #actual.stdout,
     actual_rstrip_length = #actual_rstrip,
-    expected = expected,
-    expected_rstrip = expected_rstrip,
-    expected_length = #expected,
+    expected_stdout = expected.stdout,
+    expected_stdout_rstrip = expected_rstrip,
+    expected_length = #expected.stdout,
     expected_rstrip_length = #expected_rstrip,
   })
   if actual_rstrip ~= expected_rstrip then
     debug_print_differences(actual_rstrip, expected_rstrip)
   end
   assert.are.equal(actual_rstrip, expected_rstrip, ...)
+  if expected.cursor_y then
+    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+  end
+  if expected.cursor_x then
+    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+  end
 end
 
 M.assert_screen_starts_with = function(actual, expected, ...)
-  local expected_rstrip = expected:gsub('%s*\n', '\n'):gsub('\n$', '')
-  local actual_rstrip = actual:gsub('%s*\n', '\n'):sub(1, #expected_rstrip)
+  local expected_rstrip = expected.stdout:gsub('%s*\n', '\n'):gsub('\n$', '')
+  local actual_rstrip = actual.stdout:gsub('%s*\n', '\n'):sub(1, #expected_rstrip)
   M.debug({
-    actual = actual,
-    actual_rstrip = actual_rstrip,
-    actual_length = #actual,
+    actual_stdout = actual.stdout,
+    actual_stdout_rstrip = actual_rstrip,
+    actual_stdout_length = #actual.stdout,
     actual_rstrip_length = #actual_rstrip,
-    expected = expected,
-    expected_rstrip = expected_rstrip,
-    expected_length = #expected,
+    expected_stdout = expected.stdout,
+    expected_stdout_rstrip = expected_rstrip,
+    expected_length = #expected.stdout,
     expected_rstrip_length = #expected_rstrip,
   })
   if actual_rstrip ~= expected_rstrip then
     debug_print_differences(actual_rstrip, expected_rstrip)
   end
   assert.are.equal(actual_rstrip, expected_rstrip, ...)
+  assert.is_not_true(actual_rstrip:match(expected.stdout), ...)
+  if expected.cursor_y then
+    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+  end
+  if expected.cursor_x then
+    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+  end
 end
 
-M.assert_screen_match = function(actual, pattern, ...)
-  local actual_rstrip = actual:gsub('%s*\n', '\n')
+M.assert_screen_match = function(actual, expected, ...)
+  local actual_rstrip = actual.stdout:gsub('%s*\n', '\n')
   M.debug({
-    actual = actual,
-    actual_rstrip = actual_rstrip,
-    actual_length = #actual,
+    actual_stdout = actual.stdout,
+    actual_stdout_rstrip = actual_rstrip,
+    actual_stdout_length = #actual.stdout,
     actual_rstrip_length = #actual_rstrip,
-    match = pattern,
+    match = expected.pattern,
   })
-  assert.is_true(actual_rstrip:match(pattern), ...)
+  assert.is_true(actual_rstrip:match(expected.pattern), ...)
+  assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
+  if expected.cursor_y then
+    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+  end
+  if expected.cursor_x then
+    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+  end
 end
 
-M.assert_screen_not_match = function(actual, pattern, ...)
-  local actual_rstrip = actual:gsub('%s*\n', '\n')
+M.assert_screen_not_match = function(actual, expected, ...)
+  local actual_rstrip = actual.stdout:gsub('%s*\n', '\n')
   M.debug({
-    actual = actual,
-    actual_rstrip = actual_rstrip,
-    actual_length = #actual,
+    actual_stdout = actual.stdout,
+    actual_stdout_rstrip = actual_rstrip,
+    actual_stdout_length = #actual.stdout,
     actual_rstrip_length = #actual_rstrip,
-    match = pattern,
+    match = expected,
   })
-  assert.is_not_true(actual_rstrip:match(pattern), ...)
+  assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
+  if expected.cursor_y then
+    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+  end
+  if expected.cursor_x then
+    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+  end
 end
 
 return M

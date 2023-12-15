@@ -227,7 +227,7 @@ local set_cursor_position = vim.schedule_wrap(function(d)
   local scrolled_by = d.scrolled_by
   local lines = d.lines - tab_offset
   if y < 0 then
-    -- TODO: hack? not sure but works
+    -- adjust when on first line of terminal
     lines = lines + math.abs(y)
     y = 0
   end

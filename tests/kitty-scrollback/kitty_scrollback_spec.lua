@@ -1,3 +1,4 @@
+local assert = require('luassert.assert')
 local h = require('tests.helpers')
 local describe = describe ---@diagnostic disable-line: undefined-global
 local it = it ---@diagnostic disable-line: undefined-global
@@ -44,10 +45,7 @@ describe('kitty-scrollback.nvim', function()
       return ready
     end)
 
-    if not ready then
-      vim.notify('kitty is not ready for remote connections, exiting', vim.log.levels.ERROR)
-      os.exit(1) -- TODO: change to an assert fail?
-    end
+    assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
     h.pause()
   end)
 
@@ -56,19 +54,264 @@ describe('kitty-scrollback.nvim', function()
     kitty_instance = nil
   end)
 
-  it('should show the terminal screen in nvim', function()
+  it('should position the cursor on first line when scrollback buffer has one line', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[echo meow]],
+        [[__open_ksb]],
+      }),
+      {
+        stdout = h.with_status_win([[
+$
+]]),
+        cursor_y = 1,
+        cursor_x = 3,
+      },
+      'kitty-scrollback.nvim did not position cursor on first line'
+    )
+  end)
+
+  it('should position the cursor on second line when scrollback buffer has two lines', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
         [[\n]], -- enter
         [[__open_ksb]],
       }),
-      h.with_status_win([[
-$ echo meow
-meow
+      {
+        stdout = h.with_status_win([[
+$
 $
 ]]),
-      'kitty-scrollback.nvim content did not match the terminal screen'
+        cursor_y = 2,
+        cursor_x = 3,
+      },
+      'kitty-scrollback.nvim did not position cursor on second line'
+    )
+  end)
+
+  it('should show position the cursor on second to last line', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[
+# 1
+# 2
+# 3
+# 4
+# 5
+# 6
+# 7
+# 8
+# 9
+# 10
+# 11
+# 12
+# 13
+# 14
+# 15
+# 16
+# 17
+# 18
+# 19
+# 20
+# 21
+# 22
+# 23
+# 24
+# 25
+# 26
+# 27
+# 28
+# 29]],
+        [[__open_ksb]],
+      }),
+      {
+        stdout = h.with_status_win([[
+$ # 1
+$ # 2
+$ # 3
+$ # 4
+$ # 5
+$ # 6
+$ # 7
+$ # 8
+$ # 9
+$ # 10
+$ # 11
+$ # 12
+$ # 13
+$ # 14
+$ # 15
+$ # 16
+$ # 17
+$ # 18
+$ # 19
+$ # 20
+$ # 21
+$ # 22
+$ # 23
+$ # 24
+$ # 25
+$ # 26
+$ # 27
+$ # 28
+$ # 29
+]]),
+        cursor_y = 29,
+        cursor_x = 7,
+      },
+      'kitty-scrollback.nvim did not position cursor on second to last line'
+    )
+  end)
+
+  it('should position the cursor on the last line', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[
+# 1
+# 2
+# 3
+# 4
+# 5
+# 6
+# 7
+# 8
+# 9
+# 10
+# 11
+# 12
+# 13
+# 14
+# 15
+# 16
+# 17
+# 18
+# 19
+# 20
+# 21
+# 22
+# 23
+# 24
+# 25
+# 26
+# 27
+# 28
+# 29
+# 30]],
+        [[__open_ksb]],
+      }),
+      {
+        stdout = h.with_status_win([[
+$ # 1
+$ # 2
+$ # 3
+$ # 4
+$ # 5
+$ # 6
+$ # 7
+$ # 8
+$ # 9
+$ # 10
+$ # 11
+$ # 12
+$ # 13
+$ # 14
+$ # 15
+$ # 16
+$ # 17
+$ # 18
+$ # 19
+$ # 20
+$ # 21
+$ # 22
+$ # 23
+$ # 24
+$ # 25
+$ # 26
+$ # 27
+$ # 28
+$ # 29
+$ # 30
+]]),
+        cursor_y = 30,
+        cursor_x = 7,
+      },
+      'kitty-scrollback.nvim did not position cursor on last line'
+    )
+  end)
+
+  it('should show position the cursor on the last line when screen is full', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[
+# 1 
+# 2 
+# 3 
+# 4 
+# 5 
+# 6 
+# 7 
+# 8 
+# 9 
+# 10
+# 11
+# 12
+# 13
+# 14
+# 15
+# 16
+# 17
+# 18
+# 19
+# 20
+# 21
+# 22
+# 23
+# 24
+# 25
+# 26
+# 27
+# 28
+# 29
+# 30
+# 31]],
+        [[__open_ksb]],
+      }),
+      {
+        stdout = h.with_status_win([[
+$ # 2
+$ # 3
+$ # 4
+$ # 5
+$ # 6
+$ # 7
+$ # 8
+$ # 9
+$ # 10
+$ # 11
+$ # 12
+$ # 13
+$ # 14
+$ # 15
+$ # 16
+$ # 17
+$ # 18
+$ # 19
+$ # 20
+$ # 21
+$ # 22
+$ # 23
+$ # 24
+$ # 25
+$ # 26
+$ # 27
+$ # 28
+$ # 29
+$ # 30
+$ # 31
+]]),
+        cursor_y = 30,
+        cursor_x = 7,
+      },
+      'kitty-scrollback.nvim did not position cursor on last line'
     )
   end)
 
@@ -80,34 +323,38 @@ $
         [[\n]], -- enter
         [[__open_ksb]],
       }),
-      h.with_status_win([[
+      {
+        stdout = h.with_status_win([[
 $ brew search a
 ]]),
+        cursor_y = 2,
+        cursor_x = 1,
+      },
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
 
   it('should successfully open checkhealth', function()
-    local stdtout = h.feed_kitty({
+    local actual = h.feed_kitty({
       [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']],
       [[\n]], -- enter
     })
     h.assert_screen_not_match(
-      stdtout,
-      'ERROR',
+      actual,
+      { pattern = 'ERROR', cursor_y = 1, cursor_x = 1 },
       'kitty-scrollback.nvim checkhealth had an unexpected health check ERROR'
     )
-    h.assert_screen_starts_with(
-      stdtout,
-      [[
+    h.assert_screen_starts_with(actual, {
+      stdout = [[
 
 ──────────────────────────────────────────────────────────────────────────────
 kitty-scrollback: require("kitty-scrollback.health").check()
 
 kitty-scrollback: Neovim version
 ]],
-      'kitty-scrollback.nvim checkhealth content did not start with expected content'
-    )
+      cursor_y = 1,
+      cursor_x = 1,
+    }, 'kitty-scrollback.nvim checkhealth content did not start with expected content')
   end)
 
   it('should position paste window at prompt when showtabline=0', function()
@@ -118,7 +365,8 @@ kitty-scrollback: Neovim version
         [[\n]], -- enter
         [[a]],
       }),
-      [[
+      {
+        stdout = [[
 $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
  ▏                                                                                                        ▕
  ▏                                                                                                        ▕
@@ -135,6 +383,9 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
  ▏    \y Yank          <C-CR> Execute          <S-CR> Paste          :w Paste          g? Toggle Mappings ▕
  🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
 ]],
+        cursor_y = 2,
+        cursor_x = 3,
+      },
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
@@ -147,7 +398,8 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
         [[\n]], -- enter
         [[a]],
       }),
-      [[
+      {
+        stdout = [[
 $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
  ▏                                                                                                        ▕
  ▏                                                                                                        ▕
@@ -164,6 +416,9 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
  ▏    \y Yank          <C-CR> Execute          <S-CR> Paste          :w Paste          g? Toggle Mappings ▕
  🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
 ]],
+        cursor_y = 2,
+        cursor_x = 3,
+      },
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
@@ -178,7 +433,8 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
         [[\n]], -- enter
         [[gta]],
       }),
-      [[
+      {
+        stdout = [[
  🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
 $▏                                                                                                        ▕
  ▏                                                                                                        ▕
@@ -195,6 +451,9 @@ $▏                                                                            
  ▏    \y Yank          <C-CR> Execute          <S-CR> Paste          :w Paste          g? Toggle Mappings ▕
  🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
 ]],
+        cursor_y = 2,
+        cursor_x = 3,
+      },
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
@@ -207,7 +466,8 @@ $▏                                                                            
         [[\n]], -- enter
         [[a]],
       }),
-      [[
+      {
+        stdout = [[
  🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
 $▏                                                                                                        ▕
  ▏                                                                                                        ▕
@@ -224,6 +484,9 @@ $▏                                                                            
  ▏    \y Yank          <C-CR> Execute          <S-CR> Paste          :w Paste          g? Toggle Mappings ▕
  🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
 ]],
+        cursor_y = 2,
+        cursor_x = 3,
+      },
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
@@ -247,7 +510,8 @@ $▏                                                                            
         [[EOF]],
         [[\n]], -- enter
       }),
-      [[
+      {
+        stdout = [[
 $
 $
 $
@@ -261,6 +525,9 @@ line2
 line3
 $
 ]],
+        cursor_y = 12,
+        cursor_x = 3,
+      },
       'kitty-scrollback.nvim did not have expected bracketed paste results'
     )
   end)
@@ -283,10 +550,11 @@ $
         [[EOF]],
         [[\x1b[13;5u]], -- control+enter
       }),
-      [[
-$ 
-$ 
-$ 
+      {
+        stdout = [[
+$
+$
+$
 $ cat <<EOF
 line1
 line2
@@ -295,8 +563,11 @@ EOF
 line1
 line2
 line3
-$ 
+$
 ]],
+        cursor_y = 12,
+        cursor_x = 3,
+      },
       'kitty-scrollback.nvim did not have expected bracketed paste results'
     )
   end)
