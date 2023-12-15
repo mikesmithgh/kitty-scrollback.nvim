@@ -343,11 +343,11 @@ return {
         },
       }
     end,
-    [prefix .. 'status_win_nvim'] = function()
+    [prefix .. 'status_win_vim'] = function()
       return {
         status_window = {
           icons = {
-            nvim = '',
+            nvim = '',
           },
         },
       }

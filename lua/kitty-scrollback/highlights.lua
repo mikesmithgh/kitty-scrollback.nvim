@@ -90,7 +90,7 @@ local function highlight_definitions()
     },
     darken = {
       default = true,
-      bg = ksb_util.darken(fg_or_fallback(pastewin_hl), 0.2, pastewin_hl.bg),
+      bg = ksb_util.darken(fg_or_fallback(pastewin_hl), 0.2, bg_or_fallback(pastewin_hl)),
     },
     nvim = visual_hl_def,
   }
