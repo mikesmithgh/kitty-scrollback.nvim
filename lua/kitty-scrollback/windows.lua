@@ -50,7 +50,6 @@ M.paste_winopts = function(row, col, height_offset)
   end
 
   if row then
-    -- winopts.row = row + 1 -- TODO: why does this fix winpos
     winopts.row = row + tab_offset
   end
   if col then

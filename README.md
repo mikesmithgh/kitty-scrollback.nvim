@@ -42,6 +42,10 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
   
   <!-- panvimdoc-ignore-end -->
 
+  ## Redesigned Plugin Configuration
+  - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless. 
+  You can still pass arguments to nvim with the `--nvim-args` flag.
+
   ## Neovim Nerd Font Icon
   - The Neovim icon is now the default icon in the status window. Update your Nerd Font to the latest version or at least version [v3.1.0](https://github.com/ryanoasis/nerd-fonts/releases/tag/v3.1.0).
 
