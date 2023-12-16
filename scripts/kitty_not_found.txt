@@ -1,0 +1,19 @@
+404 kitty not found ~
+
+ERROR Sorry 😿 
+
+Failed to find kitty executable. Please check your environment variable `PATH`.
+
+
+            `|`\___/`|`       
+           =) `^`Y`^` (=
+            \  *^*  /       If you have any issues or questions using *kitty-scrollback.nvim* then     
+            ` )=*=( `       please create an issue at                                                    
+            /     \       https://github.com/mikesmithgh/kitty-scrollback.nvim/issues               
+            |     |                                      
+           /| | | |\                                                                                    
+           \| | `|`_`|`/\
+            /_// ___/     
+               \_)       
+
+vim:ft=checkhealth:laststatus=0:fillchars=eob\:\ :termguicolors

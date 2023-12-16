@@ -57,7 +57,7 @@ M.set_paste_window_resized_autocmd = function()
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimPasteWindowResized', { clear = true }),
     callback = function()
       if p.paste_winid then
-        local lnum = p.pos.cursor_line - p.pos.win_first_line - 1
+        local lnum = (p.pos.cursor_line - p.pos.win_first_line - 1) + ksb_util.tab_offset()
         local col = p.pos.col + 1
         local ok, current_winopts = pcall(vim.api.nvim_win_get_config, p.paste_winid)
         if ok then

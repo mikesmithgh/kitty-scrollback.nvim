@@ -1,3 +1,45 @@
+## [2.4.7](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.6...v2.4.7) (2023-12-15)
+
+
+### Bug Fixes
+
+* adjust pastewin position depending on showtabline values ([#112](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/112)) ([9d66c4c](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/9d66c4cc1c6def697f38be954ec70442a8deaf22))
+
+## [2.4.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.5...v2.4.6) (2023-12-14)
+
+
+### Bug Fixes
+
+* unset KITTY_KITTEN_RUN_MODULE ([#113](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/113)) ([9984d10](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/9984d10873fa00088259265362e1c937c804e837))
+
+## [2.4.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.4...v2.4.5) (2023-12-13)
+
+
+### Bug Fixes
+
+* only set vim colorscheme for default colorscheme ([#111](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/111)) ([8529d4d](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/8529d4d5ca6eab1d20b1dfe8e80158c1a86cf863))
+
+## [2.4.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.3...v2.4.4) (2023-12-12)
+
+
+### Bug Fixes
+
+* explicitly set colorscheme to vim ([#106](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/106)) ([6e2bd60](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/6e2bd60d14fdfb9839a7ac6e352c880f463cc9ba)), closes [#93](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/93)
+
+## [2.4.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.2...v2.4.3) (2023-12-11)
+
+
+### Bug Fixes
+
+* add kitty fallback for checkhealth ([#98](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/98)) ([6c93db4](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/6c93db4f4a82001cd1c6f3ff014481426dfa8648))
+
+## [2.4.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.1...v2.4.2) (2023-12-07)
+
+
+### Bug Fixes
+
+* read kitty executable from path ([#94](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/94)) ([acdc317](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/acdc3170f20252ba2a4c4bb114b698d85995ae70)), closes [#95](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/95)
+
 ## [2.4.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.0...v2.4.1) (2023-12-01)
 
 

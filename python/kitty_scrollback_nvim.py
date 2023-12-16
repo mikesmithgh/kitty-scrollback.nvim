@@ -8,6 +8,7 @@ from kitty.constants import config_dir, version
 import json
 import os
 import inspect
+import shutil
 
 ksb_dir = os.path.dirname(
     os.path.dirname(os.path.abspath(inspect.getfile(lambda: None))))
@@ -30,10 +31,11 @@ def get_kitty_shell_integration(kitty_opts, w):
 
 
 # based on kitty source window.py
-def pipe_data(w, target_window_id, config):
+def pipe_data(w, target_window_id, config, kitty_path):
     kitty_opts = get_options()
     kitty_shell_integration = get_kitty_shell_integration(kitty_opts, w)
     return {
+        'kitty_path': kitty_path,
         'kitty_scrollback_config': config,
         'scrolled_by': w.screen.scrolled_by,
         'cursor_x': w.screen.cursor.x + 1,
@@ -104,6 +106,22 @@ def parse_cwd(args):
     return ()
 
 
+def nvim_err_cmd(err_file):
+    return (
+        'launch',
+        '--copy-env',
+        '--type',
+        'overlay',
+        '--title',
+        'kitty-scrollback.nvim :: error',
+        'nvim',
+    ) + parse_nvim_args() + (
+        '-c',
+        'lua vim.api.nvim_set_hl(0, [[Normal]], {})',
+        err_file,
+    )
+
+
 @result_handler(type_of_input=None, no_ui=True, has_ready_notification=False)
 def handle_result(args: List[str],
                   result: str,
@@ -112,28 +130,22 @@ def handle_result(args: List[str],
     del args[0]
     w = boss.window_id_map.get(target_window_id)
     if w is not None:
+        kitty_path = shutil.which('kitty')
+        if not kitty_path:
+            boss.call_remote_control(
+                w,
+                nvim_err_cmd(f'{ksb_dir}/scripts/kitty_not_found.txt'))
+            return
+
         config = parse_config(args)
         if config == 'crying cat --config-file':
-            err_cmd = (
-                'launch',
-                '--copy-env',
-                '--type',
-                'overlay',
-                '--title',
-                'kitty-scrollback.nvim',
-                'nvim',
-            ) + parse_nvim_args() + (
-                '-c',
-                'set laststatus=0',
-                '-c',
-                'set fillchars=eob:\\ ',
-                '-c',
-                'set filetype=checkhealth',
-                f'{ksb_dir}/scripts/breaking_change_config_file.txt',
-            )
 
-            err_winid = boss.call_remote_control(w, err_cmd)
+            err_winid = boss.call_remote_control(
+                w,
+                nvim_err_cmd(
+                    f'{ksb_dir}/scripts/breaking_change_config_file.txt'))
 
+            # window logo is overridden by new neovim colorscheme
             set_logo_cmd = ('set-window-logo',
                             '--no-response',
                             '--alpha',
@@ -143,12 +155,12 @@ def handle_result(args: List[str],
                             f'{ksb_dir}/media/sad_kitty_thumbs_up.png')
 
             err_win = boss.window_id_map.get(err_winid)
-            err_winid = boss.call_remote_control(err_win, set_logo_cmd)
+            boss.call_remote_control(err_win, set_logo_cmd)
             return
 
         cwd = parse_cwd(args)
         env = parse_env(args)
-        kitty_data_str = pipe_data(w, target_window_id, config)
+        kitty_data_str = pipe_data(w, target_window_id, config, kitty_path)
         kitty_data = json.dumps(kitty_data_str)
 
         if w.title.startswith('kitty-scrollback.nvim'):
@@ -168,14 +180,18 @@ def handle_result(args: List[str],
 
         nvim_args = parse_nvim_args(args) + (
             '--cmd',
-            ' lua vim.api.nvim_create_autocmd([[VimEnter]], { '
-            '   group = vim.api.nvim_create_augroup([[KittyScrollBackNvimVimEnter]], { clear = true }), '
-            '   pattern = [[*]], '
-            '   callback = function() '
-            f'   vim.opt.runtimepath:append([[{ksb_dir}]])'
-            '    vim.api.nvim_exec_autocmds([[User]], { pattern = [[KittyScrollbackLaunch]], modeline = false })'
-            f'   require([[kitty-scrollback.launch]]).setup_and_launch([[{kitty_data}]])'
-            '  end, '
+            ' lua '
+            ' vim.api.nvim_create_autocmd([[VimEnter]], {'
+            '  group = vim.api.nvim_create_augroup([[KittyScrollBackNvimVimEnter]], { clear = true }),'
+            '  pattern = [[*]],'
+            '  callback = function()'
+            '   if vim.g.colors_name == nil or vim.g.colors_name == [[default]] then'
+            '    vim.cmd.colorscheme({ args = {[[vim]]}, mods = { emsg_silent = true }})'
+            '   end'
+            f'  vim.opt.runtimepath:append([[{ksb_dir}]])'
+            '   vim.api.nvim_exec_autocmds([[User]], { pattern = [[KittyScrollbackLaunch]], modeline = false })'
+            f'  require([[kitty-scrollback.launch]]).setup_and_launch([[{kitty_data}]])'
+            ' end,'
             ' })')
 
         cmd = ('launch', ) + kitty_args + ('nvim', ) + nvim_args

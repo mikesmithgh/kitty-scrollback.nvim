@@ -45,6 +45,7 @@ local M = {}
 ---@field kitty_opts KsbKittyOpts relevant kitty configuration values
 ---@field kitty_config_dir string kitty configuration directory path
 ---@field kitty_version table kitty version
+---@field kitty_path string kitty executable path
 
 ---@class KsbPrivate
 ---@field orig_columns number
@@ -150,6 +151,17 @@ local function restore_orig_options()
   end
 end
 
+local function set_env()
+  -- kitten ssh prompts for the user's password if KITTY_KITTEN_RUN_MODULE is ssh_askpass
+  -- which causes kitty-scrollback.nvim to hang waiting on input that is not visible.
+  -- Clear KITTY_KITTEN_RUN_MODULE to avoid this issue over kitten ssh.
+  -- See:
+  --   - https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/99
+  --   - https://sw.kovidgoyal.net/kitty/kittens/ssh/
+  --   - https://github.com/kovidgoyal/kitty/blob/b2587c1d54ff674d2c925ff28b2e16e394794838/tools/cmd/main.go#L15
+  vim.env.KITTY_KITTEN_RUN_MODULE = nil
+end
+
 local function set_options()
   p.orig_options = {
     virtualedit = vim.o.virtualedit,
@@ -182,6 +194,7 @@ local function set_options()
   vim.o.termguicolors = true
 
   -- preferred optional opts
+  vim.opt.shortmess:append('I') -- no intro message
   vim.o.laststatus = 0
   vim.o.scrolloff = 0
   vim.o.cmdheight = 0
@@ -190,7 +203,6 @@ local function set_options()
   vim.o.relativenumber = false
   vim.o.scrollback = 100000
   vim.o.list = false
-  vim.o.showtabline = 0
   vim.o.showmode = false
   vim.o.ignorecase = true
   vim.o.smartcase = true
@@ -204,33 +216,44 @@ local function set_options()
   vim.o.modifiable = true
   vim.o.wrap = false
   vim.o.report = 999999 -- arbitrary large number to hide yank messages
+
+  -- not necessary to set vim.o.showtabline because tab offset is taken into account during positioning
 end
 
 local set_cursor_position = vim.schedule_wrap(function(d)
+  local tab_offset = ksb_util.tab_offset()
   local x = d.cursor_x - 1
-  local y = d.cursor_y - 1
+  local y = d.cursor_y - 1 - tab_offset
   local scrolled_by = d.scrolled_by
-  local lines = d.lines
+  local lines = d.lines - tab_offset
+  if y < 0 then
+    -- adjust when on first line of terminal
+    lines = lines + math.abs(y)
+    y = 0
+  end
   local last_line = vim.fn.line('$')
 
   local orig_virtualedit = vim.o.virtualedit
-  local orig_scrollof = vim.o.scrolloff
-  local orig_showtabline = vim.o.showtabline
+  local orig_scrolloff = vim.o.scrolloff
   local orig_laststatus = vim.o.laststatus
   vim.o.scrolloff = 0
-  vim.o.showtabline = 0
   vim.o.laststatus = 0
   vim.o.virtualedit = 'all'
-
   vim.fn.cursor(last_line, 1) -- cursor last line
   -- using normal commands instead of cursor pos due to virtualedit
-  vim.cmd.normal({ lines .. 'k', bang = true }) -- cursor up
-  vim.cmd.normal({ y .. 'j', bang = true }) -- cursor down
-  vim.cmd.normal({ x .. 'l', bang = true }) -- cursor right
+  if lines ~= 0 then
+    vim.cmd.normal({ lines .. 'k', bang = true }) -- cursor up
+  end
+  if y ~= 0 then
+    vim.cmd.normal({ y .. 'j', bang = true }) -- cursor down
+  end
+  if x ~= 0 then
+    vim.cmd.normal({ x .. 'l', bang = true }) -- cursor right
+  end
   if scrolled_by > 0 then
     -- scroll up
     vim.cmd.normal({
-      vim.api.nvim_replace_termcodes(scrolled_by .. '<C-y>', true, false, true), -- TODO: invesigate if CSI control sequence to scroll is better
+      vim.api.nvim_replace_termcodes(scrolled_by .. '<C-y>', true, false, true),
       bang = true,
     })
   end
@@ -242,8 +265,7 @@ local set_cursor_position = vim.schedule_wrap(function(d)
     col = x,
   }
 
-  vim.o.scrolloff = orig_scrollof
-  vim.o.showtabline = orig_showtabline
+  vim.o.scrolloff = orig_scrolloff
   vim.o.laststatus = orig_laststatus
   vim.o.virtualedit = orig_virtualedit
 end)
@@ -316,6 +338,9 @@ M.setup = function(kitty_data_str)
     end
   end
 
+  set_env()
+  set_options()
+
   ksb_util.setup(p, opts)
   ksb_kitty_cmds.setup(p, opts)
   ksb_win.setup(p, opts)
@@ -323,12 +348,12 @@ M.setup = function(kitty_data_str)
   ksb_autocmds.setup(p, opts)
   ksb_api.setup(p, opts)
   ksb_keymaps.setup(p, opts)
+
   local ok = ksb_hl.setup(p, opts)
   if ok then
     ksb_hl.set_highlights()
     ksb_kitty_cmds.open_kitty_loading_window(ksb_hl.get_highlights_as_env()) -- must be after opts and set highlights
   end
-  set_options()
 
   if
     opts.callbacks
@@ -395,11 +420,10 @@ M.launch = function()
         local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
         term_buf_name = term_buf_name:gsub('^(term://.-:).*', '%1kitty-scrollback.nvim')
         vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
-        vim.api.nvim_set_option_value(
-          'winhighlight',
-          'Visual:KittyScrollbackNvimVisual',
-          { win = 0 }
-        )
+        vim.api.nvim_set_option_value('winhighlight', 'Visual:KittyScrollbackNvimVisual', {
+          scope = 'local',
+          win = 0,
+        })
         vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
 
         if opts.restore_options then

@@ -83,4 +83,12 @@ M.restore_and_redraw = function()
   vim.cmd.redraw()
 end
 
+M.tab_offset = function()
+  -- if always displaying a tabline or if displaying a tabline when more than one tab exists
+  if vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr('$') > 1) then
+    return 1
+  end
+  return 0
+end
+
 return M
