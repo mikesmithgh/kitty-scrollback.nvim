@@ -50,7 +50,7 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
   - The Neovim icon is now the default icon in the status window. Update your Nerd Font to the latest version or at least version [v3.1.0](https://github.com/ryanoasis/nerd-fonts/releases/tag/v3.1.0).
 
   ## Highlight Groups
-
+  - Regenerate default Kitten mappings and add to `kitty.conf`
   - Existing highlight groups were renamed. If you were overriding any kitty-scrollback.nvim highlight groups, please update the names referencing the table below.
 
     | Previous highlight name    | New highlight name                      |

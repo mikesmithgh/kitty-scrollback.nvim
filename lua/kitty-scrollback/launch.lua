@@ -175,7 +175,6 @@ local function set_options()
     relativenumber = vim.o.relativenumber,
     scrollback = vim.o.scrollback,
     list = vim.o.list,
-    -- showtabline = vim.o.showtabline,
     showmode = vim.o.showmode,
     ignorecase = vim.o.ignorecase,
     smartcase = vim.o.smartcase,

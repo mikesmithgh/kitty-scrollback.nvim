@@ -184,11 +184,4 @@ M.set_yank_post_autocmd = function()
   })
 end
 
-M.run_when_safestate_autocmd = function(name, cb)
-  vim.api.nvim_create_autocmd({ 'SafeState' }, {
-    group = vim.api.nvim_create_augroup('KittyScrollBackNvimSafeState' .. name, { clear = true }),
-    callback = cb,
-  })
-end
-
 return M

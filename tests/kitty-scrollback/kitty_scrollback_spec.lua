@@ -43,10 +43,14 @@ describe('kitty-scrollback.nvim', function()
     vim.fn.wait(5000, function()
       ready = (h.debug(h.kitty_remote_ls():wait()).code == 0)
       return ready
-    end)
+    end, 500)
 
     assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
     h.pause()
+    h.feed_kitty({
+      [[clear]],
+      [[\n]], -- enter
+    })
   end)
 
   after_each(function()
