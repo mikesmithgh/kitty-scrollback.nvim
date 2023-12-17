@@ -1,6 +1,7 @@
 TESTS_INIT=tests/minimal_init.lua
 TESTS_DIR=tests/
-TIMEOUT_MINS=30*60*100
+# 30 mins
+TIMEOUT_MINS=30*60*1000 
 
 .PHONY: test
 
