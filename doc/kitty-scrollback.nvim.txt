@@ -5,6 +5,7 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 
 1. kitty-scrollback.nvim         |kitty-scrollback.nvim-kitty-scrollback.nvim|
   - Migrating to v3.0.0            |kitty-scrollback.nvim-migrating-to-v3.0.0|
+  - Redesigned Plugin Configuration|kitty-scrollback.nvim-redesigned-plugin-configuration|
   - Neovim Nerd Font Icon        |kitty-scrollback.nvim-neovim-nerd-font-icon|
   - Highlight Groups                  |kitty-scrollback.nvim-highlight-groups|
   - Features                                  |kitty-scrollback.nvim-features|
@@ -37,6 +38,9 @@ MIGRATING TO V3.0.0                *kitty-scrollback.nvim-migrating-to-v3.0.0*
   kitty-scrollback.nvim
 
 `-` `Migration Steps`
+    REDESIGNED PLUGIN CONFIGURATION*kitty-scrollback.nvim-redesigned-plugin-configuration*
+    - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless.
+        You can still pass arguments to nvim with the `--nvim-args` flag.
     NEOVIM NERD FONT ICON            *kitty-scrollback.nvim-neovim-nerd-font-icon*
     - The Neovim icon is now the default icon in the status window. Update your Nerd Font to the latest version or at least version v3.1.0 <https://github.com/ryanoasis/nerd-fonts/releases/tag/v3.1.0>.
     HIGHLIGHT GROUPS                      *kitty-scrollback.nvim-highlight-groups*
@@ -250,32 +254,28 @@ KITTEN ARGUMENTS ~
 Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in
 kitty.conf <https://sw.kovidgoyal.net/kitty/conf/>.
 
-  -------------------------------------------------------------------------------------
-  Argument         Description
-  ---------------- --------------------------------------------------------------------
-  --config         The name of the kitty-scrollback.nvim plugin configuration. The
-                   configuration can be defined during plugin setup (i.e.,
-                   require('kitty-scrollback').setup({ ... })).
+  ----------------------------------------------------------------------------------
+  Argument      Description
+  ------------- --------------------------------------------------------------------
+  --config      The name of the kitty-scrollback.nvim plugin configuration. The
+                configuration can be defined during plugin setup (i.e.,
+                require('kitty-scrollback').setup({ ... })).
 
-  --no-nvim-args   Do not provide any arguments to the Neovim instance that displays
-                   the scrollback buffer. The default arguments passed to Neovim are
-                   --clean --noplugin -n. This flag removes those options.
+  --nvim-args   All arguments after this flag are passed to the Neovim instance that
+                displays the scrollback buffer. This must be the last of the
+                kitty-scrollback.nvim Kitten arguments that are configured.
+                Otherwise, you may unintentionally send the wrong arguments to
+                Neovim. The default arguments passed to Neovim are
+                --clean --noplugin -n. This flag removes those options.
 
-  --nvim-args      All arguments after this flag are passed to the Neovim instance that
-                   displays the scrollback buffer. This must be the last of the
-                   kitty-scrollback.nvim Kitten arguments that are configured.
-                   Otherwise, you may unintentionally send the wrong arguments to
-                   Neovim. The default arguments passed to Neovim are
-                   --clean --noplugin -n. This flag removes those options.
+  --env         Environment variable that is passed to the Neovim instance that
+                displays the scrollback buffer. Format is --env var_name=var_value.
+                You may specify multiple config files that will merge all
+                configuration options. Useful for setting NVIM_APPNAME
 
-  --env            Environment variable that is passed to the Neovim instance that
-                   displays the scrollback buffer. Format is --env var_name=var_value.
-                   You may specify multiple config files that will merge all
-                   configuration options. Useful for setting NVIM_APPNAME
-
-  --cwd            The current working directory of the Neovim instance that displays
-                   the scrollback buffer.
-  -------------------------------------------------------------------------------------
+  --cwd         The current working directory of the Neovim instance that displays
+                the scrollback buffer.
+  ----------------------------------------------------------------------------------
 
 KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
 
