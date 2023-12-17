@@ -18,6 +18,33 @@ M.debug({
   is_github_action = M.is_github_action,
 })
 
+-- copied from plenary.busted
+local color_table = {
+  yellow = 33,
+  green = 32,
+  red = 31,
+}
+
+-- copied from plenary.busted
+local color_string = function(color, str)
+  if not M.is_headless then
+    return '[' .. str .. ']'
+  end
+
+  return string.format(
+    '%s[%sm%s%s[%sm',
+    string.char(27),
+    color_table[color] or 0,
+    str,
+    string.char(27),
+    0
+  )
+end
+
+M.ignore = function(desc, ...)
+  print(color_string('yellow', 'Ignored'), '||', desc)
+end
+
 M.setup_backport = function()
   if vim.fn.has('nvim-0.10') <= 0 then
     require('kitty-scrollback.backport').setup()
@@ -241,29 +268,6 @@ M.feed_kitty = function(input)
     cursor_x = tonumber(cursor_x),
     cursor_y = tonumber(cursor_y),
   }
-end
-
--- copied from plenary.busted
-local color_table = {
-  yellow = 33,
-  green = 32,
-  red = 31,
-}
-
--- copied from plenary.busted
-local color_string = function(color, str)
-  if not M.is_headless then
-    return '[' .. str .. ']'
-  end
-
-  return string.format(
-    '%s[%sm%s%s[%sm',
-    string.char(27),
-    color_table[color] or 0,
-    str,
-    string.char(27),
-    0
-  )
 end
 
 local function debug_print_differences(actual, expected)
