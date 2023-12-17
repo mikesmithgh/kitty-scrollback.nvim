@@ -186,7 +186,7 @@ def handle_result(args: List[str],
 
         nvim_args = parse_nvim_args(args) + (
             '--cmd',
-            ' lua '
+            ' lua'
             ' vim.api.nvim_create_autocmd([[VimEnter]], {'
             '  group = vim.api.nvim_create_augroup([[KittyScrollBackNvimVimEnter]], { clear = true }),'
             '  pattern = [[*]],'
