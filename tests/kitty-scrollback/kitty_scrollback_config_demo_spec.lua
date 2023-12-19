@@ -77,11 +77,8 @@ describe('kitty-scrollback.nvim', function()
 
     h.feed_kitty({
       [[source ]] .. ksb_dir .. [[tests/bashrc]],
-      [[\n]], -- enter
       [[cd ]] .. ksb_work_dir,
-      [[\n]], -- enter
       [[clear]],
-      [[\n]], -- enter
     })
   end)
 
@@ -100,29 +97,25 @@ printf "\\033[0m\\n"
 eza --tree --icons ../kitty-scrollback.nvim/lua
 lolcat --freq=0.15 --spread=1.5 --truecolor -
 ]],
-        [[__next_as_line]],
-        cowthink_stdout,
-        [[\x04]], -- control+d
-        [[
-figlet -f cyberlarge -c -w 165 kitty-scrollback.nvim | lolcat]],
-        [[\n]], -- enter
-        [[
+        h.with_pause_before(h.send_without_newline(h.send_as_string(cowthink_stdout))),
+        h.send_without_newline(h.control_d()),
+        [[figlet -f cyberlarge -c -w 165 kitty-scrollback.nvim | lolcat]],
+        h.with_pause_before([[
 colortest
 
 
-]],
-        [[\n]], -- enter
-        [[__open_ksb]],
-        [[a# builtin > kitty_scrollback_nvim]],
-        [[\e]], -- esc
-        [[0o]],
-        [[
+]]),
+        h.open_kitty_scrollback_nvim(),
+        h.send_without_newline([[a# builtin > kitty_scrollback_nvim]]),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline([[0o]]),
+        h.send_without_newline([[
 default configuration for the keymap `kitty_mod+h`
 
 Browse scrollback buffer in kitty-scrollback.nvim 
-]],
-        [[\e]], -- esc
-        [[gg0]],
+]]),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline([[gg0]]),
       }),
       {
         stdout = h.with_status_win(

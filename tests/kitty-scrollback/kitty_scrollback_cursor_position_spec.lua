@@ -45,11 +45,6 @@ describe('kitty-scrollback.nvim', function()
     end, 500)
 
     assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
-    h.pause()
-    h.feed_kitty({
-      [[clear]],
-      [[\n]], -- enter
-    })
   end)
 
   after_each(function()
@@ -60,7 +55,7 @@ describe('kitty-scrollback.nvim', function()
   it('should position the cursor on first line when scrollback buffer has one line', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[__open_ksb]],
+        h.open_kitty_scrollback_nvim(),
       }),
       {
         stdout = h.with_status_win([[
@@ -76,8 +71,8 @@ $
   it('should position the cursor on second line when scrollback buffer has two lines', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[\n]], -- enter
-        [[__open_ksb]],
+        h.send_without_newline(h.enter()),
+        h.open_kitty_scrollback_nvim(),
       }),
       {
         stdout = h.with_status_win([[
@@ -94,8 +89,7 @@ $
   it('should show position the cursor on second to last line', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[__next_as_line]],
-        [[
+        h.send_without_newline(h.send_as_string([[
 # 1
 # 2
 # 3
@@ -124,8 +118,8 @@ $
 # 26
 # 27
 # 28
-# 29]],
-        [[__open_ksb]],
+# 29]])),
+        h.open_kitty_scrollback_nvim(),
       }),
       {
         stdout = h.with_status_win([[
@@ -169,8 +163,7 @@ $ # 29
   it('should position the cursor on the last line', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[__next_as_line]],
-        [[
+        h.send_without_newline(h.send_as_string([[
 # 1
 # 2
 # 3
@@ -200,8 +193,8 @@ $ # 29
 # 27
 # 28
 # 29
-# 30]],
-        [[__open_ksb]],
+# 30]])),
+        h.open_kitty_scrollback_nvim(),
       }),
       {
         stdout = h.with_status_win([[
@@ -246,8 +239,7 @@ $ # 30
   it('should show position the cursor on the last line when screen is full', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[__next_as_line]],
-        [[
+        h.send_without_newline(h.send_as_string([[
 # 1 
 # 2 
 # 3 
@@ -278,8 +270,8 @@ $ # 30
 # 28
 # 29
 # 30
-# 31]],
-        [[__open_ksb]],
+# 31]])),
+        h.open_kitty_scrollback_nvim(),
       }),
       {
         stdout = h.with_status_win([[

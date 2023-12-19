@@ -45,11 +45,6 @@ describe('kitty-scrollback.nvim', function()
     end, 500)
 
     assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
-    h.pause()
-    h.feed_kitty({
-      [[clear]],
-      [[\n]], -- enter
-    })
   end)
 
   after_each(function()
@@ -61,9 +56,8 @@ describe('kitty-scrollback.nvim', function()
   it('should use correct kitty path during brew command', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[brew search a]],
-        [[\n]], -- enter
-        [[__open_ksb]],
+        h.with_pause_before([[brew search a]]),
+        h.open_kitty_scrollback_nvim(),
       }),
       {
         stdout = h.with_status_win([[
@@ -78,8 +72,9 @@ $ brew search a
 
   it('should successfully open checkhealth', function()
     local actual = h.feed_kitty({
-      [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']],
-      [[\n]], -- enter
+      h.send_as_string(
+        [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']]
+      ),
     })
     h.assert_screen_not_match(
       actual,
@@ -102,21 +97,15 @@ kitty-scrollback: Neovim version
   it('should paste command to kitty in bracketed paste mode', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[\n]], -- enter
-        [[\n]], -- enter
-        [[\n]], -- enter
-        [[__open_ksb]],
-        [[acat <<EOF]], -- enter
-        [[\n]], -- enter
-        [[line1]], -- enter
-        [[\n]], -- enter
-        [[line2]], -- enter
-        [[\n]], -- enter
-        [[line3]], -- enter
-        [[\x1b[13;2u]], -- shift+enter
-        [[\n]], -- enter
+        h.send_as_string([[\n\n]]),
+        h.open_kitty_scrollback_nvim(),
+        [[acat <<EOF]],
+        h.send_as_string([[
+line1
+line2
+line3]]),
+        h.shift_enter(),
         [[EOF]],
-        [[\n]], -- enter
       }),
       {
         stdout = [[
@@ -143,20 +132,15 @@ $
   it('should execute command in kitty with bracketed paste mode', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[\n]], -- enter
-        [[\n]], -- enter
-        [[\n]], -- enter
-        [[__open_ksb]],
-        [[acat <<EOF]], -- enter
-        [[\n]], -- enter
-        [[line1]], -- enter
-        [[\n]], -- enter
-        [[line2]], -- enter
-        [[\n]], -- enter
-        [[line3]], -- enter
-        [[\n]], -- enter
-        [[EOF]],
-        [[\x1b[13;5u]], -- control+enter
+        h.send_as_string([[\n\n]]),
+        h.open_kitty_scrollback_nvim(),
+        [[acat <<EOF]],
+        h.send_as_string([[
+line1
+line2
+line3
+EOF]]),
+        h.send_without_newline(h.control_enter()),
       }),
       {
         stdout = [[

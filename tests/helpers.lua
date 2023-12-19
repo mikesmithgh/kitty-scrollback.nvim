@@ -240,28 +240,161 @@ end
 
 local next_as_line = false
 
+M.with_pause_before = function(input, delay)
+  if type(input) == 'string' then
+    return {
+      input,
+      opts = {
+        pause_before = delay or true,
+      },
+    }
+  else
+    return {
+      input[1],
+      opts = vim.tbl_extend('force', input.opts, {
+        pause_before = delay or true,
+      }),
+    }
+  end
+end
+
+M.send_as_string = function(input)
+  if type(input) == 'string' then
+    return {
+      input,
+      opts = {
+        send_by = 'string',
+      },
+    }
+  else
+    return {
+      input[1],
+      opts = vim.tbl_extend('force', input.opts, {
+        send_by = 'string',
+      }),
+    }
+  end
+end
+
+M.send_without_newline = function(input)
+  if type(input) == 'string' then
+    return {
+      input,
+      opts = {
+        newline = false,
+      },
+    }
+  else
+    return {
+      input[1],
+      opts = vim.tbl_extend('force', input.opts, {
+        newline = false,
+      }),
+    }
+  end
+end
+
+M.open_kitty_scrollback_nvim = function()
+  return {
+    opts = {
+      open_kitty_scrollback_nvim = true,
+    },
+  }
+end
+
+M.control_enter = function()
+  return {
+    [[\x1b[13;5u]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.shift_enter = function()
+  return {
+    [[\x1b[13;2u]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.enter = function()
+  return {
+    [[\n]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.control_v = function()
+  return {
+    [[\x16]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.esc = function()
+  return {
+    [[\x1b]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.control_d = function()
+  return {
+    [[\x04]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
 M.feed_kitty = function(input)
   for _, line in pairs(input) do
-    if line == 'pause' then
-      M.pause()
-    elseif line == '__open_ksb' then
+    local feed_opts = vim.tbl_extend('force', {
+      send_by = 'char',
+      newline = true,
+      open_kitty_scrollback_nvim = false,
+    }, (type(line) == 'table' and line.opts) and line.opts or {})
+
+    if feed_opts.pause_before then
+      if type(feed_opts.pause_before) == 'boolean' then
+        M.pause()
+      else
+        M.pause(feed_opts.pause_before)
+      end
+    end
+
+    if feed_opts.open_kitty_scrollback_nvim then
       M.pause()
       M.kitty_remote_kitten_kitty_scrollback_nvim()
       M.pause()
-    elseif line == '__next_as_line' then
-      next_as_line = true
-    elseif line:match('^\\') or next_as_line then
-      M.pause(0.2)
-      M.kitty_remote_send_text(line)
-      M.pause(0.2)
-      if next_as_line then
-        next_as_line = false
-      end
     else
-      line:gsub('.', function(c)
-        M.kitty_remote_send_text(c)
-        M.pause(0.03)
-      end)
+      local content = line
+      if type(line) == 'table' then
+        content = line[1]
+      end
+
+      if feed_opts.send_by == 'string' then
+        M.pause(0.2)
+        M.kitty_remote_send_text(content)
+        M.pause(0.2)
+      elseif feed_opts.send_by == 'char' then
+        content:gsub('.', function(c)
+          M.kitty_remote_send_text(c)
+          M.pause(0.03)
+        end)
+      end
+      if feed_opts.newline then
+        M.kitty_remote_send_text('\n')
+      end
     end
   end
   M.pause(3) -- longer pause for linux

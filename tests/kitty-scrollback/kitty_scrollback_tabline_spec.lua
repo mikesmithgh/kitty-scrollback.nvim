@@ -45,11 +45,6 @@ describe('kitty-scrollback.nvim', function()
     end, 500)
 
     assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
-    h.pause()
-    h.feed_kitty({
-      [[clear]],
-      [[\n]], -- enter
-    })
   end)
 
   after_each(function()
@@ -60,10 +55,9 @@ describe('kitty-scrollback.nvim', function()
   it('should position paste window at prompt when showtabline=0', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[__open_ksb]],
+        h.open_kitty_scrollback_nvim(),
         [[:set showtabline=0]],
-        [[\n]], -- enter
-        [[a]],
+        h.send_without_newline([[a]]),
       }),
       {
         stdout = [[
@@ -93,10 +87,9 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
   it('should position paste window at prompt when showtabline=1 and one tab', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[__open_ksb]],
+        h.open_kitty_scrollback_nvim(),
         [[:set showtabline=1]],
-        [[\n]], -- enter
-        [[a]],
+        h.send_without_newline([[a]]),
       }),
       {
         stdout = [[
@@ -126,12 +119,10 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
   it('should position paste window at prompt when showtabline=1 and two tabs', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[__open_ksb]],
+        h.open_kitty_scrollback_nvim(),
         [[:set showtabline=1]],
-        [[\n]], -- enter
         [[:tab new]],
-        [[\n]], -- enter
-        [[gta]],
+        h.send_without_newline([[gta]]),
       }),
       {
         stdout = [[
@@ -161,10 +152,9 @@ $▏                                                                            
   it('should position paste window at prompt when showtabline=2', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[__open_ksb]],
+        h.open_kitty_scrollback_nvim(),
         [[:set showtabline=2]],
-        [[\n]], -- enter
-        [[a]],
+        h.send_without_newline([[a]]),
       }),
       {
         stdout = [[

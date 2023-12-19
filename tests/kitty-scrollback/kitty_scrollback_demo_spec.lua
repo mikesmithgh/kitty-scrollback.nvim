@@ -72,15 +72,13 @@ describe('kitty-scrollback.nvim', function()
       :wait()
 
     h.feed_kitty({
-      [[cd ]] .. ksb_work_dir,
-      [[\n]], -- enter
-      [[
+      h.send_as_string([[cd ]] .. ksb_work_dir),
+      h.send_as_string([[
 echo '-- demo' >> README.md 
 echo '-- demo' >> lua/kitty-scrollback/init.lua
 echo '-- demo' >> lua/kitty-scrollback/api.lua
 echo '-- demo' >> lua/kitty-scrollback/health.lua
-clear
-]],
+clear]]),
     })
   end)
 
@@ -93,39 +91,33 @@ clear
     h.assert_screen_equals(
       h.feed_kitty({
         [[git status]],
-        [[\n]], -- enter
-        [[__open_ksb]],
+        h.open_kitty_scrollback_nvim(),
         [[?README.md]],
-        [[\n]], -- enter
-        [[\x16]], -- control+v
-        [[jjj$yddggI]],
-        [[git checkout ]],
-        [[\x1b]], -- esc
-        [[j0]],
-        [[\x16]], -- control+v
-        [[GI]],
-        [[git add ]],
-        [[\x1b]], -- esc
-        [[\x1b[13;5u]], -- control+enter
-        [[pause]],
-        [[pause]],
-        [[git status]],
-        [[\n]],
-        [[__open_ksb]],
-        [[6k3VyggOlolcat <<EOF]],
-        [[\x1b]], -- esc
-        [[\x1b[13;2u]], -- shift+enter
-        [[\n]], -- enter
+        h.send_without_newline(h.control_v()),
+        h.send_without_newline([[jjj$yddggI]]),
+        h.send_without_newline([[git checkout ]]),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline([[j0]]),
+        h.send_without_newline(h.control_v()),
+        h.send_without_newline([[GI]]),
+        h.send_without_newline([[git add ]]),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline(h.control_enter()),
+        h.with_pause_before([[git status]]),
+        h.open_kitty_scrollback_nvim(),
+        h.send_without_newline([[6k3VyggOlolcat <<EOF]]),
+        h.send_without_newline(h.esc()),
+        h.shift_enter(),
         [[EOF]],
-        [[\n]], -- enter
-        [[echo nice]],
-        [[pause]],
-        [[__open_ksb]],
-        [[a]],
-        [[\x1b]], -- esc
-        [[g?a | cowsay -f /opt/homebrew/share/cows/stegosaurus.cow | lolcat]],
-        [[\x1b]], -- esc
-        [[\x1b[13;5u]], -- control+enter
+        h.with_pause_before(h.send_without_newline([[echo nice]])),
+        h.with_pause_before(h.open_kitty_scrollback_nvim()),
+        h.send_without_newline([[a]]),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline(
+          [[g?a | cowsay -f /opt/homebrew/share/cows/stegosaurus.cow | lolcat]]
+        ),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline(h.control_enter()),
       }),
       {
         stdout = [[
