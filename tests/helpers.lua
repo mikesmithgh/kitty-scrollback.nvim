@@ -356,6 +356,15 @@ M.control_d = function()
   }
 end
 
+M.clear = function()
+  return {
+    [[\f]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
 M.feed_kitty = function(input)
   for _, line in pairs(input) do
     local feed_opts = vim.tbl_extend('force', {

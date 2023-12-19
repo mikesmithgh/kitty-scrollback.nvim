@@ -77,8 +77,8 @@ describe('kitty-scrollback.nvim', function()
 echo '-- demo' >> README.md 
 echo '-- demo' >> lua/kitty-scrollback/init.lua
 echo '-- demo' >> lua/kitty-scrollback/api.lua
-echo '-- demo' >> lua/kitty-scrollback/health.lua
-clear]]),
+echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
+      h.with_pause_before(h.send_without_newline(h.clear())),
     })
   end)
 

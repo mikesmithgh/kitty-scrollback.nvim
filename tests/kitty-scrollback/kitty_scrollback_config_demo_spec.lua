@@ -76,9 +76,9 @@ describe('kitty-scrollback.nvim', function()
       :wait()
 
     h.feed_kitty({
-      [[source ]] .. ksb_dir .. [[tests/bashrc]],
-      [[cd ]] .. ksb_work_dir,
-      [[clear]],
+      h.send_as_string([[source ]] .. ksb_dir .. [[tests/bashrc]]),
+      h.send_as_string([[cd ]] .. ksb_work_dir),
+      h.with_pause_before(h.send_without_newline(h.clear())),
     })
   end)
 

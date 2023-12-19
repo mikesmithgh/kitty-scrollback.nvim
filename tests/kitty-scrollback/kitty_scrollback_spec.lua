@@ -45,6 +45,10 @@ describe('kitty-scrollback.nvim', function()
     end, 500)
 
     assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
+
+    h.feed_kitty({
+      h.with_pause_before(h.send_without_newline(h.clear())),
+    })
   end)
 
   after_each(function()
