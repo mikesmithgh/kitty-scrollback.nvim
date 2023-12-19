@@ -238,6 +238,8 @@ Show clicked command plaintext output in kitty-scrollback.nvim
   M.move_forward_one_prompt()
 end
 
+local next_as_line = false
+
 M.feed_kitty = function(input)
   for _, line in pairs(input) do
     if line == 'pause' then
@@ -246,10 +248,15 @@ M.feed_kitty = function(input)
       M.pause()
       M.kitty_remote_kitten_kitty_scrollback_nvim()
       M.pause()
-    elseif line:match('^\\') then
+    elseif line == '__next_as_line' then
+      next_as_line = true
+    elseif line:match('^\\') or next_as_line then
       M.pause(0.2)
       M.kitty_remote_send_text(line)
       M.pause(0.2)
+      if next_as_line then
+        next_as_line = false
+      end
     else
       line:gsub('.', function(c)
         M.kitty_remote_send_text(c)
@@ -338,12 +345,12 @@ M.assert_screen_equals = function(actual, expected, ...)
   if actual_rstrip ~= expected_rstrip then
     debug_print_differences(actual_rstrip, expected_rstrip)
   end
-  assert.are.equal(actual_rstrip, expected_rstrip, ...)
+  assert.are.equal(expected_rstrip, actual_rstrip, ...)
   if expected.cursor_y then
-    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+    assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
   if expected.cursor_x then
-    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+    assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
   end
 end
 
@@ -363,13 +370,12 @@ M.assert_screen_starts_with = function(actual, expected, ...)
   if actual_rstrip ~= expected_rstrip then
     debug_print_differences(actual_rstrip, expected_rstrip)
   end
-  assert.are.equal(actual_rstrip, expected_rstrip, ...)
-  assert.is_not_true(actual_rstrip:match(expected.stdout), ...)
+  assert.are.equal(expected_rstrip, actual_rstrip, ...)
   if expected.cursor_y then
-    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+    assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
   if expected.cursor_x then
-    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+    assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
   end
 end
 
@@ -385,10 +391,10 @@ M.assert_screen_match = function(actual, expected, ...)
   assert.is_true(actual_rstrip:match(expected.pattern), ...)
   assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
   if expected.cursor_y then
-    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+    assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
   if expected.cursor_x then
-    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+    assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
   end
 end
 
@@ -403,10 +409,10 @@ M.assert_screen_not_match = function(actual, expected, ...)
   })
   assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
   if expected.cursor_y then
-    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+    assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
   if expected.cursor_x then
-    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+    assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
   end
 end
 
