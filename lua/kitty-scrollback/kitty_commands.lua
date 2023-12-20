@@ -127,10 +127,11 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
     get_text_opts
   )
   local sed_cmd = [[sed -E ]]
+    .. [[ -e 's/\r//g' ]]
     .. [[-e 's/(.*)\x1b]8;.*;.*\x1b\\(.*)/\1\2/g' ]]
     .. [[-e 's/\x1b]133;[AC].*\x1b\\//g' ]] --replace shell integration prompt marks https://sw.kovidgoyal.net/kitty/shell-integration/#notes-for-shell-developers
     .. [[-e 's/(.*)\x1b\[\?25.\x1b\[.*;.*H\x1b\[(\?12.|.+ q)(.*)/\1\3/g' ]] -- remove control sequence added by --add-cursor flag see https://github.com/kovidgoyal/kitty/blob/ec8b7853c55897bfcee5997dbd7cea734bdc2982/kitty/window.py#L346
-    .. [[-e 's/$(.+)/\x1b[m\1/g' ]] -- append all lines with reset to avoid unintended colors
+    .. [[-e 's/(.+)$/\x1b[m\1/g' ]] -- append all lines with reset to avoid unintended colors
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
   local start_set_title_cmd = [[printf '\x1b]2;']]

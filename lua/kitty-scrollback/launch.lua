@@ -222,7 +222,7 @@ end
 
 local set_cursor_position = vim.schedule_wrap(function(d)
   local tab_offset = ksb_util.tab_offset()
-  local add_cursor_offset = 1
+  local add_cursor_offset = 0
   local x = d.cursor_x - 1
   local y = d.cursor_y - add_cursor_offset - tab_offset
   local scrolled_by = d.scrolled_by
@@ -231,8 +231,8 @@ local set_cursor_position = vim.schedule_wrap(function(d)
     -- adjust when on first line of terminal
     lines = lines + math.abs(y)
     y = 0
-  elseif y > lines - 2 then
-    y = lines - 2
+  elseif y > 0 then
+    y = y - 1
   end
   local last_line = vim.fn.line('$')
 
@@ -396,7 +396,7 @@ M.launch = function()
       extent = '--extent=' .. extent_opt
     end
 
-    local add_cursor = '--add-cursor' -- always add cursor, add cursor has the important side effect of padding the bottom lines with empty strings
+    local add_cursor = '--add-wrap-markers' -- always add cursor, add cursor has the important side effect of padding the bottom lines with empty strings
 
     local get_text_opts = ansi .. ' ' .. clear_selection .. ' ' .. add_cursor .. ' ' .. extent
 
@@ -409,7 +409,9 @@ M.launch = function()
       vim.o.columns = min_cols
     end
     vim.schedule(function()
+      vim.opt.eventignore:append('all')
       ksb_kitty_cmds.get_text_term(kitty_data, get_text_opts, function()
+        vim.opt.eventignore:remove('all')
         -- NOTE(#58): nvim v0.9 support
         -- vim.o.columns is resized automatically in nvim v0.9.1 when we trigger kitty so send a SIGWINCH signal
         -- vim.o.columns is explicitly set to resize appropriatley on v0.9.0

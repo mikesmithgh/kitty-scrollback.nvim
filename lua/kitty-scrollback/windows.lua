@@ -86,7 +86,7 @@ M.open_paste_window = function(start_insert)
     }
   end
 
-  local lnum = p.pos.cursor_line - p.pos.win_first_line - 1
+  local lnum = p.pos.cursor_line - p.pos.win_first_line
   local col = p.pos.col + 1
 
   -- TermEnter may position cursor at the end of file with extra blank lines
