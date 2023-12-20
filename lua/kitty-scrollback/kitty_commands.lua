@@ -120,25 +120,20 @@ local system_handle_error = function(cmd, sys_opts, ignore_error)
 end
 
 M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
-  local esc = vim.fn.eval([["\e"]])
   local kitty_get_text_cmd = string.format(
     [[%s @ get-text --match="id:%s" %s]],
     p.kitty_data.kitty_path,
     kitty_data.window_id,
     get_text_opts
   )
-  local sed_cmd = string.format(
-    [[sed -E ]]
-      .. [[-e 's/%s\[\?25.%s\[.*;.*H%s\[.*//g' ]] -- remove control sequence added by --add-cursor flag
-      .. [[-e 's/$/%s[0m/g' ]], -- append all lines with reset to avoid unintended colors
-    esc,
-    esc,
-    esc,
-    esc
-  )
+  local sed_cmd = [[sed -E ]]
+    .. [[-e 's/(.*)\x1b]8;.*;.*\x1b\\(.*)/\1\2/g' ]]
+    .. [[-e 's/\x1b]133;[AC].*\x1b\\//g' ]] --replace shell integration prompt marks https://sw.kovidgoyal.net/kitty/shell-integration/#notes-for-shell-developers
+    .. [[-e 's/(.*)\x1b\[\?25.\x1b\[.*;.*H\x1b\[(\?12.|.+ q)(.*)/\1\3/g' ]] -- remove control sequence added by --add-cursor flag see https://github.com/kovidgoyal/kitty/blob/ec8b7853c55897bfcee5997dbd7cea734bdc2982/kitty/window.py#L346
+    .. [[-e 's/$(.+)/\x1b[m\1/g' ]] -- append all lines with reset to avoid unintended colors
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
-  local start_set_title_cmd = string.format([[printf '%s]2;']], esc)
+  local start_set_title_cmd = [[printf '\x1b]2;']]
   local full_cmd = kitty_get_text_cmd
     .. ' | '
     .. sed_cmd
@@ -176,7 +171,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
           local tail_count = tail_diff < 1 and 1 or math.min(tail_diff, #stdout)
           for i = #stdout, tail_count, -1 do
             -- see for match kitty/tools/cli/markup/prettify.go ans.Err = fmt_ctx.SprintFunc("bold fg=bright-red") -- cspell:disable-linea
-            if stdout[i]:match('^' .. esc .. '%[1;91mError' .. esc .. '%[221;39m: .*') then
+            if stdout[i]:match([[^\x1b%[1;91mError\x1b%[221;39m: .*]]) then
               error_index = i
               break
             end
@@ -192,7 +187,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
                 vim.tbl_map(function(line)
                   return line
                     :gsub('[\27\155][][()#:;?%d]*[A-PRZcf-ntqry=><~]', '')
-                    :gsub(esc .. '\\', '')
+                    :gsub('\x1b\\', '')
                     :gsub(';k=s', '')
                 end, stdout),
                 '\n'
@@ -207,7 +202,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
             and table
               .concat(stdout, '\n', math.max(#stdout - tail_max, 1), #stdout)
               :gsub('[\27\155][][()#:;?%d]*[A-PRZcf-ntqry=><~]', '')
-              :gsub('' .. esc .. '\\', '')
+              :gsub('\x1b\\', '')
               :gsub(';k=s', '')
           or nil
         display_error(full_cmd, {

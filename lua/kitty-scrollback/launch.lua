@@ -222,14 +222,17 @@ end
 
 local set_cursor_position = vim.schedule_wrap(function(d)
   local tab_offset = ksb_util.tab_offset()
+  local add_cursor_offset = 1
   local x = d.cursor_x - 1
-  local y = d.cursor_y - 1 - tab_offset
+  local y = d.cursor_y - add_cursor_offset - tab_offset
   local scrolled_by = d.scrolled_by
   local lines = d.lines - tab_offset
   if y < 0 then
     -- adjust when on first line of terminal
     lines = lines + math.abs(y)
     y = 0
+  elseif y > lines - 2 then
+    y = lines - 2
   end
   local last_line = vim.fn.line('$')
 
@@ -393,7 +396,7 @@ M.launch = function()
       extent = '--extent=' .. extent_opt
     end
 
-    local add_cursor = '--add-cursor' -- always add cursor
+    local add_cursor = '--add-cursor' -- always add cursor, add cursor has the important side effect of padding the bottom lines with empty strings
 
     local get_text_opts = ansi .. ' ' .. clear_selection .. ' ' .. add_cursor .. ' ' .. extent
 
