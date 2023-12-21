@@ -86,8 +86,8 @@ M.open_paste_window = function(start_insert)
     }
   end
 
-  -- removed 1 because one line is no longer at the bottom since --add-cursor was removed
-  local lnum = p.pos.cursor_line - p.pos.win_first_line
+  -- CANCELLED removed 1 because one line is no longer at the bottom since --add-cursor was removed
+  local lnum = p.pos.cursor_line - p.pos.win_first_line - 1
   local col = p.pos.col + 1
 
   -- TermEnter may position cursor at the end of file with extra blank lines
