@@ -4,6 +4,8 @@ TIMEOUT_MINS := $(shell echo $$((30 * 60 * 1000)))
 
 
 .PHONY: test
+.PHONY: test-all
+.PHONY: test-all-sequential
 .PHONY: test-demo
 .PHONY: test-demo-main
 .PHONY: test-demo-config
@@ -21,6 +23,13 @@ test-all:
 		--noplugin \
 		-u ${TESTS_INIT} \
 		-c "lua require([[plenary.test_harness]]).test_directory([[tests]], { minimal_init = '"${TESTS_INIT}"', timeout = "${TIMEOUT_MINS}", })"
+
+test-all-sequential:
+	@nvim \
+		--headless \
+		--noplugin \
+		-u ${TESTS_INIT} \
+		-c "lua require([[plenary.test_harness]]).test_directory([[tests]], { minimal_init = '"${TESTS_INIT}"', timeout = "${TIMEOUT_MINS}", sequential = true, })"
 
 test-demo:
 	@nvim \

@@ -60,7 +60,8 @@ jobs:
         sudo apt install -f
         cd "$GITHUB_WORKSPACE" || exit 1
         export PATH="/opt/TurboVNC/bin:$PATH"
-        vncserver -SecurityTypes None
+        vncserver -geometry 2560x1080 -SecurityTypes None
+        echo 'export PATH="/opt/TurboVNC/bin:$PATH"' >> "$HOME/.bashrc"
 
     - name: (debug) Setup ngrok session
       if: ${{ inputs.enable_debug_vnc }}
@@ -96,5 +97,5 @@ jobs:
         echo 'export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH' >> "$HOME/.bashrc"
         echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
         echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"
-        make test
+        make test-all-sequential
 

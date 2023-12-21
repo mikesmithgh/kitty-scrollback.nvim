@@ -41,6 +41,7 @@ local color_string = function(color, str)
   )
 end
 
+---@diagnostic disable-next-line: unused-vararg
 M.ignore = function(desc, ...)
   print(color_string('yellow', 'Ignored'), '||', desc)
 end
@@ -150,7 +151,7 @@ M.kitty_remote_kitten_kitty_scroll_prompt = function(direction, select_cmd_outpu
   )
 end
 
-M.pause = function(delay)
+M.pause_seconds = function(delay)
   vim.uv.sleep((delay or 0.5) * 1000)
 end
 
@@ -160,7 +161,7 @@ M.kitty_remote_kitten_kitty_scroll_prompt_and_pause = function(direction, select
       .system(M.kitty_remote_kitten_kitty_scroll_prompt_cmd(direction, select_cmd_output), ...)
       :wait()
   )
-  M.pause(1)
+  M.pause_seconds(1)
   return result
 end
 
@@ -185,28 +186,28 @@ end
 M.ksb = function(config_type, ksb_args, opts)
   local o = opts or {}
   M.kitty_remote_kitten_kitty_scrollback_nvim(ksb_args)
-  M.pause(o.before)
+  M.pause_seconds(o.before)
   if o.show_text == nil or o.show_text then
     M.kitty_remote_send_text([[a]])
-    M.pause()
+    M.pause_seconds()
     M.kitty_remote_send_text(
       [[# ]] .. config_type .. [[ > kitty_scrollback_nvim ]] .. vim.fn.join(ksb_args or {}, ' ')
     )
     M.kitty_remote_send_text([[\e0]])
   end
-  M.pause()
+  M.pause_seconds()
   if o.msg then
-    M.pause()
+    M.pause_seconds()
     M.kitty_remote_send_text([[o]])
-    M.pause()
+    M.pause_seconds()
     M.kitty_remote_send_text(o.msg)
     M.kitty_remote_send_text([[\egg0]])
   end
-  M.pause(o.after or 4)
+  M.pause_seconds(o.after or 4)
   if not o.keep_open then
     M.kitty_remote_close_window()
   end
-  M.pause()
+  M.pause_seconds()
 end
 
 M.ksb_b = function(...)
@@ -238,9 +239,7 @@ Show clicked command plaintext output in kitty-scrollback.nvim
   M.move_forward_one_prompt()
 end
 
-local next_as_line = false
-
-M.with_pause_before = function(input, delay)
+M.with_pause_seconds_before = function(input, delay)
   if type(input) == 'string' then
     return {
       input,
@@ -375,16 +374,15 @@ M.feed_kitty = function(input)
 
     if feed_opts.pause_before then
       if type(feed_opts.pause_before) == 'boolean' then
-        M.pause()
+        M.pause_seconds()
       else
-        M.pause(feed_opts.pause_before)
+        M.pause_seconds(feed_opts.pause_before)
       end
     end
 
     if feed_opts.open_kitty_scrollback_nvim then
-      M.pause()
       M.kitty_remote_kitten_kitty_scrollback_nvim()
-      M.pause()
+      M.pause_seconds()
     else
       local content = line
       if type(line) == 'table' then
@@ -392,13 +390,13 @@ M.feed_kitty = function(input)
       end
 
       if feed_opts.send_by == 'string' then
-        M.pause(0.2)
+        M.pause_seconds(0.2)
         M.kitty_remote_send_text(content)
-        M.pause(0.2)
+        M.pause_seconds(0.2)
       elseif feed_opts.send_by == 'char' then
         content:gsub('.', function(c)
           M.kitty_remote_send_text(c)
-          M.pause(0.03)
+          M.pause_seconds(0.03)
         end)
       end
       if feed_opts.newline then
@@ -406,7 +404,7 @@ M.feed_kitty = function(input)
       end
     end
   end
-  M.pause(3) -- longer pause for linux
+  M.pause_seconds(3) -- longer pause for linux
 
   local stdout = M.debug(M.kitty_remote_get_text()).stdout
   local last_line = stdout:match('.*\n(.*)\n')

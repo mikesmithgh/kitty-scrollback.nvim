@@ -55,7 +55,7 @@ describe('kitty-scrollback.nvim', function()
     end, 500)
 
     assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
-    h.pause()
+    h.pause_seconds()
 
     local ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/kitty-scrollback.nvim'
     local is_directory = vim.fn.isdirectory(ksb_work_dir) > 0
@@ -72,13 +72,14 @@ describe('kitty-scrollback.nvim', function()
       :wait()
 
     h.feed_kitty({
+      h.send_as_string([[source ]] .. ksb_dir .. [[tests/bashrc]]),
       h.send_as_string([[cd ]] .. ksb_work_dir),
       h.send_as_string([[
 echo '-- demo' >> README.md 
 echo '-- demo' >> lua/kitty-scrollback/init.lua
 echo '-- demo' >> lua/kitty-scrollback/api.lua
 echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
-      h.with_pause_before(h.send_without_newline(h.clear())),
+      h.with_pause_seconds_before(h.send_without_newline(h.clear())),
     })
   end)
 
@@ -103,19 +104,18 @@ echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
         h.send_without_newline([[git add ]]),
         h.send_without_newline(h.esc()),
         h.send_without_newline(h.control_enter()),
-        h.with_pause_before([[git status]]),
+        h.with_pause_seconds_before([[git status]], 1),
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[6k3VyggOlolcat <<EOF]]),
+        h.send_without_newline([[6k3VyggO]]),
+        [[printf "\\033[0m\\033[38;2;167;192;128m"]],
+        h.send_without_newline([[cat <<EOF]]),
         h.send_without_newline(h.esc()),
         h.shift_enter(),
         [[EOF]],
-        h.with_pause_before(h.send_without_newline([[echo nice]])),
-        h.with_pause_before(h.open_kitty_scrollback_nvim()),
+        h.with_pause_seconds_before(h.open_kitty_scrollback_nvim()),
         h.send_without_newline([[a]]),
         h.send_without_newline(h.esc()),
-        h.send_without_newline(
-          [[g?a | cowsay -f /opt/homebrew/share/cows/stegosaurus.cow | lolcat]]
-        ),
+        h.send_without_newline([[g?aloldino]]),
         h.send_without_newline(h.esc()),
         h.send_without_newline(h.control_enter()),
       }),
@@ -149,7 +149,8 @@ Changes to be committed:
 	modified:   lua/kitty-scrollback/health.lua
 	modified:   lua/kitty-scrollback/init.lua
 
-$ lolcat <<EOF
+$ printf "\033[0m\033[38;2;167;192;128m"
+cat <<EOF
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
         modified:   lua/kitty-scrollback/api.lua
@@ -157,14 +158,14 @@ Changes to be committed:
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
         modified:   lua/kitty-scrollback/api.lua
-$ echo nice  | cowsay -f /opt/homebrew/share/cows/stegosaurus.cow | lolcat
+$  loldino
  ______ 
-< nice >
+( nice )
  ------ 
-\                             .       .
- \                           / `.   .' " 
-  \                  .---.  <    > <    >  .---.
-   \                 |    \  \ - ~ ~ - /  /    |
+o                             .       .
+ o                           / `.   .' " 
+  o                  .---.  <    > <    >  .---.
+   o                 |    \  \ - ~ ~ - /  /    |
          _____          ..-~             ~-..-~
         |     |   \~~~\.'                    `./~~~/
        ---------   \__/                        \__/

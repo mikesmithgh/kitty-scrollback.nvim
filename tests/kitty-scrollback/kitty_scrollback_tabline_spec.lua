@@ -47,16 +47,16 @@ describe('kitty-scrollback.nvim', function()
     assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
 
     h.feed_kitty({
-      h.with_pause_before(h.send_without_newline(h.clear())),
+      h.with_pause_seconds_before(h.send_without_newline(h.clear())),
     })
   end)
 
   after_each(function()
-    -- kitty_instance:kill(2)
+    kitty_instance:kill(2)
     kitty_instance = nil
   end)
 
-  h.ignore('should position paste window at prompt when showtabline=0', function()
+  it('should position paste window at prompt when showtabline=0', function()
     h.assert_screen_equals(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
@@ -88,7 +88,7 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
     )
   end)
 
-  h.ignore('should position paste window at prompt when showtabline=1 and one tab', function()
+  it('should position paste window at prompt when showtabline=1 and one tab', function()
     h.assert_screen_equals(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
@@ -120,7 +120,7 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
     )
   end)
 
-  h.ignore('should position paste window at prompt when showtabline=1 and two tabs', function()
+  it('should position paste window at prompt when showtabline=1 and two tabs', function()
     h.assert_screen_equals(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
