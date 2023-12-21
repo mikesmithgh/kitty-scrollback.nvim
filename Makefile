@@ -4,6 +4,8 @@ TIMEOUT_MINS := $(shell echo $$((30 * 60 * 1000)))
 
 
 .PHONY: test
+.PHONY: test-all
+.PHONY: test-all-sequential
 .PHONY: test-demo
 .PHONY: test-demo-main
 .PHONY: test-demo-config

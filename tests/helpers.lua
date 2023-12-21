@@ -41,6 +41,7 @@ local color_string = function(color, str)
   )
 end
 
+---@diagnostic disable-next-line: unused-vararg
 M.ignore = function(desc, ...)
   print(color_string('yellow', 'Ignored'), '||', desc)
 end
@@ -237,8 +238,6 @@ Show clicked command plaintext output in kitty-scrollback.nvim
   )
   M.move_forward_one_prompt()
 end
-
-local next_as_line = false
 
 M.with_pause_seconds_before = function(input, delay)
   if type(input) == 'string' then
