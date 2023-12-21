@@ -40,7 +40,7 @@ make test
       ```sh
       export PATH="/opt/TurboVNC/bin:$PATH"
       vncserver -kill :1
-      vncserver -SecurityTypes None
+      vncserver -geometry 2560x1080 -SecurityTypes None
       ```
   - Check `enable_debug_tmate` to enable tmate debugging
     - This allows you to connect to the Github runner via ssh

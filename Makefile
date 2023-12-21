@@ -22,6 +22,13 @@ test-all:
 		-u ${TESTS_INIT} \
 		-c "lua require([[plenary.test_harness]]).test_directory([[tests]], { minimal_init = '"${TESTS_INIT}"', timeout = "${TIMEOUT_MINS}", })"
 
+test-all-sequential:
+	@nvim \
+		--headless \
+		--noplugin \
+		-u ${TESTS_INIT} \
+		-c "lua require([[plenary.test_harness]]).test_directory([[tests]], { minimal_init = '"${TESTS_INIT}"', timeout = "${TIMEOUT_MINS}", sequential = true, })"
+
 test-demo:
 	@nvim \
 		--headless \
