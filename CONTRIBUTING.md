@@ -35,6 +35,13 @@ make test
 - Run the worklow [tests](https://github.com/mikesmithgh/kitty-scrollback.nvim/actions/workflows/tests.yml)
   - Check `enable_debug_vnc` to enable TurboVNC, ngrok, and tmate debugging
     - This allows you to connect to the Github runner via vnc (for GUI) and ssh
+    - Troubleshooting:
+      - If the Github runner timers out and requires a login, you can ssh into the tmate session and restart VNC.
+      ```sh
+      export PATH="/opt/TurboVNC/bin:$PATH"
+      vncserver -kill :1
+      vncserver -geometry 2560x1080 -SecurityTypes None
+      ```
   - Check `enable_debug_tmate` to enable tmate debugging
     - This allows you to connect to the Github runner via ssh
 

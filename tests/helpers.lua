@@ -41,6 +41,7 @@ local color_string = function(color, str)
   )
 end
 
+---@diagnostic disable-next-line: unused-vararg
 M.ignore = function(desc, ...)
   print(color_string('yellow', 'Ignored'), '||', desc)
 end
@@ -150,7 +151,7 @@ M.kitty_remote_kitten_kitty_scroll_prompt = function(direction, select_cmd_outpu
   )
 end
 
-M.pause = function(delay)
+M.pause_seconds = function(delay)
   vim.uv.sleep((delay or 0.5) * 1000)
 end
 
@@ -160,7 +161,7 @@ M.kitty_remote_kitten_kitty_scroll_prompt_and_pause = function(direction, select
       .system(M.kitty_remote_kitten_kitty_scroll_prompt_cmd(direction, select_cmd_output), ...)
       :wait()
   )
-  M.pause(1)
+  M.pause_seconds(1)
   return result
 end
 
@@ -185,28 +186,28 @@ end
 M.ksb = function(config_type, ksb_args, opts)
   local o = opts or {}
   M.kitty_remote_kitten_kitty_scrollback_nvim(ksb_args)
-  M.pause(o.before)
+  M.pause_seconds(o.before)
   if o.show_text == nil or o.show_text then
     M.kitty_remote_send_text([[a]])
-    M.pause()
+    M.pause_seconds()
     M.kitty_remote_send_text(
       [[# ]] .. config_type .. [[ > kitty_scrollback_nvim ]] .. vim.fn.join(ksb_args or {}, ' ')
     )
     M.kitty_remote_send_text([[\e0]])
   end
-  M.pause()
+  M.pause_seconds()
   if o.msg then
-    M.pause()
+    M.pause_seconds()
     M.kitty_remote_send_text([[o]])
-    M.pause()
+    M.pause_seconds()
     M.kitty_remote_send_text(o.msg)
     M.kitty_remote_send_text([[\egg0]])
   end
-  M.pause(o.after or 4)
+  M.pause_seconds(o.after or 4)
   if not o.keep_open then
     M.kitty_remote_close_window()
   end
-  M.pause()
+  M.pause_seconds()
 end
 
 M.ksb_b = function(...)
@@ -238,26 +239,173 @@ Show clicked command plaintext output in kitty-scrollback.nvim
   M.move_forward_one_prompt()
 end
 
+M.with_pause_seconds_before = function(input, delay)
+  if type(input) == 'string' then
+    return {
+      input,
+      opts = {
+        pause_before = delay or true,
+      },
+    }
+  else
+    return {
+      input[1],
+      opts = vim.tbl_extend('force', input.opts, {
+        pause_before = delay or true,
+      }),
+    }
+  end
+end
+
+M.send_as_string = function(input)
+  if type(input) == 'string' then
+    return {
+      input,
+      opts = {
+        send_by = 'string',
+      },
+    }
+  else
+    return {
+      input[1],
+      opts = vim.tbl_extend('force', input.opts, {
+        send_by = 'string',
+      }),
+    }
+  end
+end
+
+M.send_without_newline = function(input)
+  if type(input) == 'string' then
+    return {
+      input,
+      opts = {
+        newline = false,
+      },
+    }
+  else
+    return {
+      input[1],
+      opts = vim.tbl_extend('force', input.opts, {
+        newline = false,
+      }),
+    }
+  end
+end
+
+M.open_kitty_scrollback_nvim = function()
+  return {
+    opts = {
+      open_kitty_scrollback_nvim = true,
+    },
+  }
+end
+
+M.control_enter = function()
+  return {
+    [[\x1b[13;5u]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.shift_enter = function()
+  return {
+    [[\x1b[13;2u]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.enter = function()
+  return {
+    [[\n]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.control_v = function()
+  return {
+    [[\x16]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.esc = function()
+  return {
+    [[\x1b]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.control_d = function()
+  return {
+    [[\x04]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.clear = function()
+  return {
+    [[\f]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
 M.feed_kitty = function(input)
   for _, line in pairs(input) do
-    if line == 'pause' then
-      M.pause()
-    elseif line == '__open_ksb' then
-      M.pause()
+    local feed_opts = vim.tbl_extend('force', {
+      send_by = 'char',
+      newline = true,
+      open_kitty_scrollback_nvim = false,
+    }, (type(line) == 'table' and line.opts) and line.opts or {})
+
+    if feed_opts.pause_before then
+      if type(feed_opts.pause_before) == 'boolean' then
+        M.pause_seconds()
+      else
+        M.pause_seconds(feed_opts.pause_before)
+      end
+    end
+
+    if feed_opts.open_kitty_scrollback_nvim then
+      M.pause_seconds()
       M.kitty_remote_kitten_kitty_scrollback_nvim()
-      M.pause()
-    elseif line:match('^\\') then
-      M.pause(0.2)
-      M.kitty_remote_send_text(line)
-      M.pause(0.2)
+      M.pause_seconds()
     else
-      line:gsub('.', function(c)
-        M.kitty_remote_send_text(c)
-        M.pause(0.03)
-      end)
+      local content = line
+      if type(line) == 'table' then
+        content = line[1]
+      end
+
+      if feed_opts.send_by == 'string' then
+        M.pause_seconds(0.2)
+        M.kitty_remote_send_text(content)
+        M.pause_seconds(0.2)
+      elseif feed_opts.send_by == 'char' then
+        content:gsub('.', function(c)
+          M.kitty_remote_send_text(c)
+          M.pause_seconds(0.03)
+        end)
+      end
+      if feed_opts.newline then
+        M.kitty_remote_send_text('\n')
+      end
     end
   end
-  M.pause(3) -- longer pause for linux
+  M.pause_seconds(3) -- longer pause for linux
 
   local stdout = M.debug(M.kitty_remote_get_text()).stdout
   local last_line = stdout:match('.*\n(.*)\n')
@@ -338,12 +486,12 @@ M.assert_screen_equals = function(actual, expected, ...)
   if actual_rstrip ~= expected_rstrip then
     debug_print_differences(actual_rstrip, expected_rstrip)
   end
-  assert.are.equal(actual_rstrip, expected_rstrip, ...)
+  assert.are.equal(expected_rstrip, actual_rstrip, ...)
   if expected.cursor_y then
-    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+    assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
   if expected.cursor_x then
-    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+    assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
   end
 end
 
@@ -363,13 +511,12 @@ M.assert_screen_starts_with = function(actual, expected, ...)
   if actual_rstrip ~= expected_rstrip then
     debug_print_differences(actual_rstrip, expected_rstrip)
   end
-  assert.are.equal(actual_rstrip, expected_rstrip, ...)
-  assert.is_not_true(actual_rstrip:match(expected.stdout), ...)
+  assert.are.equal(expected_rstrip, actual_rstrip, ...)
   if expected.cursor_y then
-    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+    assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
   if expected.cursor_x then
-    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+    assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
   end
 end
 
@@ -385,10 +532,10 @@ M.assert_screen_match = function(actual, expected, ...)
   assert.is_true(actual_rstrip:match(expected.pattern), ...)
   assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
   if expected.cursor_y then
-    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+    assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
   if expected.cursor_x then
-    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+    assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
   end
 end
 
@@ -403,10 +550,10 @@ M.assert_screen_not_match = function(actual, expected, ...)
   })
   assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
   if expected.cursor_y then
-    assert.are.equal(actual.cursor_y, expected.cursor_y, ...)
+    assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
   if expected.cursor_x then
-    assert.are.equal(actual.cursor_x, expected.cursor_x, ...)
+    assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
   end
 end
 
