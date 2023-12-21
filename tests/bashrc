@@ -2,7 +2,7 @@
 # Test the terminal's text/color capabilities
 colortest() {
 	local color escapes intensity style
-	echo "NORMAL bold  dim   itali under rever strik  BRIGHT bold  dim   itali under rever strik"
+	echo "NORMAL bold  dim   itali under rever strik  BRIGHT bold  dim   itali under rever strik" # cspell:disable-line
 	for color in $(seq 0 7); do
 		for intensity in 3 9; do # normal, bright
 			escapes="${intensity}${color}"
