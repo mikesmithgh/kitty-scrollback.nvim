@@ -55,7 +55,7 @@ describe('kitty-scrollback.nvim', function()
     end, 500)
 
     assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
-    h.pause()
+    h.pause_seconds()
 
     local ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/kitty-scrollback.nvim'
     local is_directory = vim.fn.isdirectory(ksb_work_dir) > 0
@@ -74,7 +74,7 @@ describe('kitty-scrollback.nvim', function()
     h.feed_kitty({
       h.send_as_string([[source ]] .. ksb_dir .. [[tests/bashrc]]),
       h.send_as_string([[cd ]] .. ksb_work_dir),
-      h.with_pause_before(h.send_without_newline(h.clear())),
+      h.with_pause_seconds_before(h.send_without_newline(h.clear())),
     })
   end)
 
@@ -96,10 +96,9 @@ colortest
 
 ]],
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[a# builtin > kitty_scrollback_nvim]]),
-        h.send_without_newline(h.esc()),
-        h.send_without_newline([[0o]]),
+        h.send_without_newline([[a]]),
         h.send_without_newline([[
+# builtin > kitty_scrollback_nvim
 default configuration for the keymap `kitty_mod+h`
 
 Browse scrollback buffer in kitty-scrollback.nvim 

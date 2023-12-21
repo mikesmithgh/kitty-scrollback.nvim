@@ -47,7 +47,7 @@ describe('kitty-scrollback.nvim', function()
     assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
 
     h.feed_kitty({
-      h.with_pause_before(h.send_without_newline(h.clear())),
+      h.with_pause_seconds_before(h.send_without_newline(h.clear())),
     })
   end)
 
@@ -60,7 +60,7 @@ describe('kitty-scrollback.nvim', function()
   it('should use correct kitty path during brew command', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_before([[brew search a]]),
+        h.with_pause_seconds_before([[brew search a]]),
         h.open_kitty_scrollback_nvim(),
       }),
       {
