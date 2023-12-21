@@ -42,10 +42,6 @@ local kitty_cmd = h.debug({
   '-', -- read session from stdin
 })
 
-local cowthink_stdout = vim
-  .system({ 'cowthink', '-f', '/opt/homebrew/share/cows/stegosaurus.cow', 'nice @' .. h.now() })
-  :wait().stdout or ''
-
 describe('kitty-scrollback.nvim', function()
   before_each(function()
     vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
@@ -91,20 +87,14 @@ describe('kitty-scrollback.nvim', function()
     h.assert_screen_equals(
       h.feed_kitty({
         [[
-printf "\\033[0m\\033[38;2;167;192;128m\\n" &&
-figlet -f cyberlarge -c -w 165 kitty-scrollback.nvim &&
-printf "\\033[0m\\n"
-eza --tree --icons ../kitty-scrollback.nvim/lua
-lolcat --freq=0.15 --spread=1.5 --truecolor -
-]],
-        h.with_pause_before(h.send_without_newline(h.send_as_string(cowthink_stdout))),
-        h.send_without_newline(h.control_d()),
-        [[figlet -f cyberlarge -c -w 165 kitty-scrollback.nvim | lolcat]],
-        h.with_pause_before([[
+banner
+ksb_tree
+loldino
+lolbanner
 colortest
 
 
-]]),
+]],
         h.open_kitty_scrollback_nvim(),
         h.send_without_newline([[a# builtin > kitty_scrollback_nvim]]),
         h.send_without_newline(h.esc()),
@@ -130,7 +120,7 @@ Browse scrollback buffer in kitty-scrollback.nvim
                 ~-.__|      /_ - ~ ^|      /- _      `..-'                                                                                                       
                      |     /        |     /     ~-.     `-. _  _  _                                                                                              
                      |_____|        |_____|         ~ - . _ _ _ _ _>                                                                                             
-$ figlet -f cyberlarge -c -w 165 kitty-scrollback.nvim | lolcat                                                                                                  
+$ lolbanner
         _     _ _____ _______ _______ __   __     _______ _______  ______  _____                ______  _______ _______ _     _   __   _ _    _ _____ _______    
         |____/    |      |       |      \_/   ___ |______ |       |_____/ |     | |      |      |_____] |_____| |       |____/    | \  |  \  /    |   |  |  |    
         |    \_ __|__    |       |       |        ______| |_____  |    \_ |_____| |_____ |_____ |_____] |     | |_____  |    \_ . |  \_|   \/   __|__ |  |  |    
