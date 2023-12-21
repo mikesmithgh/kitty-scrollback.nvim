@@ -52,30 +52,6 @@ M.screaming_snakecase = function(s)
     :upper()
 end
 
---- @deprecated
---- should no longer need this because we are using set title workaround
---- to remove the process exited message
---- see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
-M.remove_process_exited = function()
-  -- TODO: delete function after verifying no longer needed
-  local last_line_range = vim.api.nvim_buf_line_count(p.bufid) - vim.o.lines
-  if last_line_range < 1 then
-    last_line_range = 1
-  end
-  local last_lines = vim.api.nvim_buf_get_lines(p.bufid, last_line_range, -1, false)
-  for i, line in pairs(last_lines) do
-    local match = line:lower():gmatch('%[process exited %d+%]')
-    if match() then
-      local target_line = last_line_range - 1 + i
-      vim.api.nvim_set_option_value('modifiable', true, { buf = p.bufid })
-      vim.api.nvim_buf_set_lines(p.bufid, target_line, target_line + 1, false, {})
-      vim.api.nvim_set_option_value('modifiable', false, { buf = p.bufid })
-      return true
-    end
-  end
-  return false
-end
-
 M.restore_and_redraw = function()
   if p.orig_columns then
     vim.o.columns = p.orig_columns
