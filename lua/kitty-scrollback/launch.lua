@@ -59,6 +59,7 @@ local M = {}
 ---@field footer_winid number|nil
 ---@field footer_bufid number|nil
 ---@field pos table|nil
+---@field block_input_timer table
 local p = {}
 
 ---@type KsbOpts
@@ -222,6 +223,7 @@ end
 
 local set_cursor_position = vim.schedule_wrap(function(d)
   local tab_offset = ksb_util.tab_offset()
+  -- removed 1 because one line is no longer at the bottom since --add-cursor was removed
   local add_cursor_offset = 0
   local x = d.cursor_x - 1
   local y = d.cursor_y - add_cursor_offset - tab_offset
@@ -232,6 +234,7 @@ local set_cursor_position = vim.schedule_wrap(function(d)
     lines = lines + math.abs(y)
     y = 0
   elseif y > 0 then
+    -- removed 1 because one line is no longer at the bottom since --add-cursor was removed
     y = y - 1
   end
   local last_line = vim.fn.line('$')
@@ -291,6 +294,11 @@ end
 ---Setup and configure kitty-scrollback.nvim
 ---@param kitty_data_str string
 M.setup = function(kitty_data_str)
+  -- block user input for a short period of time during startup to prevent unwanted mode changes and unexpected behavior
+  p.block_input_timer = vim.fn.timer_start(50, function()
+    pcall(vim.fn.getchar, 0)
+  end, { ['repeat'] = 40 })
+
   p.kitty_data = vim.fn.json_decode(kitty_data_str)
   load_requires() -- must be after p.kitty_data initialized
 
@@ -396,6 +404,7 @@ M.launch = function()
       extent = '--extent=' .. extent_opt
     end
 
+    -- adds /r but not cursor at end
     local add_cursor = '--add-wrap-markers' -- always add cursor, add cursor has the important side effect of padding the bottom lines with empty strings
 
     local get_text_opts = ansi .. ' ' .. clear_selection .. ' ' .. add_cursor .. ' ' .. extent
@@ -455,6 +464,9 @@ M.launch = function()
           end)
         end
         ksb_api.close_kitty_loading_window()
+        if p.block_input_timer then
+          vim.fn.timer_stop(p.block_input_timer)
+        end
       end)
     end)
     if

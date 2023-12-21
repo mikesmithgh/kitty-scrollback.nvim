@@ -66,6 +66,7 @@ M.remove_process_exited = function()
   for i, line in pairs(last_lines) do
     local match = line:lower():gmatch('%[process exited %d+%]')
     if match() then
+      -- removed 1 because one line is no longer at the bottom since --add-cursor was removed
       local target_line = last_line_range + i
       vim.api.nvim_set_option_value('modifiable', true, { buf = p.bufid })
       vim.api.nvim_buf_set_lines(p.bufid, target_line, target_line + 1, false, {})
