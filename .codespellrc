@@ -1,6 +1,6 @@
 [codespell]
 skip = doc
-ignore-words-list = noice
+ignore-words-list = noice,rever
 ignore-regex = .*cspell:disable-line.*
 
 # vim: filetype=toml
