@@ -415,5 +415,3 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 <!-- panvimdoc-ignore-end -->
 
--- demo
--- demo
