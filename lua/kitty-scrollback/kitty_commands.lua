@@ -127,7 +127,6 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
     get_text_opts
   )
   local sed_cmd = [[sed -E ]]
-    -- TODO: add a test for --add-wrap-makers and sed 's/\r//g'
     --       wrap markers are important to add blank lines to fill the screen when setting the cursor position but
     --       we don't actually want hard wraps because it will limit the width of content
     --       the test should start with a small width, open the scrollback, the text that is wrapping should expand past the terminal up to 300
