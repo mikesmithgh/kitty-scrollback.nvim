@@ -167,4 +167,54 @@ $
       'kitty-scrollback.nvim did not have expected bracketed paste results'
     )
   end)
+
+  it([[should remove \r wrap markers and display line up to 300 columns]], function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.send_as_string([[printf '
+
+]] .. string.rep('A', 300) .. [[
+0123456789
+']]),
+        h.open_kitty_scrollback_nvim(),
+      }),
+      {
+        stdout = h.with_status_win([[
+$ printf '
+> 
+> AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AA0123456789
+> '
+
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+0123456789
+$ 
+]]),
+        cursor_y = 12,
+        cursor_x = 3,
+      },
+      'kitty-scrollback.nvim did not have expected removed wrap marker results'
+    )
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.send_without_newline(h.esc()),
+      }),
+      {
+        stdout = [[
+$ printf '
+> 
+> AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0123456789
+> '
+
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0123456789
+$ 
+]],
+        cursor_y = 12,
+        cursor_x = 3,
+      },
+      'kitty-scrollback.nvim did not have expected wrap marker results'
+    )
+  end)
 end)
