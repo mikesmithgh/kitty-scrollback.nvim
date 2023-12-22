@@ -72,7 +72,7 @@ parse_args() {
     [ "$OS" = "macos" ] && dest="/Applications"
     launch='y'
     installer=''
-    version='latest'
+    version='stable'
     while :; do
         case "$1" in
             dest=*) dest="${1#*=}";;
@@ -100,7 +100,7 @@ get_file_url() {
 }
 
 get_release_url() {
-    if [ "$version" = 'latest' ]; then
+    if [ "$version" = 'stable' ]; then
       release_version=$(fetch_quiet "https://sw.kovidgoyal.net/kitty/current-version.txt")
     else
       release_version="$version"
