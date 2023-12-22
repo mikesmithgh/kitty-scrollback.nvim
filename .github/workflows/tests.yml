@@ -31,6 +31,14 @@ jobs:
           # 'v0.9.3' does not exist
           - 'v0.9.4'
           - 'nightly'
+        kitty_version: 
+          - '0.29.0'
+          - '0.29.1'
+          - '0.29.2'
+          - '0.30.0'
+          - '0.30.1'
+          - '0.31.0'
+          - 'nightly'
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout repository
@@ -44,7 +52,7 @@ jobs:
 
     - name: Setup Kitty
       run: |
-        curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+        "$GITHUB_WORKSPACE/scripts/installer.sh" launch=n version=${{ matrix.kitty_version }}
 
     - name: Install dependencies
       run: |
