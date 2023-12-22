@@ -57,7 +57,7 @@ jobs:
 
     - name: Setup Kitty ${{ matrix.kitty_version }}
       run: |
-        "$GITHUB_WORKSPACE/scripts/installer.sh" launch=n version=${{ matrix.kitty_version }}
+        "$GITHUB_WORKSPACE/scripts/internal/__kitty_installer.sh" launch=n version=${{ matrix.kitty_version }}
 
     - name: Install dependencies
       run: |
