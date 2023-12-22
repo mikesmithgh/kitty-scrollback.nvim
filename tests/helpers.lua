@@ -183,41 +183,6 @@ M.move_to_last_prompt = function()
   M.kitty_remote_kitten_kitty_scroll_prompt_and_pause(3)
 end
 
-M.ksb = function(config_type, ksb_args, opts)
-  local o = opts or {}
-  M.kitty_remote_kitten_kitty_scrollback_nvim(ksb_args)
-  M.pause_seconds(o.before)
-  if o.show_text == nil or o.show_text then
-    M.kitty_remote_send_text([[a]])
-    M.pause_seconds()
-    M.kitty_remote_send_text(
-      [[# ]] .. config_type .. [[ > kitty_scrollback_nvim ]] .. vim.fn.join(ksb_args or {}, ' ')
-    )
-    M.kitty_remote_send_text([[\e0]])
-  end
-  M.pause_seconds()
-  if o.msg then
-    M.pause_seconds()
-    M.kitty_remote_send_text([[o]])
-    M.pause_seconds()
-    M.kitty_remote_send_text(o.msg)
-    M.kitty_remote_send_text([[\egg0]])
-  end
-  M.pause_seconds(o.after or 4)
-  if not o.keep_open then
-    M.kitty_remote_close_window()
-  end
-  M.pause_seconds()
-end
-
-M.ksb_b = function(...)
-  M.ksb('builtin', ...)
-end
-
-M.ksb_e = function(...)
-  M.ksb('example', ...)
-end
-
 M.ksb_builtin_last_visited_cmd_output_and_move_forward = function()
   M.ksb_b({ '--config', 'ksb_builtin_last_visited_cmd_output' }, {
     msg = [[

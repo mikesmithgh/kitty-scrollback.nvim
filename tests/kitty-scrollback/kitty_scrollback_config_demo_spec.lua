@@ -42,51 +42,39 @@ local kitty_cmd = h.debug({
   '-', -- read session from stdin
 })
 
-describe('kitty-scrollback.nvim', function()
-  before_each(function()
-    vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
-    kitty_instance = vim.system(kitty_cmd, {
-      stdin = 'cd ' .. ksb_dir,
+local function before_all()
+  vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
+  kitty_instance = vim.system(kitty_cmd, {
+    stdin = 'cd ' .. ksb_dir,
+  })
+  local ready = false
+  vim.fn.wait(5000, function()
+    ready = (h.debug(h.kitty_remote_ls():wait()).code == 0)
+    return ready
+  end, 500)
+
+  assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
+  h.pause_seconds()
+
+  local ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/kitty-scrollback.nvim'
+  local is_directory = vim.fn.isdirectory(ksb_work_dir) > 0
+  if is_directory then
+    vim.system({ 'rm', '-rf', ksb_work_dir }):wait()
+  end
+  vim
+    .system({
+      'git',
+      'clone',
+      'https://github.com/mikesmithgh/kitty-scrollback.nvim',
+      ksb_work_dir,
     })
-    local ready = false
-    vim.fn.wait(5000, function()
-      ready = (h.debug(h.kitty_remote_ls():wait()).code == 0)
-      return ready
-    end, 500)
+    :wait()
 
-    assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
-    h.pause_seconds()
-
-    local ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/kitty-scrollback.nvim'
-    local is_directory = vim.fn.isdirectory(ksb_work_dir) > 0
-    if is_directory then
-      vim.system({ 'rm', '-rf', ksb_work_dir }):wait()
-    end
-    vim
-      .system({
-        'git',
-        'clone',
-        'https://github.com/mikesmithgh/kitty-scrollback.nvim',
-        ksb_work_dir,
-      })
-      :wait()
-
-    h.feed_kitty({
-      h.send_as_string([[source ]] .. ksb_dir .. [[tests/bashrc]]),
-      h.send_as_string([[cd ]] .. ksb_work_dir),
-      h.with_pause_seconds_before(h.send_without_newline(h.clear())),
-    })
-  end)
-
-  after_each(function()
-    kitty_instance:kill(2)
-    kitty_instance = nil
-  end)
-
-  it('should demo', function()
-    h.assert_screen_equals(
-      h.feed_kitty({
-        [[
+  h.feed_kitty({
+    h.send_as_string([[source ]] .. ksb_dir .. [[tests/bashrc]]),
+    h.send_as_string([[cd ]] .. ksb_work_dir),
+    h.with_pause_seconds_before(h.send_without_newline(h.clear())),
+    [[
 banner
 ksb_tree
 loldino
@@ -95,14 +83,28 @@ colortest
 
 
 ]],
+  })
+end
+
+local function after_all()
+  kitty_instance:kill(2)
+  kitty_instance = nil
+end
+
+describe('kitty-scrollback.nvim', function()
+  before_all()
+
+  it('should demo', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
         h.send_without_newline([[a]]),
-        h.send_without_newline([[
+        h.send_without_newline(h.send_as_string([[
 # builtin > kitty_scrollback_nvim
 default configuration for the keymap `kitty_mod+h`
 
 Browse scrollback buffer in kitty-scrollback.nvim 
-]]),
+]])),
         h.send_without_newline(h.esc()),
         h.send_without_newline([[gg0]]),
       }),
@@ -148,4 +150,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
       'kitty-scrollback.nvim did not position cursor on first line'
     )
   end)
+
+  after_all()
 end)
