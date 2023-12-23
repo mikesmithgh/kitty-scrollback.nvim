@@ -365,8 +365,6 @@ Show clicked command output in kitty-scrollback.nvim
 ▏                                                                                                                                                               ▕
 ▏          \y Yank                <C-CR> Execute                <S-CR> Paste                  :w Paste                g? Toggle Mappings                        ▕
 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
-
-
 ]],
           168
         ),
@@ -432,7 +430,163 @@ Show clicked command output in kitty-scrollback.nvim
         cursor_x = 2,
       }
     )
-    -- TODO: need to revisit this because there is no longer two dinos which changes result
+    h.kitty_remote_close_window()
+    h.move_forward_one_prompt()
+    h.move_forward_one_prompt()
+  end)
+
+  it('ksb_example_get_text_last_visited_cmd_output_plain', function()
+    h.move_to_first_prompt()
+
+    h.kitty_remote_kitten_kitty_scrollback_nvim({
+      '--config',
+      'ksb_example_get_text_last_visited_cmd_output_plain',
+    })
+
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.with_pause_seconds_before((h.send_without_newline([[a]]))),
+        h.send_without_newline(h.send_as_string([[
+# example > --config ksb_example_get_text_last_visited_cmd_output_plain
+Show clicked command plaintext output in kitty-scrollback.nvim
+]])),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline(h.send_as_string([[gg0]])),
+      }),
+      {
+        stdout = h.with_status_win(
+          [[
+        _     _ _____ _______ _______ __   __     _______ _______  ______  _____                ______  _______ _______ _     _   __   _ _    _ _____ ____
+        |____/    |      |       |      \_/   ___ |______ |       |_____/ |     | |      |      |_____] |_____| |       |____/    | \  |  \  /    |   |  |  |
+        |    \_ __|__    |       |       |        ______| |_____  |    \_ |_____| |_____ |_____ |_____] |     | |_____  |    \_ . |  \_|   \/   __|__ |  |  |
+
+🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
+▏# example > --config ksb_example_get_text_last_visited_cmd_output_plain                                                                                        ▕
+▏# Show clicked command plaintext output in kitty-scrollback.nvim                                                                                               ▕
+▏#                                                                                                                                                              ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+▏                                                                                                                                                               ▕
+▏          \y Yank                <C-CR> Execute                <S-CR> Paste                  :w Paste                g? Toggle Mappings                        ▕
+🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+]],
+          168
+        ),
+        cursor_y = 6,
+        cursor_x = 2,
+      }
+    )
+    h.kitty_remote_close_window()
+    h.move_forward_one_prompt()
+    h.kitty_remote_kitten_kitty_scrollback_nvim({
+      '--config',
+      'ksb_example_get_text_last_visited_cmd_output_plain',
+    })
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.with_pause_seconds_before((h.send_without_newline([[a]]))),
+        h.send_without_newline(h.send_as_string([[
+# example > --config ksb_example_get_text_last_visited_cmd_output_plain
+default configuration for the mousemap `ctrl+shift+right`
+
+Show clicked command output in kitty-scrollback.nvim
+]])),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline(h.send_as_string([[gg0]])),
+      }),
+      {
+        stdout = h.with_status_win(
+          [[
+../kitty-scrollback.nvim/lua
+└── kitty-scrollback
+   ├── api.lua
+   ├── autocommands.lua
+   ├── backport
+   │  ├── _system.lua
+   │  ├── backport-sha.json
+   │  ├── init.lua
+   │  └── README.md
+   ├── configs
+   │  ├── builtin.lua
+   │  └── example.lua
+   ├── footer_win.lua
+   ├── health.lua
+   ├── highlights.lua
+🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
+▏# example > --config ksb_example_get_text_last_visited_cmd_output_plain                                                                                        ▕
+▏# default configuration for the mousemap `ctrl+shift+right`                                                                                                    ▕
+▏#                                                                                                                                                              ▕
+▏# Show clicked command output in kitty-scrollback.nvim                                                                                                         ▕
+▏#                                                                                                                                                              ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+▏                                                                                                                                                               ▕
+🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+▏                                                                                                                                                               ▕
+▏          \y Yank                <C-CR> Execute                <S-CR> Paste                  :w Paste                g? Toggle Mappings                        ▕
+🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+]],
+          168
+        ),
+        cursor_y = 17,
+        cursor_x = 2,
+      }
+    )
+    h.kitty_remote_close_window()
+    h.move_forward_one_prompt()
+    h.move_forward_one_prompt()
+  end)
+
+  it('ksb_example_callbacks', function()
+    h.kitty_remote_kitten_kitty_scrollback_nvim({
+      '--config',
+      'ksb_example_callbacks',
+    })
+    h.assert_screen_starts_with(
+      h.feed_kitty({
+        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.send_without_newline(h.send_as_string([[
+# example > --config ksb_example_callbacks
+Capture the timestamps of when the callbacks after_setup, after_launch, and after_ready are executed
+]])),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline(h.send_as_string([[gg0]])),
+      }),
+      {
+        stdout = h.with_status_win(
+          [[
+         _____          ..-~             ~-..-~
+        |     |   \~~~\.'                    `./~~~/                                                                                                         
+       ---------   \__/                        \__/                                                                                                          
+      .'  O    \     /               /       \  "                                                                                                            
+     (_____,    `._.'               |         }  \/~~~/
+      `----.          /       }     |        /    \__/
+            `-.      |       /      |       /      `. ,~~|
+                ~-.__|      /_ - ~ ^|      /- _      `..-'   
+                     |     /        |     /     ~-.     `-. _  _  _
+                     |_____|        |_____|         ~ - . _ _ _ _ _>
+$ lolbanner    
+        _     _ _____ _______ _______ __   __     _______ _______  ______  _____                ______  _______ _______ _     _   __   _ _    _ _____ _______
+        |____/    |      |       |      \_/   ___ |______ |       |_____/ |     | |      |      |_____] |_____| |       |____/    | \  |  \  /    |   |  |  |
+        |    \_ __|__    |       |       |        ______| |_____  |    \_ |_____| |_____ |_____ |_____] |     | |_____  |    \_ . |  \_|   \/   __|__ |  |  |
+                   
+$🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
+N▏# kitty-scrollback after_setup callback triggered @]],
+          168
+        ),
+        cursor_y = 17,
+        cursor_x = 3,
+      }
+    )
+    h.kitty_remote_close_window()
   end)
 
   after_all()
