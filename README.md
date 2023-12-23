@@ -473,7 +473,13 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 ## 👏 Recommendations
 
-- My ⚡️ Lightning Talk @ Neovim Conf 2023 [Developing kitty-scrollback.nvim](https://neovimconf.live/speakers/mikesmith/) will soon be available on [NeovimConf YouTube](https://www.youtube.com/@neovimconf)
+- Check out my ⚡️ Lightning Talk @ Neovim Conf 2023 [Developing kitty-scrollback.nvim](https://youtu.be/9TINe0J9rNg?si=_ISKqAQVS2NCuSRF)!
+
+<!-- panvimdoc-ignore-start -->
+
+[![Developing kitty-scrollback.nvim NeovimConf 2023](https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/d103a326-dfac-4948-8f15-d2885e646a6c)](https://www.youtube.com/watch?v=9TINe0J9rNg)
+
+<!-- panvimdoc-ignore-end -->
 
 - The following plugins are nice additions to your Neovim and Kitty setup.
   - [vim-kitty](https://github.com/fladson/vim-kitty) - Syntax highlighting for Kitty terminal config files
