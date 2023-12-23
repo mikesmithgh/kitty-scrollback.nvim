@@ -74,18 +74,17 @@ local function before_all()
     h.send_as_string([[source ]] .. ksb_dir .. [[tests/bashrc]]),
     h.send_as_string([[cd ]] .. ksb_work_dir),
     h.with_pause_seconds_before(h.send_without_newline(h.clear())),
-    h.send_without_newline([[
-banner
-ksb_tree
-loldino
-lolbanner
-]]),
-    h.with_pause_seconds_before([[
+    h.with_pause_seconds_before(h.send_as_string([[banner]])),
+    h.with_pause_seconds_before(h.send_as_string([[ksb_tree]])),
+    h.with_pause_seconds_before(h.send_as_string([[loldino]])),
+    h.with_pause_seconds_before(h.send_as_string([[lolbanner]])),
+    h.with_pause_seconds_before(h.send_as_string([[
 colortest
 
 
-]]),
+    ]])),
   })
+  h.pause_seconds()
 end
 
 local function after_all()
