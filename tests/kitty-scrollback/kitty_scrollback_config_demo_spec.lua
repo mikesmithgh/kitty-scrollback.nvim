@@ -86,15 +86,17 @@ describe('kitty-scrollback.nvim', function()
   it('should demo', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        [[
+        h.send_without_newline([[
 banner
 ksb_tree
 loldino
 lolbanner
+]]),
+        h.with_pause_seconds_before([[
 colortest
 
 
-]],
+]]),
         h.open_kitty_scrollback_nvim(),
         h.send_without_newline([[a]]),
         h.send_without_newline([[
@@ -145,7 +147,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_y = 17,
         cursor_x = 3,
       },
-      'kitty-scrollback.nvim did not position cursor on first line'
+      'kitty-scrollback.nvim did not have expected results for builtin > kitty_scrollback_nvim'
     )
   end)
 end)
