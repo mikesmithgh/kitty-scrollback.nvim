@@ -74,15 +74,17 @@ local function before_all()
     h.send_as_string([[source ]] .. ksb_dir .. [[tests/bashrc]]),
     h.send_as_string([[cd ]] .. ksb_work_dir),
     h.with_pause_seconds_before(h.send_without_newline(h.clear())),
-    [[
+    h.send_without_newline([[
 banner
 ksb_tree
 loldino
 lolbanner
+]]),
+    h.with_pause_seconds_before([[
 colortest
 
 
-]],
+]]),
   })
 end
 
@@ -430,7 +432,7 @@ Show clicked command output in kitty-scrollback.nvim
         cursor_x = 2,
       }
     )
-    -- TODO: need to revisit this because there is not longer two dinos which changes result
+    -- TODO: need to revisit this because there is no longer two dinos which changes result
   end)
 
   after_all()
