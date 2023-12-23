@@ -330,6 +330,7 @@ M.clear = function()
 end
 
 M.feed_kitty = function(input)
+  input = input or {}
   for _, line in pairs(input) do
     local feed_opts = vim.tbl_extend('force', {
       send_by = 'char',
@@ -494,8 +495,7 @@ M.assert_screen_match = function(actual, expected, ...)
     actual_rstrip_length = #actual_rstrip,
     match = expected.pattern,
   })
-  assert.is_true(actual_rstrip:match(expected.pattern), ...)
-  assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
+  assert.is_true(actual_rstrip:match(expected.pattern) ~= nil, ...)
   if expected.cursor_y then
     assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
@@ -513,7 +513,7 @@ M.assert_screen_not_match = function(actual, expected, ...)
     actual_rstrip_length = #actual_rstrip,
     match = expected,
   })
-  assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
+  assert.is_true(actual_rstrip:match(expected.pattern) == nil, ...)
   if expected.cursor_y then
     assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
