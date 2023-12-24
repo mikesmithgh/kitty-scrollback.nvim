@@ -1,9 +1,4 @@
-local assert = require('luassert.assert')
-local h = require('tests.helpers')
-local describe = describe ---@diagnostic disable-line: undefined-global
-local it = it ---@diagnostic disable-line: undefined-global
-local after_each = after_each ---@diagnostic disable-line: undefined-global
-local before_each = before_each ---@diagnostic disable-line: undefined-global
+local h = require('tests.kitty-scrollback.helpers')
 
 h.setup_backport()
 
