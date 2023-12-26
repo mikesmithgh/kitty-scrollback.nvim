@@ -86,17 +86,16 @@ describe('kitty-scrollback.nvim', function()
   it('should demo', function()
     h.assert_screen_equals(
       h.feed_kitty({
-        h.send_without_newline([[
-banner
-ksb_tree
-loldino
-lolbanner
-]]),
-        h.with_pause_seconds_before([[
+        h.with_pause_seconds_before(h.send_as_string([[banner]])),
+        h.with_pause_seconds_before(h.send_as_string([[ksb_tree]])),
+        h.with_pause_seconds_before(h.send_as_string([[loldino]])),
+        h.with_pause_seconds_before(h.send_as_string([[lolbanner]])),
+        h.with_pause_seconds_before(h.send_as_string([[
 colortest
 
 
-]]),
+]])),
+
         h.open_kitty_scrollback_nvim(),
         h.send_without_newline([[a]]),
         h.send_without_newline([[
