@@ -55,8 +55,11 @@ local function normal_color()
 end
 
 local function pastewin_color()
-  local hl_as_normal = opts.paste_window.highlight_as_normal_win
-    or M.has_default_or_vim_colorscheme()
+  local hl_as_normal = M.has_default_or_vim_colorscheme()
+  if opts.paste_window.highlight_as_normal_win then
+    hl_as_normal = opts.paste_window.highlight_as_normal_win()
+  end
+  vim.print(hl_as_normal)
   local hl_name = hl_as_normal and 'Normal' or 'NormalFloat'
   local hl_def = vim.api.nvim_get_hl(0, { name = hl_name, link = false })
   local pastewin_hl = next(hl_def) and hl_def or {} -- can return vim.empty_dict() so convert to lua table
