@@ -51,7 +51,7 @@ local function before_all()
   assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
   h.pause_seconds()
 
-  local ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/kitty-scrollback.nvim'
+  local ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/04_kitty-scrollback.nvim'
   local is_directory = vim.fn.isdirectory(ksb_work_dir) > 0
   if is_directory then
     vim.system({ 'rm', '-rf', ksb_work_dir }):wait()
