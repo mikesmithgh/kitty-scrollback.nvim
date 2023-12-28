@@ -675,18 +675,23 @@ Press ENTER or type command to continue
     h.kitty_remote_close_window()
   end)
 
-  it('ksb_example_nvim_args_retrobox', function()
+  it('ksb_example_nvim_args_darkblue', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--nvim-args',
       '-c',
-      'colorscheme retrobox',
+      'colorscheme darkblue',
     })
     h.assert_screen_equals(
       h.feed_kitty({
         h.with_pause_seconds_before(h.send_without_newline([[a]])),
         h.send_without_newline(h.send_as_string([[
-# example > --no-nvim-args -c 'colorscheme retrobox'
-Retro groove color scheme similar to gruvbox originally designed by morhetz
+# example > --no-nvim-args -c 'colorscheme darkblue'
+Yo, listen up here's a story
+About a little guy
+That lives in a blue world
+And all day and all night
+And everything he sees is just blue
+Like him inside and outside
 ]])),
         h.send_without_newline(h.esc()),
         h.send_without_newline(h.send_as_string([[gg0]])),
@@ -711,19 +716,19 @@ $ lolbanner
         |    \_ __|__    |       |       |        ______| |_____  |    \_ |_____| |_____ |_____ |_____] |     | |_____  |    \_ . |  \_|   \/   __|__ |  |  |    
                                                                                                                                                                  
 $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
-N▏# example > --no-nvim-args -c 'colorscheme retrobox'                                                                                                          ▕
-\▏# Retro groove color scheme similar to gruvbox originally designed by morhetz                                                                                 ▕
+N▏# example > --no-nvim-args -c 'colorscheme darkblue'                                                                                                          ▕
+\▏# Yo, listen up here's a story                                                                                                                                ▕
+\▏# About a little guy                                                                                                                                          ▕
+\▏# That lives in a blue world                                                                                                                                  ▕
+\▏# And all day and all night                                                                                                                                   ▕
+\▏# And everything he sees is just blue                                                                                                                         ▕
+\▏# Like him inside and outside                                                                                                                                 ▕
 \▏#                                                                                                                                                             ▕
-\▏                                                                                                                                                              ▕
-\▏                                                                                                                                                              ▕
-\▏                                                                                                                                                              ▕
-\▏                                                                                                                                                              ▕
-\▏                                                                                                                                                              ▕
 \▏                                                                                                                                                              ▕
 T▏                                                                                                                                                              ▕
                                                                                                                                                                  
 :colorscheme                                                                                                                                                     
-retrobox                                                                                                                                                         
+darkblue                                                                                                                                                         
 Press ENTER or type command to continue                                                                                                                          
 ]],
           168
