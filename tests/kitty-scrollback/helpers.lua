@@ -205,6 +205,9 @@ Show clicked command plaintext output in kitty-scrollback.nvim
 end
 
 M.with_pause_seconds_before = function(input, delay)
+  if input == nil then
+    input = ''
+  end
   if type(input) == 'string' then
     return {
       input,
@@ -223,6 +226,9 @@ M.with_pause_seconds_before = function(input, delay)
 end
 
 M.send_as_string = function(input)
+  if input == nil then
+    input = ''
+  end
   if type(input) == 'string' then
     return {
       input,
@@ -241,6 +247,9 @@ M.send_as_string = function(input)
 end
 
 M.send_without_newline = function(input)
+  if input == nil then
+    input = ''
+  end
   if type(input) == 'string' then
     return {
       input,

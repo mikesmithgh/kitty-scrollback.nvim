@@ -131,7 +131,7 @@ M.generate_kittens = function(all, generate_modes)
     [[]],
     [[# Example kitty-scrollback.nvim nvim overrides]],
     [[--no-nvim-args --env NVIM_APPNAME=ksb-nvim]],
-    [[--nvim-args +'colorscheme tokyonight']],
+    [[--nvim-args +'colorscheme sorbet']],
     [[--nvim-args +'lua vim.defer_fn(function() vim.api.nvim_set_option_value("filetype", "markdown", { buf = 0 }); vim.cmd("silent! CellularAutomaton make_it_rain") end, 6000)']],
   })
 
@@ -265,3 +265,4 @@ M.get_kitty_colors = function(kitty_data)
 end
 
 return M
+-- demo
