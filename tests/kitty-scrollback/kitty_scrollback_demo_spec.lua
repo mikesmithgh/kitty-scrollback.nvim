@@ -1,4 +1,5 @@
 local h = require('tests.kitty-scrollback.helpers')
+local screencapture = require('tests.kitty-scrollback.screencapture')
 
 h.setup_backport()
 
@@ -36,6 +37,8 @@ local kitty_cmd = h.debug({
   '--session',
   '-', -- read session from stdin
 })
+
+local it = screencapture.wrap_it(it, tmpsock)
 
 describe('kitty-scrollback.nvim', function()
   before_each(function()
@@ -83,7 +86,7 @@ echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
     kitty_instance = nil
   end)
 
-  it('should demo', function()
+  it('kitty_scrollback_nvim', function()
     h.assert_screen_equals(
       h.feed_kitty({
         [[git status]],

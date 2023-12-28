@@ -1,4 +1,5 @@
 local h = require('tests.kitty-scrollback.helpers')
+local screencapture = require('tests.kitty-scrollback.screencapture')
 
 h.setup_backport()
 
@@ -86,6 +87,8 @@ local function after_all()
   kitty_instance:kill(2)
   kitty_instance = nil
 end
+
+local it = screencapture.wrap_it(it, tmpsock, 20)
 
 describe('kitty-scrollback.nvim', function()
   before_all()
