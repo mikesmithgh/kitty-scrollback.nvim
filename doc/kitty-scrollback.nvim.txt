@@ -565,8 +565,6 @@ ACKNOWLEDGEMENTS                      *kitty-scrollback.nvim-acknowledgements*
 - tokyonight.nvim <https://github.com/folke/tokyonight.nvim> - referenced for color darkening, thank you folke!
 - lazy.nvim <https://github.com/folke/lazy.nvim> - referenced for window sizing, thank you folke!
 - fzf-lua <https://github.com/ibhagwan/fzf-lua> - quickstart `mini.sh` and inspiration/reference for displaying keymapping footer
-- cellular-automaton.nvim <https://github.com/Eandrju/cellular-automaton.nvim> - included in a fun example config
-- StackExchange CamelCase2snake_case() <https://codegolf.stackexchange.com/a/177958/119424> - for converting Neovim highlight names to `SCREAMING_SNAKE_CASE`
 - panvimdoc <https://github.com/kdheepak/panvimdoc> - generating vimdocs from README
 - lemmy-help <https://github.com/numToStr/lemmy-help> - generating vimdocs from Lua annotations
 - bob <https://github.com/MordechaiHadad/bob> - easy Neovim version management to check backward compatibility
