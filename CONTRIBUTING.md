@@ -1,18 +1,28 @@
 # kitty-scrollback.nvim
 
-## Runnings tests
+## Running tests
 kitty-scrollback.nvim uses [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)'s [plenary.tests_harness](https://github.com/nvim-lua/plenary.nvim?tab=readme-ov-file#plenarytest_harness) as its
 testing harness.
 
 - Execute tests from the command line (preferred)
 ```sh
-make test
+make test # run all tests excluding tests intended for demos
+make test-all # run all tests
+make test-all-sequential # run all tests sequentially, this is useful for machines with limited resources
+make test-demo # run all demo tests
+make test-demo-main # run only the main demo tests shown on the README
+make test-demo-config # run all demo configuration tests
 ```
 
 - Execute tests from Neovim
-```vim
-:PlenaryBustedDirectory tests
-```
+  - Run entire tests directory:
+    ```vim
+    :PlenaryBustedDirectory tests
+    ```
+  - Run currently open file
+    ```vim
+    :PlenaryBustedFile %
+    ```
 
 ## Generating demos and wiki content (requires MacOS)
 
@@ -32,7 +42,7 @@ make test
 
 #### Interactive debugging 
 
-- Run the worklow [tests](https://github.com/mikesmithgh/kitty-scrollback.nvim/actions/workflows/tests.yml)
+- Run the workflow [tests](https://github.com/mikesmithgh/kitty-scrollback.nvim/actions/workflows/tests.yml)
   - Check `enable_debug_vnc` to enable TurboVNC, ngrok, and tmate debugging
     - This allows you to connect to the Github runner via vnc (for GUI) and ssh
     - Troubleshooting:

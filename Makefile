@@ -36,7 +36,7 @@ test-demo:
 		--headless \
 		--noplugin \
 		-u ${TESTS_INIT} \
-		-c "lua require([[plenary.test_harness]]).test_directory([[tests -regex .*_demo_spec.*]], { minimal_init = '"${TESTS_INIT}"', timeout = "${TIMEOUT_MINS}", })"
+		-c "lua require([[plenary.test_harness]]).test_directory([[tests -regex .*_demo.*_spec.*]], { minimal_init = '"${TESTS_INIT}"', timeout = "${TIMEOUT_MINS}", })"
 
 test-demo-main:
 	@nvim \
