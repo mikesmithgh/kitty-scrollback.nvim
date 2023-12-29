@@ -1,3 +1,29 @@
+# [3.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.7...v3.0.0) (2023-12-29)
+
+
+### Bug Fixes
+
+* correct hl_as_normal_win override ([73f4e8b](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/73f4e8b85020eaf96a84dc4b9a943cdb3ae7d361))
+
+
+* feat!: set default icon to new nvim icon (#80) ([51367da](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/51367da0b6f13594aaf8c9c0b33f66ba018df600)), closes [#80](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/80) [#70](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/70)
+* feat!: add support for new neovim default colorscheme (#103) ([e4e4429](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/e4e4429cea29507a9188c86066f6c0de8a2e8578)), closes [#103](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/103)
+
+
+### BREAKING CHANGES
+
+* The Neovim icon is now the default icon in the status window. Update your Nerd Font to the latest version or at least version [v3.1.0](https://github.com/ryanoasis/nerd-fonts/releases/tag/v3.1.0).
+* Existing highlight groups were renamed. If you were overriding any kitty-scrollback.nvim highlight groups, please update the names referencing the table below.
+
+    | Previous highlight name    | New highlight name                      |
+    | -------------------------- | --------------------------------------- |
+    | KittyScrollbackNvimNormal  | KittyScrollbackNvimStatusWinNormal      |
+    | KittyScrollbackNvimHeart   | KittyScrollbackNvimStatusWinHeartIcon   |
+    | KittyScrollbackNvimSpinner | KittyScrollbackNvimStatusWinSpinnerIcon |
+    | KittyScrollbackNvimReady   | KittyScrollbackNvimStatusWinReadyIcon   |
+    | KittyScrollbackNvimKitty   | KittyScrollbackNvimStatusWinKittyIcon   |
+    | KittyScrollbackNvimVim     | KittyScrollbackNvimStatusWinNvimIcon    |
+
 ## [2.4.7](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.6...v2.4.7) (2023-12-15)
 
 
