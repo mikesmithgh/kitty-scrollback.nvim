@@ -531,4 +531,21 @@ M.assert_screen_not_match = function(actual, expected, ...)
   end
 end
 
+M.wait_for_kitty_remote_connection = function(timeout, interval)
+  if not timeout then
+    timeout = 10000
+  end
+  if not interval then
+    interval = 500
+  end
+  local ready = false
+  vim.fn.wait(timeout, function()
+    ready = (M.debug(M.kitty_remote_ls():wait()).code == 0)
+    return ready
+  end, interval)
+
+  assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
+  M.pause_seconds()
+end
+
 return M
