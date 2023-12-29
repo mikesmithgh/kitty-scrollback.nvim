@@ -1,4 +1,4 @@
-<img src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/a7357844-e0e4-4053-8c77-6d129528504f" alt="kitty-scrollback" style="width: 20%" align="right" />
+<img src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/ddd50e0a-ec10-4507-9134-ad7f136c388a" alt="kitty-scrollback" style="width: 20%" align="right" />
 
 # 😽 kitty-scrollback.nvim
 
