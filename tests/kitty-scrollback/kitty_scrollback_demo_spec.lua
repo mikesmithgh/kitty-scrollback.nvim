@@ -93,18 +93,20 @@ echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
         h.open_kitty_scrollback_nvim(),
         [[?README.md]],
         h.send_without_newline(h.control_v()),
-        h.send_without_newline([[jjj$yddggI]]),
+        h.send_without_newline([[jjj$]]),
+        h.with_pause_seconds_before(h.send_without_newline([[yddggI]]), 1),
         h.send_without_newline([[git checkout ]]),
         h.send_without_newline(h.esc()),
         h.send_without_newline([[j0]]),
         h.send_without_newline(h.control_v()),
-        h.send_without_newline([[GI]]),
-        h.send_without_newline([[git add ]]),
+        h.send_without_newline([[G]]),
+        h.with_pause_seconds_before(h.send_without_newline([[Igit add ]]), 1),
         h.send_without_newline(h.esc()),
         h.send_without_newline(h.control_enter()),
         h.with_pause_seconds_before([[git status]], 1),
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[6k3VyggO]]),
+        h.send_without_newline([[4k3V]]),
+        h.with_pause_seconds_before(h.send_without_newline([[yggO]]), 1),
         [[printf "\\033[0m\\033[38;2;167;192;128m"]],
         h.send_without_newline([[cat <<EOF]]),
         h.send_without_newline(h.esc()),
@@ -113,7 +115,7 @@ echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
         h.with_pause_seconds_before(h.open_kitty_scrollback_nvim()),
         h.send_without_newline([[a]]),
         h.send_without_newline(h.esc()),
-        h.send_without_newline([[g?aloldino]]),
+        h.with_pause_seconds_before(h.send_without_newline([[g?aloldino]])),
         h.send_without_newline(h.esc()),
         h.send_without_newline(h.control_enter()),
       }),
@@ -149,13 +151,13 @@ Changes to be committed:
 
 $ printf "\033[0m\033[38;2;167;192;128m"
 cat <<EOF
-Changes to be committed:
-  (use "git restore --staged <file>..." to unstage)
         modified:   lua/kitty-scrollback/api.lua
+        modified:   lua/kitty-scrollback/health.lua
+        modified:   lua/kitty-scrollback/init.lua
 > EOF
-Changes to be committed:
-  (use "git restore --staged <file>..." to unstage)
         modified:   lua/kitty-scrollback/api.lua
+        modified:   lua/kitty-scrollback/health.lua
+        modified:   lua/kitty-scrollback/init.lua
 $  loldino
  ______ 
 ( nice )

@@ -23,10 +23,6 @@ local opts
 ---@field KittyScrollbackNvimVisual table|nil scrollback buffer window visual selection highlight group
 ---@field KittyScrollbackNvimNormal table|nil scrollback buffer window normal highlight group
 
--- local function has_vim_colorscheme()
---   return vim.fn.getcompletion('vim$', 'color')[1] ~= nil
--- end
-
 M.has_default_or_vim_colorscheme = function()
   return vim.g.colors_name == nil or vim.g.colors_name == 'default' or vim.g.colors_name == 'vim'
 end
@@ -59,7 +55,6 @@ local function pastewin_color()
   if opts.paste_window.highlight_as_normal_win then
     hl_as_normal = opts.paste_window.highlight_as_normal_win()
   end
-  vim.print(hl_as_normal)
   local hl_name = hl_as_normal and 'Normal' or 'NormalFloat'
   local hl_def = vim.api.nvim_get_hl(0, { name = hl_name, link = false })
   local pastewin_hl = next(hl_def) and hl_def or {} -- can return vim.empty_dict() so convert to lua table

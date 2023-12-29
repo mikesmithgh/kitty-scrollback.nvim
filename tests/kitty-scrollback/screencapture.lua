@@ -27,7 +27,6 @@ M.with_socket = function(socket)
   M.tmpsock = socket
   local kitty_win_pid =
     vim.system({ 'pgrep', '-f', 'listen-on=unix:' .. socket }):wait().stdout:gsub('\n', '')
-  vim.print(kitty_win_pid)
   local pdubs_stdout = vim.system({ 'pdubs', kitty_win_pid }):wait().stdout
   ---@diagnostic disable-next-line: param-type-mismatch
   M.window_info = vim.json.decode(pdubs_stdout)[1].kCGWindowBounds
