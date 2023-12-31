@@ -361,18 +361,20 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 ## ⌨️ Keymaps and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 
-| `<Plug>` Mapping            | Default Mapping | Mode  | API                   | Description                                                                             |
-| --------------------------- | --------------- | ----- | --------------------- | --------------------------------------------------------------------------------------- |
-| `<Plug>(KsbExecuteCmd)`     | `<C-CR>`        | n,i   | `execute_command()`   | Execute the contents of the paste window in Kitty                                       |
-| `<Plug>(KsbPasteCmd)`       | `<S-CR>`        | n,i   | `paste_command()`     | Paste the contents of the paste window to Kitty without executing                       |
-| `<Plug>(KsbToggleFooter)`   | `g?`            | n     | `toggle_footer()`     | Toggle the paste window footer that displays mappings                                   |
-| `<Plug>(KsbCloseOrQuitAll)` | `<Esc>`         | n     | `close_or_quit_all()` | If the current buffer is the paste buffer, then close the window. Otherwise quit Neovim |
-| `<Plug>(KsbQuitAll)`        | `<C-c>`         | n,i,t | `quit_all()`          | Quit Neovim                                                                             |
-| `<Plug>(KsbVisualYankLine)` | `<Leader>Y`     | v     |                       | Maps to `"+Y`                                                                           |
-| `<Plug>(KsbVisualYank)`     | `<Leader>y`     | v     |                       | Maps to `"+y`                                                                           |
-| `<Plug>(KsbNormalYankEnd)`  | `<Leader>Y`     | n     |                       | Maps to `"+y$`                                                                          |
-| `<Plug>(KsbNormalYank)`     | `<Leader>y`     | n     |                       | Maps to `"+y`                                                                           |
-| `<Plug>(KsbNormalYankLine)` | `<Leader>yy`    | n     |                       | Maps to `"+yy`                                                                          |
+| `<Plug>` Mapping              | Default Mapping | Mode  | API                        | Description                                                                             |
+| ----------------------------- | --------------- | ----- | -------------------------- | --------------------------------------------------------------------------------------- |
+| `<Plug>(KsbExecuteCmd)`       | `<C-CR>`        | n,i   | `execute_command()`        | Execute the contents of the paste window in Kitty                                       |
+| `<Plug>(KsbPasteCmd)`         | `<S-CR>`        | n,i   | `paste_command()`          | Paste the contents of the paste window to Kitty without executing                       |
+| `<Plug>(KsbExecuteVisualCmd)` | `<C-CR>`        | v     | `execute_visual_command()` | Execute the contents of visual selection in Kitty                                       |
+| `<Plug>(KsbPasteVisualCmd)`   | `<S-CR>`        | v     | `paste_visual_command()`   | Paste the contents of visual selection to Kitty without executing                       |
+| `<Plug>(KsbToggleFooter)`     | `g?`            | n     | `toggle_footer()`          | Toggle the paste window footer that displays mappings                                   |
+| `<Plug>(KsbCloseOrQuitAll)`   | `<Esc>`         | n     | `close_or_quit_all()`      | If the current buffer is the paste buffer, then close the window. Otherwise quit Neovim |
+| `<Plug>(KsbQuitAll)`          | `<C-c>`         | n,i,t | `quit_all()`               | Quit Neovim                                                                             |
+| `<Plug>(KsbVisualYankLine)`   | `<Leader>Y`     | v     |                            | Maps to `"+Y`                                                                           |
+| `<Plug>(KsbVisualYank)`       | `<Leader>y`     | v     |                            | Maps to `"+y`                                                                           |
+| `<Plug>(KsbNormalYankEnd)`    | `<Leader>Y`     | n     |                            | Maps to `"+y$`                                                                          |
+| `<Plug>(KsbNormalYank)`       | `<Leader>y`     | n     |                            | Maps to `"+y`                                                                           |
+| `<Plug>(KsbNormalYankLine)`   | `<Leader>yy`    | n     |                            | Maps to `"+yy`                                                                          |
 
 ## 👏 Recommendations
 
