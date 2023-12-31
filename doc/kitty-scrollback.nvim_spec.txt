@@ -175,6 +175,14 @@ M.paste_command()                           *kitty-scrollback.api.paste_command*
     window contents to Kitty. Otherwise, no operation
 
 
+                                     *kitty-scrollback.api.paste_visual_command*
+M.paste_visual_command()
+
+
+                                   *kitty-scrollback.api.execute_visual_command*
+M.execute_visual_command()
+
+
 M.toggle_footer()                           *kitty-scrollback.api.toggle_footer*
     If the current buffer is the paste buffer, toggle the footer window
     open or closed. Otherwise, no operation
