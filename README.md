@@ -34,7 +34,7 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 <summary>😻 Navigate Kitty's scrollback buffer with Neovim</summary>
  
 - Open Kitty's scrollback history (default mapping `<C-S-h>`)
-- That's it! You are in Neovim, navigate the scollback buffer.
+- That's it! You are in Neovim, navigate the scrollback buffer.
   
 </details>
 
@@ -104,7 +104,7 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 - Copy selection to the paste window in `kitty-scrollback.nvim` for further edits
     - Alternatively, you could just enter Insert mode (`i` or `a`) to open an empty floating window (similar to `<C-x><C-e>` in Bash)
 - Modify the content in the paste window
-- Exectue the content of the paste window in Kitty (default mapping `<C-CR>`)
+- Execute the content of the paste window in Kitty (default mapping `<C-CR>`)
 - `kitty-scrollback.nvim` automatically closes and executes the content of the paste window
 
 </details>
