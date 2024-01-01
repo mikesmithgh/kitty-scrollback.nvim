@@ -178,8 +178,8 @@ $
 
   it('should_copy_visual_selection_to_clipboard', function()
     local paste = function()
-      -- github runner has issues accessing the clipboard
-      -- just hardcode it for now since this test is for primarly for demo purposes anyway
+      -- TODO(#135): github runner has issues accessing the clipboard
+      -- just hardcode it for now since this test is for primarily for demo purposes anyway
       if h.is_github_action then
         return 'README.md'
       end
