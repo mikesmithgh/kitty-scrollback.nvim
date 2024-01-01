@@ -177,13 +177,15 @@ $
   end)
 
   it('should_copy_visual_selection_to_clipboard', function()
+    -- github runner needs extra time before pasting content from clipboard
+    local delay = h.is_github_action and 6 or 0
     h.feed_kitty({
       [[git status]],
       h.open_kitty_scrollback_nvim(),
       [[?README.md]],
       h.send_without_newline([[viW]]),
       h.with_pause_seconds_before(h.send_without_newline([[\y]]), 1),
-    })
+    }, delay)
     h.assert_screen_equals(
       h.feed_kitty({
         h.send_without_newline([[printf "\n  kitty-scrollback.nvim copied \e[35m]]),
