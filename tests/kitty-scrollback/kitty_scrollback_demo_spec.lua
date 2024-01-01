@@ -151,29 +151,239 @@ cat <<EOF
         modified:   lua/kitty-scrollback/health.lua
         modified:   lua/kitty-scrollback/init.lua
 $  loldino
- ______ 
+ ______
 ( nice )
- ------ 
+ ------
 o                             .       .
- o                           / `.   .' " 
+ o                           / `.   .' "
   o                  .---.  <    > <    >  .---.
    o                 |    \  \ - ~ ~ - /  /    |
          _____          ..-~             ~-..-~
         |     |   \~~~\.'                    `./~~~/
        ---------   \__/                        \__/
-      .'  O    \     /               /       \  " 
+      .'  O    \     /               /       \  "
      (_____,    `._.'               |         }  \/~~~/
       `----.          /       }     |        /    \__/
             `-.      |       /      |       /      `. ,~~|
-                ~-.__|      /_ - ~ ^|      /- _      `..-'   
+                ~-.__|      /_ - ~ ^|      /- _      `..-'
                      |     /        |     /     ~-.     `-. _  _  _
                      |_____|        |_____|         ~ - . _ _ _ _ _>
-$ 
+$
 ]],
         cursor_y = 30,
         cursor_x = 3,
-      },
-      'kitty-scrollback.nvim did not have expected output'
+      }
+    )
+  end)
+
+  it('should_copy_visual_selection_to_clipboard', function()
+    h.feed_kitty({
+      [[git status]],
+      h.open_kitty_scrollback_nvim(),
+      [[?README.md]],
+      h.send_without_newline([[viW]]),
+      h.with_pause_seconds_before(h.send_without_newline([[\y]]), 1),
+    }, 0)
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.send_without_newline([[printf "\n  kitty-scrollback.nvim copied \e[35m]]),
+        h.with_pause_seconds_before(
+          h.send_without_newline(h.send_as_string(vim.fn.getreg('+'))),
+          1
+        ),
+        h.with_pause_seconds_before([[\e[0m to clipboard\n\n"]], 1),
+      }),
+      {
+        stdout = [[
+$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   lua/kitty-scrollback/api.lua
+	modified:   lua/kitty-scrollback/health.lua
+	modified:   lua/kitty-scrollback/init.lua
+
+no changes added to commit (use "git add" and/or "git commit -a")
+$ printf "\n  kitty-scrollback.nvim copied \e[35mREADME.md\e[0m to clipboard\n\n"
+
+  kitty-scrollback.nvim copied README.md to clipboard
+
+$ 
+]],
+        cursor_y = 18,
+        cursor_x = 3,
+      }
+    )
+  end)
+
+  it('should_paste_paste_window_text_to_kitty', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[git status]],
+        h.with_pause_seconds_before(
+          h.send_without_newline([[printf "\n  kitty-scrollback.nvim pasted \e[35m]])
+        ),
+        h.open_kitty_scrollback_nvim(),
+        [[?README.md]],
+        h.send_without_newline([[viW]]),
+        h.with_pause_seconds_before(h.send_without_newline([[y]]), 1),
+        h.with_pause_seconds_before(h.send_without_newline([[ggA\\e[0m to kitty\\n\\n"]]), 1),
+        h.with_pause_seconds_before(h.shift_enter(), 1),
+      }),
+      {
+        stdout = [[
+$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   lua/kitty-scrollback/api.lua
+	modified:   lua/kitty-scrollback/health.lua
+	modified:   lua/kitty-scrollback/init.lua
+
+no changes added to commit (use "git add" and/or "git commit -a")
+$ printf "\n  kitty-scrollback.nvim pasted \e[35mREADME.md\e[0m to kitty\n\n"
+
+  kitty-scrollback.nvim pasted README.md to kitty
+
+$ 
+]],
+        cursor_y = 18,
+        cursor_x = 3,
+      }
+    )
+  end)
+
+  it('should_paste_visual_selection_to_kitty', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[git status]],
+        h.with_pause_seconds_before(
+          h.send_without_newline([[printf "\n  kitty-scrollback.nvim pasted \e[35m]])
+        ),
+        h.open_kitty_scrollback_nvim(),
+        [[?README.md]],
+        h.send_without_newline([[viW]]),
+        h.with_pause_seconds_before(h.send_without_newline(h.shift_enter()), 1),
+        h.with_pause_seconds_before([[\e[0m to kitty\n\n"]], 1),
+      }),
+      {
+        stdout = [[
+$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   lua/kitty-scrollback/api.lua
+	modified:   lua/kitty-scrollback/health.lua
+	modified:   lua/kitty-scrollback/init.lua
+
+no changes added to commit (use "git add" and/or "git commit -a")
+$ printf "\n  kitty-scrollback.nvim pasted \e[35mREADME.md\e[0m to kitty\n\n"
+
+  kitty-scrollback.nvim pasted README.md to kitty
+
+$
+]],
+        cursor_y = 18,
+        cursor_x = 3,
+      }
+    )
+  end)
+
+  it('should_execute_paste_window_text_in_kitty', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[git status]],
+        h.open_kitty_scrollback_nvim(),
+        [[?README.md]],
+        h.send_without_newline([[viW]]),
+        h.with_pause_seconds_before(h.send_without_newline([[y]]), 1),
+        h.with_pause_seconds_before(
+          h.send_without_newline([[ggIprintf "\\n  kitty-scrollback.nvim pasted \\e[35m]]),
+          1
+        ),
+        h.send_without_newline(h.esc()),
+        h.with_pause_seconds_before(
+          h.send_without_newline([[A\\e[0m to kitty and executed the command\\n\\n"]]),
+          1
+        ),
+        h.with_pause_seconds_before(h.send_without_newline(h.control_enter()), 1),
+      }),
+      {
+        stdout = [[
+$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   lua/kitty-scrollback/api.lua
+	modified:   lua/kitty-scrollback/health.lua
+	modified:   lua/kitty-scrollback/init.lua
+
+no changes added to commit (use "git add" and/or "git commit -a")
+$ printf "\n  kitty-scrollback.nvim pasted \e[35mREADME.md\e[0m to kitty and executed the command\n\n"
+
+  kitty-scrollback.nvim pasted README.md to kitty and executed the command
+
+$ 
+]],
+        cursor_y = 18,
+        cursor_x = 3,
+      }
+    )
+  end)
+
+  it('should_execute_visual_selection_in_kitty', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        [[git status]],
+        h.with_pause_seconds_before(
+          h.send_without_newline(
+            [[echo -e \\nkitty-scrollback.nvim executed the command and pasted \\e[35m]]
+          )
+        ),
+        h.open_kitty_scrollback_nvim(),
+        [[?README.md]],
+        h.send_without_newline([[viW]]),
+        h.with_pause_seconds_before(h.send_without_newline(h.control_enter()), 1),
+      }),
+      {
+        stdout = [[
+$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   lua/kitty-scrollback/api.lua
+	modified:   lua/kitty-scrollback/health.lua
+	modified:   lua/kitty-scrollback/init.lua
+
+no changes added to commit (use "git add" and/or "git commit -a")
+$ echo -e \\nkitty-scrollback.nvim executed the command and pasted \\e[35mREADME.md
+
+kitty-scrollback.nvim executed the command and pasted README.md
+$ 
+]],
+        cursor_y = 17,
+        cursor_x = 3,
+      }
     )
   end)
 end)
