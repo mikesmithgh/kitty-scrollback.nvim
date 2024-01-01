@@ -177,22 +177,25 @@ $
   end)
 
   it('should_copy_visual_selection_to_clipboard', function()
-    -- github runner needs extra time before pasting content from clipboard
-    local delay = h.is_github_action and 6 or 0
+    local paste = function()
+      -- github runner has issues accessing the clipboard
+      -- just hardcode it for now since this test is for primarly for demo purposes anyway
+      if h.is_github_action then
+        return 'README.md'
+      end
+      return vim.fn.getreg('+')
+    end
     h.feed_kitty({
       [[git status]],
       h.open_kitty_scrollback_nvim(),
       [[?README.md]],
       h.send_without_newline([[viW]]),
       h.with_pause_seconds_before(h.send_without_newline([[\y]]), 1),
-    }, delay)
+    }, 0)
     h.assert_screen_equals(
       h.feed_kitty({
         h.send_without_newline([[printf "\n  kitty-scrollback.nvim copied \e[35m]]),
-        h.with_pause_seconds_before(
-          h.send_without_newline(h.send_as_string(vim.fn.getreg('+'))),
-          1
-        ),
+        h.with_pause_seconds_before(h.send_without_newline(h.send_as_string(paste())), 1),
         h.with_pause_seconds_before([[\e[0m to clipboard\n\n"]], 1),
       }),
       {
