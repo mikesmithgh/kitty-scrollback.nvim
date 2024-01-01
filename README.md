@@ -22,7 +22,9 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 </a>
 
 > [!TIP]\
-> 🎥 Expand each section under the [Features](#-features) to see a demo. 👀 Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 
+> Expand each section under the [Features](#-features) to see a demo.
+>
+> Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 
 
 <!-- panvimdoc-ignore-end -->
 
@@ -30,36 +32,81 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
 
 <details> 
 <summary>😻 Navigate Kitty's scrollback buffer with Neovim</summary>
+ 
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- That's it! You are in Neovim, navigate the scollback buffer.
+  
 </details>
 
 <details> 
 <summary>🐱 Copy scrollback contents to system clipboard</summary>
   
 ![copy_visual_selection_to_clipboard](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_01_should_copy_visual_selection_to_clipboard.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Copy selection to clipboard (default mapping `<leader>y`)
+- `kitty-scrollback.nvim` automatically closes
+
 </details>
 
 <details> 
 <summary>😺 Paste visual selection to Kitty</summary>
   
 ![kitty_scrollback_screencapture_03_should_paste_visual_selection_to_kitty.gif](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_03_should_paste_visual_selection_to_kitty.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Paste visual selection to Kitty (default mapping `<S-CR>`)
+- `kitty-scrollback.nvim` automatically closes and pastes the contents for further editing
+
 </details>
 
 <details>
 <summary>🙀 Execute visual selection in Kitty</summary>
   
 ![kitty_scrollback_screencapture_05_should_execute_visual_selection_in_kitty.mov](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_05_should_execute_visual_selection_in_kitty.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Execute visual selection in Kitty (default mapping `<C-CR>`)
+- `kitty-scrollback.nvim` automatically closes and executes the visual selection
+
 </details>
 
 <details> 
 <summary>😸 Modify and send content from paste window to Kitty</summary>
   
 ![kitty_scrollback_screencapture_02_should_paste_paste_window_text_to_kitty.gif](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_02_should_paste_paste_window_text_to_kitty.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Copy selection to the paste window in `kitty-scrollback.nvim` for further edits
+    - Alternatively, you could just enter Insert mode (`i` or `a`) to open an empty floating window (similar to `<C-x><C-e>` in Bash)
+- Modify the content in the paste window
+- Paste the content of the paste window to Kitty (default mapping `<S-CR>`)
+- `kitty-scrollback.nvim` automatically closes and pastes the contents for further editing
+
 </details>
 
 <details> 
 <summary>😼 Modify and execute content from paste window to Kitty</summary>
   
 ![kitty_scrollback_screencapture_04_should_execute_paste_window_text_in_kitty.gif](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_04_should_execute_paste_window_text_in_kitty.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Copy selection to the paste window in `kitty-scrollback.nvim` for further edits
+    - Alternatively, you could just enter Insert mode (`i` or `a`) to open an empty floating window (similar to `<C-x><C-e>` in Bash)
+- Modify the content in the paste window
+- Exectue the content of the paste window in Kitty (default mapping `<C-CR>`)
+- `kitty-scrollback.nvim` automatically closes and executes the content of the paste window
+
 </details>
 
 ## 🚀 Migrating to v3.0.0
