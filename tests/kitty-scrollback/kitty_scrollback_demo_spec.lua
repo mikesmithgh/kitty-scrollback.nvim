@@ -183,7 +183,7 @@ $
       [[?README.md]],
       h.send_without_newline([[viW]]),
       h.with_pause_seconds_before(h.send_without_newline([[\y]]), 1),
-    }, 0)
+    })
     h.assert_screen_equals(
       h.feed_kitty({
         h.send_without_newline([[printf "\n  kitty-scrollback.nvim copied \e[35m]]),
