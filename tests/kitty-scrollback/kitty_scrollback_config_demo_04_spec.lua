@@ -679,7 +679,7 @@ Press ENTER or type command to continue
     h.assert_screen_equals(
       h.feed_kitty({
         h.with_pause_seconds_before(h.send_without_newline([[a]])),
-        h.send_without_newline(h.send_as_string([[
+        h.with_pause_seconds_before(h.send_without_newline(h.send_as_string([[
 # example > --no-nvim-args -c 'colorscheme darkblue'
 Yo, listen up here's a story
 About a little guy
@@ -687,7 +687,7 @@ That lives in a blue world
 And all day and all night
 And everything he sees is just blue
 Like him inside and outside
-]])),
+]]))),
         h.send_without_newline(h.esc()),
         h.send_without_newline(h.send_as_string([[gg0]])),
         h.send_as_string([[:colorscheme]]),
