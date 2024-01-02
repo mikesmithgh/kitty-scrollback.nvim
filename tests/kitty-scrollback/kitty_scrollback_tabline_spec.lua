@@ -1,9 +1,4 @@
-local assert = require('luassert.assert')
-local h = require('tests.helpers')
-local describe = describe ---@diagnostic disable-line: undefined-global
-local it = it ---@diagnostic disable-line: undefined-global
-local after_each = after_each ---@diagnostic disable-line: undefined-global
-local before_each = before_each ---@diagnostic disable-line: undefined-global
+local h = require('tests.kitty-scrollback.helpers')
 
 h.setup_backport()
 
@@ -38,14 +33,7 @@ describe('kitty-scrollback.nvim', function()
     kitty_instance = vim.system(kitty_cmd, {
       stdin = 'cd ' .. ksb_dir .. 'tests/workdir',
     })
-    local ready = false
-    vim.fn.wait(5000, function()
-      ready = (h.debug(h.kitty_remote_ls():wait()).code == 0)
-      return ready
-    end, 500)
-
-    assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
-
+    h.wait_for_kitty_remote_connection()
     h.feed_kitty({
       h.with_pause_seconds_before(h.send_without_newline(h.clear())),
     })

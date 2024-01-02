@@ -206,6 +206,8 @@ return {
       vim.keymap.set({ 'n' }, '<tab>', '<Plug>(KsbToggleFooter)', {})
       vim.keymap.set({ 'n', 'i' }, '<cr>', '<Plug>(KsbExecuteCmd)', {})
       vim.keymap.set({ 'n', 'i' }, '<c-v>', '<Plug>(KsbPasteCmd)', {})
+      vim.keymap.set({ 'v' }, '<leader><cr>', '<Plug>(KsbExecuteVisualCmd)', {})
+      vim.keymap.set({ 'v' }, '<leader><c-v>', '<Plug>(KsbPasteVisualCmd)', {})
     end,
     [prefix .. 'keymaps_disabled'] = function()
       return {
@@ -343,11 +345,11 @@ return {
         },
       }
     end,
-    [prefix .. 'status_win_nvim'] = function()
+    [prefix .. 'status_win_vim'] = function()
       return {
         status_window = {
           icons = {
-            nvim = '',
+            nvim = '',
           },
         },
       }

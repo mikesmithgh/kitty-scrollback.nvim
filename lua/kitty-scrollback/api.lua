@@ -1,6 +1,7 @@
 ---@mod kitty-scrollback.api
 local ksb_footer_win = require('kitty-scrollback.footer_win')
 local ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
+local ksb_util = require('kitty-scrollback.util')
 
 ---@type KsbPrivate
 local p
@@ -40,7 +41,7 @@ end
 ---window contents in Kitty. Otherwise, no operation
 M.execute_command = function()
   if vim.api.nvim_get_current_buf() == p.paste_bufid then
-    ksb_kitty_cmds.send_paste_buffer_text_to_kitty_and_quit(false)
+    ksb_kitty_cmds.send_paste_buffer_text_to_kitty_and_quit(true)
   end
 end
 
@@ -48,8 +49,18 @@ end
 ---window contents to Kitty. Otherwise, no operation
 M.paste_command = function()
   if vim.api.nvim_get_current_buf() == p.paste_bufid then
-    ksb_kitty_cmds.send_paste_buffer_text_to_kitty_and_quit(true)
+    ksb_kitty_cmds.send_paste_buffer_text_to_kitty_and_quit(false)
   end
+end
+
+M.paste_visual_command = function()
+  local visual_selection_lines = ksb_util.clear_yank_autocommand_and_get_visual_selection()
+  ksb_kitty_cmds.send_lines_to_kitty_and_quit(visual_selection_lines, false)
+end
+
+M.execute_visual_command = function()
+  local visual_selection_lines = ksb_util.clear_yank_autocommand_and_get_visual_selection()
+  ksb_kitty_cmds.send_lines_to_kitty_and_quit(visual_selection_lines, true)
 end
 
 ---If the current buffer is the paste buffer, toggle the footer window
@@ -131,7 +142,7 @@ M.generate_kittens = function(all, generate_modes)
     [[]],
     [[# Example kitty-scrollback.nvim nvim overrides]],
     [[--env NVIM_APPNAME=ksb-nvim]],
-    [[--nvim-args +'colorscheme tokyonight']],
+    [[--nvim-args +'colorscheme darkblue']],
     [[--nvim-args +'lua vim.defer_fn(function() vim.api.nvim_set_option_value("filetype", "markdown", { buf = 0 }); vim.cmd("silent! CellularAutomaton make_it_rain") end, 6000)']],
   })
 

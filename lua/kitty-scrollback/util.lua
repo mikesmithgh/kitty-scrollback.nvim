@@ -67,4 +67,14 @@ M.tab_offset = function()
   return 0
 end
 
+function M.clear_yank_autocommand_and_get_visual_selection()
+  vim.api.nvim_clear_autocmds({
+    group = vim.api.nvim_create_augroup('KittyScrollBackNvimTextYankPost', { clear = true }),
+  })
+  -- vim.cmd.yank requires entering and exiting visual mode, so just use vim.cmd.normal
+  vim.cmd.normal({ 'y', bang = true })
+  local reginfo = vim.fn.getreginfo('"') or { regcontents = {} }
+  return reginfo.regcontents
+end
+
 return M

@@ -45,7 +45,6 @@ KsbPrivate                                  *kitty-scrollback.launch.KsbPrivate*
         {footer_winid}         (number|nil)
         {footer_bufid}         (number|nil)
         {pos}                  (table|nil)
-        {block_input_timer}    (table)
 
 
 KsbCallbacks                              *kitty-scrollback.launch.KsbCallbacks*
@@ -174,6 +173,14 @@ M.execute_command()                       *kitty-scrollback.api.execute_command*
 M.paste_command()                           *kitty-scrollback.api.paste_command*
     If the current buffer is the paste buffer, then quit and paste the paste
     window contents to Kitty. Otherwise, no operation
+
+
+                                     *kitty-scrollback.api.paste_visual_command*
+M.paste_visual_command()
+
+
+                                   *kitty-scrollback.api.execute_visual_command*
+M.execute_visual_command()
 
 
 M.toggle_footer()                           *kitty-scrollback.api.toggle_footer*

@@ -86,7 +86,6 @@ M.open_paste_window = function(start_insert)
     }
   end
 
-  -- CANCELLED removed 1 because one line is no longer at the bottom since --add-cursor was removed
   local lnum = p.pos.cursor_line - p.pos.win_first_line - 1
   local col = p.pos.col + 1
 

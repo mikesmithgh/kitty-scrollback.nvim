@@ -34,7 +34,7 @@ M.set_paste_buffer_write_autocmd = function()
     pattern = '*.ksb_pastebuf',
     callback = function(paste_event)
       if paste_event.buf == p.paste_bufid then
-        ksb_kitty_cmds.send_paste_buffer_text_to_kitty_and_quit(true)
+        ksb_kitty_cmds.send_paste_buffer_text_to_kitty_and_quit(false)
       end
     end,
   })
@@ -57,7 +57,6 @@ M.set_paste_window_resized_autocmd = function()
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimPasteWindowResized', { clear = true }),
     callback = function()
       if p.paste_winid then
-        -- CANCELLED removed 1 because one line is no longer at the bottom since --add-cursor was removed
         local lnum = (p.pos.cursor_line - p.pos.win_first_line - 1) + ksb_util.tab_offset()
         local col = p.pos.col + 1
         local ok, current_winopts = pcall(vim.api.nvim_win_get_config, p.paste_winid)

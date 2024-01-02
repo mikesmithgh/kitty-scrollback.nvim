@@ -30,11 +30,14 @@ local function set_defaults()
   set_default({ 'n' }, 'g?', '<Plug>(KsbToggleFooter)', {})
   set_default({ 'n', 'i' }, '<c-cr>', '<Plug>(KsbExecuteCmd)', {})
   set_default({ 'n', 'i' }, '<s-cr>', '<Plug>(KsbPasteCmd)', {})
+
+  set_default({ 'v' }, '<c-cr>', '<Plug>(KsbExecuteVisualCmd)', {})
+  set_default({ 'v' }, '<s-cr>', '<Plug>(KsbPasteVisualCmd)', {})
 end
 
 M.setup = function(private, options)
   p = private ---@diagnostic disable-line: unused-local
-  opts = options ---@diagnostic disable-line: unused-local
+  opts = options
 
   if opts.keymaps_enabled then
     vim.keymap.set(
@@ -47,6 +50,8 @@ M.setup = function(private, options)
 
     vim.keymap.set({ 'v' }, '<Plug>(KsbVisualYankLine)>', '"+Y', {})
     vim.keymap.set({ 'v' }, '<Plug>(KsbVisualYank)', '"+y', {})
+    vim.keymap.set({ 'v' }, '<Plug>(KsbExecuteVisualCmd)', ksb_api.execute_visual_command, {})
+    vim.keymap.set({ 'v' }, '<Plug>(KsbPasteVisualCmd)', ksb_api.paste_visual_command, {})
     vim.keymap.set({ 'n' }, '<Plug>(KsbNormalYankEnd)', '"+y$', {})
     vim.keymap.set({ 'n' }, '<Plug>(KsbNormalYank)', '"+y', {})
     vim.keymap.set({ 'n' }, '<Plug>(KsbYankLine)', '"+yy', {})

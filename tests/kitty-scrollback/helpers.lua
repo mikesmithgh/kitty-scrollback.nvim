@@ -183,41 +183,6 @@ M.move_to_last_prompt = function()
   M.kitty_remote_kitten_kitty_scroll_prompt_and_pause(3)
 end
 
-M.ksb = function(config_type, ksb_args, opts)
-  local o = opts or {}
-  M.kitty_remote_kitten_kitty_scrollback_nvim(ksb_args)
-  M.pause_seconds(o.before)
-  if o.show_text == nil or o.show_text then
-    M.kitty_remote_send_text([[a]])
-    M.pause_seconds()
-    M.kitty_remote_send_text(
-      [[# ]] .. config_type .. [[ > kitty_scrollback_nvim ]] .. vim.fn.join(ksb_args or {}, ' ')
-    )
-    M.kitty_remote_send_text([[\e0]])
-  end
-  M.pause_seconds()
-  if o.msg then
-    M.pause_seconds()
-    M.kitty_remote_send_text([[o]])
-    M.pause_seconds()
-    M.kitty_remote_send_text(o.msg)
-    M.kitty_remote_send_text([[\egg0]])
-  end
-  M.pause_seconds(o.after or 4)
-  if not o.keep_open then
-    M.kitty_remote_close_window()
-  end
-  M.pause_seconds()
-end
-
-M.ksb_b = function(...)
-  M.ksb('builtin', ...)
-end
-
-M.ksb_e = function(...)
-  M.ksb('example', ...)
-end
-
 M.ksb_builtin_last_visited_cmd_output_and_move_forward = function()
   M.ksb_b({ '--config', 'ksb_builtin_last_visited_cmd_output' }, {
     msg = [[
@@ -240,6 +205,9 @@ Show clicked command plaintext output in kitty-scrollback.nvim
 end
 
 M.with_pause_seconds_before = function(input, delay)
+  if input == nil then
+    input = ''
+  end
   if type(input) == 'string' then
     return {
       input,
@@ -258,6 +226,9 @@ M.with_pause_seconds_before = function(input, delay)
 end
 
 M.send_as_string = function(input)
+  if input == nil then
+    input = ''
+  end
   if type(input) == 'string' then
     return {
       input,
@@ -276,6 +247,9 @@ M.send_as_string = function(input)
 end
 
 M.send_without_newline = function(input)
+  if input == nil then
+    input = ''
+  end
   if type(input) == 'string' then
     return {
       input,
@@ -364,7 +338,8 @@ M.clear = function()
   }
 end
 
-M.feed_kitty = function(input)
+M.feed_kitty = function(input, pause_seconds_after)
+  input = input or {}
   for _, line in pairs(input) do
     local feed_opts = vim.tbl_extend('force', {
       send_by = 'char',
@@ -381,6 +356,7 @@ M.feed_kitty = function(input)
     end
 
     if feed_opts.open_kitty_scrollback_nvim then
+      M.pause_seconds()
       M.kitty_remote_kitten_kitty_scrollback_nvim()
       M.pause_seconds()
     else
@@ -404,7 +380,7 @@ M.feed_kitty = function(input)
       end
     end
   end
-  M.pause_seconds(3) -- longer pause for linux
+  M.pause_seconds(pause_seconds_after or 3) -- longer pause for linux
 
   local stdout = M.debug(M.kitty_remote_get_text()).stdout
   local last_line = stdout:match('.*\n(.*)\n')
@@ -528,8 +504,7 @@ M.assert_screen_match = function(actual, expected, ...)
     actual_rstrip_length = #actual_rstrip,
     match = expected.pattern,
   })
-  assert.is_true(actual_rstrip:match(expected.pattern), ...)
-  assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
+  assert.is_true(actual_rstrip:match(expected.pattern) ~= nil, ...)
   if expected.cursor_y then
     assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
@@ -547,13 +522,30 @@ M.assert_screen_not_match = function(actual, expected, ...)
     actual_rstrip_length = #actual_rstrip,
     match = expected,
   })
-  assert.is_not_true(actual_rstrip:match(expected.pattern), ...)
+  assert.is_true(actual_rstrip:match(expected.pattern) == nil, ...)
   if expected.cursor_y then
     assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
   end
   if expected.cursor_x then
     assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
   end
+end
+
+M.wait_for_kitty_remote_connection = function(timeout, interval)
+  if not timeout then
+    timeout = 10000
+  end
+  if not interval then
+    interval = 500
+  end
+  local ready = false
+  vim.fn.wait(timeout, function()
+    ready = (M.debug(M.kitty_remote_ls():wait()).code == 0)
+    return ready
+  end, interval)
+
+  assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
+  M.pause_seconds()
 end
 
 return M
