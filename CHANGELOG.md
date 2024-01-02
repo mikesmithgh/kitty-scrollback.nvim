@@ -1,3 +1,10 @@
+## [3.1.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.0...v3.1.1) (2024-01-02)
+
+
+### Bug Fixes
+
+* add fallback for kitty during checkhealth ([#139](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/139)) ([a29f917](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/a29f9178fe584f95a8ac03b7b6cda7c44ce60110)), closes [#138](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/138)
+
 # [3.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.0.0...v3.1.0) (2024-01-02)
 
 
