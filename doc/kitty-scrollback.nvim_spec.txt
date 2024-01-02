@@ -45,6 +45,7 @@ KsbPrivate                                  *kitty-scrollback.launch.KsbPrivate*
         {footer_winid}         (number|nil)
         {footer_bufid}         (number|nil)
         {pos}                  (table|nil)
+        {block_input_timer}    (table)
 
 
 KsbCallbacks                              *kitty-scrollback.launch.KsbCallbacks*
