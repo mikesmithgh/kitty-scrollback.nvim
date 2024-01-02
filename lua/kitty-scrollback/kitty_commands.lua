@@ -225,12 +225,12 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   vim.o.shell = p.orig_options.shell
 end
 
-M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
+M.send_lines_to_kitty_and_quit = function(lines, execute_command)
   -- convert table to string separated by carriage returns
   local cmd_str = table.concat(
     vim.tbl_filter(function(l)
       return #l > 0 -- remove empty lines
-    end, vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false)),
+    end, lines),
     '\r'
   )
   local esc = vim.fn.eval([["\e"]])
@@ -243,7 +243,7 @@ M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
   -- the ending enquiry is used to remove deselect the text after pasting to the terminal
   cmd_str = enquiry .. start_bracketed_paste .. cmd_str .. stop_bracketed_paste .. enquiry
 
-  if not execute_command then
+  if execute_command then
     -- add a carriage return to execute command
     cmd_str = cmd_str .. '\r'
   end
@@ -256,6 +256,11 @@ M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
     cmd_str,
   })
   M.signal_term_to_kitty_child_process()
+end
+
+M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
+  local paste_buffer_lines = vim.api.nvim_buf_get_lines(p.paste_bufid, 0, -1, false)
+  M.send_lines_to_kitty_and_quit(paste_buffer_lines, execute_command)
 end
 
 M.list_kitty_windows = function()

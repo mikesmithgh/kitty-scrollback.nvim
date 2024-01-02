@@ -338,7 +338,7 @@ M.clear = function()
   }
 end
 
-M.feed_kitty = function(input)
+M.feed_kitty = function(input, pause_seconds_after)
   input = input or {}
   for _, line in pairs(input) do
     local feed_opts = vim.tbl_extend('force', {
@@ -380,7 +380,7 @@ M.feed_kitty = function(input)
       end
     end
   end
-  M.pause_seconds(3) -- longer pause for linux
+  M.pause_seconds(pause_seconds_after or 3) -- longer pause for linux
 
   local stdout = M.debug(M.kitty_remote_get_text()).stdout
   local last_line = stdout:match('.*\n(.*)\n')

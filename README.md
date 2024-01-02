@@ -21,10 +21,93 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
   <div align="center"><sup>(click for video)<sup></div>
 </a>
 
-> [!NOTE]\
-> 👀 Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 🎥
+> [!TIP]\
+> Expand each section under the [Features](#-features) to see a demo.
+>
+> Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 
 
 <!-- panvimdoc-ignore-end -->
+
+## ✨ Features
+
+<details> 
+<summary>😻 Navigate Kitty's scrollback buffer with Neovim</summary>
+ 
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- That's it! You are in Neovim, navigate the scrollback buffer.
+  
+</details>
+
+<details> 
+<summary>🐱 Copy scrollback contents to system clipboard</summary>
+  
+![copy_visual_selection_to_clipboard](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_01_should_copy_visual_selection_to_clipboard.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Copy selection to clipboard (default mapping `<leader>y`)
+- `kitty-scrollback.nvim` automatically closes
+
+</details>
+
+<details> 
+<summary>😺 Paste visual selection to Kitty</summary>
+  
+![kitty_scrollback_screencapture_03_should_paste_visual_selection_to_kitty.gif](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_03_should_paste_visual_selection_to_kitty.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Paste visual selection to Kitty (default mapping `<S-CR>`)
+- `kitty-scrollback.nvim` automatically closes and pastes the contents for further editing
+
+</details>
+
+<details>
+<summary>🙀 Execute visual selection in Kitty</summary>
+  
+![kitty_scrollback_screencapture_05_should_execute_visual_selection_in_kitty.mov](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_05_should_execute_visual_selection_in_kitty.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Execute visual selection in Kitty (default mapping `<C-CR>`)
+- `kitty-scrollback.nvim` automatically closes and executes the visual selection
+
+</details>
+
+<details> 
+<summary>😸 Modify and send content from paste window to Kitty</summary>
+  
+![kitty_scrollback_screencapture_02_should_paste_paste_window_text_to_kitty.gif](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_02_should_paste_paste_window_text_to_kitty.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Copy selection to the paste window in `kitty-scrollback.nvim` for further edits
+    - Alternatively, you could just enter Insert mode (`i` or `a`) to open an empty floating window (similar to `<C-x><C-e>` in Bash)
+- Modify the content in the paste window
+- Paste the content of the paste window to Kitty (default mapping `<S-CR>`)
+- `kitty-scrollback.nvim` automatically closes and pastes the contents for further editing
+
+</details>
+
+<details> 
+<summary>😼 Modify and execute content from paste window to Kitty</summary>
+  
+![kitty_scrollback_screencapture_04_should_execute_paste_window_text_in_kitty.gif](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_04_should_execute_paste_window_text_in_kitty.gif)
+
+- Open Kitty's scrollback history (default mapping `<C-S-h>`)
+- Search backward for a pattern in Neovim `?{pattern}<CR>`
+- Enter Visual mode `v` and select desired text
+- Copy selection to the paste window in `kitty-scrollback.nvim` for further edits
+    - Alternatively, you could just enter Insert mode (`i` or `a`) to open an empty floating window (similar to `<C-x><C-e>` in Bash)
+- Modify the content in the paste window
+- Execute the content of the paste window in Kitty (default mapping `<C-CR>`)
+- `kitty-scrollback.nvim` automatically closes and executes the content of the paste window
+
+</details>
 
 ## 🚀 Migrating to v3.0.0
 > [!IMPORTANT]\
@@ -57,52 +140,6 @@ Navigate your Kitty scrollback buffer to quickly search, copy, and execute comma
     | KittyScrollbackNvimReady   | KittyScrollbackNvimStatusWinReadyIcon   |       
     | KittyScrollbackNvimKitty   | KittyScrollbackNvimStatusWinKittyIcon   |       
     | KittyScrollbackNvimVim     | KittyScrollbackNvimStatusWinNvimIcon    |       
-
-</details>
-
-## ✨ Features
-- 😻 Navigate Kitty's scrollback buffer with Neovim
-- 🐱 Copy contents from Neovim to system clipboard
-- 😺 Send contents from Neovim to Kitty shell
-- 🙀 Execute shell command from Neovim to Kitty shell
-
-## 🤯 Example use cases
-
-<details> 
-
-<summary>Copy scrollback text to the clipboard</summary>
-
-  - Open Kitty's scrollback history (default mapping `<C-S-h>`)
-  - Search backward for a pattern in Neovim `?{pattern}<CR>`
-  - Enter Visual mode `v` and select desired text
-  - Copy selection to clipboard (default mapping `<leader>y`)
-  - `kitty-scrollback.nvim` automatically closes and returns to Kitty
-
-</details>
-<details> 
-
-<summary>Modify and execute command</summary>
-
-  - Open Kitty's scrollback history (default mapping `<C-S-h>`)
-  - Copy desired selection to clipboard (e.g., `yy`)
-    - Alternatively, you could just enter Insert mode (`i` or `a`) to open an empty floating window (similar to `<C-x><C-e>` in Bash)
-  - `kitty-scrollback.nvim` opens a floating window in Neovim with the contents of the selection
-  - Modify the content 
-  - Execute the command (default mapping `<C-CR>`)
-  - `kitty-scrollback.nvim` automatically closes and executes the command in Kitty
-
-</details>
-<details> 
-
-<summary>Modify and paste content</summary>
-
-  - Open Kitty's scrollback history (default mapping `<C-S-h>`)
-  - Copy desired selection to clipboard (e.g., `yy`)
-  - `kitty-scrollback.nvim` opens a floating window in Neovim with the contents of the selection
-  - Modify the content
-    - Note: you can close (default mapping `<ESC>`) and reopen (yank or enter Insert mode) the floating window multiple times
-  - Paste the content (default mapping `<S-CR>` or `:w`)
-  - `kitty-scrollback.nvim` automatically closes and paste the contents in Kitty for further editing
 
 </details>
 
@@ -361,18 +398,20 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 ## ⌨️ Keymaps and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 
-| `<Plug>` Mapping            | Default Mapping | Mode  | API                   | Description                                                                             |
-| --------------------------- | --------------- | ----- | --------------------- | --------------------------------------------------------------------------------------- |
-| `<Plug>(KsbExecuteCmd)`     | `<C-CR>`        | n,i   | `execute_command()`   | Execute the contents of the paste window in Kitty                                       |
-| `<Plug>(KsbPasteCmd)`       | `<S-CR>`        | n,i   | `paste_command()`     | Paste the contents of the paste window to Kitty without executing                       |
-| `<Plug>(KsbToggleFooter)`   | `g?`            | n     | `toggle_footer()`     | Toggle the paste window footer that displays mappings                                   |
-| `<Plug>(KsbCloseOrQuitAll)` | `<Esc>`         | n     | `close_or_quit_all()` | If the current buffer is the paste buffer, then close the window. Otherwise quit Neovim |
-| `<Plug>(KsbQuitAll)`        | `<C-c>`         | n,i,t | `quit_all()`          | Quit Neovim                                                                             |
-| `<Plug>(KsbVisualYankLine)` | `<Leader>Y`     | v     |                       | Maps to `"+Y`                                                                           |
-| `<Plug>(KsbVisualYank)`     | `<Leader>y`     | v     |                       | Maps to `"+y`                                                                           |
-| `<Plug>(KsbNormalYankEnd)`  | `<Leader>Y`     | n     |                       | Maps to `"+y$`                                                                          |
-| `<Plug>(KsbNormalYank)`     | `<Leader>y`     | n     |                       | Maps to `"+y`                                                                           |
-| `<Plug>(KsbNormalYankLine)` | `<Leader>yy`    | n     |                       | Maps to `"+yy`                                                                          |
+| `<Plug>` Mapping              | Default Mapping | Mode  | API                        | Description                                                                             |
+| ----------------------------- | --------------- | ----- | -------------------------- | --------------------------------------------------------------------------------------- |
+| `<Plug>(KsbExecuteCmd)`       | `<C-CR>`        | n,i   | `execute_command()`        | Execute the contents of the paste window in Kitty                                       |
+| `<Plug>(KsbPasteCmd)`         | `<S-CR>`        | n,i   | `paste_command()`          | Paste the contents of the paste window to Kitty without executing                       |
+| `<Plug>(KsbExecuteVisualCmd)` | `<C-CR>`        | v     | `execute_visual_command()` | Execute the contents of visual selection in Kitty                                       |
+| `<Plug>(KsbPasteVisualCmd)`   | `<S-CR>`        | v     | `paste_visual_command()`   | Paste the contents of visual selection to Kitty without executing                       |
+| `<Plug>(KsbToggleFooter)`     | `g?`            | n     | `toggle_footer()`          | Toggle the paste window footer that displays mappings                                   |
+| `<Plug>(KsbCloseOrQuitAll)`   | `<Esc>`         | n     | `close_or_quit_all()`      | If the current buffer is the paste buffer, then close the window. Otherwise quit Neovim |
+| `<Plug>(KsbQuitAll)`          | `<C-c>`         | n,i,t | `quit_all()`               | Quit Neovim                                                                             |
+| `<Plug>(KsbVisualYankLine)`   | `<Leader>Y`     | v     |                            | Maps to `"+Y`                                                                           |
+| `<Plug>(KsbVisualYank)`       | `<Leader>y`     | v     |                            | Maps to `"+y`                                                                           |
+| `<Plug>(KsbNormalYankEnd)`    | `<Leader>Y`     | n     |                            | Maps to `"+y$`                                                                          |
+| `<Plug>(KsbNormalYank)`       | `<Leader>y`     | n     |                            | Maps to `"+y`                                                                           |
+| `<Plug>(KsbNormalYankLine)`   | `<Leader>yy`    | n     |                            | Maps to `"+yy`                                                                          |
 
 ## 👏 Recommendations
 
