@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.0.0...v3.1.0) (2024-01-02)
+
+
+### Features
+
+* add paste and execute commands in visual mode ([#134](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/134)) ([ad00bcd](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/ad00bcd6b4e9a424a31dff6a69eed871214e06ab))
+
 # [3.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v2.4.7...v3.0.0) (2023-12-29)
 
 
