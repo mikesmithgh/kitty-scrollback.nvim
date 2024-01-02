@@ -15,7 +15,8 @@ end
 local function check_kitty_remote_control()
   vim.health.start('kitty-scrollback: Kitty remote control')
   local cmd = {
-    p.kitty_data.kitty_path,
+    -- fallback to 'kitty' because checkhealth can be called outside of standard setup flow
+    (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path or 'kitty',
     '@',
     'ls',
   }
@@ -70,7 +71,7 @@ local function check_has_kitty_data()
       .. kitty_scrollback_kitten
       .. ' --config ksb_builtin_checkhealth`'
     vim.health.warn('No Kitty data available unable to perform a complete healthcheck', {
-      'Add the config options `checkhealth = true` to your *config* or execute the command `:KittyScrollbackCheckHealth` '
+      'Execute the command `:KittyScrollbackCheckHealth` or add the config options `checkhealth = true` to your *config* '
         .. 'to run `checkhealth` within the context of a Kitten',
       checkhealth_command,
     })
