@@ -62,7 +62,7 @@ $ brew search a
     )
   end)
 
-  it('should successfully open checkhealth', function()
+  it('should successfully open KittyScrollbackCheckHealth', function()
     local actual = h.feed_kitty({
       h.send_as_string(
         [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']]
@@ -73,6 +73,36 @@ $ brew search a
       { pattern = 'ERROR', cursor_y = 1, cursor_x = 1 },
       'kitty-scrollback.nvim checkhealth had an unexpected health check ERROR'
     )
+    h.assert_screen_starts_with(actual, {
+      stdout = [[
+
+──────────────────────────────────────────────────────────────────────────────
+kitty-scrollback: require("kitty-scrollback.health").check()
+
+kitty-scrollback: Neovim version
+]],
+      cursor_y = 1,
+      cursor_x = 1,
+    }, 'kitty-scrollback.nvim checkhealth content did not start with expected content')
+  end)
+
+  it('should successfully open checkhealth and warn user no kitty data available', function()
+    local actual = h.feed_kitty({
+      h.send_as_string(
+        [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("checkhealth kitty-scrollback")']]
+      ),
+      h.send_without_newline([[zR]]),
+    })
+    h.assert_screen_not_match(
+      actual,
+      { pattern = 'ERROR', cursor_y = 1, cursor_x = 1 },
+      'kitty-scrollback.nvim checkhealth had an unexpected health check ERROR'
+    )
+    h.assert_screen_match(actual, {
+      pattern = 'WARNING No Kitty data available unable to perform a complete healthcheck',
+      cursor_y = 1,
+      cursor_x = 1,
+    })
     h.assert_screen_starts_with(actual, {
       stdout = [[
 
@@ -203,6 +233,22 @@ $
         cursor_x = 3,
       },
       'kitty-scrollback.nvim did not have expected wrap marker results'
+    )
+  end)
+
+  it('should temporarily block user input on start', function()
+    h.kitty_remote_kitten_kitty_scrollback_nvim()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.with_pause_seconds_before([[a]], 0.1),
+      }),
+      {
+        stdout = h.with_status_win([[
+$
+]]),
+        cursor_y = 1,
+        cursor_x = 3,
+      }
     )
   end)
 end)

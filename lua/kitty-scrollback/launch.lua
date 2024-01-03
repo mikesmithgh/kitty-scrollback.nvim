@@ -65,6 +65,8 @@ local p = {}
 ---@type KsbOpts
 local opts = {}
 
+local block_input_timer
+
 ---@class KsbCallbacks
 ---@field after_setup fun(kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after initializing kitty-scrollback.nvim
 ---@field after_launch fun(kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after launch started to process the scrollback buffer
@@ -245,6 +247,7 @@ local set_cursor_position = vim.schedule_wrap(function(d)
   vim.o.scrolloff = 0
   vim.o.laststatus = 0
   vim.o.virtualedit = 'all'
+  ---@diagnostic disable-next-line: param-type-mismatch
   vim.fn.cursor(last_line, 1) -- cursor last line
   -- using normal commands instead of cursor pos due to virtualedit
   if lines ~= 0 then
@@ -295,9 +298,9 @@ end
 ---@param kitty_data_str string
 M.setup = function(kitty_data_str)
   -- block user input for a short period of time during startup to prevent unwanted mode changes and unexpected behavior
-  p.block_input_timer = vim.fn.timer_start(50, function()
+  block_input_timer = vim.fn.timer_start(25, function()
     pcall(vim.fn.getchar, 0)
-  end, { ['repeat'] = 40 })
+  end, { ['repeat'] = 80 }) -- 2 seconds
 
   p.kitty_data = vim.fn.json_decode(kitty_data_str)
   load_requires() -- must be after p.kitty_data initialized
@@ -445,6 +448,7 @@ M.launch = function()
             win = 0,
           }
         )
+        ---@diagnostic disable-next-line: param-type-mismatch
         vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
 
         if opts.restore_options then
@@ -464,8 +468,8 @@ M.launch = function()
           end)
         end
         ksb_api.close_kitty_loading_window()
-        if p.block_input_timer then
-          vim.fn.timer_stop(p.block_input_timer)
+        if block_input_timer then
+          vim.fn.timer_stop(block_input_timer)
         end
       end)
     end)

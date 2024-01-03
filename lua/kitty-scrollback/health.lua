@@ -264,6 +264,7 @@ local function check_kitty_scrollback_nvim_version()
 end
 
 M.check = function()
+  require('kitty-scrollback.backport').setup()
   if
     M.check_nvim_version('nvim-0.9')
     and check_kitty_scrollback_nvim_version()
