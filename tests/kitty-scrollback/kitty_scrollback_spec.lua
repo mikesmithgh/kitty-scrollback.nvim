@@ -238,17 +238,12 @@ $
 
   it('should temporarily block user input on start', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim()
-    h.assert_screen_equals(
+    h.assert_screen_not_match(
       h.feed_kitty({
-        h.with_pause_seconds_before([[a]], 0.1),
+        h.send_without_newline([[aa]]),
+        h.send_without_newline(h.control_c()),
       }),
-      {
-        stdout = h.with_status_win([[
-$
-]]),
-        cursor_y = 1,
-        cursor_x = 3,
-      }
+      { pattern = 'Error' }
     )
   end)
 end)

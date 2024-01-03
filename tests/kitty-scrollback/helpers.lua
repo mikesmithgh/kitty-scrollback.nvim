@@ -320,6 +320,15 @@ M.esc = function()
   }
 end
 
+M.control_c = function()
+  return {
+    [[\x03]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
 M.control_d = function()
   return {
     [[\x04]],
