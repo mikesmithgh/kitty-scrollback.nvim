@@ -1,3 +1,10 @@
+## [3.1.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.1...v3.1.2) (2024-01-03)
+
+
+### Bug Fixes
+
+* temporarily block user input on start ([#140](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/140)) ([ad0d6e8](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/ad0d6e85c46dd9c33d232ec0eaf9f06e1abd93b3))
+
 ## [3.1.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.0...v3.1.1) (2024-01-02)
 
 
