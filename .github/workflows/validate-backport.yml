@@ -1,0 +1,24 @@
+name: validate nvim backports
+on: 
+  workflow_dispatch:
+  schedule:
+    # daily 9AM EST
+    - cron: "0 14 * * *"
+
+jobs:
+  validate-nvim-backport:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Neovim ${{ matrix.nvim_version }} 
+      uses: rhysd/action-setup-vim@v1
+      with:
+        neovim: true
+        version: nightly
+
+    - name: Validate checksums
+      run: |
+        ./scripts/internal/__validate_backport_sha.lua
+
