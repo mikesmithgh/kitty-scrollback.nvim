@@ -67,7 +67,7 @@ M.tab_offset = function()
   return 0
 end
 
-function M.clear_yank_autocommand_and_get_visual_selection()
+M.clear_yank_autocommand_and_get_visual_selection = function()
   vim.api.nvim_clear_autocmds({
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimTextYankPost', { clear = true }),
   })
