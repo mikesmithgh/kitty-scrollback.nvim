@@ -1,4 +1,4 @@
-#!/usr/bin/env nvim -l
+#!/usr/bin/env -S nvim -l
 vim.print('starting backport validation...')
 ---@type table<string, string>
 local backport_shas =
