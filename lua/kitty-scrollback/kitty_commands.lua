@@ -233,8 +233,8 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     end, lines),
     '\r'
   )
-  local esc = vim.fn.eval([["\e"]])
-  local enquiry = '\\x05' -- see https://en.wikipedia.org/wiki/Enquiry_character
+  local esc = [[\x1b]]
+  local enquiry = [[\x05]] -- see https://en.wikipedia.org/wiki/Enquiry_character
   local start_bracketed_paste = esc .. '[200~' -- see https://cirw.in/blog/bracketed-paste
   local stop_bracketed_paste = esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
 
