@@ -8,7 +8,7 @@ local M = {}
 local function backport_version()
   if type(vim.version().__tostring) ~= 'function' then
     -- NOTE: copied __tostring from
-    -- https://github.com/neovim/neovim/blob/879617c9bbbacb0d0f778ff6dd53cc7c95794abe/runtime/lua/vim/version.lua
+    -- https://github.com/neovim/neovim/blob/e09adfdcffe8a94e09d834bb49f42fd725ddd47b/runtime/lua/vim/version.lua#L123
 
     local Version = {}
     function Version:__tostring()
@@ -25,6 +25,9 @@ local function backport_version()
     if type(vim.version) == 'function' then -- nvim 0.8 vim.version is a table instead of function
       vim.version = vim.version()
     end
+
+    -- NOTE: copied setmetatable from
+    -- https://github.com/neovim/neovim/blob/e09adfdcffe8a94e09d834bb49f42fd725ddd47b/runtime/lua/vim/version.lua#L427
     setmetatable(vim.version, {
       --- Returns the current Nvim version.
       __call = function()
