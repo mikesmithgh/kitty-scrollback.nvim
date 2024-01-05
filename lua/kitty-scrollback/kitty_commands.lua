@@ -240,7 +240,7 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
 
   -- the beginning enquiry is used to separate any existing commands in kitty that may end with escape
   -- if escape is present, then bash autocompletion will be triggered because bracketed paste mode starts with an escape
-  -- the ending enquiry is used to remove deselect the text after pasting to the terminal
+  -- the ending enquiry is used to deselect the text after pasting to the terminal
   cmd_str = enquiry .. start_bracketed_paste .. cmd_str .. stop_bracketed_paste .. enquiry
 
   if execute_command then
