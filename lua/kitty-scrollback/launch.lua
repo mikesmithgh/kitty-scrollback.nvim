@@ -46,6 +46,7 @@ local M = {}
 ---@field kitty_config_dir string kitty configuration directory path
 ---@field kitty_version table kitty version
 ---@field kitty_path string kitty executable path
+---@field mode string 'tmux' for running in tmux mode
 
 ---@class KsbPrivate
 ---@field orig_columns number
@@ -297,6 +298,9 @@ M.setup = function(kitty_data_str)
   end, { ['repeat'] = 80 }) -- 2 seconds
 
   p.kitty_data = vim.fn.json_decode(kitty_data_str)
+  if os.getenv('TMUX') ~= nil then
+    p.kitty_data.mode = 'tmux'
+  end
   load_requires() -- must be after p.kitty_data initialized
 
   -- if a config named 'global' is found, that will be applied to all configurations regardless of prefix
@@ -335,7 +339,7 @@ M.setup = function(kitty_data_str)
       ksb_kitty_cmds.signal_term_to_kitty_child_process(true)
     end
   end
-  if not ksb_health.check_kitty_version(true) then
+  if p.kitty_data.mode ~= 'tmux' and not ksb_health.check_kitty_version(true) then
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version kitty '
       .. table.concat(p.kitty_data.kitty_version, '.')
       .. '. '
@@ -357,12 +361,14 @@ M.setup = function(kitty_data_str)
   ksb_api.setup(p, opts)
   ksb_keymaps.setup(p, opts)
 
-  local ok = ksb_hl.setup(p, opts)
-  if ok then
-    ksb_hl.set_highlights()
-    ksb_kitty_cmds.open_kitty_loading_window(ksb_hl.get_highlights_as_env()) -- must be after opts and set highlights
-    if ksb_hl.has_default_or_vim_colorscheme() then
-      vim.api.nvim_set_hl(0, 'Normal', p.orig_normal_hl)
+  if p.kitty_data.mode ~= 'tmux' then
+    local ok = ksb_hl.setup(p, opts)
+    if ok then
+      ksb_hl.set_highlights()
+      ksb_kitty_cmds.open_kitty_loading_window(ksb_hl.get_highlights_as_env()) -- must be after opts and set highlights
+      if ksb_hl.has_default_or_vim_colorscheme() then
+        vim.api.nvim_set_hl(0, 'Normal', p.orig_normal_hl)
+      end
     end
   end
 
@@ -421,7 +427,7 @@ M.launch = function()
         -- see https://github.com/neovim/neovim/pull/23503
         vim.o.columns = p.orig_columns
 
-        ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
+        -- ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
         if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
           set_cursor_position(kitty_data)
         end

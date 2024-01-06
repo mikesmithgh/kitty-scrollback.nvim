@@ -136,19 +136,17 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
     esc,
     esc
   )
-  local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
+  local flush_stdout_cmd =
+    string.format([[%s +runpy 'sys.stdout.flush()']], p.kitty_data.kitty_path)
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
   local start_set_title_cmd = string.format([[printf '%s]2;']], esc)
-  local full_cmd = kitty_get_text_cmd
-    .. ' | '
-    .. sed_cmd
-    -- TODO: find scenario where I needed sed and possibly remove?
-    -- - reproduced on v1.0.0 but can't repro on this with: bat --no-pager ~/.bashrc; printf "before \x1b[1;1H after\n"
-    -- - may not need, but need to write tests first
-    .. ' && '
-    .. flush_stdout_cmd
-    .. ' && '
-    .. start_set_title_cmd
+  local base_cmd
+  if kitty_data.mode == 'tmux' then
+    base_cmd = 'tmux capture-pane -e -p -S - -E -' .. ' | ' .. sed_cmd
+  else
+    base_cmd = kitty_get_text_cmd .. ' | ' .. sed_cmd .. ' && ' .. flush_stdout_cmd
+  end
+  local full_cmd = base_cmd .. ' && ' .. start_set_title_cmd
   local stdout
   local stderr
   local tail_max = 10
