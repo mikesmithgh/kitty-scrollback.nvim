@@ -1,3 +1,10 @@
+## [3.1.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.3...v3.1.4) (2024-01-09)
+
+
+### Bug Fixes
+
+* prevent caught deadly signal message on exit ([#155](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/155)) ([00a0b5f](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/00a0b5f97030687a4fb6b454499f5ce55eb52144)), closes [#135](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/135)
+
 ## [3.1.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.2...v3.1.3) (2024-01-03)
 
 

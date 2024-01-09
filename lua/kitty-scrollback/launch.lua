@@ -332,7 +332,7 @@ M.setup = function(kitty_data_str)
       .. table.concat(ksb_health.advice().nvim_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
-      ksb_kitty_cmds.signal_term_to_kitty_child_process(true)
+      ksb_util.quitall()
     end
   end
   if not ksb_health.check_kitty_version(true) then
@@ -342,7 +342,7 @@ M.setup = function(kitty_data_str)
       .. table.concat(ksb_health.advice().kitty_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
-      ksb_kitty_cmds.signal_term_to_kitty_child_process(true)
+      ksb_util.quitall()
     end
   end
 
@@ -401,9 +401,11 @@ M.launch = function()
       extent = '--extent=' .. extent_opt
     end
 
-    local add_cursor = '--add-cursor' -- always add cursor
+    -- always add wrap markers, wrap markers are important to add blank lines with /r to
+    -- fill the screen when setting the cursor position
+    local add_wrap_markers = '--add-wrap-markers'
 
-    local get_text_opts = ansi .. ' ' .. clear_selection .. ' ' .. add_cursor .. ' ' .. extent
+    local get_text_opts = ansi .. ' ' .. clear_selection .. ' ' .. add_wrap_markers .. ' ' .. extent
 
     -- increase the number of columns temporary so that the width is used during the
     -- terminal command kitty @ get-text. this avoids hard wrapping lines to the

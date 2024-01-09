@@ -77,4 +77,8 @@ M.clear_yank_autocommand_and_get_visual_selection = function()
   return reginfo.regcontents
 end
 
+M.quitall = function()
+  vim.cmd.quitall({ bang = true })
+end
+
 return M
