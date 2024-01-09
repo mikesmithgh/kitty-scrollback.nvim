@@ -156,7 +156,7 @@ M.setup()                                           *kitty-scrollback.api.setup*
 
 
 M.quit_all()                                     *kitty-scrollback.api.quit_all*
-    Attempt to gracefully quit Neovim. How do you exit vim? Why would you exit vim?
+    Attempt to force quit Neovim. How do you exit vim? Why would you exit vim?
 
 
 M.close_or_quit_all()                   *kitty-scrollback.api.close_or_quit_all*
