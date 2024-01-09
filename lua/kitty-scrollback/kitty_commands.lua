@@ -96,7 +96,7 @@ local display_error = function(cmd, r)
   ksb_util.restore_and_redraw()
   local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
   if response ~= 2 then
-    ksb_util.quit_all()
+    ksb_util.quitall()
   end
 end
 
@@ -255,7 +255,7 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     '--match=id:' .. p.kitty_data.window_id,
     cmd_str,
   })
-  ksb_util.quit_all()
+  ksb_util.quitall()
 end
 
 M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)

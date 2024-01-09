@@ -18,7 +18,7 @@ end
 
 ---Attempt to force quit Neovim. How do you exit vim? Why would you exit vim?
 M.quit_all = function()
-  ksb_util.quit_all()
+  ksb_util.quitall()
 end
 
 ---If the current buffer is the paste buffer, then close the window

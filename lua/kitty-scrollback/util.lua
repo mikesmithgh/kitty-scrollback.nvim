@@ -77,16 +77,8 @@ M.clear_yank_autocommand_and_get_visual_selection = function()
   return reginfo.regcontents
 end
 
-M.quit_all = function()
-  -- Previously Kitty was used to quit nvim by sending a SIGTERM signal avoid exiting nvim early.
-  -- The xclip child process was not spawning quick enough in the TextYankPost autocommand, resulting
-  -- in content not being copied to the clipboard. This was observed running Ubuntu on UTM.
-  -- The side effect of this is that the message Vim: Caught deadly signal 'SIGTERM' would briefly
-  -- flash before exiting kitty-scrollback.nvim. To avoid the deadly signal message and provide time
-  -- for xclip to start, defer calling quitall by 100 ms
-  vim.defer_fn(function()
-    vim.cmd.quitall({ bang = true })
-  end, 100)
+M.quitall = function()
+  vim.cmd.quitall({ bang = true })
 end
 
 return M

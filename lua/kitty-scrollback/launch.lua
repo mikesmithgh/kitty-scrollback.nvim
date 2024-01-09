@@ -332,7 +332,7 @@ M.setup = function(kitty_data_str)
       .. table.concat(ksb_health.advice().nvim_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
-      ksb_util.quit_all()
+      ksb_util.quitall()
     end
   end
   if not ksb_health.check_kitty_version(true) then
@@ -342,7 +342,7 @@ M.setup = function(kitty_data_str)
       .. table.concat(ksb_health.advice().kitty_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
-      ksb_util.quit_all()
+      ksb_util.quitall()
     end
   end
 
