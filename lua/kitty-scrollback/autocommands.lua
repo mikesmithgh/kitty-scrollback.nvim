@@ -133,7 +133,7 @@ M.set_yank_post_autocmd = function()
           -- for xclip to start, defer calling quitall by 100 ms
           vim.defer_fn(function()
             vim.cmd.quitall({ bang = true })
-          end, 200)
+          end, 100)
         else
           vim.schedule(function()
             local prompt_msg =
