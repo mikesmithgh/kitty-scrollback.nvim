@@ -16,11 +16,9 @@ M.setup = function(private, options)
   opts = options ---@diagnostic disable-line: unused-local
 end
 
----Attempt to gracefully quit Neovim. How do you exit vim? Why would you exit vim?
+---Attempt to force quit Neovim. How do you exit vim? Why would you exit vim?
 M.quit_all = function()
-  -- quit causes nvim to exit early sometime interrupting underlying copy child process (.e.g, xclip)
-  -- send sigterm to gracefully terminate
-  vim.schedule(ksb_kitty_cmds.signal_term_to_kitty_child_process)
+  ksb_util.quit_all()
 end
 
 ---If the current buffer is the paste buffer, then close the window

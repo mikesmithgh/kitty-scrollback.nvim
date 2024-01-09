@@ -125,7 +125,7 @@ M.set_yank_post_autocmd = function()
       if yankevent.regname == '+' then
         if vim.fn.has('clipboard') > 0 then
           -- contents are copied to clipboard, return to kitty
-          ksb_api.quit_all()
+          ksb_util.quit_all()
         else
           vim.schedule(function()
             local prompt_msg =
@@ -147,7 +147,7 @@ M.set_yank_post_autocmd = function()
             ksb_util.restore_and_redraw()
             local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
             if response ~= 2 then
-              ksb_api.quit_all()
+              ksb_util.quit_all()
             end
           end)
         end

@@ -96,7 +96,7 @@ local display_error = function(cmd, r)
   ksb_util.restore_and_redraw()
   local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
   if response ~= 2 then
-    M.signal_term_to_kitty_child_process(true)
+    ksb_util.quit_all()
   end
 end
 
@@ -255,7 +255,7 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     '--match=id:' .. p.kitty_data.window_id,
     cmd_str,
   })
-  M.signal_term_to_kitty_child_process()
+  ksb_util.quit_all()
 end
 
 M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
@@ -292,19 +292,6 @@ M.signal_winchanged_to_kitty_child_process = function()
     'signal-child',
     'SIGWINCH',
   })
-end
-
-M.signal_term_to_kitty_child_process = function(force)
-  if force then
-    vim.cmd.quitall({ bang = true })
-  else
-    system_handle_error({
-      p.kitty_data.kitty_path,
-      '@',
-      'signal-child',
-      'SIGTERM',
-    })
-  end
 end
 
 M.open_kitty_loading_window = function(env)
