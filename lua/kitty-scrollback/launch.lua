@@ -421,9 +421,7 @@ M.launch = function()
       vim.o.columns = min_cols
     end
     vim.schedule(function()
-      vim.opt.eventignore:append('all')
       ksb_kitty_cmds.get_text_term(kitty_data, get_text_opts, function()
-        vim.opt.eventignore:remove('all')
         -- NOTE(#58): nvim v0.9 support
         -- vim.o.columns is resized automatically in nvim v0.9.1 when we trigger kitty so send a SIGWINCH signal
         -- vim.o.columns is explicitly set to resize appropriatley on v0.9.0
