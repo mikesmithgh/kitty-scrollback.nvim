@@ -127,24 +127,15 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
     kitty_data.window_id,
     get_text_opts
   )
-  local sed_cmd = string.format(
-    [[sed -E ]]
-      .. [[-e 's/%s\[\?25.%s\[.*;.*H%s\[.*//g' ]] -- remove control sequence added by --add-cursor flag
-      .. [[-e 's/$/%s[0m/g' ]], -- append all lines with reset to avoid unintended colors
-    esc,
-    esc,
-    esc,
-    esc
-  )
+  local sed_cmd = [[sed -E ]]
+    .. [[-e 's/\r//g' ]] -- added to remove /r added by --add-wrap-markers, (--add-wrap-markers is used to add empty lines at end of screen)
+    .. [[-e 's/$/\x1b[0m/g']] -- append all lines with reset to avoid unintended colors
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
   local start_set_title_cmd = string.format([[printf '%s]2;']], esc)
   local full_cmd = kitty_get_text_cmd
     .. ' | '
     .. sed_cmd
-    -- TODO: find scenario where I needed sed and possibly remove?
-    -- - reproduced on v1.0.0 but can't repro on this with: bat --no-pager ~/.bashrc; printf "before \x1b[1;1H after\n"
-    -- - may not need, but need to write tests first
     .. ' && '
     .. flush_stdout_cmd
     .. ' && '
