@@ -104,17 +104,14 @@ local function check_sed()
     return
   end
 
-  local esc = vim.fn.eval([["\e"]])
   local cmd = {
     'sed',
     '-E',
     '-e',
-    's/$/' .. esc .. '[0m/g',
-    '-e',
-    's/' .. esc .. '\\[\\?25.' .. esc .. '\\[.*;.*H' .. esc .. '\\[.*//g',
+    [[s/$/\x1b[0m/g]],
   }
   local ok, sed_proc = pcall(vim.system, cmd, {
-    stdin = 'expected' .. esc .. '[?25h' .. esc .. '[1;1H' .. esc .. '[notexpected',
+    stdin = 'expected',
   })
   local result = {}
   if ok then
@@ -124,7 +121,7 @@ local function check_sed()
     result.stdout = ''
     result.stderr = sed_proc
   end
-  ok = ok and result.code == 0 and result.stdout == 'expected'
+  ok = ok and result.code == 0 and result.stdout == 'expected\x1b[0m'
   if ok then
     vim.health.ok(
       '`'
@@ -150,7 +147,7 @@ local function check_sed()
         .. result.code
         .. '* and stdout `'
         .. result.stdout
-        .. '` (should be `expected`)\n'
+        .. '` (should be `expected\x1b[0m`)\n'
         .. result_err
         .. '`\n'
         .. '   `sed: '
