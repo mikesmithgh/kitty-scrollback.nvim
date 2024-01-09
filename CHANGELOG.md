@@ -1,3 +1,10 @@
+## [3.1.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.2...v3.1.3) (2024-01-03)
+
+
+### Bug Fixes
+
+* default cwd to current directory ([#144](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/144)) ([d33c1fb](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/d33c1fbc75433800de813ceab79ccdc43acf848e))
+
 ## [3.1.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.1...v3.1.2) (2024-01-03)
 
 
