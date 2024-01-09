@@ -108,10 +108,12 @@ local function check_sed()
     'sed',
     '-E',
     '-e',
+    [[s/\r//g]],
+    '-e',
     [[s/$/\x1b[0m/g]],
   }
   local ok, sed_proc = pcall(vim.system, cmd, {
-    stdin = 'expected',
+    stdin = 'expected\r',
   })
   local result = {}
   if ok then
