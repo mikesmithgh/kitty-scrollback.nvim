@@ -1,3 +1,10 @@
+## [3.1.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.4...v3.1.5) (2024-01-10)
+
+
+### Bug Fixes
+
+* prefer xsel over xclip ([#157](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/157)) ([088b3fc](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/088b3fcf04e4882dbd2f08822eb33dae2c33b1a2))
+
 ## [3.1.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.3...v3.1.4) (2024-01-09)
 
 
