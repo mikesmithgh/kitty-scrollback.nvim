@@ -90,7 +90,7 @@ local function check_clipboard()
     if clipboard_tool == 'xclip' then
       vim.health.warn([[
 *xclip* may have issues copying content to the clipboard from Neovim. If you are having issues copying or
-you are seeing errors similar to `Error : target STRING not available`, you should switch to *xsel*.
+you are seeing errors similar to `Error : target STRING not available`, you should switch to *xsel* .
 See *xclip* related issue: https://github.com/astrand/xclip/issues/38#ref-commit-b042f6d
 See Neovim pull request preferring *xsel* over xclip: https://github.com/neovim/neovim/pull/20918
 ]])
@@ -133,7 +133,8 @@ local function check_sed()
     result.stdout = ''
     result.stderr = sed_proc
   end
-  ok = ok and result.code == 0 and result.stdout == 'expected\x1b[0m'
+  local esc = vim.fn.eval([["\e"]])
+  ok = ok and result.code == 0 and result.stdout == 'expected' .. esc .. '[0m'
   if ok then
     vim.health.ok(
       '`'
@@ -159,7 +160,9 @@ local function check_sed()
         .. result.code
         .. '* and stdout `'
         .. result.stdout
-        .. '` (should be `expected\x1b[0m`)\n'
+        .. '` (should be `expected'
+        .. esc
+        .. '[0m`)'
         .. result_err
         .. '`\n'
         .. '   `sed: '
