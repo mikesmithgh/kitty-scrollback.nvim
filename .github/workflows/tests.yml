@@ -16,6 +16,14 @@ on:
         required: false
         type: boolean
         default: false
+      debug_kitty_version:
+        required: false
+        type: string
+        default: 'stable'
+      debug_nvim_version:
+        required: false
+        type: string
+        default: 'stable'
   schedule:
     # every 4 hours
     - cron: "0 */4 * * *"
@@ -78,7 +86,7 @@ jobs:
         Xvfb :1 -screen 0 1024x768x16 &
 
     - name: (debug) Start TurboVNC
-      if: ${{ inputs.enable_debug_vnc }}
+      if: ${{ inputs.enable_debug_vnc && (inputs.debug_kitty_version == matrix.kitty_version) && (inputs.debug_nvim_version == matrix.nvim_version) }}
       run: |
         mkdir -p "$GITHUB_WORKSPACE/tmp"
         curl -s -L https://github.com/TurboVNC/turbovnc/releases/download/3.1/turbovnc_3.1_amd64.deb -o "$GITHUB_WORKSPACE/tmp/turbovnc.deb"
@@ -92,7 +100,7 @@ jobs:
         echo 'export PATH="/opt/TurboVNC/bin:$PATH"' >> "$HOME/.bashrc"
 
     - name: (debug) Setup ngrok session
-      if: ${{ inputs.enable_debug_vnc }}
+      if: ${{ inputs.enable_debug_vnc && (inputs.debug_kitty_version == matrix.kitty_version) && (inputs.debug_nvim_version == matrix.nvim_version) }}
       env:
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
       run: |
@@ -111,7 +119,7 @@ jobs:
         printf '\n\nngrok agent running avaible at %s\n\nRun the following command on your machine:\n\n  ssh -L 59000:localhost:5901 -C -N -p %s -l runner %s\n\nConnect on your machine at: localhost:59000\n\n' $NGROK_TLS_URL $port $host
 
     - name: (debug) Setup tmate session
-      if: ${{ inputs.enable_debug_tmate || inputs.enable_debug_vnc }}
+      if: ${{ (inputs.enable_debug_tmate || inputs.enable_debug_vnc) && (inputs.debug_kitty_version == matrix.kitty_version) && (inputs.debug_nvim_version == matrix.nvim_version) }}
       uses: mxschmitt/action-tmate@v3
 
     - name: Test kitty-scrollback.nvim
