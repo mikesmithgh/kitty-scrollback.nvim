@@ -224,15 +224,19 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     end, lines),
     '\r'
   )
-  local esc = vim.fn.eval([["\e"]])
-  local enquiry = '\\x05' -- see https://en.wikipedia.org/wiki/Enquiry_character
+  local esc = [[\x1b]]
+  local nul_character = [[\x00]] -- see https://en.wikipedia.org/wiki/Null_character
   local start_bracketed_paste = esc .. '[200~' -- see https://cirw.in/blog/bracketed-paste
   local stop_bracketed_paste = esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
 
-  -- the beginning enquiry is used to separate any existing commands in kitty that may end with escape
+  -- the beginning nul is used to separate any existing commands in kitty that may end with escape
   -- if escape is present, then bash autocompletion will be triggered because bracketed paste mode starts with an escape
-  -- the ending enquiry is used to remove deselect the text after pasting to the terminal
-  cmd_str = enquiry .. start_bracketed_paste .. cmd_str .. stop_bracketed_paste .. enquiry
+  -- the ending nul is used to remove deselect the text after pasting to the terminal
+  cmd_str = nul_character
+    .. start_bracketed_paste
+    .. cmd_str
+    .. stop_bracketed_paste
+    .. nul_character
 
   if execute_command then
     -- add a carriage return to execute command
