@@ -96,7 +96,7 @@ local display_error = function(cmd, r)
   ksb_util.restore_and_redraw()
   local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
   if response ~= 2 then
-    M.signal_term_to_kitty_child_process(true)
+    ksb_util.quitall()
   end
 end
 
@@ -126,24 +126,19 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
     kitty_data.window_id,
     get_text_opts
   )
+  -- other sed filters that may come in handy
+  -- .. [[-e 's/(.*)\x1b]8;.*;.*\x1b\\(.*)/\1\2/g' ]] -- remove url/files/hyperlinks
+  -- .. [[-e 's/\x1b]133;[AC].*\x1b\\//g' ]] --replace shell integration prompt marks https://sw.kovidgoyal.net/kitty/shell-integration/#notes-for-shell-developers
+  -- .. [[-e 's/(.*)\x1b\[\?25.\x1b\[.*;.*H\x1b\[(\?12.|.+ q)(.*)/\1\3/g' ]] -- remove control sequence added by --add-cursor flag see https://github.com/kovidgoyal/kitty/blob/ec8b7853c55897bfcee5997dbd7cea734bdc2982/kitty/window.py#L346
   local sed_cmd = [[sed -E ]]
-    --       wrap markers are important to add blank lines to fill the screen when setting the cursor position but
-    --       we don't actually want hard wraps because it will limit the width of content
-    --       the test should start with a small width, open the scrollback, the text that is wrapping should expand past the terminal up to 300
-    .. [[ -e 's/\r//g' ]] -- added to remove /r added by --add-wrap-markers, (--add-wrap-markers is used to add empty lines at end of screen)
-    -- .. [[-e 's/(.*)\x1b]8;.*;.*\x1b\\(.*)/\1\2/g' ]] -- remove url/files/hyperlinks
-    -- .. [[-e 's/\x1b]133;[AC].*\x1b\\//g' ]] --replace shell integration prompt marks https://sw.kovidgoyal.net/kitty/shell-integration/#notes-for-shell-developers
-    -- .. [[-e 's/(.*)\x1b\[\?25.\x1b\[.*;.*H\x1b\[(\?12.|.+ q)(.*)/\1\3/g' ]] -- remove control sequence added by --add-cursor flag see https://github.com/kovidgoyal/kitty/blob/ec8b7853c55897bfcee5997dbd7cea734bdc2982/kitty/window.py#L346
-    .. [[-e 's/(.+)$/\x1b[m\1/g' ]] -- append all lines with reset to avoid unintended colors
+    .. [[-e 's/\r//g' ]] -- added to remove /r added by --add-wrap-markers, (--add-wrap-markers is used to add empty lines at end of screen)
+    .. [[-e 's/$/\x1b[0m/g']] -- append all lines with reset to avoid unintended colors
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
   local start_set_title_cmd = [[printf '\x1b]2;']]
   local full_cmd = kitty_get_text_cmd
     .. ' | '
     .. sed_cmd
-    -- TODO: find scenario where I needed sed and possibly remove?
-    -- - reproduced on v1.0.0 but can't repro on this with: bat --no-pager ~/.bashrc; printf "before \x1b[1;1H after\n"
-    -- - may not need, but need to write tests first
     .. ' && '
     .. flush_stdout_cmd
     .. ' && '
@@ -232,15 +227,19 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     end, lines),
     '\r'
   )
-  local esc = vim.fn.eval([["\e"]])
-  local enquiry = '\\x05' -- see https://en.wikipedia.org/wiki/Enquiry_character
+  local esc = [[\x1b]]
+  local nul_character = [[\x00]] -- see https://en.wikipedia.org/wiki/Null_character
   local start_bracketed_paste = esc .. '[200~' -- see https://cirw.in/blog/bracketed-paste
   local stop_bracketed_paste = esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
 
-  -- the beginning enquiry is used to separate any existing commands in kitty that may end with escape
+  -- the beginning nul is used to separate any existing commands in kitty that may end with escape
   -- if escape is present, then bash autocompletion will be triggered because bracketed paste mode starts with an escape
-  -- the ending enquiry is used to remove deselect the text after pasting to the terminal
-  cmd_str = enquiry .. start_bracketed_paste .. cmd_str .. stop_bracketed_paste .. enquiry
+  -- the ending nul is used to remove deselect the text after pasting to the terminal
+  cmd_str = nul_character
+    .. start_bracketed_paste
+    .. cmd_str
+    .. stop_bracketed_paste
+    .. nul_character
 
   if execute_command then
     -- add a carriage return to execute command
@@ -254,7 +253,7 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     '--match=id:' .. p.kitty_data.window_id,
     cmd_str,
   })
-  M.signal_term_to_kitty_child_process()
+  ksb_util.quitall()
 end
 
 M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
@@ -291,19 +290,6 @@ M.signal_winchanged_to_kitty_child_process = function()
     'signal-child',
     'SIGWINCH',
   })
-end
-
-M.signal_term_to_kitty_child_process = function(force)
-  if force then
-    vim.cmd.quitall({ bang = true })
-  else
-    system_handle_error({
-      p.kitty_data.kitty_path,
-      '@',
-      'signal-child',
-      'SIGTERM',
-    })
-  end
 end
 
 M.open_kitty_loading_window = function(env)

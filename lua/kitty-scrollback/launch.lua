@@ -59,7 +59,6 @@ local M = {}
 ---@field footer_winid number|nil
 ---@field footer_bufid number|nil
 ---@field pos table|nil
----@field block_input_timer table
 local p = {}
 
 ---@type KsbOpts
@@ -225,19 +224,14 @@ end
 
 local set_cursor_position = vim.schedule_wrap(function(d)
   local tab_offset = ksb_util.tab_offset()
-  -- removed 1 because one line is no longer at the bottom since --add-cursor was removed
-  local add_cursor_offset = 0
   local x = d.cursor_x - 1
-  local y = d.cursor_y - add_cursor_offset - tab_offset
+  local y = d.cursor_y - 1 - tab_offset
   local scrolled_by = d.scrolled_by
   local lines = d.lines - tab_offset
   if y < 0 then
     -- adjust when on first line of terminal
     lines = lines + math.abs(y)
     y = 0
-  elseif y > 0 then
-    -- removed 1 because one line is no longer at the bottom since --add-cursor was removed
-    y = y - 1
   end
   local last_line = vim.fn.line('$')
 
@@ -338,7 +332,7 @@ M.setup = function(kitty_data_str)
       .. table.concat(ksb_health.advice().nvim_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
-      ksb_kitty_cmds.signal_term_to_kitty_child_process(true)
+      ksb_util.quitall()
     end
   end
   if not ksb_health.check_kitty_version(true) then
@@ -348,7 +342,7 @@ M.setup = function(kitty_data_str)
       .. table.concat(ksb_health.advice().kitty_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
-      ksb_kitty_cmds.signal_term_to_kitty_child_process(true)
+      ksb_util.quitall()
     end
   end
 
@@ -407,10 +401,11 @@ M.launch = function()
       extent = '--extent=' .. extent_opt
     end
 
-    -- adds /r but not cursor at end
-    local add_cursor = '--add-wrap-markers' -- always add cursor, add cursor has the important side effect of padding the bottom lines with empty strings
+    -- always add wrap markers, wrap markers are important to add blank lines with /r to
+    -- fill the screen when setting the cursor position
+    local add_wrap_markers = '--add-wrap-markers'
 
-    local get_text_opts = ansi .. ' ' .. clear_selection .. ' ' .. add_cursor .. ' ' .. extent
+    local get_text_opts = ansi .. ' ' .. clear_selection .. ' ' .. add_wrap_markers .. ' ' .. extent
 
     -- increase the number of columns temporary so that the width is used during the
     -- terminal command kitty @ get-text. this avoids hard wrapping lines to the

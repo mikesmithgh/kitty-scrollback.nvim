@@ -124,8 +124,18 @@ M.set_yank_post_autocmd = function()
 
       if yankevent.regname == '+' then
         if vim.fn.has('clipboard') > 0 then
-          -- contents are copied to clipboard, return to kitty
-          ksb_api.quit_all()
+          -- Contents should be copied to clipboard, return to Kitty
+          local clipboard_tool = vim.api.nvim_call_function('provider#clipboard#Executable', {})
+          local defer_ms = 0
+          if clipboard_tool == 'xclip' then
+            -- The xclip child process was not spawning quick enough in the TextYankPost autocommand, resulting
+            -- in content not being copied to the clipboard so add a delay
+            -- see issue https://github.com/astrand/xclip/issues/38#ref-commit-b042f6d
+            defer_ms = 200
+          end
+          vim.defer_fn(function()
+            ksb_util.quitall()
+          end, defer_ms)
         else
           vim.schedule(function()
             local prompt_msg =
@@ -147,7 +157,7 @@ M.set_yank_post_autocmd = function()
             ksb_util.restore_and_redraw()
             local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
             if response ~= 2 then
-              ksb_api.quit_all()
+              ksb_util.quitall()
             end
           end)
         end

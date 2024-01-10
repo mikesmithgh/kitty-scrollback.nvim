@@ -394,7 +394,13 @@ M.feed_kitty = function(input, pause_seconds_after)
   local stdout = M.debug(M.kitty_remote_get_text()).stdout
   local last_line = stdout:match('.*\n(.*)\n')
   local start_of_line, cursor_y, cursor_x =
-    last_line:match('^(.*)\x1b%[%?25h\x1b%[(%d+);(%d+)H\x1b.*$')
+    last_line:match('^(.*)\x1b%[%?25[hl]\x1b%[(%d+);(%d+)H\x1b.*$')
+
+  if start_of_line == nil then
+    print(color_string('red', 'last_line is ' .. last_line:gsub('\x1b', '^[')))
+    assert.is_not_nil(start_of_line)
+  end
+
   return {
     stdout = stdout:gsub('[^\n]*\n$', start_of_line .. '\n'),
     cursor_x = tonumber(cursor_x),

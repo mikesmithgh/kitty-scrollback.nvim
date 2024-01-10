@@ -1,3 +1,24 @@
+## [3.1.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.5...v3.1.6) (2024-01-10)
+
+
+### Bug Fixes
+
+* use nul instead of enquiry ([#150](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/150)) ([141f678](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/141f67804a4d4fe4796d8b65807e95ccca1ff1a8)), closes [#147](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/147)
+
+## [3.1.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.4...v3.1.5) (2024-01-10)
+
+
+### Bug Fixes
+
+* prefer xsel over xclip ([#157](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/157)) ([088b3fc](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/088b3fcf04e4882dbd2f08822eb33dae2c33b1a2))
+
+## [3.1.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.3...v3.1.4) (2024-01-09)
+
+
+### Bug Fixes
+
+* prevent caught deadly signal message on exit ([#155](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/155)) ([00a0b5f](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/00a0b5f97030687a4fb6b454499f5ce55eb52144)), closes [#135](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/135)
+
 ## [3.1.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.2...v3.1.3) (2024-01-03)
 
 
