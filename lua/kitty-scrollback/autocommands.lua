@@ -124,16 +124,18 @@ M.set_yank_post_autocmd = function()
 
       if yankevent.regname == '+' then
         if vim.fn.has('clipboard') > 0 then
-          -- Contents are copied to clipboard, return to kitty
-          -- Previously Kitty was used to quit nvim by sending a SIGTERM signal avoid exiting nvim early.
-          -- The xclip child process was not spawning quick enough in the TextYankPost autocommand, resulting
-          -- in content not being copied to the clipboard. This was observed running Ubuntu on UTM.
-          -- The side effect of this is that the message Vim: Caught deadly signal 'SIGTERM' would briefly
-          -- flash before exiting kitty-scrollback.nvim. To avoid the deadly signal message and provide time
-          -- for xclip to start, defer calling quitall by 100 ms
+          -- Contents should be copied to clipboard, return to Kitty
+          local clipboard_tool = vim.api.nvim_call_function('provider#clipboard#Executable', {})
+          local defer_ms = 0
+          if clipboard_tool == 'xclip' then
+            -- The xclip child process was not spawning quick enough in the TextYankPost autocommand, resulting
+            -- in content not being copied to the clipboard so add a delay
+            -- see issue https://github.com/astrand/xclip/issues/38#ref-commit-b042f6d
+            defer_ms = 200
+          end
           vim.defer_fn(function()
-            vim.cmd.quitall({ bang = true })
-          end, 100)
+            ksb_util.quitall()
+          end, defer_ms)
         else
           vim.schedule(function()
             local prompt_msg =
