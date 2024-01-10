@@ -61,19 +61,23 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout repository
+      if: ${{ !(inputs.enable_debug_tmate && inputs.enable_debug_vnc) || (inputs.debug_kitty_version == matrix.kitty_version && inputs.debug_nvim_version == matrix.nvim_version) }}
       uses: actions/checkout@v3
 
     - name: Setup Neovim ${{ matrix.nvim_version }} 
+      if: ${{ !(inputs.enable_debug_tmate && inputs.enable_debug_vnc) || (inputs.debug_kitty_version == matrix.kitty_version && inputs.debug_nvim_version == matrix.nvim_version) }}
       uses: rhysd/action-setup-vim@v1
       with:
         neovim: true
         version: ${{ matrix.nvim_version }}
 
     - name: Setup Kitty ${{ matrix.kitty_version }}
+      if: ${{ !(inputs.enable_debug_tmate && inputs.enable_debug_vnc) || (inputs.debug_kitty_version == matrix.kitty_version && inputs.debug_nvim_version == matrix.nvim_version) }}
       run: |
         "$GITHUB_WORKSPACE/scripts/internal/__kitty_installer.sh" launch=n version=${{ matrix.kitty_version }}
 
     - name: Install dependencies
+      if: ${{ !(inputs.enable_debug_tmate && inputs.enable_debug_vnc) || (inputs.debug_kitty_version == matrix.kitty_version && inputs.debug_nvim_version == matrix.nvim_version) }}
       run: |
         sudo apt update
         sudo apt install -y xfce4 libxcb-xkb1 xsel
@@ -81,7 +85,7 @@ jobs:
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
     - name: Start Xvfb
-      if: ${{ ! inputs.enable_debug_vnc }}
+      if: ${{ !(inputs.enable_debug_tmate && inputs.enable_debug_vnc) || (!inputs.enable_debug_vnc && (inputs.debug_kitty_version == matrix.kitty_version && inputs.debug_nvim_version == matrix.nvim_version)) }}
       run: |
         Xvfb :1 -screen 0 1024x768x16 &
 
@@ -123,6 +127,7 @@ jobs:
       uses: mxschmitt/action-tmate@v3
 
     - name: Test kitty-scrollback.nvim
+      if: ${{ !(inputs.enable_debug_tmate && inputs.enable_debug_vnc) || (inputs.debug_kitty_version == matrix.kitty_version && inputs.debug_nvim_version == matrix.nvim_version) }}
       run: |
         # TODO: improve the env var exports, github actions are making it hard so I gave up for now
         export KITTY_CONFIG_DIRECTORY="$GITHUB_WORKSPACE/tests"
