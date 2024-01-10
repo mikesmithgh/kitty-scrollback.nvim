@@ -1,3 +1,10 @@
+## [3.1.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.5...v3.1.6) (2024-01-10)
+
+
+### Bug Fixes
+
+* use nul instead of enquiry ([#150](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/150)) ([141f678](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/141f67804a4d4fe4796d8b65807e95ccca1ff1a8)), closes [#147](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/147)
+
 ## [3.1.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.4...v3.1.5) (2024-01-10)
 
 
