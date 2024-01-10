@@ -84,15 +84,25 @@ local function check_clipboard()
     return s:find('^%s*$') ~= nil
   end
   vim.health.start('kitty-scrollback: clipboard')
-  local clipboard_tool = vim.fn['provider#clipboard#Executable']() -- copied from health.lua
+  local clipboard_tool = vim.api.nvim_call_function('provider#clipboard#Executable', {})
   if vim.fn.has('clipboard') > 0 and not is_blank(clipboard_tool) then
     vim.health.ok('Clipboard tool found: *' .. clipboard_tool .. '*')
+    if clipboard_tool == 'xclip' then
+      vim.health.warn([[
+*xclip* may have issues copying content to the clipboard from Neovim. If you are having issues copying or
+you are seeing errors similar to `Error : target STRING not available`, you should switch to *xsel*.
+See *xclip* related issue: https://github.com/astrand/xclip/issues/38#ref-commit-b042f6d
+See Neovim pull request preferring *xsel* over xclip: https://github.com/neovim/neovim/pull/20918
+]])
+    end
   else
-    vim.health.warn(
-      'Neovim does not have a clipboard provider.\n        Some functionality will not work when there is no clipboard '
-        .. 'provider, such as copying Kitty scrollback buffer text to the system clipboard.',
-      'See `:help` |provider-clipboard| for more information on enabling system clipboard integration.'
-    )
+    vim.health.warn([[
+Neovim does not have a clipboard provider.
+Some functionality will not work when there is no clipboard provider, such as copying 
+Kitty scrollback buffer text to the system clipboard.
+
+See `:help` |provider-clipboard| for more information on enabling system clipboard integration.
+]])
   end
 end
 
