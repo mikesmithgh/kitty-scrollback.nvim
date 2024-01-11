@@ -122,6 +122,14 @@ jobs:
         port="$(echo $NGROK_TLS_URL | awk -F:// '{print $2}' | awk -F: ' {print $2}')"
         printf '\n\nngrok agent running avaible at %s\n\nRun the following command on your machine:\n\n  ssh -L 59000:localhost:5901 -C -N -p %s -l runner %s\n\nConnect on your machine at: localhost:59000\n\n' $NGROK_TLS_URL $port $host
 
+    - name: (debug) Add env vars to .bashrc
+      if: ${{ (inputs.enable_debug_tmate || inputs.enable_debug_vnc) && (inputs.debug_kitty_version == matrix.kitty_version) && (inputs.debug_nvim_version == matrix.nvim_version) }}
+      run: |
+        echo 'export KITTY_CONFIG_DIRECTORY="$GITHUB_WORKSPACE/tests"' >> "$HOME/.bashrc"
+        echo 'export PATH=$HOME/.local/kitty.app/bin:/home/linuxbrew/.linuxbrew/bin:$PATH' >> "$HOME/.bashrc"
+        echo 'export DISPLAY=:1' >> "$HOME/.bashrc"
+        echo 'export PS1="\[\e[34m\]$ \[\e[m\]"' >> "$HOME/.bashrc"
+
     - name: (debug) Setup tmate session
       if: ${{ (inputs.enable_debug_tmate || inputs.enable_debug_vnc) && (inputs.debug_kitty_version == matrix.kitty_version) && (inputs.debug_nvim_version == matrix.nvim_version) }}
       uses: mxschmitt/action-tmate@v3
