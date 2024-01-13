@@ -131,7 +131,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
     .. [[-e 's/$/\x1b[0m/g']] -- append all lines with reset to avoid unintended colors
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
-  local start_set_title_cmd = [[printf '\x1b]2;']]
+  local start_set_title_cmd = 'printf "\x1b]2;"'
   local full_cmd = kitty_get_text_cmd
     .. ' | '
     .. sed_cmd
