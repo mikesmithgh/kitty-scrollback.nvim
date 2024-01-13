@@ -20,7 +20,7 @@ def handle_result(args: List[str],
     if len(args) != 1:
         raise Exception('Invalid number of arguments, expected filename')
     debug_info = debug_config(get_options())
-    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    ansi_escape = re.compile(r'\x1b(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
     blank_block = re.compile(r'`\s+`')
     formatted_info = blank_block.sub('', ansi_escape.sub('`', debug_info))
     output = args[0]

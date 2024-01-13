@@ -133,7 +133,7 @@ local function check_sed()
     result.stdout = ''
     result.stderr = sed_proc
   end
-  local esc = vim.fn.eval([["\e"]])
+  local esc = vim.fn.eval([["\e"]]) -- use ^[ instead of \x1b to pass healthcheck
   ok = ok and result.code == 0 and result.stdout == 'expected' .. esc .. '[0m'
   if ok then
     vim.health.ok(
