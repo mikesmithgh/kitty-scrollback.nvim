@@ -2,7 +2,7 @@
 
 # 😽 kitty-scrollback.nvim
 
-Navigate your Kitty scrollback buffer to quickly search, copy, and execute commands in Neovim.
+Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to quickly search, copy, and execute commands in [Neovim](https://neovim.io/).
 
 <!-- panvimdoc-ignore-start -->
 

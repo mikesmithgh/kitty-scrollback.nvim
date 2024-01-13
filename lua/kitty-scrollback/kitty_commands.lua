@@ -126,16 +126,12 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
     kitty_data.window_id,
     get_text_opts
   )
-  -- other sed filters that may come in handy
-  -- .. [[-e 's/(.*)\x1b]8;.*;.*\x1b\\(.*)/\1\2/g' ]] -- remove url/files/hyperlinks
-  -- .. [[-e 's/\x1b]133;[AC].*\x1b\\//g' ]] --replace shell integration prompt marks https://sw.kovidgoyal.net/kitty/shell-integration/#notes-for-shell-developers
-  -- .. [[-e 's/(.*)\x1b\[\?25.\x1b\[.*;.*H\x1b\[(\?12.|.+ q)(.*)/\1\3/g' ]] -- remove control sequence added by --add-cursor flag see https://github.com/kovidgoyal/kitty/blob/ec8b7853c55897bfcee5997dbd7cea734bdc2982/kitty/window.py#L346
   local sed_cmd = [[sed -E ]]
     .. [[-e 's/\r//g' ]] -- added to remove /r added by --add-wrap-markers, (--add-wrap-markers is used to add empty lines at end of screen)
     .. [[-e 's/$/\x1b[0m/g']] -- append all lines with reset to avoid unintended colors
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
-  local start_set_title_cmd = [[printf '\x1b]2;']]
+  local start_set_title_cmd = 'printf "\x1b]2;"'
   local full_cmd = kitty_get_text_cmd
     .. ' | '
     .. sed_cmd
@@ -186,7 +182,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
                 vim.tbl_map(function(line)
                   return line
                     :gsub('[\27\155][][()#:;?%d]*[A-PRZcf-ntqry=><~]', '')
-                    :gsub('\x1b\\', '')
+                    :gsub([[\x1b\\]], '')
                     :gsub(';k=s', '')
                 end, stdout),
                 '\n'
@@ -201,7 +197,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
             and table
               .concat(stdout, '\n', math.max(#stdout - tail_max, 1), #stdout)
               :gsub('[\27\155][][()#:;?%d]*[A-PRZcf-ntqry=><~]', '')
-              :gsub('\x1b\\', '')
+              :gsub([[\x1b\\]], '')
               :gsub(';k=s', '')
           or nil
         display_error(full_cmd, {
@@ -227,10 +223,9 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     end, lines),
     '\r'
   )
-  local esc = [[\x1b]]
   local nul_character = [[\x00]] -- see https://en.wikipedia.org/wiki/Null_character
-  local start_bracketed_paste = esc .. '[200~' -- see https://cirw.in/blog/bracketed-paste
-  local stop_bracketed_paste = esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
+  local start_bracketed_paste = [[\x1b[200~]] -- see https://cirw.in/blog/bracketed-paste
+  local stop_bracketed_paste = [[\x1b[201~]] -- see https://cirw.in/blog/bracketed-paste
 
   -- the beginning nul is used to separate any existing commands in kitty that may end with escape
   -- if escape is present, then bash autocompletion will be triggered because bracketed paste mode starts with an escape

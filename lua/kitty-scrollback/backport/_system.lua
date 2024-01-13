@@ -1,10 +1,10 @@
 -- NOTE: copied from
--- https://github.com/neovim/neovim/blob/a8a93e517f9eb988ee86170d9a77382637dd24a3/runtime/lua/vim/_system.lua
+-- https://github.com/neovim/neovim/blob/2dc439c672facaeb8e51ef6aa20efc0e7092eee2/runtime/lua/vim/_system.lua
 
 ---@diagnostic disable
 local uv = vim.uv
 
---- @class SystemOpts
+--- @class vim.SystemOpts
 --- @field stdin? string|string[]|true
 --- @field stdout? fun(err:string?, data: string?)|false
 --- @field stderr? fun(err:string?, data: string?)|false
@@ -306,7 +306,7 @@ end
 --- Run a system command
 ---
 --- @param cmd string[]
---- @param opts? SystemOpts
+--- @param opts? vim.SystemOpts
 --- @param on_exit? fun(out: vim.SystemCompleted)
 --- @return vim.SystemObj
 function M.run(cmd, opts, on_exit)
