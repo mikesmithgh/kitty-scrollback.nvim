@@ -120,7 +120,6 @@ local system_handle_error = function(cmd, sys_opts, ignore_error)
 end
 
 M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
-  local esc = vim.fn.eval([["\e"]])
   local kitty_get_text_cmd = string.format(
     [[%s @ get-text --match="id:%s" %s]],
     p.kitty_data.kitty_path,
@@ -132,7 +131,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
     .. [[-e 's/$/\x1b[0m/g']] -- append all lines with reset to avoid unintended colors
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
-  local start_set_title_cmd = string.format([[printf '%s]2;']], esc)
+  local start_set_title_cmd = [[printf '\x1b]2;']]
   local full_cmd = kitty_get_text_cmd
     .. ' | '
     .. sed_cmd
@@ -167,7 +166,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
           local tail_count = tail_diff < 1 and 1 or math.min(tail_diff, #stdout)
           for i = #stdout, tail_count, -1 do
             -- see for match kitty/tools/cli/markup/prettify.go ans.Err = fmt_ctx.SprintFunc("bold fg=bright-red") -- cspell:disable-line
-            if stdout[i]:match('^' .. esc .. '%[1;91mError' .. esc .. '%[221;39m: .*') then
+            if stdout[i]:match([[^\x1b%[1;91mError\x1b%[221;39m: .*]]) then
               error_index = i
               break
             end
@@ -183,7 +182,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
                 vim.tbl_map(function(line)
                   return line
                     :gsub('[\27\155][][()#:;?%d]*[A-PRZcf-ntqry=><~]', '')
-                    :gsub(esc .. '\\', '')
+                    :gsub([[\x1b\\]], '')
                     :gsub(';k=s', '')
                 end, stdout),
                 '\n'
@@ -198,7 +197,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
             and table
               .concat(stdout, '\n', math.max(#stdout - tail_max, 1), #stdout)
               :gsub('[\27\155][][()#:;?%d]*[A-PRZcf-ntqry=><~]', '')
-              :gsub('' .. esc .. '\\', '')
+              :gsub([[\x1b\\]], '')
               :gsub(';k=s', '')
           or nil
         display_error(full_cmd, {
@@ -224,10 +223,9 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     end, lines),
     '\r'
   )
-  local esc = [[\x1b]]
   local nul_character = [[\x00]] -- see https://en.wikipedia.org/wiki/Null_character
-  local start_bracketed_paste = esc .. '[200~' -- see https://cirw.in/blog/bracketed-paste
-  local stop_bracketed_paste = esc .. '[201~' -- see https://cirw.in/blog/bracketed-paste
+  local start_bracketed_paste = [[\x1b[200~]] -- see https://cirw.in/blog/bracketed-paste
+  local stop_bracketed_paste = [[\x1b[201~]] -- see https://cirw.in/blog/bracketed-paste
 
   -- the beginning nul is used to separate any existing commands in kitty that may end with escape
   -- if escape is present, then bash autocompletion will be triggered because bracketed paste mode starts with an escape
