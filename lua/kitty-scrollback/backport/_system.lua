@@ -1,5 +1,5 @@
 -- NOTE: copied from
--- https://github.com/neovim/neovim/blob/2dc439c672facaeb8e51ef6aa20efc0e7092eee2/runtime/lua/vim/_system.lua
+-- https://github.com/neovim/neovim/blob/f5d59340a6e8a71fb766fbfbf796377d7d9e4c20/runtime/lua/vim/_system.lua
 
 ---@diagnostic disable
 local uv = vim.uv
@@ -65,7 +65,7 @@ end
 --- @field wait fun(self: vim.SystemObj, timeout?: integer): vim.SystemCompleted
 --- @field kill fun(self: vim.SystemObj, signal: integer|string)
 --- @field write fun(self: vim.SystemObj, data?: string|string[])
---- @field is_closing fun(self: vim.SystemObj): boolean?
+--- @field is_closing fun(self: vim.SystemObj): boolean
 local SystemObj = {}
 
 --- @param state vim.SystemState
@@ -144,7 +144,7 @@ end
 --- @return boolean
 function SystemObj:is_closing()
   local handle = self._state.handle
-  return handle == nil or handle:is_closing()
+  return handle == nil or handle:is_closing() or false
 end
 
 ---@param output fun(err:string?, data: string?)|false
