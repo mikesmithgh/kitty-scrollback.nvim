@@ -58,6 +58,7 @@ jobs:
             kitty_version: '0.30.0'
           - nvim_version: 'stable'
             kitty_version: '0.30.1'
+      fail-fast: false
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout repository
