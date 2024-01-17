@@ -38,7 +38,19 @@ local kitty_cmd = h.debug({
   '-', -- read session from stdin
 })
 
+local init_nvim = function()
+  local config_dir = vim.fn.fnamemodify(vim.fn.fnamemodify(vim.fn.stdpath('config'), ':h'), ':p')
+  local nvim_config_dir = config_dir .. 'ksb-nvim-tests'
+  local is_directory = vim.fn.isdirectory(nvim_config_dir) > 0
+  if is_directory then
+    vim.system({ 'rm', '-rf', nvim_config_dir }):wait()
+  end
+  vim.fn.mkdir(nvim_config_dir, 'p')
+  vim.uv.fs_copyfile(ksb_dir .. [[tests/init.lua]], nvim_config_dir .. '/init.lua')
+end
+
 local function before_all()
+  init_nvim()
   vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
   kitty_instance = vim.system(kitty_cmd, {
     stdin = 'cd ' .. ksb_dir,
