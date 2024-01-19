@@ -559,6 +559,14 @@ M.wait_for_kitty_remote_connection = function(timeout, interval)
     return ready
   end, interval)
 
+  -- additional logging to track down issues with flaky tests
+  if not ready then
+    local current_debug_enabled = M.debug_enabled
+    M.debug_enabled = true
+    ready = (M.debug(M.kitty_remote_ls():wait()).code == 0)
+    M.debug_enabled = current_debug_enabled
+  end
+
   assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
   M.pause_seconds()
 end
