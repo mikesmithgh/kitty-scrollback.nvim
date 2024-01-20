@@ -22,7 +22,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 </a>
 
 > [!TIP]\
-> Expand each section under the [Features](#-features) to see a demo.
+> Expand each section under the [Features](#-features) section to see a demo.
 >
 > Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 
 
