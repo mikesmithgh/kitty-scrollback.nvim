@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.6...v3.2.0) (2024-01-20)
+
+
+### Features
+
+* add the env variable KITTY_SCROLLBACK_NVIM ([#166](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/166)) ([c598ff9](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/c598ff932fe3c3816de6b9194b1f260ff0fd933e))
+
 ## [3.1.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.5...v3.1.6) (2024-01-10)
 
 
