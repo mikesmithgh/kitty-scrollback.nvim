@@ -3,10 +3,7 @@ vim.opt.runtimepath:append(
 )
 
 if vim.env.GITHUB_ACTIONS == 'true' then
-  vim.opt.runtimepath:append(vim.fn.fnamemodify(
-    vim.fn.env.GITHUB_WORKSPACE, -- GitHub CI
-    ':p'
-  ))
+  vim.opt.runtimepath:append(vim.fn.fnamemodify(vim.env.GITHUB_WORKSPACE, ':p'))
 end
 
 vim.opt.runtimepath:append(vim.fn.fnamemodify(
