@@ -93,10 +93,6 @@ M.generate_kittens = function(all, generate_modes)
     vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1],
     ':p'
   )
-  local example_path = vim.fn.fnamemodify(
-    vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/example.lua', false)[1],
-    ':p'
-  )
 
   local action_alias = 'kitty_scrollback_nvim'
   local alias_config = {
@@ -116,38 +112,7 @@ M.generate_kittens = function(all, generate_modes)
       .. ' --config ksb_builtin_last_visited_cmd_output',
   }
 
-  local ksb_example = require('kitty-scrollback.configs.example').configs
-  local example_configs = vim.tbl_map(
-    function(name)
-      if name == '' or name:match('^#.*') then
-        return name
-      end
-      return 'map f1 ' .. action_alias .. ' --config ' .. name
-    end,
-    vim.list_extend({
-      '',
-      '# Example kitty-scrollback.nvim config overrides',
-      '# See ' .. example_path .. ' for config details',
-    }, vim.tbl_keys(ksb_example))
-  )
-
-  local nvim_args = vim.tbl_map(function(c)
-    if c == '' or c:match('^#.*') then
-      return c
-    end
-    return 'map f1 ' .. action_alias .. ' ' .. c
-  end, {
-    [[]],
-    [[# Example kitty-scrollback.nvim nvim overrides]],
-    [[--env NVIM_APPNAME=ksb-nvim]],
-    [[--nvim-args +'colorscheme darkblue']],
-    [[--nvim-args +'lua vim.defer_fn(function() vim.api.nvim_set_option_value("filetype", "markdown", { buf = 0 }); vim.cmd("silent! CellularAutomaton make_it_rain") end, 6000)']],
-  })
-
-  local kitten_map_configs = vim.list_extend(
-    vim.list_extend(vim.tbl_extend('force', builtin_map_configs, {}), example_configs),
-    nvim_args
-  )
+  local kitten_map_configs = builtin_map_configs
 
   local builtin_command_configs = vim.tbl_map(function(config)
     return config:gsub(
@@ -164,6 +129,8 @@ M.generate_kittens = function(all, generate_modes)
   end, kitten_map_configs)
 
   local configs = {}
+
+  -- TODO: clean this up after removing examles
 
   if all then
     if target_gen_modes['maps'] then

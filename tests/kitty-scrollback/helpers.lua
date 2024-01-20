@@ -571,4 +571,22 @@ M.wait_for_kitty_remote_connection = function(timeout, interval)
   M.pause_seconds()
 end
 
+M.ksb_dir = function()
+  return vim.fn.fnamemodify(
+    vim.fn.fnamemodify(vim.api.nvim_get_runtime_file('lua/kitty-scrollback', false)[1], ':h:h'),
+    ':p'
+  )
+end
+
+M.init_nvim = function()
+  local config_dir = vim.fn.fnamemodify(vim.fn.fnamemodify(vim.fn.stdpath('config'), ':h'), ':p')
+  local nvim_config_dir = config_dir .. 'ksb-nvim-tests'
+  local is_directory = vim.fn.isdirectory(nvim_config_dir) > 0
+  if is_directory then
+    vim.system({ 'rm', '-rf', nvim_config_dir }):wait()
+  end
+  vim.fn.mkdir(nvim_config_dir, 'p')
+  vim.uv.fs_copyfile(M.ksb_dir() .. [[tests/examples.lua]], nvim_config_dir .. '/init.lua')
+end
+
 return M

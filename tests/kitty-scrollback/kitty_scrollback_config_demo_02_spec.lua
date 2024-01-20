@@ -3,10 +3,7 @@ local screencapture = require('tests.kitty-scrollback.screencapture')
 
 h.setup_backport()
 
-local ksb_dir = vim.fn.fnamemodify(
-  vim.fn.fnamemodify(vim.api.nvim_get_runtime_file('lua/kitty-scrollback', false)[1], ':h:h'),
-  ':p'
-)
+local ksb_dir = h.ksb_dir()
 h.debug({
   ksb_dir = ksb_dir,
   kitty_conf = ksb_dir .. 'tests/kitty.conf',
@@ -39,6 +36,7 @@ local kitty_cmd = h.debug({
 })
 
 local function before_all()
+  h.init_nvim()
   vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
   kitty_instance = vim.system(kitty_cmd, {
     stdin = 'cd ' .. ksb_dir,
