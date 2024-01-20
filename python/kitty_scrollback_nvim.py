@@ -178,6 +178,8 @@ def handle_result(args: List[str],
 
         kitty_args = (
             '--copy-env',
+            '--env',
+            'KITTY_SCROLLBACK_NVIM=true',
             '--type',
             'overlay',
             '--title',

@@ -387,6 +387,16 @@ use ASCII instead, set the option `status_window.style_simple` to `true`.
 
 <!-- panvimdoc-ignore-end -->
 
+## 🧬 Environment Variables
+The environment variable `KITTY_SCROLLBACK_NVIM` is set to `true` while kitty-scrollback.nvim is active.
+
+This can be used to in your Neovim configuration to provide kitty-scrollback.nvim specific behavior that may differ from a regular Neovim instance.
+```lua
+if vim.env.KITTY_SCROLLBACK_NVIM == 'true' then
+    -- kitty-scrollback.nvim specific configuration
+end
+```
+
 ## 🫡 Commands and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 
