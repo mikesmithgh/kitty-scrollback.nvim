@@ -11,6 +11,7 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
   - Quickstart                              |kitty-scrollback.nvim-quickstart|
   - Installation                          |kitty-scrollback.nvim-installation|
   - Configuration                        |kitty-scrollback.nvim-configuration|
+  - Environment Variables        |kitty-scrollback.nvim-environment-variables|
   - Commands and Lua API          |kitty-scrollback.nvim-commands-and-lua-api|
   - Keymaps and Lua API            |kitty-scrollback.nvim-keymaps-and-lua-api|
   - Recommendations                    |kitty-scrollback.nvim-recommendations|
@@ -411,6 +412,22 @@ NERD FONTS ~
 By default, `kitty-scrollback.nvim` uses Nerd Fonts <https://www.nerdfonts.com>
 in the status window. If you would like to use ASCII instead, set the option
 `status_window.style_simple` to `true`.
+
+
+ENVIRONMENT VARIABLES            *kitty-scrollback.nvim-environment-variables*
+
+The environment variable `KITTY_SCROLLBACK_NVIM` is set to `true` while
+kitty-scrollback.nvim is active.
+
+This can be used to in your Neovim configuration to provide
+kitty-scrollback.nvim specific behavior that may differ from a regular Neovim
+instance.
+
+>lua
+    if vim.env.KITTY_SCROLLBACK_NVIM == 'true' then
+        -- kitty-scrollback.nvim specific configuration
+    end
+<
 
 
 COMMANDS AND LUA API              *kitty-scrollback.nvim-commands-and-lua-api*
