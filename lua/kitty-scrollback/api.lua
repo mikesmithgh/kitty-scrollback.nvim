@@ -130,7 +130,7 @@ M.generate_kittens = function(all, generate_modes)
 
   local configs = {}
 
-  -- TODO: clean this up after removing examles
+  -- TODO: clean this up after removing examples
 
   if all then
     if target_gen_modes['maps'] then

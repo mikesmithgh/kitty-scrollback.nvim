@@ -1,8 +1,16 @@
 vim.opt.runtimepath:append(
   vim.fn.fnamemodify(vim.env.HOME .. '/gitrepos/kitty-scrollback.nvim', ':p') -- local setup
 )
+
+if vim.env.GITHUB_ACTIONS == 'true' then
+  vim.opt.runtimepath:append(vim.fn.fnamemodify(
+    vim.fn.env.GITHUB_WORKSPACE, -- GitHub CI
+    ':p'
+  ))
+end
+
 vim.opt.runtimepath:append(vim.fn.fnamemodify(
-  vim.fn.stdpath('data') .. '/site/pack/mikesmithgh/start/kitty-scrollback.nvim', -- pack setup (GitHub CI)
+  vim.fn.stdpath('data') .. '/site/pack/mikesmithgh/start/kitty-scrollback.nvim', -- pack setup
   ':p'
 ))
 vim.opt.runtimepath:append(vim.fn.fnamemodify(
