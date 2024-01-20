@@ -128,6 +128,10 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   ## Redesigned Plugin Configuration
   - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless. 
   You can still pass arguments to nvim with the `--nvim-args` flag.
+  - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at [./tests/examples.lua](./tests/examples.lua).
+  - The command `KittyScrollbackGenerateKittens` and api `generate_kittens` no longer have an option to generate `ksb_example` configurations.
+  - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
+  - The api `generate_kittens` signature removed the `all` parameter
 
 
 </details>
@@ -388,10 +392,10 @@ end
 ## 🫡 Commands and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 
-| Command                                               | API                                                              | Description                                                             |
-| :---------------------------------------------------- | :--------------------------------------------------------------- | :---------------------------------------------------------------------- |
-| `:KittyScrollbackGenerateKittens[!] [generate_modes]` | `generate_kittens(boolean?, table<string\|'commands'\|'maps'>)?` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
-| `:KittyScrollbackCheckHealth`                         | `checkhealth()`                                                  | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
+| Command                                             | API                                                    | Description                                                             |
+| :-------------------------------------------------- | :----------------------------------------------------- | :---------------------------------------------------------------------- |
+| `:KittyScrollbackGenerateKittens [generate_modes]`  | `generate_kittens(table<string\|'commands'\|'maps'>)?` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
+| `:KittyScrollbackCheckHealth`                       | `checkhealth()`                                        | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
 
 ## ⌨️ Keymaps and Lua API
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`

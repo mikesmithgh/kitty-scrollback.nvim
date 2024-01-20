@@ -16,9 +16,8 @@ M.setup = function(configs)
   ---        |kitty.api.generate_kittens|
   ---@brief ]]
   vim.api.nvim_create_user_command('KittyScrollbackGenerateKittens', function(o)
-    require('kitty-scrollback.api').generate_kittens(o.bang, o.fargs)
+    require('kitty-scrollback.api').generate_kittens(o.fargs)
   end, {
-    bang = true,
     nargs = '*',
     complete = function()
       return { 'maps', 'commands' }

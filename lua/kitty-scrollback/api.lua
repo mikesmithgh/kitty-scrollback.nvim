@@ -80,9 +80,8 @@ end
 ---@alias KsbGenKittenModes string | 'maps' | 'commands'
 
 ---Generate Kitten commands used as reference for configuring `kitty.conf`
----@param all boolean|nil
 ---@param generate_modes table<KsbGenKittenModes>|nil
-M.generate_kittens = function(all, generate_modes)
+M.generate_kittens = function(generate_modes)
   generate_modes = (generate_modes and next(generate_modes)) and generate_modes or { 'maps' }
   local target_gen_modes = {}
   for _, gen_mode in pairs(generate_modes) do
@@ -112,8 +111,6 @@ M.generate_kittens = function(all, generate_modes)
       .. ' --config ksb_builtin_last_visited_cmd_output',
   }
 
-  local kitten_map_configs = builtin_map_configs
-
   local builtin_command_configs = vim.tbl_map(function(config)
     return config:gsub(
       '^.*map%s%S+.*kitty_scrollback_nvim',
@@ -121,35 +118,15 @@ M.generate_kittens = function(all, generate_modes)
     )
   end, builtin_map_configs)
 
-  local kitten_command_configs = vim.tbl_map(function(config)
-    return config:gsub(
-      '^.*map%s%S+.*kitty_scrollback_nvim',
-      'kitty @ kitten ' .. kitty_scrollback_kitten
-    )
-  end, kitten_map_configs)
-
   local configs = {}
 
-  -- TODO: clean this up after removing examples
-
-  if all then
-    if target_gen_modes['maps'] then
-      vim.list_extend(configs, alias_config)
-      vim.list_extend(configs, kitten_map_configs)
-      table.insert(configs, '')
-    end
-    if target_gen_modes['commands'] then
-      vim.list_extend(configs, kitten_command_configs)
-    end
-  else
-    if target_gen_modes['maps'] then
-      vim.list_extend(configs, alias_config)
-      vim.list_extend(configs, builtin_map_configs)
-      table.insert(configs, '')
-    end
-    if target_gen_modes['commands'] then
-      vim.list_extend(configs, builtin_command_configs)
-    end
+  if target_gen_modes['maps'] then
+    vim.list_extend(configs, alias_config)
+    vim.list_extend(configs, builtin_map_configs)
+    table.insert(configs, '')
+  end
+  if target_gen_modes['commands'] then
+    vim.list_extend(configs, builtin_command_configs)
   end
 
   local bufid = vim.api.nvim_create_buf(true, true)
