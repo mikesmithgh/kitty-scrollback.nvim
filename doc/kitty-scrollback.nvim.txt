@@ -102,6 +102,7 @@ MIGRATING TO V4.0.0                *kitty-scrollback.nvim-migrating-to-v4.0.0*
     - The command `KittyScrollbackGenerateKittens` and api `generate_kittens` no longer have an option to generate `ksb_example` configurations.
     - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
     - The api `generate_kittens` signature removed the `all` parameter
+    - Removed the undocumented reserved `default` configuration name
 
 
 PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
