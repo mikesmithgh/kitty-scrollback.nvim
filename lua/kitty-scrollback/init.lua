@@ -1,7 +1,7 @@
 ---@mod kitty-scrollback
 local M = {}
 
----@type table<string, fun(KsbKittyData):KsbOpts>
+---@type table<string, KsbOpts|fun(KsbKittyData):KsbOpts>
 M.configs = {}
 
 ---Create commands for generating kitty-scrollback.nvim kitten configs

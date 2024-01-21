@@ -72,9 +72,9 @@ local block_input_timer
 ---@field after_ready fun(kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after scrollback buffer is loaded and cursor is positioned
 
 ---@class KsbKittyGetText
----@field ansi boolean If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
----@field clear_selection boolean If true, clear the selection in the matched window, if any.
----@field extent string | 'screen' | 'all' | 'selection' | 'first_cmd_output_on_screen' | 'last_cmd_output' | 'last_visited_cmd_output' | 'last_non_empty_output'     What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
+---@field ansi boolean|nil If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
+---@field clear_selection boolean|nil If true, clear the selection in the matched window, if any.
+---@field extent string|nil | 'screen' | 'all' | 'selection' | 'first_cmd_output_on_screen' | 'last_cmd_output' | 'last_visited_cmd_output' | 'last_non_empty_output'     What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
 
 ---@class KsbStatusWindowIcons
 ---@field kitty string kitty status window icon, defaults to 󰄛
@@ -307,19 +307,25 @@ M.setup = function(kitty_data_str)
   local config_source = require('kitty-scrollback')
   local global_fn = config_source.configs['global']
   local global_opts = global_fn and global_fn(p.kitty_data) or {}
-  local user_config_fn = config_source.configs[config_name]
-  if config_name ~= '' and not user_config_fn and not config_name:match('^ksb_builtin_.*') then
+  local user_config = config_source.configs[config_name]
+  if config_name ~= '' and not user_config and not config_name:match('^ksb_builtin_.*') then
     vim.defer_fn(function()
       vim.notify('No configuration found with the name ' .. config_name, vim.log.levels.ERROR, {})
     end, 1000)
     config_name = 'ksb_builtin_get_text_all'
-    user_config_fn = config_source.configs[config_name]
+    user_config = config_source.configs[config_name]
   end
-  local user_opts = user_config_fn and user_config_fn(p.kitty_data) or {}
+  if type(user_config) == 'function' then
+    user_config = user_config(p.kitty_data)
+  end
+  local user_opts = type(user_config) == 'table' and user_config or {}
   local builtin_opts = {}
   if config_name:match('^ksb_builtin_.*') then
-    local builtin_config_fn = require('kitty-scrollback.configs.builtin')[config_name]
-    builtin_opts = builtin_config_fn and builtin_config_fn() or {}
+    local builtin_config = require('kitty-scrollback.configs.builtin')[config_name]
+    if type(builtin_config) == 'function' then
+      builtin_config = builtin_config(p.kitty_data)
+    end
+    builtin_opts = type(builtin_config) == 'table' and builtin_config or {}
   end
   opts = vim.tbl_deep_extend('force', default_opts, global_opts, builtin_opts, user_opts)
 
