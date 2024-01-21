@@ -133,6 +133,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
   - The api `generate_kittens` signature removed the `all` parameter
   - Removed the undocumented reserved `default` configuration name
+  - Removed the reserved `global` configuration name
 
 
 </details>
