@@ -103,6 +103,7 @@ MIGRATING TO V4.0.0                *kitty-scrollback.nvim-migrating-to-v4.0.0*
     - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
     - The api `generate_kittens` signature removed the `all` parameter
     - Removed the undocumented reserved `default` configuration name
+    - Removed the reserved `global` configuration name
 
 
 PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
