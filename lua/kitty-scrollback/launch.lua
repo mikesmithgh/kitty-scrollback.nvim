@@ -303,8 +303,7 @@ M.setup = function(kitty_data_str)
   -- if a config name is prefixed 'ksb_builtin_', only configs in configs/builtin.lua will be referenced. The one exception is the config named 'global'
   -- if a config does not meet the above criteria, check if a user had defined a configuration with the given config name and use that
 
-  -- TODO: do we want to use default? make sure this is documented if so
-  local config_name = p.kitty_data.kitty_scrollback_config or 'default'
+  local config_name = p.kitty_data.kitty_scrollback_config or ''
   local config_source = require('kitty-scrollback')
   local global_fn = config_source.configs['global']
   local global_opts = global_fn and global_fn(p.kitty_data) or {}
@@ -312,7 +311,11 @@ M.setup = function(kitty_data_str)
     config_source = require('kitty-scrollback.configs.builtin')
   end
   local config_fn = config_source.configs[config_name]
-  -- TODO: warn if no config found and is passed in by the user
+  if config_name ~= '' and not config_fn then
+    vim.defer_fn(function()
+      vim.notify('No configuration found with the name ' .. config_name, vim.log.levels.ERROR, {})
+    end, 1000)
+  end
   local user_opts = config_fn and config_fn(p.kitty_data) or {}
   opts = vim.tbl_deep_extend('force', default_opts, global_opts, user_opts)
 

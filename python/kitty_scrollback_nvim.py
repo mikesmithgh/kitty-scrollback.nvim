@@ -94,7 +94,7 @@ def parse_config(args):
             config_args = args[idx + 1]
             del args[idx:idx + 2]
             return config_args
-    return 'default'
+    return ''
 
 
 def parse_cwd(args):

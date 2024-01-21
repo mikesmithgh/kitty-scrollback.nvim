@@ -132,6 +132,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   - The command `KittyScrollbackGenerateKittens` and api `generate_kittens` no longer have an option to generate `ksb_example` configurations.
   - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
   - The api `generate_kittens` signature removed the `all` parameter
+  - Removed the undocumented reserved `default` configuration name
 
 
 </details>
