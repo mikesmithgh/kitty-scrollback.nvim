@@ -170,7 +170,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
     event = { 'User KittyScrollbackLaunch' },
     -- version = '*', -- latest stable version, may have breaking changes if major version changed
-    -- version = '^3.0.0', -- pin major version, include fixes and features that do not have breaking changes
+    -- version = '^4.0.0', -- pin major version, include fixes and features that do not have breaking changes
     config = function()
       require('kitty-scrollback').setup()
     end,
@@ -190,7 +190,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
     event = { 'User KittyScrollbackLaunch' },
     -- tag = '*', -- latest stable version, may have breaking changes if major version changed
-    -- tag = 'v3.0.0', -- pin specific tag
+    -- tag = 'v4.0.0', -- pin specific tag
     config = function()
       require('kitty-scrollback').setup()
     end,
@@ -213,94 +213,71 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 
 </details>
 
-## ✍️ Configuration
+## 🛠️ Setup
 
-> [!NOTE]\
-> The [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) section of the Wiki provides
-> detailed demos of each configuration option.
+This section outlines the required configuration for kitty-scrollback.nvim.
 
-### Kitty 
-The following steps outline how to properly configure [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
-
-<details>
-<summary>Enable <a href="https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control">allow_remote_control</a></summary>
-
+- Enable [allow_remote_control](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control">allow_remote_control) in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
   - Valid values are `yes`, `socket`, `socket-only`
-  - If `kitty-scrollback.nvim` is the only application controlling Kitty then `socket-only` is preferred to continue denying TTY requests.
-
-</details>
-<details>
-<summary>Set <a href="https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on">listen_on</a> to a Unix socket</summary>
-
+  - If kitty-scrollback.nvim is the only application controlling Kitty then `socket-only` is preferred to continue denying TTY requests.
+- Set [listen_on](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on) to a Unix socket in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
   - For example, `listen_on unix:/tmp/kitty`
-
-</details>
-<details>
-<summary>Enable <a href="https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration">shell_integration</a></summary>
-
+- Enable [shell_integration](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration) in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
   - Set `shell_integration` to `enabled`
   - Do not add the option `no-prompt-mark`
-
-</details>
-<details>
-<summary>Add <code>kitty-scrollback.nvim</code> mappings</summary>
-
-  - Generate default Kitten mappings and add to `kitty.conf`
-
-```sh
-nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
-```
-
-</details>
-
-<details>
-<summary>Completely close and reopen Kitty</summary>
-</details>
-
-</details>
-<details>
-<summary>Check the health of <code>kitty-scrollback.nvim</code></summary>
-
-```sh
-nvim +'KittyScrollbackCheckHealth'
-```
-
+- Generate the default kitty-scrollback.nvim [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) mappings and add them to [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/) 
+  ```sh
+  nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
+  ```
+- Completely close and reopen Kitty
+- Check the health of kitty-scrollback.nvim
+  ```sh
+  nvim +'KittyScrollbackCheckHealth'
+  ```
   - Follow the instructions of any `ERROR` or `WARNINGS` reported during the healthcheck
 
-</details>
-<details>
-<summary>Test <code>kitty-scrollback.nvim</code> is working as expected by pressing <code>kitty_mod+h</code> to open the scrollback buffer in Neovim</summary>
+- Test kitty-scrollback.nvim is working as expected by pressing `kitty_mod+h` to open the scrollback history in Neovim
+  - [kitty_mod](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.kitty_mod) is a special modifier key alias for default shortcuts. You can change the value of this option to 
+alter all default shortcuts that use [kitty_mod](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.kitty_mod). The default value of [kitty_mod](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.kitty_mod) is `ctrl+shift`. In this example, `kitty_mod+h` represents `ctrl+shift+h`.
 
-`kitty_mod` is a special modifier key alias for default shortcuts. You can change the value of this option to 
-alter all default shortcuts that use `kitty_mod`. See Kitty documentation [#opt-kitty.kitty_mod](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.kitty_mod).
-
-The default value of `kitty_mod` is `ctrl+shift`. In this example, `kitty_mod+h` represents `ctrl+shift+h`.
-
-</details>
-
-<details>
-<summary>See example <code>kitty.conf</code> for reference</summary>
-
-```sh
-allow_remote_control yes
-listen_on unix:/tmp/kitty
-shell_integration enabled
-
-# kitty-scrollback.nvim Kitten alias
-action_alias kitty_scrollback_nvim kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py
-
-# Browse scrollback buffer in nvim
-map kitty_mod+h kitty_scrollback_nvim
-# Browse output of the last shell command in nvim
-map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
-# Show clicked command output in nvim
-mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
-```
+- See example kitty.conf for reference.
+  ```sh
+  allow_remote_control yes
+  listen_on unix:/tmp/kitty
+  shell_integration enabled
   
-</details>
+  # kitty-scrollback.nvim Kitten alias
+  action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py
+  
+  # Browse scrollback buffer in nvim
+  map kitty_mod+h kitty_scrollback_nvim
+  # Browse output of the last shell command in nvim
+  map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
+  # Show clicked command output in nvim
+  mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
+  ```
 
-### Kitten arguments
-Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/).
+## ⚙️ Configuration
+
+This section provides details on how to customize your kitty-scrollback.nvim configuration.
+
+### [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) arguments
+Arguments that can be passed to the `kitty_scrollback_nvim` [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) defined in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/). You can provide 
+the arguments to the `action_alias kitty_scrollback_nvim` or each individual mapping referencing `kitty_scrollback_nvim`.
+
+The following examples show you how you could reference a kitty-scrollback.nvim user configuration by name (.e.g, `myconfig`), set the environment variable `NVIM_APPNAME` for Neovim, and pass the argument `-n` to Neovim to disable swap files.
+- Example of adding arguments to `action_alias` in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/). 
+  - This will apply the arguments to all the mappings of `kitty_scrollback_nvim`.
+  ```kitty
+  action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --env NVIM_APPNAME=mynvim --config myconfig --nvim-args -n
+  ```
+
+- Example of adding arguments to a `map` in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/).
+  - This will apply the arguments only to the `kitty_mod+h` mappings of `kitty_scrollback_nvim`.
+
+  ```kitty
+  map kitty_mod+h kitty_scrollback_nvim --env NVIM_APPNAME=mynvim --config myconfig --nvim-args -n
+  ```
 
 | Argument         | Description                                                                                                                                                                                                                                                                                                                                                                 |
 | :--------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -308,6 +285,10 @@ Arguments that can be passed to the `kitty_scrollback_nvim` Kitten defined in [k
 | `--nvim-args`    | All arguments after this flag are passed to the Neovim instance that displays the scrollback buffer. This must be the last of the `kitty-scrollback.nvim` Kitten arguments that are configured. Otherwise, you may unintentionally send the wrong arguments to Neovim. The default arguments passed to Neovim are `--clean --noplugin -n`. This flag removes those options. |
 | `--env`          | Environment variable that is passed to the Neovim instance that displays the scrollback buffer. Format is `--env var_name=var_value`. You may specify multiple config files that will merge all configuration options. Useful for setting `NVIM_APPNAME`                                                                                                                    |
 | `--cwd`          | The current working directory of the Neovim instance that displays the scrollback buffer.                                                                                                                                                                                                                                                                                   |
+
+> [!NOTE]\
+> The [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) section of the Wiki provides
+> detailed demos of each configuration option.
 
 ### `kitty-scrollback.nvim` configuration file
 
