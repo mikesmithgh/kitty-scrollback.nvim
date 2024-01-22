@@ -217,7 +217,7 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 
 This section outlines the required configuration for kitty-scrollback.nvim.
 
-- Enable [allow_remote_control](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control">allow_remote_control) in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
+- Enable [allow_remote_control](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control) in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
   - Valid values are `yes`, `socket`, `socket-only`
   - If kitty-scrollback.nvim is the only application controlling Kitty then `socket-only` is preferred to continue denying TTY requests.
 - Set [listen_on](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on) to a Unix socket in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/)
@@ -261,6 +261,10 @@ alter all default shortcuts that use [kitty_mod](https://sw.kovidgoyal.net/kitty
 
 This section provides details on how to customize your kitty-scrollback.nvim configuration.
 
+> [!NOTE]\
+> The [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) section of the Wiki provides
+> detailed demos of each configuration option.
+
 ### [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) arguments
 Arguments that can be passed to the `kitty_scrollback_nvim` [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) defined in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/). You can provide 
 the arguments to the `action_alias kitty_scrollback_nvim` or each individual mapping referencing `kitty_scrollback_nvim`.
@@ -285,12 +289,7 @@ The following examples show you how you could reference a kitty-scrollback.nvim 
 | `--nvim-args`    | All arguments after this flag are passed to the Neovim instance that displays the scrollback buffer. This must be the last of the `kitty-scrollback.nvim` Kitten arguments that are configured. Otherwise, you may unintentionally send the wrong arguments to Neovim. The default arguments passed to Neovim are `--clean --noplugin -n`. This flag removes those options. |
 | `--env`          | Environment variable that is passed to the Neovim instance that displays the scrollback buffer. Format is `--env var_name=var_value`. You may specify multiple config files that will merge all configuration options. Useful for setting `NVIM_APPNAME`                                                                                                                    |
 | `--cwd`          | The current working directory of the Neovim instance that displays the scrollback buffer.                                                                                                                                                                                                                                                                                   |
-
-> [!NOTE]\
-> The [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) section of the Wiki provides
-> detailed demos of each configuration option.
-
-### `kitty-scrollback.nvim` configuration file
+### kitty-scrollback.nvim configuration
 
 | Options                                                           | Type                                                                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | :---------------------------------------------------------------- | :------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
