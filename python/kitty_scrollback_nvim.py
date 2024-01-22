@@ -68,7 +68,7 @@ def pipe_data(w, target_window_id, config, kitty_path):
 
 def parse_nvim_args(args=[]):
     for idx, arg in enumerate(args):
-        if arg.startswith('--nvim-args'):
+        if arg == '--nvim-args':
             if idx + 1 < len(args):
                 return tuple(filter(None, args[idx + 1:]))
             return ()
@@ -78,7 +78,7 @@ def parse_nvim_args(args=[]):
 def parse_env(args):
     env_args = []
     for idx, arg in reversed(list(enumerate(args))):
-        if arg.startswith('--env') and (idx + 1 < len(args)):
+        if arg == '--env' and (idx + 1 < len(args)):
             env_args.append('--env')
             env_args.append(args[idx + 1])
             del args[idx:idx + 2]
@@ -88,9 +88,7 @@ def parse_env(args):
 def parse_config(args):
     config_args = []
     for idx, arg in reversed(list(enumerate(args))):
-        if arg.startswith('--config-file'):
-            return 'crying cat --config-file'
-        if arg.startswith('--config') and (idx + 1 < len(args)):
+        if arg == '--config' and (idx + 1 < len(args)):
             config_args = args[idx + 1]
             del args[idx:idx + 2]
             return config_args
@@ -99,7 +97,7 @@ def parse_config(args):
 
 def parse_cwd(args):
     for idx, arg in reversed(list(enumerate(args))):
-        if arg.startswith('--cwd') and (idx + 1 < len(args)):
+        if arg == '--cwd' and (idx + 1 < len(args)):
             cwd_args = args[idx + 1]
             del args[idx:idx + 2]
             return ('--cwd', cwd_args)
@@ -138,26 +136,6 @@ def handle_result(args: List[str],
             return
 
         config = parse_config(args)
-        if config == 'crying cat --config-file':
-
-            err_winid = boss.call_remote_control(
-                w,
-                nvim_err_cmd(
-                    f'{ksb_dir}/scripts/breaking_change_config_file.txt'))
-
-            # window logo is overridden by new neovim colorscheme
-            set_logo_cmd = ('set-window-logo',
-                            '--no-response',
-                            '--alpha',
-                            '0.5',
-                            '--position',
-                            'bottom-right',
-                            f'{ksb_dir}/media/sad_kitty_thumbs_up.png')
-
-            err_win = boss.window_id_map.get(err_winid)
-            boss.call_remote_control(err_win, set_logo_cmd)
-            return
-
         cwd = parse_cwd(args)
         env = parse_env(args)
         kitty_data_str = pipe_data(w, target_window_id, config, kitty_path)
