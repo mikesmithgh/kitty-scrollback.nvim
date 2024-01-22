@@ -92,7 +92,7 @@ def parse_config(args):
             config_args = args[idx + 1]
             del args[idx:idx + 2]
             return config_args
-    return ''
+    return 'ksb_builtin_get_text_all'
 
 
 def parse_cwd(args):

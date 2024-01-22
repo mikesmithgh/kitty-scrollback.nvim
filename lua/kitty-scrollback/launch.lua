@@ -310,11 +310,11 @@ M.setup = function(kitty_data_str)
   -- if a config name is prefixed 'ksb_builtin_', the user's config will be merged with configs/builtin.lua
   -- if a config does not meet the above criteria, check if a user had defined a configuration with the given config name and use that
 
-  local config_name = p.kitty_data.kitty_scrollback_config or ''
+  local config_name = p.kitty_data.kitty_scrollback_config or 'ksb_builtin_get_text_all'
   local config_source = require('kitty-scrollback')
   local global_opts = config_to_opts(config_source.configs[1])
   local user_config = config_source.configs[config_name]
-  if config_name ~= '' and not user_config and not config_name:match('^ksb_builtin_.*') then
+  if not user_config and not config_name:match('^ksb_builtin_.*') then
     vim.defer_fn(function()
       vim.notify('No configuration found with the name ' .. config_name, vim.log.levels.ERROR, {})
     end, 1000)
