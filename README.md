@@ -289,7 +289,65 @@ The following examples show you how you could reference a kitty-scrollback.nvim 
 | `--nvim-args`    | All arguments after this flag are passed to the Neovim instance that displays the scrollback buffer. This must be the last of the `kitty-scrollback.nvim` Kitten arguments that are configured. Otherwise, you may unintentionally send the wrong arguments to Neovim. The default arguments passed to Neovim are `--clean --noplugin -n`. This flag removes those options. |
 | `--env`          | Environment variable that is passed to the Neovim instance that displays the scrollback buffer. Format is `--env var_name=var_value`. You may specify multiple config files that will merge all configuration options. Useful for setting `NVIM_APPNAME`                                                                                                                    |
 | `--cwd`          | The current working directory of the Neovim instance that displays the scrollback buffer.                                                                                                                                                                                                                                                                                   |
-### kitty-scrollback.nvim configuration
+
+### Plugin configuration
+
+kitty-scrollback.nvim is configured using the `require('kitty-scrollback').setup()` function. `setup()` accepts an options table in the form of
+`table<string, KsbOpts|fun(KsbKittyData):KsbOpts>`. The structure of `KsbOpts` is defined in [lua/kitty-scrollback/configs/defaults.lua](./lua/kitty-scrollback/configs/defaults.lua).
+
+The key for an entry in the options table is the name of a configuration that you wish to define. The key can be be referenced as the name of the configuration
+that is passed to the [Kitten argument](#kitten-arguments) `--config`. For example, with a configuration named `myconfig` that disables ANSI colors:
+
+```lua
+require('kitty-scrollback').setup({
+    myconfig = {
+      kitty_get_text = {
+        ansi = false,
+      },
+    }
+})
+```
+
+You can reference this specific configuration as follows in kitty.conf to disable ANSI colors for the `kitty_mod+h` mapping.
+
+```kitty
+map kitty_mod+h kitty_scrollback_nvim --config myconfig
+```
+
+The value of an entry in the options table can either be a table (`KsbOpts`) or a function (`fun(KsbKittyData):KsbOpts`). `KsbKittyData` contains metadata
+about Kitty and the scrollback buffer that may be useful when defining a configuration. The structure of `KsbKittyData` is defined in [lua/kitty-scrollback/launch.lua](./lua/kitty-scrollback/launch.lua).
+For example, you could add an additional configuration named `myfnconfig` 😂 that only loads the entire scrollback history if the user scrolled past the number of lines on the screen.
+
+```lua
+require('kitty-scrollback').setup({
+    myconfig = {
+      kitty_get_text = {
+        ansi = false,
+      },
+    }
+    myfnconfig = function(kitty_data)
+      return {
+        kitty_get_text = {
+          extent = (kitty_data.scrolled_by > kitty_data.lines) and 'all' or 'screen',
+        },
+      }
+    end,
+})
+```
+
+If you update the reference in kitty.conf to `myfnconfig` then the `kitty_mod+h` mapping will use the configuration returned by the function defined by `myfnconfig`.
+
+```kitty
+map kitty_mod+h kitty_scrollback_nvim --config myfnconfig
+```
+
+The key for an entry in the options table can be any `string`. However, if the key matches a builtin name (prefixed with `ksb_builtin_`) then the configuration will be merged with the builtin configuration.
+All of the builtin configurations are defined in [lua/kitty-scrollback/configs/builtin.lua](./lua/kitty-scrollback/configs/builtin.lua). The user defined configuration with take precedence and override
+any fields that are defined in both the builtin and user defined configuration.
+
+- TODO: defined a builtin config and provide an example of referencing it
+- TODO: describe the format of the global config and provide an example
+- TODO: provide details on config precedence `default_opts > global_opts > builtin_opts > user_opts` and provide an example
 
 | Options                                                           | Type                                                                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | :---------------------------------------------------------------- | :------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
