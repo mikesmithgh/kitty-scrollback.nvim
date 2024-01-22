@@ -65,6 +65,86 @@ M.setup_and_launch({kitty_data_str})  *kitty-scrollback.launch.setup_and_launch*
         {kitty_data_str}  (string)
 
 
+KsbCallbacks                                         *default_opts.KsbCallbacks*
+
+    Fields: ~
+        {after_setup}   (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after initializing kitty-scrollback.nvim
+        {after_launch}  (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after launch started to process the scrollback buffer
+        {after_ready}   (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after scrollback buffer is loaded and cursor is positioned
+
+
+KsbKittyGetText                                   *default_opts.KsbKittyGetText*
+
+    Fields: ~
+        {ansi}             (boolean|nil)                                                                                                                             If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
+        {clear_selection}  (boolean|nil)                                                                                                                             If true, clear the selection in the matched window, if any.
+        {extent}           (string|nil|"screen"|"all"|"selection"|"first_cmd_output_on_screen"|"last_cmd_output"|"last_visited_cmd_output"|"last_non_empty_output")  What text to get. The default of screen means all text currently on the screen. all means all the screen+scrollback and selection means the currently selected text. first_cmd_output_on_screen means the output of the first command that was run in the window on screen. last_cmd_output means the output of the last command that was run in the window. last_visited_cmd_output means the first command output below the last scrolled position via scroll_to_prompt. last_non_empty_output is the output from the last command run in the window that had some non empty output. The last four require shell_integration to be enabled. Choices: screen, all, first_cmd_output_on_screen, last_cmd_output, last_non_empty_output, last_visited_cmd_output, selection
+
+
+KsbStatusWindowIcons                         *default_opts.KsbStatusWindowIcons*
+
+    Fields: ~
+        {kitty}  (string)  kitty status window icon, defaults to 󰄛
+        {heart}  (string)  heart status window icon, defaults to 󰣐
+        {nvim}   (string)  nvim status window icon, defaults to 
+
+
+KsbStatusWindowOpts                           *default_opts.KsbStatusWindowOpts*
+
+    Fields: ~
+        {enabled}       (boolean)               If true, show status window in upper right corner of the screen
+        {style_simple}  (boolean)               If true, use plaintext instead of nerd font icons
+        {autoclose}     (boolean)               If true, close the status window after kitty-scrollback.nvim is ready
+        {show_timer}    (boolean)               If true, show a timer in the status window while kitty-scrollback.nvim is loading
+        {icons}         (KsbStatusWindowIcons)  Icons displayed in the status window, defaults to 󰄛 󰣐 
+
+
+KsbWinOpts                                             *default_opts.KsbWinOpts*
+
+    Type: ~
+        table<string,any>
+
+
+KsbWinOptsOverrideFunction             *default_opts.KsbWinOptsOverrideFunction*
+
+    Type: ~
+        fun(paste_winopts:KsbWinOpts):KsbWinOpts
+
+
+                                 *default_opts.KsbFooterWinOptsOverrideFunction*
+KsbFooterWinOptsOverrideFunction
+
+    Type: ~
+        fun(footer_winopts:KsbWinOpts,paste_winopts:KsbWinOpts):KsbWinOpts
+
+
+KsbPasteWindowOpts                             *default_opts.KsbPasteWindowOpts*
+
+    Fields: ~
+        {highlight_as_normal_win}   (nil|fun():boolean)                     If function returns true, use Normal highlight group. If false, use NormalFloat
+        {filetype}                  (string|nil)                            The filetype of the paste window
+        {hide_footer}               (boolean|nil)                           If true, hide mappings in the footer when the paste window is initially opened
+        {winblend}                  (integer|nil)                           The winblend setting of the window, see :help winblend
+        {winopts_overrides}         (KsbWinOptsOverrideFunction|nil)        Paste float window overrides, see nvim_open_win() for configuration
+        {footer_winopts_overrides}  (KsbFooterWinOptsOverrideFunction|nil)  Paste footer window overrides, see nvim_open_win() for configuration
+        {yank_register}             (string|nil)                            register used during yanks to paste window, see :h registers
+        {yank_register_enabled}     (boolean|nil)                           If true, the `yank_register` copies content to the paste window. If false, disable yank to paste window
+
+
+KsbOpts                                                   *default_opts.KsbOpts*
+
+    Fields: ~
+        {callbacks}                        (KsbCallbacks|nil)                              fire and forget callback functions
+        {keymaps_enabled}                  (boolean|nil)                                   if true, enabled all default keymaps
+        {restore_options}                  (boolean|nil)                                   if true, restore options that were modified while processing the scrollback buffer
+        {highlight_overrides}              (KsbHighlights|nil)                             kitty-scrollback.nvim highlight overrides
+        {status_window}                    (KsbStatusWindowOpts|nil)                       options for status window indicating that kitty-scrollback.nvim is ready
+        {paste_window}                     (KsbPasteWindowOpts|nil)                        options for paste window that sends commands to Kitty
+        {kitty_get_text}                   (KsbKittyGetText|nil)                           options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
+        {checkhealth}                      (boolean|nil)                                   if true execute :checkhealth kitty-scrollback and skip setup
+        {visual_selection_highlight_mode}  (string|"darken"|"kitty"|"nvim"|"reverse"|nil)
+
+
 ==============================================================================
                                                           *kitty-scrollback.api*
 
