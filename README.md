@@ -24,7 +24,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 > [!TIP]\
 > Expand each section under the [Features](#-features) section to see a demo.
 >
-> Check out [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) for more demos! 
+> Check out [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) for more demos! 
 
 <!-- panvimdoc-ignore-end -->
 
@@ -128,7 +128,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   ## Redesigned Plugin Configuration
   - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless. 
   You can still pass arguments to nvim with the `--nvim-args` flag.
-  - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at [./tests/examples.lua](./tests/examples.lua).
+  - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at [./tests/example.lua](./tests/example.lua).
   - The command `KittyScrollbackGenerateKittens` and api `generate_kittens` no longer have an option to generate `ksb_example` configurations.
   - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
   - The api `generate_kittens` signature removed the `all` parameter
@@ -216,7 +216,7 @@ echo "require('kitty-scrollback').setup()" >> "$HOME/.config/nvim/init.lua"
 ## ✍️ Configuration
 
 > [!NOTE]\
-> The [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration) section of the Wiki provides
+> The [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) section of the Wiki provides
 > detailed demos of each configuration option.
 
 ### Kitty 

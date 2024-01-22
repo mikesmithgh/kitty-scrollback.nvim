@@ -586,7 +586,7 @@ M.init_nvim = function()
     vim.system({ 'rm', '-rf', nvim_config_dir }):wait()
   end
   vim.fn.mkdir(nvim_config_dir, 'p')
-  vim.uv.fs_copyfile(M.ksb_dir() .. [[tests/examples.lua]], nvim_config_dir .. '/init.lua')
+  vim.uv.fs_copyfile(M.ksb_dir() .. [[tests/example.lua]], nvim_config_dir .. '/init.lua')
 end
 
 return M
