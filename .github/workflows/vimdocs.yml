@@ -21,7 +21,7 @@ jobs:
       - name: lemmyhelp
         run: |
           curl -Lq https://github.com/numToStr/lemmy-help/releases/latest/download/lemmy-help-x86_64-unknown-linux-gnu.tar.gz | tar xz
-          ./lemmy-help -c -a -f lua/kitty-scrollback/launch.lua lua/kitty-scrollback/api.lua > doc/kitty-scrollback.nvim_spec.txt 
+          ./lemmy-help -c -a -f lua/kitty-scrollback/launch.lua lua/kitty-scrollback/configs/defaults.lua lua/kitty-scrollback/api.lua > doc/kitty-scrollback.nvim_spec.txt 
 
       - name: preformat README.md
         run: |
