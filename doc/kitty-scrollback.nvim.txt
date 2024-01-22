@@ -184,8 +184,8 @@ SETUP                                            *kitty-scrollback.nvim-setup*
 This section outlines the required configuration for kitty-scrollback.nvim.
 
 - Enable allow_remote_control
-<https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control%22%3Eallow_remote_control>
-    in kitty.conf <https://sw.kovidgoyal.net/kitty/conf/>
+<https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control> in
+    kitty.conf <https://sw.kovidgoyal.net/kitty/conf/>
     - Valid values are `yes`, `socket`, `socket-only`
     - If kitty-scrollback.nvim is the only application controlling Kitty then `socket-only` is preferred to continue denying TTY requests.
 - Set listen_on <https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on> to a
@@ -239,6 +239,11 @@ This section provides details on how to customize your kitty-scrollback.nvim
 configuration.
 
 
+  `ℹ` `NOTE` 
+  The Advanced Configuration Examples
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples>
+  section of the Wiki provides detailed demos of each configuration option.
+
 KITTEN ARGUMENTS ~
 
 Arguments that can be passed to the `kitty_scrollback_nvim` Kitten
@@ -287,12 +292,7 @@ kitty_scrollback_nvim kitten
                 the scrollback buffer.
   ----------------------------------------------------------------------------------
 
-  `ℹ` `NOTE` 
-  The Advanced Configuration Examples
-<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples>
-  section of the Wiki provides detailed demos of each configuration option.
-
-KITTY-SCROLLBACK.NVIM CONFIGURATION FILE ~
+KITTY-SCROLLBACK.NVIM CONFIGURATION ~
 
   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   Options                                                       Type                                                                             Description
