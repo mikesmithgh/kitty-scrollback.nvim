@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.2.0...v3.2.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* create empty buffer when first buffer has content ([#169](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/169)) ([ba68807](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/ba688073e3ee4336f9624ad06dfac98d2453f40a))
+
 # [3.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.1.6...v3.2.0) (2024-01-20)
 
 
