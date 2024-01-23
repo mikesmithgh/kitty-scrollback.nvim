@@ -146,7 +146,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   -- set the shell used for termopen to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
   vim.o.shell = 'sh'
 
-  vim.fn.termopen(full_cmd, {
+  local success, error = pcall(vim.fn.termopen, full_cmd, {
     stdout_buffered = true,
     stderr_buffered = true,
     on_stdout = function(_, data)
@@ -210,6 +210,12 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
       end
     end,
   })
+  if not success then
+    display_error(full_cmd, {
+      entrypoint = 'termopen() :: pcall(vim.fn.termopen) error returned',
+      stderr = error or nil,
+    })
+  end
 
   -- restore the original shell after processing termopen
   vim.o.shell = p.orig_options.shell

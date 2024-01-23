@@ -312,7 +312,15 @@ end
 M.launch = function()
   local kitty_data = p.kitty_data
   vim.schedule(function()
-    p.bufid = vim.api.nvim_get_current_buf()
+    local buf_lines = vim.api.nvim_buf_get_lines(0, 0, 1, false)
+    local no_buf_content = vim.api.nvim_buf_line_count(0) == 1 and buf_lines[1] == ''
+    if no_buf_content then
+      p.bufid = vim.api.nvim_get_current_buf()
+    else
+      -- buffer must be empty for termopen, dashboard plugins may write to the first buffer before kitty-scrollback.nvim loads
+      p.bufid = vim.api.nvim_create_buf(true, true)
+      vim.api.nvim_set_current_buf(p.bufid)
+    end
 
     ksb_autocmds.load_autocmds()
 
