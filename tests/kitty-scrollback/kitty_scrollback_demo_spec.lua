@@ -9,31 +9,11 @@ h.debug({
   kitty_conf = ksb_dir .. 'tests/kitty.conf',
 })
 
-local tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
+local tmpsock
 local kitty_instance
+local ksb_work_dir
 
 local shell = h.debug(h.is_github_action and '/bin/bash' or (vim.o.shell .. ' --noprofile --norc'))
-
-local kitty_cmd = h.debug({
-  'kitty',
-  '--listen-on=unix:' .. tmpsock,
-  '--config',
-  ksb_dir .. 'tests/kitty.conf',
-  '--override',
-  'shell=' .. shell,
-  '--override',
-  'enabled_layouts=fat:bias=90',
-  '--override',
-  'initial_window_width=161c',
-  '--override',
-  'initial_window_height=30c',
-  '--override',
-  'font_size=18.0',
-  '--override',
-  'background_opacity=1.0',
-  '--session',
-  '-', -- read session from stdin
-})
 
 local it = screencapture.wrap_it(it, tmpsock)
 
@@ -42,14 +22,34 @@ describe('kitty-scrollback.nvim', function()
 
   before_each(function()
     vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
-    kitty_instance = vim.system(kitty_cmd, {
+    tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
+    local kitty_cmd = h.debug({
+      'kitty',
+      '--listen-on=unix:' .. tmpsock,
+      '--config',
+      ksb_dir .. 'tests/kitty.conf',
+      '--override',
+      'shell=' .. shell,
+      '--override',
+      'enabled_layouts=fat:bias=90',
+      '--override',
+      'initial_window_width=161c',
+      '--override',
+      'initial_window_height=30c',
+      '--override',
+      'font_size=18.0',
+      '--override',
+      'background_opacity=1.0',
+      '--session',
+      '-', -- read session from stdin
+    })
+    kitty_instance = h.wait_for_kitty_remote_connection(kitty_cmd, tmpsock, {
       stdin = 'cd ' .. ksb_dir,
     })
-    h.wait_for_kitty_remote_connection()
-    local ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/00_kitty-scrollback.nvim'
+    ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/00_kitty-scrollback.nvim'
     local is_directory = vim.fn.isdirectory(ksb_work_dir) > 0
     if is_directory then
-      vim.system({ 'rm', '-rf', ksb_work_dir }):wait()
+      vim.fn.delete(ksb_work_dir, 'rf')
     end
     vim
       .system({
@@ -75,6 +75,8 @@ echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
   after_each(function()
     kitty_instance:kill(2)
     kitty_instance = nil
+    vim.fn.delete(vim.fn.fnamemodify(tmpsock, ':p:h'), 'rf')
+    vim.fn.delete(ksb_work_dir, 'rf')
   end)
 
   it('kitty_scrollback_nvim', function()
