@@ -9,7 +9,8 @@ M.is_headless = (#vim.api.nvim_list_uis() == 0)
 --- @return any # given arguments.
 M.debug = function(...)
   if M.debug_enabled then
-    return vim.print(...)
+    print(vim.inspect(...))
+    return ...
   end
   return ...
 end
@@ -57,10 +58,15 @@ M.now = function()
 end
 
 M.tempsocket = function(tmp_dir)
-  local tmpdir = M.debug(
+  vim.fn.mkdir(tmp_dir, 'p')
+  local tmpdir_proc = M.debug(
     vim.system(vim.list_extend({ 'mktemp', '-d' }, tmp_dir and { '-p', tmp_dir } or {})):wait()
-  ).stdout
-    :gsub('\n', '')
+  )
+  if tmpdir_proc.code ~= 0 then
+    print(tmpdir_proc)
+  end
+  assert.is.equal(tmpdir_proc.code, 0)
+  local tmpdir = tmpdir_proc.stdout:gsub('\n', '')
   current_tmpsocket = M.debug(tmpdir .. '/kitty-scrollback-nvim.sock')
   return current_tmpsocket
 end
@@ -546,7 +552,8 @@ M.assert_screen_not_match = function(actual, expected, ...)
   end
 end
 
-M.wait_for_kitty_remote_connection = function(timeout, interval)
+M.wait_for_kitty_remote_connection = function(kitty_cmd, tmpsock, kitty_opts, timeout, interval)
+  local kitty_instance = M.debug(vim.system(kitty_cmd, kitty_opts))
   if not timeout then
     timeout = 10000
   end
@@ -554,8 +561,10 @@ M.wait_for_kitty_remote_connection = function(timeout, interval)
     interval = 500
   end
   local ready = false
+  local tmpsock_ftype = nil
   vim.fn.wait(timeout, function()
-    ready = (M.debug(M.kitty_remote_ls():wait()).code == 0)
+    tmpsock_ftype = vim.fn.getftype(tmpsock)
+    ready = tmpsock_ftype == 'socket' and (M.debug(M.kitty_remote_ls():wait()).code == 0)
     return ready
   end, interval)
 
@@ -563,12 +572,18 @@ M.wait_for_kitty_remote_connection = function(timeout, interval)
   if not ready then
     local current_debug_enabled = M.debug_enabled
     M.debug_enabled = true
-    ready = (M.debug(M.kitty_remote_ls():wait()).code == 0)
+    ready = tmpsock_ftype == 'socket' and (M.debug(M.kitty_remote_ls():wait()).code == 0)
     M.debug_enabled = current_debug_enabled
   end
 
+  assert.is.equal(
+    tmpsock_ftype,
+    'socket',
+    tmpsock .. ' does not or exist or is not a socket: ' .. tmpsock_ftype .. ', exiting'
+  )
   assert.is_true(ready, 'kitty is not ready for remote connections, exiting')
   M.pause_seconds()
+  return kitty_instance
 end
 
 return M
