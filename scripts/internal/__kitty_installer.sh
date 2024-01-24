@@ -137,22 +137,22 @@ download_installer() {
 }
 
 linux_install() {
-    command mkdir "$tdir/mp"
-    command tar -C "$tdir/mp" "-xJof" "$installer" || die "Failed to extract kitty tarball"
+    command mkdir "$tdir/tmp"
+    command tar -C "$tdir/tmp" "-xJof" "$installer" || die "Failed to extract kitty tarball"
     printf "%s\n" "Installing to $dest"
     command rm -rf "$dest" || die "Failed to delete $dest"
-    command mv "$tdir/mp" "$dest" || die "Failed to move kitty.app to $dest"
+    command mv "$tdir/tmp" "$dest" || die "Failed to move kitty.app to $dest"
 }
 
 macos_install() {
-    command mkdir "$tdir/mp"
-    command hdiutil attach "$installer" "-mountpoint" "$tdir/mp" || die "Failed to mount kitty.dmg"
+    command mkdir "$tdir/tmp"
+    command hdiutil attach "$installer" "-mountpoint" "$tdir/tmp" || die "Failed to mount kitty.dmg"
     printf "%s\n" "Installing to $dest"
     command rm -rf "$dest"
     command mkdir -p "$dest" || die "Failed to create the directory: $dest"
-    command ditto -v "$tdir/mp/kitty.app" "$dest"
+    command ditto -v "$tdir/tmp/kitty.app" "$dest"
     rc="$?"
-    command hdiutil detach "$tdir/mp"
+    command hdiutil detach "$tdir/tmp"
     [ "$rc" != "0" ] && die "Failed to copy kitty.app from mounted dmg"
 }
 
