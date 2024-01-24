@@ -14,6 +14,7 @@ h.debug({
 
 local tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
 local kitty_instance
+local ksb_work_dir
 
 local shell = h.debug(h.is_github_action and '/bin/bash' or (vim.o.shell .. ' --noprofile --norc'))
 
@@ -40,14 +41,13 @@ local kitty_cmd = h.debug({
 
 local function before_all()
   vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
-  kitty_instance = vim.system(kitty_cmd, {
+  kitty_instance = h.wait_for_kitty_remote_connection(kitty_cmd, tmpsock, {
     stdin = 'cd ' .. ksb_dir,
   })
-  h.wait_for_kitty_remote_connection()
-  local ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/04_kitty-scrollback.nvim'
+  ksb_work_dir = os.getenv('KITTY_SCROLLBACK_NVIM_DIR') or 'tmp/04_kitty-scrollback.nvim'
   local is_directory = vim.fn.isdirectory(ksb_work_dir) > 0
   if is_directory then
-    vim.system({ 'rm', '-rf', ksb_work_dir }):wait()
+    vim.fn.delete(ksb_work_dir, 'rf')
   end
   vim
     .system({
@@ -78,6 +78,8 @@ end
 local function after_all()
   kitty_instance:kill(2)
   kitty_instance = nil
+  vim.fn.delete(vim.fn.fnamemodify(tmpsock, ':p:h'), 'rf')
+  vim.fn.delete(ksb_work_dir, 'rf')
 end
 
 local it = screencapture.wrap_it(it, tmpsock, 27)
