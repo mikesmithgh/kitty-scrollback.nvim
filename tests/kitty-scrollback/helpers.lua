@@ -552,27 +552,57 @@ M.assert_screen_not_match = function(actual, expected, ...)
   end
 end
 
-M.wait_for_kitty_remote_connection = function(kitty_cmd, tmpsock, kitty_opts, timeout, interval)
-  local kitty_instance = M.debug(vim.system(kitty_cmd, kitty_opts))
+M.wait_for_kitty_remote_connection = function(
+  kitty_cmd,
+  tmpsock,
+  kitty_opts,
+  timeout,
+  interval,
+  retries
+)
+  if not retries then
+    retries = 3
+  end
   if not timeout then
-    timeout = 10000
+    timeout = 15000
   end
   if not interval then
     interval = 500
   end
-  local ready = false
-  local tmpsock_ftype = nil
-  vim.fn.wait(timeout, function()
-    tmpsock_ftype = vim.fn.getftype(tmpsock)
-    ready = tmpsock_ftype == 'socket' and (M.debug(M.kitty_remote_ls():wait()).code == 0)
-    return ready
-  end, interval)
+  local kitty_instance
+  local ready
+  local tmpsock_ftype
+  for i = 1, retries, 1 do
+    if i > 1 then
+      print('Failed to start and connect to Kitty, retry attempt #' .. (i - 1))
+      if not M.debug_enabled then
+        print('Automatically enabling debug logging')
+        M.debug_enabled = true
+      end
+    end
+    kitty_instance = M.debug(vim.system(kitty_cmd, kitty_opts))
+    ready = false
+    tmpsock_ftype = nil
+    vim.fn.wait(timeout, function()
+      tmpsock_ftype = vim.fn.getftype(tmpsock)
+      ready = tmpsock_ftype == 'socket' and (M.debug(M.kitty_remote_ls():wait()).code == 0)
+      return ready
+    end, interval)
+    if ready then
+      break
+    end
+    kitty_instance:kill(2)
+    kitty_instance = nil
+    vim.fn.delete(vim.fn.fnamemodify(tmpsock, ':p'), 'rf')
+    M.pause_seconds(i * 2)
+  end
 
   -- additional logging to track down issues with flaky tests
   if not ready then
     local current_debug_enabled = M.debug_enabled
     M.debug_enabled = true
     ready = tmpsock_ftype == 'socket' and (M.debug(M.kitty_remote_ls():wait()).code == 0)
+    M.debug(tmpsock .. ' ftype ' .. tmpsock_ftype)
     M.debug_enabled = current_debug_enabled
   end
 
