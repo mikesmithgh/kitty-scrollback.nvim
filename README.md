@@ -2,6 +2,7 @@
 <img src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/ddd50e0a-ec10-4507-9134-ad7f136c388a" alt="kitty-scrollback" style="width: 20%" align="right" />
 
 # 😽 kitty-scrollback.nvim
+ooo
 
 Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to quickly search, copy, and execute commands in [Neovim](https://neovim.io/).
 
