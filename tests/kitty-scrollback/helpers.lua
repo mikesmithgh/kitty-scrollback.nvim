@@ -466,8 +466,17 @@ M.with_status_win = function(scrollback_buffer, width, status_win)
   return first_line_with_status_win .. '\n' .. rest
 end
 
+M.replace_spinner_with_space = function(text)
+  -- create a helper function because matching with [⠋⠙⠹⠸⠼⠴✔] replaces with three instances
+  local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '✔' }
+  for _, icon in ipairs(spinner) do
+    text = text:gsub(icon, ' ')
+  end
+  return text
+end
+
 M.assert_screen_equals = function(actual, expected, ...)
-  local actual_rstrip = actual.stdout:gsub('%s*\n', '\n')
+  local actual_rstrip = M.replace_spinner_with_space(actual.stdout):gsub('%s*\n', '\n')
   local expected_rstrip = expected.stdout:gsub('%s*\n', '\n')
   M.debug({
     actual_stdout = actual.stdout,
@@ -493,7 +502,8 @@ end
 
 M.assert_screen_starts_with = function(actual, expected, ...)
   local expected_rstrip = expected.stdout:gsub('%s*\n', '\n'):gsub('\n$', '')
-  local actual_rstrip = actual.stdout:gsub('%s*\n', '\n'):sub(1, #expected_rstrip)
+  local actual_rstrip =
+    M.replace_spinner_with_space(actual.stdout):gsub('%s*\n', '\n'):sub(1, #expected_rstrip)
   M.debug({
     actual_stdout = actual.stdout,
     actual_stdout_rstrip = actual_rstrip,
@@ -517,7 +527,7 @@ M.assert_screen_starts_with = function(actual, expected, ...)
 end
 
 M.assert_screen_match = function(actual, expected, ...)
-  local actual_rstrip = actual.stdout:gsub('%s*\n', '\n')
+  local actual_rstrip = M.replace_spinner_with_space(actual.stdout):gsub('%s*\n', '\n')
   M.debug({
     actual_stdout = actual.stdout,
     actual_stdout_rstrip = actual_rstrip,
@@ -535,7 +545,7 @@ M.assert_screen_match = function(actual, expected, ...)
 end
 
 M.assert_screen_not_match = function(actual, expected, ...)
-  local actual_rstrip = actual.stdout:gsub('%s*\n', '\n')
+  local actual_rstrip = M.replace_spinner_with_space(actual.stdout):gsub('%s*\n', '\n')
   M.debug({
     actual_stdout = actual.stdout,
     actual_stdout_rstrip = actual_rstrip,
