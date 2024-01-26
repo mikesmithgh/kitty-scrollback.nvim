@@ -24,6 +24,8 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 ==============================================================================
 1. kitty-scrollback.nvim         *kitty-scrollback.nvim-kitty-scrollback.nvim*
 
+ooo
+
 Navigate your Kitty <https://sw.kovidgoyal.net/kitty/> scrollback buffer to
 quickly search, copy, and execute commands in Neovim <https://neovim.io/>.
 
