@@ -265,7 +265,7 @@ This section provides details on how to customize your kitty-scrollback.nvim con
 > The [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) section of the Wiki provides
 > detailed demos of each configuration option.
 
-### [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) arguments
+### Kitten arguments
 Arguments that can be passed to the `kitty_scrollback_nvim` [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) defined in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/). You can provide 
 the arguments to the `action_alias kitty_scrollback_nvim` or each individual mapping referencing `kitty_scrollback_nvim`.
 
