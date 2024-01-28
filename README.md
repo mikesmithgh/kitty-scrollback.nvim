@@ -553,9 +553,9 @@ If you prefer not to load any Neovim configuration, the arguments `--clean --nop
 Details on these flags can be found by running the command [:help startup-options](https://neovim.io/doc/user/starting.html#startup-options).
 
 ```
---clean		Mimics a fresh install of Nvim.
---noplugin	Skip loading plugins.  
--n		    No swap-file will be used.  
+--clean     Mimics a fresh install of Nvim.
+--noplugin  Skip loading plugins.  
+-n          No swap-file will be used.  
 ```
 
 To provide this configuration to kitty-scrollback.nvim, pass the `--nvim-args` flag to the `kitty_scrollback_nvim` kitten defined in kitty.conf. See [Kitten Arguments](#kitten-arguments)
