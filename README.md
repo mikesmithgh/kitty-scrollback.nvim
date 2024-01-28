@@ -653,7 +653,7 @@ require("lazy").setup({
 })
 ```
 
-In this example, we have a completely seperate Neovim configuration with lazy.nvim as the package manager. kitty-scrollback.nvim is a configured package and has a global
+In this example, we have a completely separate Neovim configuration with lazy.nvim as the package manager. kitty-scrollback.nvim is a configured package and has a global
 configuration to print a message a second after kitty-scrollback.nvim loads.
 
 Second, after your Neovim configuration directory is created (e.g., `~/.config/ksb-nvim`), set the environment variable `NVIM_APPNAME` to your directory in kitty.conf. The following 
