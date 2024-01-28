@@ -28,23 +28,24 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Contents
 
-- [✨ Features](#-features)
-- [🚀 Migrating to v4.0.0](#-migrating-to-v400)
-- [📚 Prerequisites](#-prerequisites)
-- [🏃 Quickstart](#-quickstart)
-- [📦 Installation](#-installation)
-- [🛠️ Setup](#-setup)
-- [⚙️ Configuration](#-configuration)
+- ✨ [Features](#-features)
+- 🚀 [Migrating to v4.0.0](#-migrating-to-v400)
+- 📚 [Prerequisites](#-prerequisites)
+- 🏃 [Quickstart](#-quickstart)
+- 📦 [Installation](#-installation)
+- 🛠️ [Setup](#-setup)
+- ⚙️ [Configuration](#-configuration)
   - [Kitten Arguments](#kitten-arguments)
   - [Plugin Configuration](#plugin-configuration)
   - [Nerd Fonts](#nerd-fonts)
-- [🧬 Environment Variables](#-environment-variables)
-- [🫡 Commands](#-commands)
-- [⌨️ Keymaps](#-keymaps)
-- [👏 Recommendations](#-recommendations)
-- [🤝 Acknowledgements](#-acknowledgements)
-- [🐶 Alternatives](#-alternatives)
+- 🧬 [Environment Variables](#-environment-variables)
+- 🫡 [Commands](#-commands)
+- ⌨️ [Keymaps](#-keymaps)
+- 👏 [Recommendations](#-recommendations)
+- 🤝 [Acknowledgements](#-acknowledgements)
+- 🐶 [Alternatives](#-alternatives)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
