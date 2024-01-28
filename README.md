@@ -78,7 +78,11 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <details> 
 <summary>🐱 Copy scrollback contents to system clipboard</summary>
   
+<!-- panvimdoc-ignore-start -->
+
 ![copy_visual_selection_to_clipboard](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_01_should_copy_visual_selection_to_clipboard.gif)
+
+<!-- panvimdoc-ignore-end -->
 
 - Open Kitty's scrollback history (default mapping `<C-S-h>`)
 - Search backward for a pattern in Neovim `?{pattern}<CR>`
@@ -91,7 +95,11 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <details> 
 <summary>😺 Paste visual selection to Kitty</summary>
   
+<!-- panvimdoc-ignore-start -->
+
 ![kitty_scrollback_screencapture_03_should_paste_visual_selection_to_kitty.gif](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_03_should_paste_visual_selection_to_kitty.gif)
+
+<!-- panvimdoc-ignore-end -->
 
 - Open Kitty's scrollback history (default mapping `<C-S-h>`)
 - Search backward for a pattern in Neovim `?{pattern}<CR>`
@@ -104,7 +112,11 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <details>
 <summary>🙀 Execute visual selection in Kitty</summary>
   
+<!-- panvimdoc-ignore-start -->
+
 ![kitty_scrollback_screencapture_05_should_execute_visual_selection_in_kitty.mov](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_05_should_execute_visual_selection_in_kitty.gif)
+
+<!-- panvimdoc-ignore-end -->
 
 - Open Kitty's scrollback history (default mapping `<C-S-h>`)
 - Search backward for a pattern in Neovim `?{pattern}<CR>`
@@ -117,7 +129,11 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <details> 
 <summary>😸 Modify and send content from paste window to Kitty</summary>
   
+<!-- panvimdoc-ignore-start -->
+
 ![kitty_scrollback_screencapture_02_should_paste_paste_window_text_to_kitty.gif](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_02_should_paste_paste_window_text_to_kitty.gif)
+
+<!-- panvimdoc-ignore-end -->
 
 - Open Kitty's scrollback history (default mapping `<C-S-h>`)
 - Search backward for a pattern in Neovim `?{pattern}<CR>`
@@ -133,7 +149,11 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <details> 
 <summary>😼 Modify and execute content from paste window to Kitty</summary>
   
+<!-- panvimdoc-ignore-start -->
+
 ![kitty_scrollback_screencapture_04_should_execute_paste_window_text_in_kitty.gif](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/assets/kitty_scrollback_screencapture_04_should_execute_paste_window_text_in_kitty.gif)
+
+<!-- panvimdoc-ignore-end -->
 
 - Open Kitty's scrollback history (default mapping `<C-S-h>`)
 - Search backward for a pattern in Neovim `?{pattern}<CR>`
