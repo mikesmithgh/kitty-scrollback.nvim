@@ -35,6 +35,11 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   - [Kitten Arguments](#kitten-arguments)
   - [Plugin Configuration](#plugin-configuration)
   - [Nerd Fonts](#nerd-fonts)
+  - [Separate Neovim Configuration](#separate-neovim-configuration)
+    - [No Configuration](#no-configuration)
+    - [User Configuration](#user-configuration)
+    - [Use `KITTY_SCROLLBACK_NVIM` Environment Variable](#use-kitty_scrollback_nvim-environment-variable)
+    - [`NVIM_APPNAME` With Separate Configuration](#nvim_appname-with-separate-configuration)
 - 🧬 [Environment Variables](#-environment-variables)
 - 📄 [Filetypes](#-filetypes)
 - 🫡 [Commands](#-commands)
@@ -560,7 +565,7 @@ for more details on configuration the `kitty_scrollback_nvim` kitten. The follow
 action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --nvim-args --clean --noplugin -n
 ```
 
-#### User Specified Configuration
+#### User Configuration
 
 If you prefer to load only a few simple configurations, creating a minimal `vimrc` (.e.g, `init.lua` or `init.vim`) and passing the `-u` argument to 
 the `kitty_scrollback_nvim` kitten is recommended.
@@ -610,12 +615,12 @@ is an example of what the configuration should look like in your kitty.conf.
 action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --nvim-args -u /path/to/your/config/kitty-scrollback-nvim-kitten-config.lua
 ```
 
-#### Use the environment variable `KITTY_SCROLLBACK_NVIM`
+#### Use `KITTY_SCROLLBACK_NVIM` Environment Variable 
 
 If you want to use your default Neovim configuration but only have a few minors differences, then using the environment variable `KITTY_SCROLLBACK_NVIM` is recommended. See
 the [Environment Variables](#-environment-variables) section for an example of how this can be used.
 
-#### `NVIM_APPNAME` and a separate configuration 
+#### `NVIM_APPNAME` With Separate Configuration 
 If you prefer to have a completely separate Neovim configuration for kitty-scrollback.nvim that is complex, then using the environment variable
 [NIM_APPNAME](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME) is recommended.
 
