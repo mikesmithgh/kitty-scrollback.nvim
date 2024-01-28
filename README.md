@@ -21,11 +21,6 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   <div align="center"><sup>(click for video)<sup></div>
 </a>
 
-> [!TIP]\
-> Expand each section under the [Features](#-features) section to see a demo.
->
-> Check out [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) for more demos! 
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Contents
@@ -52,6 +47,15 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <!-- panvimdoc-ignore-end -->
 
 ## ✨ Features
+
+<!-- panvimdoc-ignore-start -->
+
+> [!TIP]\
+> Expand each section under the [Features](#-features) section to see a demo.
+>
+> Check out [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) for more demos! 
+
+<!-- panvimdoc-ignore-end -->
 
 <details> 
 <summary>😻 Navigate Kitty's scrollback buffer with Neovim</summary>
