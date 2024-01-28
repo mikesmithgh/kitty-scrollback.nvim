@@ -6,15 +6,14 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 1. kitty-scrollback.nvim         |kitty-scrollback.nvim-kitty-scrollback.nvim|
   - Features                                  |kitty-scrollback.nvim-features|
   - Migrating to v4.0.0            |kitty-scrollback.nvim-migrating-to-v4.0.0|
-  - Redesigned Plugin Configuration|kitty-scrollback.nvim-redesigned-plugin-configuration|
   - Prerequisites                        |kitty-scrollback.nvim-prerequisites|
   - Quickstart                              |kitty-scrollback.nvim-quickstart|
   - Installation                          |kitty-scrollback.nvim-installation|
   - Setup                                        |kitty-scrollback.nvim-setup|
   - Configuration                        |kitty-scrollback.nvim-configuration|
   - Environment Variables        |kitty-scrollback.nvim-environment-variables|
-  - Commands and Lua API          |kitty-scrollback.nvim-commands-and-lua-api|
-  - Keymaps and Lua API            |kitty-scrollback.nvim-keymaps-and-lua-api|
+  - Commands                                  |kitty-scrollback.nvim-commands|
+  - Keymaps                                    |kitty-scrollback.nvim-keymaps|
   - Recommendations                    |kitty-scrollback.nvim-recommendations|
   - Acknowledgements                  |kitty-scrollback.nvim-acknowledgements|
   - Alternatives                          |kitty-scrollback.nvim-alternatives|
@@ -96,7 +95,7 @@ MIGRATING TO V4.0.0                *kitty-scrollback.nvim-migrating-to-v4.0.0*
   kitty-scrollback.nvim
 
 `-` `Migration Steps`
-    REDESIGNED PLUGIN CONFIGURATION*kitty-scrollback.nvim-redesigned-plugin-configuration*
+    **Redesigned Plugin Configuration**
     - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless.
         You can still pass arguments to nvim with the `--nvim-args` flag.
     - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at ./tests/example.lua <./tests/example.lua>.
@@ -634,7 +633,7 @@ instance.
 <
 
 
-COMMANDS AND LUA API              *kitty-scrollback.nvim-commands-and-lua-api*
+COMMANDS                                      *kitty-scrollback.nvim-commands*
 
 The API is available via the `kitty-scrollback.api` module. e.g.,
 `require('kitty-scrollback.api')`
@@ -651,7 +650,7 @@ The API is available via the `kitty-scrollback.api` module. e.g.,
                                                                                                             in the context of Kitty
   -----------------------------------------------------------------------------------------------------------------------------------------
 
-KEYMAPS AND LUA API                *kitty-scrollback.nvim-keymaps-and-lua-api*
+KEYMAPS                                        *kitty-scrollback.nvim-keymaps*
 
 The API is available via the `kitty-scrollback.api` module. e.g.,
 `require('kitty-scrollback.api')`
