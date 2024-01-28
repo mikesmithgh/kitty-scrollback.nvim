@@ -618,6 +618,165 @@ in the status window. If you would like to use ASCII instead, set the option
 `status_window.style_simple` to `true`.
 
 
+SEPARATE NEOVIM CONFIGURATION ~
+
+By default, kitty-scrollback.nvim uses your default Neovim configuration. The
+benefit of this, is that all of your commands, keymaps, and plugins are
+available to use. However, depending on your setup, having all of your
+configuration load may be overkill and slow the start time of
+kitty-scrollback.nvim. There are a couple approaches that can be taken to
+separate kitty-scrollback.nvim’s Neovim configuration from the default Neovim
+configuration.
+
+
+NO CONFIGURATION
+
+If you prefer not to load any Neovim configuration, the arguments `--clean
+--noplugin -n` are recommended to be passed to the `kitty_scrollback_nvim`
+kitten
+
+Details on these flags can be found by running the command |:help
+startup-options|.
+
+>
+    --clean     Mimics a fresh install of Nvim.
+    --noplugin  Skip loading plugins.  
+    -n          No swap-file will be used.  
+<
+
+To provide this configuration to kitty-scrollback.nvim, pass the `--nvim-args`
+flag to the `kitty_scrollback_nvim` kitten defined in kitty.conf. See
+|kitty-scrollback.nvim-kitten-arguments| for more details on configuration the
+`kitty_scrollback_nvim` kitten. The following is an example of what the
+configuration should look like in your kitty.conf.
+
+>kitty
+    action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --nvim-args --clean --noplugin -n
+<
+
+
+USER SPECIFIED CONFIGURATION
+
+If you prefer to load only a few simple configurations, creating a minimal
+`vimrc` (.e.g, `init.lua` or `init.vim`) and passing the `-u` argument to the
+`kitty_scrollback_nvim` kitten is recommended.
+
+First, start off by creating your `vimrc` file. In this example, I will create
+the file `kitty-scrollback-nvim-kitten-config.lua` at `/path/to/your/config/`
+with the contents:
+
+>lua
+    -- kitty-scrollback-nvim-kitten-config.lua
+    
+    -- put your general Neovim configurations here
+    vim.g.mapleader = ' '
+    vim.g.maplocalleader = ','
+    
+    vim.keymap.set({ 'n' }, '<C-e>', '5<C-e>', {})
+    vim.keymap.set({ 'n' }, '<C-y>', '5<C-y>', {})
+    
+    -- add kitty-scrollback.nvim to the runtimepath to allow us to require the kitty-scrollback module
+    -- pick a runtimepath that corresponds with your package manager, if you are not sure leave them all it will not cause any issues
+    vim.opt.runtimepath:append(vim.fn.stdpath('data') .. '/lazy/kitty-scrollback.nvim') -- lazy.nvim
+    vim.opt.runtimepath:append(vim.fn.stdpath('data') .. '/site/pack/packer/opt/kitty-scrollback.nvim') -- packer
+    vim.opt.runtimepath:append(vim.fn.stdpath('data') .. '/site/pack/mikesmithgh/start/kitty-scrollback.nvim') -- pack
+    require('kitty-scrollback').setup({
+      -- put your kitty-scrollback.nvim configurations here
+    })
+<
+
+In this example, I added a few kemaps before calling
+`require('kitty-scrollback').setup()`. You can add your desired configuration,
+the important part of this configuration are the lines related to
+`runtimepath`. Pick the line that corresponds to your package manager, if you
+are not sure it is safe to leave all the lines. If you have a custom or unique
+installation of kitty-scrollback.nvim, update the `runtimepath` to append that
+location so that Neovim can find the module when calling
+`require('kitty-scrollback')`.
+
+If you would like to confirm that the runtimepath in
+`kitty-scrollback-nvim-kitten-config.lua` is correct, run the following
+command.
+
+>sh
+    nvim -u /path/to/your/config/kitty-scrollback-nvim-kitten-config.lua
+<
+
+If Neovim opens without any errors, then the runtimepath is configured
+correctly. If there are errors, you may need to manually find your
+kitty-scrollback.nvim and append that directory to `runtimepath` in
+`kitty-scrollback-nvim-kitten-config.lua`
+
+Second, after your `vimrc` file is created (e.g.,
+`kitty-scrollback-nvim-kitten-config.lua`), pass the file to Neovim using the
+`-u` flag in kitty.conf. The following is an example of what the configuration
+should look like in your kitty.conf.
+
+>kitty
+    action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --nvim-args -u /path/to/your/config/kitty-scrollback-nvim-kitten-config.lua
+<
+
+
+USE THE ENVIRONMENT VARIABLE KITTY_SCROLLBACK_NVIM
+
+If you want to use your default Neovim configuration but only have a few minors
+differences, then using the environment variable `KITTY_SCROLLBACK_NVIM` is
+recommended. See the |kitty-scrollback.nvim-environment-variables| section for
+an example of how this can be used.
+
+
+NVIM_APPNAME AND A SEPARATE CONFIGURATION
+
+If you prefer to have a completely separate Neovim configuration for
+kitty-scrollback.nvim that is complex, then using the environment variable
+|NIM_APPNAME| is recommended.
+
+First, start off by creating your Neovim configuration directory. In this
+example, I will create the directory `~/.config/ksb-nvim` and add the file
+`init.lua` with the contents:
+
+>lua
+    local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+    if not vim.loop.fs_stat(lazypath) then
+        vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, })
+    end
+    vim.opt.rtp:prepend(lazypath)
+    
+    require("lazy").setup({
+        "mikesmithgh/kitty-scrollback.nvim",
+        enabled = true,
+        lazy = true,
+        cmd = { "KittyScrollbackGenerateKittens", "KittyScrollbackCheckHealth" },
+        event = { "User KittyScrollbackLaunch" },
+        config = function()
+            require("kitty-scrollback").setup({
+                {
+                    callbacks = {
+                        after_ready = vim.defer_fn(function()
+                            vim.fn.confirm(vim.env.NVIM_APPNAME .. " kitty-scrollback.nvim example!")
+                        end, 1000),
+                    },
+                },
+            })
+        end,
+    })
+<
+
+In this example, we have a completely seperate Neovim configuration with
+lazy.nvim as the package manager. kitty-scrollback.nvim is a configured package
+and has a global configuration to print a message a second after
+kitty-scrollback.nvim loads.
+
+Second, after your Neovim configuration directory is created (e.g.,
+`~/.config/ksb-nvim`), set the environment variable `NVIM_APPNAME` to your
+directory in kitty.conf. The following is an example of what the configuration
+should look like in your kitty.conf.
+
+>kitty
+    action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --env NVIM_APPNAME=ksb-nvim
+<
+
+
 ENVIRONMENT VARIABLES            *kitty-scrollback.nvim-environment-variables*
 
 The environment variable `KITTY_SCROLLBACK_NVIM` is set to `true` while
