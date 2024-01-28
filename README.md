@@ -23,7 +23,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-## Contents
+## 📖 Contents
 
 - ✨ [Features](#-features)
 - 🚀 [Migrating to v4.0.0](#-migrating-to-v400)
