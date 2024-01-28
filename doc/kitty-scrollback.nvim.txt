@@ -96,10 +96,9 @@ MIGRATING TO V4.0.0                *kitty-scrollback.nvim-migrating-to-v4.0.0*
   kitty-scrollback.nvim
 
 `-` `Migration Steps`
-      |‼| |IMPORTANT|
-      If you have any problems or questions migrating to `v4.0.0`, please open an
-      issue <https://github.com/mikesmithgh/kitty-scrollback.nvim/issues> or
-      discussion <https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions>
+    If you have any problems or questions migrating to `v4.0.0`, please open an
+    issue <https://github.com/mikesmithgh/kitty-scrollback.nvim/issues> or
+    discussion <https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions>.
     - Previously, kitty-scrollback.nvim did not open Neovim with your Neovim configuration by default. This has changed to loading your Neovim
         configuration by default, with the ability to opt out. If you prefer to continue not loading your Neovim configuration, then follow the
         steps at |kitty-scrollback.nvim-no-configuration|.
