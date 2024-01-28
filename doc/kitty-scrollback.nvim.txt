@@ -12,6 +12,7 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
   - Setup                                        |kitty-scrollback.nvim-setup|
   - Configuration                        |kitty-scrollback.nvim-configuration|
   - Environment Variables        |kitty-scrollback.nvim-environment-variables|
+  - Filetypes                                |kitty-scrollback.nvim-filetypes|
   - Commands                                  |kitty-scrollback.nvim-commands|
   - Keymaps                                    |kitty-scrollback.nvim-keymaps|
   - Recommendations                    |kitty-scrollback.nvim-recommendations|
@@ -630,6 +631,44 @@ instance.
     if vim.env.KITTY_SCROLLBACK_NVIM == 'true' then
         -- kitty-scrollback.nvim specific configuration
     end
+<
+
+
+FILETYPES                                    *kitty-scrollback.nvim-filetypes*
+
+The scrollback buffer’s filetype is set to `kitty-scrollback` after
+kitty-scrollback.nvim has finished loading.
+
+This can be used in you Neovim configuration to setup an autocommand to trigger
+when kitty-scrollback.nvim has finished loading the scrollback buffer.
+
+>lua
+    vim.api.nvim_create_autocmd({ 'FileType' }, {
+      group = vim.api.nvim_create_augroup('KittyScrollbackNvimFileType', { clear = true }),
+      pattern = { 'kitty-scrollback' },
+      callback = function()
+        -- add your logic here
+        vim.print('kitty-scrollback.nvim is open!')
+        return true
+      end,
+    })
+<
+
+The approach of using the filetype autocommand is similar to using the option
+`callbacks.after_ready`. One key differences, is that the callback receives
+metadata about kitty as an argument. The following example is similar to the
+autocommand and is a just a matter of user preference.
+
+>lua
+    require('kitty-scrollback').setup({
+      {
+        callbacks = {
+          after_ready = function(kitty_data)
+            vim.print(kitty_data)
+          end,
+        },
+      },
+    })
 <
 
 
