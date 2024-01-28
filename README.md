@@ -621,8 +621,8 @@ If you want to use your default Neovim configuration but only have a few minors 
 the [Environment Variables](#-environment-variables) section for an example of how this can be used.
 
 #### `NVIM_APPNAME` With Separate Configuration 
-If you prefer to have a completely separate Neovim configuration for kitty-scrollback.nvim that is complex, then using the environment variable
-[NIM_APPNAME](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME) is recommended.
+If you prefer to have a completely separate Neovim configuration for kitty-scrollback.nvim, then using the environment variable
+[NVIM_APPNAME](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME) is recommended.
 
 First, start off by creating your Neovim configuration directory. In this example, I will create the directory `~/.config/ksb-nvim` and add the file `init.lua` with the contents:
 
