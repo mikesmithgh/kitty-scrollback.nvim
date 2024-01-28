@@ -655,7 +655,7 @@ configuration should look like in your kitty.conf.
 <
 
 
-USER SPECIFIED CONFIGURATION
+USER CONFIGURATION
 
 If you prefer to load only a few simple configurations, creating a minimal
 `vimrc` (.e.g, `init.lua` or `init.vim`) and passing the `-u` argument to the
@@ -717,7 +717,7 @@ should look like in your kitty.conf.
 <
 
 
-USE THE ENVIRONMENT VARIABLE KITTY_SCROLLBACK_NVIM
+USE KITTY_SCROLLBACK_NVIM ENVIRONMENT VARIABLE
 
 If you want to use your default Neovim configuration but only have a few minors
 differences, then using the environment variable `KITTY_SCROLLBACK_NVIM` is
@@ -725,7 +725,7 @@ recommended. See the |kitty-scrollback.nvim-environment-variables| section for
 an example of how this can be used.
 
 
-NVIM_APPNAME AND A SEPARATE CONFIGURATION
+NVIM_APPNAME WITH SEPARATE CONFIGURATION
 
 If you prefer to have a completely separate Neovim configuration for
 kitty-scrollback.nvim that is complex, then using the environment variable
