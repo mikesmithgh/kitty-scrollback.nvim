@@ -156,9 +156,8 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 
   <summary>Migration Steps</summary>
 
-  > [!IMPORTANT]\
-  > If you have any problems or questions migrating to `v4.0.0`, please open an [issue](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues) or
-  [discussion](https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions)
+  If you have any problems or questions migrating to `v4.0.0`, please open an [issue](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues) or
+  [discussion](https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions).
   
   <!-- panvimdoc-ignore-start -->
   
