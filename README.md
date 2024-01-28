@@ -159,14 +159,22 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   <!-- panvimdoc-ignore-end -->
 
   **Redesigned Plugin Configuration**
-  - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless. 
-  You can still pass arguments to nvim with the `--nvim-args` flag.
-  - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at [./tests/example.lua](./tests/example.lua).
+  - The default behavior of not loading a Neovim configuration has changed to loading the default Neovim configuration. If you prefer to
+  continue not loading your Neovim configuration with kitty-scrollback.nvim, then follow the steps at [No Configuration](#no-configuration).
+  - If you previously used the flag `--no-nvim-args`, then delete it from your configuration because it no longer has any effect. 
+  - `ksb_example` configurations have been removed and can no longer be referenced by name. If you were previously referencing an example configuration
+  by name, then manually copy it from [./tests/example.lua](./tests/example.lua) into your kitty-scrollback.nvim configuration. See 
+  [Plugin Configuration](#plugin-configuration) for detailed instructions on configuration kitty-scrollback.nvim. 
   - The command `KittyScrollbackGenerateKittens` and api `generate_kittens` no longer have an option to generate `ksb_example` configurations.
   - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
   - The api `generate_kittens` signature removed the `all` parameter
-  - Removed the undocumented reserved `default` configuration name
   - Removed the reserved `global` configuration name
+
+  **TODO: move to changelog, doesn't need to be in migration**
+  - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless. 
+  The flag `--nvim-args` remains unchanged and can still be used.
+  - Removed the undocumented reserved `default` configuration name
+  - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at [./tests/example.lua](./tests/example.lua).
 
 
 </details>
