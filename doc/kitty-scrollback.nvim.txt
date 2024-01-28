@@ -97,14 +97,21 @@ MIGRATING TO V4.0.0                *kitty-scrollback.nvim-migrating-to-v4.0.0*
 
 `-` `Migration Steps`
     **Redesigned Plugin Configuration**
-    - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless.
-        You can still pass arguments to nvim with the `--nvim-args` flag.
-    - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at ./tests/example.lua <./tests/example.lua>.
+    - The default behavior of not loading a Neovim configuration has changed to loading the default Neovim configuration. If you prefer to
+        continue not loading your Neovim configuration with kitty-scrollback.nvim, then follow the steps at |kitty-scrollback.nvim-no-configuration|.
+    - If you previously used the flag `--no-nvim-args`, then delete it from your configuration because it no longer has any effect.
+    - `ksb_example` configurations have been removed and can no longer be referenced by name. If you were previously referencing an example configuration
+        by name, then manually copy it from ./tests/example.lua <./tests/example.lua> into your kitty-scrollback.nvim configuration. See
+        |kitty-scrollback.nvim-plugin-configuration| for detailed instructions on configuration kitty-scrollback.nvim.
     - The command `KittyScrollbackGenerateKittens` and api `generate_kittens` no longer have an option to generate `ksb_example` configurations.
     - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
     - The api `generate_kittens` signature removed the `all` parameter
-    - Removed the undocumented reserved `default` configuration name
     - Removed the reserved `global` configuration name
+    **TODO: move to changelog, doesn’t need to be in migration**
+    - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless.
+        The flag `--nvim-args` remains unchanged and can still be used.
+    - Removed the undocumented reserved `default` configuration name
+    - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at ./tests/example.lua <./tests/example.lua>.
 
 
 PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
@@ -728,8 +735,8 @@ an example of how this can be used.
 NVIM_APPNAME WITH SEPARATE CONFIGURATION
 
 If you prefer to have a completely separate Neovim configuration for
-kitty-scrollback.nvim that is complex, then using the environment variable
-|NIM_APPNAME| is recommended.
+kitty-scrollback.nvim, then using the environment variable |NVIM_APPNAME| is
+recommended.
 
 First, start off by creating your Neovim configuration directory. In this
 example, I will create the directory `~/.config/ksb-nvim` and add the file
@@ -738,31 +745,31 @@ example, I will create the directory `~/.config/ksb-nvim` and add the file
 >lua
     local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
     if not vim.loop.fs_stat(lazypath) then
-        vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, })
+      vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, })
     end
     vim.opt.rtp:prepend(lazypath)
     
     require("lazy").setup({
-        "mikesmithgh/kitty-scrollback.nvim",
-        enabled = true,
-        lazy = true,
-        cmd = { "KittyScrollbackGenerateKittens", "KittyScrollbackCheckHealth" },
-        event = { "User KittyScrollbackLaunch" },
-        config = function()
-            require("kitty-scrollback").setup({
-                {
-                    callbacks = {
-                        after_ready = vim.defer_fn(function()
-                            vim.fn.confirm(vim.env.NVIM_APPNAME .. " kitty-scrollback.nvim example!")
-                        end, 1000),
-                    },
-                },
-            })
-        end,
+      "mikesmithgh/kitty-scrollback.nvim",
+      enabled = true,
+      lazy = true,
+      cmd = { "KittyScrollbackGenerateKittens", "KittyScrollbackCheckHealth" },
+      event = { "User KittyScrollbackLaunch" },
+      config = function()
+        require("kitty-scrollback").setup({
+          {
+            callbacks = {
+              after_ready = vim.defer_fn(function()
+                vim.fn.confirm(vim.env.NVIM_APPNAME .. " kitty-scrollback.nvim example!")
+              end, 1000),
+            },
+          },
+        })
+      end,
     })
 <
 
-In this example, we have a completely seperate Neovim configuration with
+In this example, we have a completely separate Neovim configuration with
 lazy.nvim as the package manager. kitty-scrollback.nvim is a configured package
 and has a global configuration to print a message a second after
 kitty-scrollback.nvim loads.
