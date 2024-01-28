@@ -34,6 +34,10 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - ⚙️ [Configuration](#-configuration)
   - [Kitten Arguments](#kitten-arguments)
   - [Plugin Configuration](#plugin-configuration)
+    - [Overriding Builtin Configurations](#overriding-builtin-configurations)
+    - [Global Configuration](#global-configuration)
+    - [Configuration Precedence](#configuration-precedence)
+    - [Configuration Options](#configuration-options)
   - [Nerd Fonts](#nerd-fonts)
   - [Separate Neovim Configuration](#separate-neovim-configuration)
     - [No Configuration](#no-configuration)
@@ -151,6 +155,10 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <details>
 
   <summary>Migration Steps</summary>
+
+  > [!IMPORTANT]\
+  > If you have any problems or questions migrating to `v4.0.0`, please open an [issue](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues) or
+  [discussion](https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions)
   
   <!-- panvimdoc-ignore-start -->
   
@@ -158,24 +166,20 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   
   <!-- panvimdoc-ignore-end -->
 
-  **Redesigned Plugin Configuration**
-  - The default behavior of not loading a Neovim configuration has changed to loading the default Neovim configuration. If you prefer to
-  continue not loading your Neovim configuration with kitty-scrollback.nvim, then follow the steps at [No Configuration](#no-configuration).
-  - If you previously used the flag `--no-nvim-args`, then delete it from your configuration because it no longer has any effect. 
+  - Previously, kitty-scrollback.nvim did not open Neovim with your Neovim configuration by default. This has changed to loading your Neovim 
+  configuration by default, with the ability to opt out. If you prefer to continue not loading your Neovim configuration, then follow the
+  steps at [No Configuration](#no-configuration).
+  - If you previously used the flag `--no-nvim-args`, then delete it from your configuration because it no longer has any effect. The flag 
+  `--nvim-args` remains unchanged and can still be used.
   - `ksb_example` configurations have been removed and can no longer be referenced by name. If you were previously referencing an example configuration
-  by name, then manually copy it from [./tests/example.lua](./tests/example.lua) into your kitty-scrollback.nvim configuration. See 
+  by name, then you can manually copy it from [./tests/example.lua](./tests/example.lua) into your kitty-scrollback.nvim configuration. See 
   [Plugin Configuration](#plugin-configuration) for detailed instructions on configuration kitty-scrollback.nvim. 
   - The command `KittyScrollbackGenerateKittens` and api `generate_kittens` no longer have an option to generate `ksb_example` configurations.
-  - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
-  - The api `generate_kittens` signature removed the `all` parameter
-  - Removed the reserved `global` configuration name
-
-  **TODO: move to changelog, doesn't need to be in migration**
-  - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless. 
-  The flag `--nvim-args` remains unchanged and can still be used.
-  - Removed the undocumented reserved `default` configuration name
-  - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at [./tests/example.lua](./tests/example.lua).
-
+    - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
+    - The api `generate_kittens` signature removed the `all` parameter
+  - The reserved `global` configuration name has been removed and global options are now configured by the first element of the options table without a key.
+  See [Global Configuration](#global-configuration) for more details.
+  - The undocumented reserved `default` configuration name has been removed. kitty-scrollback.nvim defaults to `ksb_builtin_get_text_all` if no configuration is provided.
 
 </details>
 
@@ -382,6 +386,8 @@ If you update the reference in kitty.conf to `myfnconfig` then the `kitty_mod+h`
 map kitty_mod+h kitty_scrollback_nvim --config myfnconfig
 ```
 
+#### Overriding Builtin Configurations 
+
 The key for an entry in the options table can be any `string`. However, if the key matches a builtin name (prefixed with `ksb_builtin_`) then the configuration 
 will be merged with the builtin configuration.
 All of the builtin configurations are defined in [lua/kitty-scrollback/configs/builtin.lua](./lua/kitty-scrollback/configs/builtin.lua). The user defined configuration will take precedence and override any fields that are defined in both the builtin and user defined configuration.
@@ -432,9 +438,10 @@ The user and builtin configurations will be merged resulting in
 This approach can be used to modify the builtin configuration (e.g., `ksb_builtin_get_text_all`, `ksb_builtin_last_cmd_output`, and `ksb_builtin_last_visited_cmd_output`).
 But, if you have a common configuration that you wish to have applied to all of configurations, then it is better to use a global configuration. 
 
-So far, all entries
-in the options table have been in the form a key/value pair where the key is a `string` representing the name of the configuration. There is an additional reserved
-entry for the global configuration which is the first element of the options table without a key (technically the key is `1` but it does not have to be defined). 
+#### Global Configuration
+
+So far, all entries in the options table have been in the form a key/value pair where the key is a `string` representing the name of the configuration. There is an 
+additional reserved entry for the global configuration which is the first element of the options table without a key (technically the key is `1` but it does not have to be defined). 
 
 If you would like to provide a global configuration to automatically hide the status window, this can be achieved as follows. Notice the first entry in the
 options table does not define a key, this will be considered global options and applied to all builtin and user defined configurations.
@@ -470,13 +477,18 @@ require('kitty-scrollback').setup({
 })
 ```
 
-The configuration precedence is `default > global > builtin > user` where `default` has the lowest and `user` has the highest precedence.
+#### Configuration Precedence
 
-To summarize,
-- `default` is the standard options defined by kitty-scrollback.nvim and can be found in the file [lua/kitty-scrollback/configs/defaults.lua](./lua/kitty-scrollback/configs/defaults.lua).
-- `global` is global options that apply to all `builtin` and `user` defined configurations. The first element in the options table without a key is considered the `global` options.
-- `builtin` is the options defined by kitty-scrollback.nvim for each `kitty_scrollback_nvim` kitten command generated by `:KittyScrollbackGenerateKittens` (e.g., `ksb_builtin_get_text_all`, `ksb_builtin_last_cmd_output`, and `ksb_builtin_last_visited_cmd_output`). The builtin options can be found in the file [lua/kitty-scrollback/configs/builtin.lua](./lua/kitty-scrollback/configs/builtin.lua).
-- `user` is the options defined by the user in the options table with a `string` name that is referenced in `kitty.conf` using the `--config` flag when defining a mapping for the `kitty_scrollback_nvim` kitten (e.g.,  `map kitty_mod+h kitty_scrollback_nvim --config myconfig`). User defined options can be any `string` and will merge with `builtin` options if they share the same key such as `ksb_builtin_get_text_all`.
+The configuration precedence is `default` > `global` > `builtin` > `user` where `default` has the lowest and `user` has the highest precedence.
+
+| Type      | Description                                                                                                                                                                                                                                                                                                                                                                                                         |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `default` | Standard options defined by kitty-scrollback.nvim and can be found in the file [lua/kitty-scrollback/configs/defaults.lua](./lua/kitty-scrollback/configs/defaults.lua).                                                                                                                                                                                                                                            |
+| `global`  | Global options that apply to all `builtin` and `user` defined configurations. The first element in the options table without a key is considered the `global` options.                                                                                                                                                                                                                                              |
+| `builtin` | Options defined by kitty-scrollback.nvim for each `kitty_scrollback_nvim` kitten command generated by `:KittyScrollbackGenerateKittens` (e.g., `ksb_builtin_get_text_all`, `ksb_builtin_last_cmd_output`, and `ksb_builtin_last_visited_cmd_output`). The builtin options can be found in the file [lua/kitty-scrollback/configs/builtin.lua](./lua/kitty-scrollback/configs/builtin.lua).                          |
+| `user`    | Options defined by the user in the options table with a `string` name that is referenced in `kitty.conf` using the `--config` flag when defining a mapping for the `kitty_scrollback_nvim` kitten (e.g.,  `map kitty_mod+h kitty_scrollback_nvim --config myconfig`). User defined options can be any `string` and will merge with `builtin` options if they share the same key such as `ksb_builtin_get_text_all`. |
+
+#### Configuration Options
 
 | Options                                                           | Type                                                                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | :---------------------------------------------------------------- | :------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
