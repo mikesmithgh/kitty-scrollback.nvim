@@ -26,6 +26,28 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 >
 > Check out [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) for more demos! 
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [✨ Features](#-features)
+- [🚀 Migrating to v4.0.0](#-migrating-to-v400)
+- [📚 Prerequisites](#-prerequisites)
+- [🏃 Quickstart](#-quickstart)
+- [📦 Installation](#-installation)
+- [🛠️ Setup](#-setup)
+- [⚙️ Configuration](#-configuration)
+  - [Kitten Arguments](#kitten-arguments)
+  - [Plugin Configuration](#plugin-configuration)
+  - [Nerd Fonts](#nerd-fonts)
+- [🧬 Environment Variables](#-environment-variables)
+- [🫡 Commands](#-commands)
+- [⌨️ Keymaps](#-keymaps)
+- [👏 Recommendations](#-recommendations)
+- [🤝 Acknowledgements](#-acknowledgements)
+- [🐶 Alternatives](#-alternatives)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 <!-- panvimdoc-ignore-end -->
 
 ## ✨ Features
@@ -125,7 +147,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   
   <!-- panvimdoc-ignore-end -->
 
-  ## Redesigned Plugin Configuration
+  **Redesigned Plugin Configuration**
   - The flag `--no-nvim-args` has been removed. The default behavior of kitty-scrollback.nvim no longer passes arguments to nvim making `--no-nvim-args` pointless. 
   You can still pass arguments to nvim with the `--nvim-args` flag.
   - `ksb_example` configurations have been removed and can no longer be referenced by name. These are used for testing and demo purposes. The configurations are still available as a reference at [./tests/example.lua](./tests/example.lua).
@@ -265,7 +287,7 @@ This section provides details on how to customize your kitty-scrollback.nvim con
 > The [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) section of the Wiki provides
 > detailed demos of each configuration option.
 
-### Kitten arguments
+### Kitten Arguments
 Arguments that can be passed to the `kitty_scrollback_nvim` [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) defined in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/). You can provide 
 the arguments to the `action_alias kitty_scrollback_nvim` or each individual mapping referencing `kitty_scrollback_nvim`.
 
@@ -290,7 +312,7 @@ The following examples show you how you could reference a kitty-scrollback.nvim 
 | `--env`          | Environment variable that is passed to the Neovim instance that displays the scrollback buffer. Format is `--env var_name=var_value`. You may specify multiple config files that will merge all configuration options. Useful for setting `NVIM_APPNAME`                                                                                                                    |
 | `--cwd`          | The current working directory of the Neovim instance that displays the scrollback buffer.                                                                                                                                                                                                                                                                                   |
 
-### Plugin configuration
+### Plugin Configuration
 
 kitty-scrollback.nvim is configured using the `require('kitty-scrollback').setup()` function. `setup()` accepts an options table in the form of
 `table<string, KsbOpts|fun(KsbKittyData):KsbOpts>`. The structure of `KsbOpts` is defined in [lua/kitty-scrollback/configs/defaults.lua](./lua/kitty-scrollback/configs/defaults.lua).
@@ -517,7 +539,7 @@ if vim.env.KITTY_SCROLLBACK_NVIM == 'true' then
 end
 ```
 
-## 🫡 Commands and Lua API
+## 🫡 Commands
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 
 | Command                                             | API                                                    | Description                                                             |
@@ -525,7 +547,7 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 | `:KittyScrollbackGenerateKittens [generate_modes]`  | `generate_kittens(table<string\|'commands'\|'maps'>)?` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
 | `:KittyScrollbackCheckHealth`                       | `checkhealth()`                                        | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
 
-## ⌨️ Keymaps and Lua API
+## ⌨️ Keymaps
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 
 | `<Plug>` Mapping              | Default Mapping | Mode  | API                        | Description                                                                             |
@@ -579,7 +601,6 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
   
 <!-- panvimdoc-ignore-start -->
 
-#
 <div align="center">
     <img src="https://github.com/mikesmithgh/kitty-scrollback.nvim/assets/10135646/50852780-b3ce-4cb2-8e88-c1ea79e3e140" alt="scared cat" />
 </div>
