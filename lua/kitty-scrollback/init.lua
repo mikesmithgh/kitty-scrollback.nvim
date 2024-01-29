@@ -1,7 +1,7 @@
 ---@mod kitty-scrollback
 local M = {}
 
----@type table<string, fun(KsbKittyData):KsbOpts>
+---@type table<string, KsbOpts|fun(KsbKittyData):KsbOpts>
 M.configs = {}
 
 ---Create commands for generating kitty-scrollback.nvim kitten configs
@@ -16,9 +16,8 @@ M.setup = function(configs)
   ---        |kitty.api.generate_kittens|
   ---@brief ]]
   vim.api.nvim_create_user_command('KittyScrollbackGenerateKittens', function(o)
-    require('kitty-scrollback.api').generate_kittens(o.bang, o.fargs)
+    require('kitty-scrollback.api').generate_kittens(o.fargs)
   end, {
-    bang = true,
     nargs = '*',
     complete = function()
       return { 'maps', 'commands' }

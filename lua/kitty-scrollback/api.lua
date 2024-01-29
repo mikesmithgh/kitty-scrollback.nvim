@@ -80,9 +80,8 @@ end
 ---@alias KsbGenKittenModes string | 'maps' | 'commands'
 
 ---Generate Kitten commands used as reference for configuring `kitty.conf`
----@param all boolean|nil
 ---@param generate_modes table<KsbGenKittenModes>|nil
-M.generate_kittens = function(all, generate_modes)
+M.generate_kittens = function(generate_modes)
   generate_modes = (generate_modes and next(generate_modes)) and generate_modes or { 'maps' }
   local target_gen_modes = {}
   for _, gen_mode in pairs(generate_modes) do
@@ -91,10 +90,6 @@ M.generate_kittens = function(all, generate_modes)
 
   local kitty_scrollback_kitten = vim.fn.fnamemodify(
     vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1],
-    ':p'
-  )
-  local example_path = vim.fn.fnamemodify(
-    vim.api.nvim_get_runtime_file('lua/kitty-scrollback/configs/example.lua', false)[1],
     ':p'
   )
 
@@ -116,39 +111,6 @@ M.generate_kittens = function(all, generate_modes)
       .. ' --config ksb_builtin_last_visited_cmd_output',
   }
 
-  local ksb_example = require('kitty-scrollback.configs.example').configs
-  local example_configs = vim.tbl_map(
-    function(name)
-      if name == '' or name:match('^#.*') then
-        return name
-      end
-      return 'map f1 ' .. action_alias .. ' --config ' .. name
-    end,
-    vim.list_extend({
-      '',
-      '# Example kitty-scrollback.nvim config overrides',
-      '# See ' .. example_path .. ' for config details',
-    }, vim.tbl_keys(ksb_example))
-  )
-
-  local nvim_args = vim.tbl_map(function(c)
-    if c == '' or c:match('^#.*') then
-      return c
-    end
-    return 'map f1 ' .. action_alias .. ' ' .. c
-  end, {
-    [[]],
-    [[# Example kitty-scrollback.nvim nvim overrides]],
-    [[--no-nvim-args --env NVIM_APPNAME=ksb-nvim]],
-    [[--nvim-args +'colorscheme darkblue']],
-    [[--nvim-args +'lua vim.defer_fn(function() vim.api.nvim_set_option_value("filetype", "markdown", { buf = 0 }); vim.cmd("silent! CellularAutomaton make_it_rain") end, 6000)']],
-  })
-
-  local kitten_map_configs = vim.list_extend(
-    vim.list_extend(vim.tbl_extend('force', builtin_map_configs, {}), example_configs),
-    nvim_args
-  )
-
   local builtin_command_configs = vim.tbl_map(function(config)
     return config:gsub(
       '^.*map%s%S+.*kitty_scrollback_nvim',
@@ -156,33 +118,15 @@ M.generate_kittens = function(all, generate_modes)
     )
   end, builtin_map_configs)
 
-  local kitten_command_configs = vim.tbl_map(function(config)
-    return config:gsub(
-      '^.*map%s%S+.*kitty_scrollback_nvim',
-      'kitty @ kitten ' .. kitty_scrollback_kitten
-    )
-  end, kitten_map_configs)
-
   local configs = {}
 
-  if all then
-    if target_gen_modes['maps'] then
-      vim.list_extend(configs, alias_config)
-      vim.list_extend(configs, kitten_map_configs)
-      table.insert(configs, '')
-    end
-    if target_gen_modes['commands'] then
-      vim.list_extend(configs, kitten_command_configs)
-    end
-  else
-    if target_gen_modes['maps'] then
-      vim.list_extend(configs, alias_config)
-      vim.list_extend(configs, builtin_map_configs)
-      table.insert(configs, '')
-    end
-    if target_gen_modes['commands'] then
-      vim.list_extend(configs, builtin_command_configs)
-    end
+  if target_gen_modes['maps'] then
+    vim.list_extend(configs, alias_config)
+    vim.list_extend(configs, builtin_map_configs)
+    table.insert(configs, '')
+  end
+  if target_gen_modes['commands'] then
+    vim.list_extend(configs, builtin_command_configs)
   end
 
   local bufid = vim.api.nvim_create_buf(true, true)

@@ -2,10 +2,7 @@ local h = require('tests.kitty-scrollback.helpers')
 
 h.setup_backport()
 
-local ksb_dir = vim.fn.fnamemodify(
-  vim.fn.fnamemodify(vim.api.nvim_get_runtime_file('lua/kitty-scrollback', false)[1], ':h:h'),
-  ':p'
-)
+local ksb_dir = h.ksb_dir()
 h.debug({
   ksb_dir = ksb_dir,
   kitty_conf = ksb_dir .. 'tests/kitty.conf',
@@ -17,6 +14,8 @@ local kitty_instance
 local shell = h.debug(h.is_github_action and '/bin/bash' or (vim.o.shell .. ' --noprofile --norc'))
 
 describe('kitty-scrollback.nvim', function()
+  h.init_nvim()
+
   before_each(function()
     vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
     tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
