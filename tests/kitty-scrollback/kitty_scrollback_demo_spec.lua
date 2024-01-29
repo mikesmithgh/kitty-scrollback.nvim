@@ -15,7 +15,9 @@ local ksb_work_dir
 
 local shell = h.debug(h.is_github_action and '/bin/bash' or (vim.o.shell .. ' --noprofile --norc'))
 
-local it = screencapture.wrap_it(it, tmpsock)
+local it = screencapture.wrap_it(it, function()
+  return tmpsock
+end)
 
 describe('kitty-scrollback.nvim', function()
   h.init_nvim()
