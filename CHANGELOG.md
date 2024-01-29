@@ -1,3 +1,28 @@
+# [4.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.2.1...v4.0.0) (2024-01-29)
+
+
+* feat!: redesign kitty-scrollback.nvim configuration (#118) ([97fea1b](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/97fea1b6c9188a1665332fbcf3df2261f5bba8d7)), closes [#118](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/118) [#69](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/69)
+
+
+### BREAKING CHANGES
+
+* kitty-scrollback.nvim loads your Neovim configuration by default. Previous versions of kitty-scrollback.nvim, did not load any configurations or plugins by default.
+
+  - Previously, kitty-scrollback.nvim did not open Neovim with your Neovim configuration by default. This has changed to loading your Neovim 
+  configuration by default, with the ability to opt out. If you prefer to continue not loading your Neovim configuration, then follow the
+  steps at [No Configuration](#no-configuration).
+  - If you previously used the flag `--no-nvim-args`, then delete it from your configuration because it no longer has any effect. The flag 
+  `--nvim-args` remains unchanged and can still be used.
+  - `ksb_example` configurations have been removed and can no longer be referenced by name. If you were previously referencing an example configuration
+  by name, then you can manually copy it from [./tests/example.lua](./tests/example.lua) into your kitty-scrollback.nvim configuration. See 
+  [Plugin Configuration](#plugin-configuration) for detailed instructions on configuration kitty-scrollback.nvim. 
+  - The command `KittyScrollbackGenerateKittens` and api `generate_kittens` no longer have an option to generate `ksb_example` configurations.
+    - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
+    - The api `generate_kittens` signature removed the `all` parameter
+  - The reserved `global` configuration name has been removed and global options are now configured by the first element of the options table without a key.
+  See [Global Configuration](#global-configuration) for more details.
+  - The undocumented reserved `default` configuration name has been removed. kitty-scrollback.nvim defaults to `ksb_builtin_get_text_all` if no configuration is provided.
+
 ## [3.2.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.2.0...v3.2.1) (2024-01-23)
 
 
