@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.0.0...v4.0.1) (2024-01-31)
+
+
+### Bug Fixes
+
+* wrong config merge operation ([#182](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/182)) ([2a42b18](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/2a42b18178ed3e2c31d275be25feaa934fcc1518))
+
 # [4.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v3.2.1...v4.0.0) (2024-01-29)
 
 
