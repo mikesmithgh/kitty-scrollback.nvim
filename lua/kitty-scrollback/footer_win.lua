@@ -34,7 +34,7 @@ M.footer_winopts = function(paste_winopts)
     style = 'minimal',
   }
 
-  if opts.paste_window.winopts_overrides then
+  if opts.paste_window.footer_winopts_overrides then
     footer_winopts = vim.tbl_deep_extend(
       'force',
       footer_winopts,
