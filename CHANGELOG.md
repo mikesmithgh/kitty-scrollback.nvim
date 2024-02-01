@@ -1,3 +1,10 @@
+## [4.0.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.0.1...v4.0.2) (2024-02-01)
+
+
+### Bug Fixes
+
+* fallback to kitty colors when Normal hl is undefined ([#185](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/185)) ([0d2e76f](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/0d2e76ff30f0dfd7c5a253d2b9c01d33858bd7b4)), closes [#181](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/181)
+
 ## [4.0.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.0.0...v4.0.1) (2024-01-31)
 
 
