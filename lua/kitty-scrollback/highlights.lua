@@ -28,22 +28,25 @@ M.has_default_or_vim_colorscheme = function()
 end
 
 local function fg_or_fallback(hl_def)
+  local fallback_fg = p.kitty_colors.foreground
+    or (vim.o.background == 'dark' and '#ffffff' or '#000000')
   local fg = type(hl_def.fg) == 'number' and string.format('#%06x', hl_def.fg) or hl_def.fg
-  return hl_def.fg and fg or (vim.o.background == 'dark' and '#ffffff' or '#000000')
+  return hl_def.fg and fg or fallback_fg
 end
 
 local function bg_or_fallback(hl_def)
+  local fallback_bg = p.kitty_colors.background
+    or (vim.o.background == 'dark' and '#000000' or '#ffffff')
   local bg = type(hl_def.bg) == 'number' and string.format('#%06x', hl_def.bg) or hl_def.bg
-  return hl_def.bg and bg or (vim.o.background == 'dark' and '#000000' or '#ffffff')
+  return hl_def.bg and bg or fallback_bg
 end
 
 local function normal_color()
   local hl_def = vim.api.nvim_get_hl(0, { name = 'Normal', link = false })
   hl_def = next(hl_def) and hl_def or {} -- can return vim.empty_dict() so convert to lua table
-  local normal_fg_color = M.has_default_or_vim_colorscheme() and p.kitty_colors.foreground
-    or fg_or_fallback(hl_def)
-  local normal_bg_color = M.has_default_or_vim_colorscheme() and p.kitty_colors.background
-    or bg_or_fallback(hl_def)
+  local is_default = M.has_default_or_vim_colorscheme()
+  local normal_fg_color = is_default and p.kitty_colors.foreground or fg_or_fallback(hl_def)
+  local normal_bg_color = is_default and p.kitty_colors.background or bg_or_fallback(hl_def)
   return {
     fg = normal_fg_color,
     bg = normal_bg_color,
