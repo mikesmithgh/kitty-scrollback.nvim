@@ -71,9 +71,8 @@ local function check_has_kitty_data()
       .. kitty_scrollback_kitten
       .. ' --config ksb_builtin_checkhealth`'
     vim.health.warn('No Kitty data available unable to perform a complete healthcheck', {
-      'Execute the command `:KittyScrollbackCheckHealth` or add the config options `checkhealth = true` to your *config* '
-        .. 'to run `checkhealth` within the context of a Kitten',
-      checkhealth_command,
+      'If you ran `:checkhealth` or `:checkhealth kitty-scrollback` then this WARNING is expected',
+      'Execute the command `:KittyScrollbackCheckHealth` for a complete healthcheck',
     })
   end
   return false
