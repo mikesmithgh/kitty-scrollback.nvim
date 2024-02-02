@@ -587,7 +587,7 @@ There are a couple approaches that can be taken to separate kitty-scrollback.nvi
 
 #### No Configuration
 
-If you prefer not to load any Neovim configuration, the arguments `--clean --noplugin -n` are recommended to be passed to the `kitty_scrollback_nvim` kitten 
+If you prefer not to load any Neovim configuration, the arguments `--nvim-args --clean --noplugin -n` are recommended to be passed to the `kitty_scrollback_nvim` kitten 
 
 Details on these flags can be found by running the command [:help startup-options](https://neovim.io/doc/user/starting.html#startup-options).
 
