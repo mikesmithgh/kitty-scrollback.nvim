@@ -651,9 +651,9 @@ configuration.
 
 NO CONFIGURATION
 
-If you prefer not to load any Neovim configuration, the arguments `--clean
---noplugin -n` are recommended to be passed to the `kitty_scrollback_nvim`
-kitten
+If you prefer not to load any Neovim configuration, the arguments `--nvim-args
+--clean --noplugin -n` are recommended to be passed to the
+`kitty_scrollback_nvim` kitten
 
 Details on these flags can be found by running the command |:help
 startup-options|.
