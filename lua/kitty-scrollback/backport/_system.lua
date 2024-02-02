@@ -1,5 +1,5 @@
 -- NOTE: copied from
--- https://github.com/neovim/neovim/blob/f5d59340a6e8a71fb766fbfbf796377d7d9e4c20/runtime/lua/vim/_system.lua
+-- https://github.com/neovim/neovim/blob/be1d09c4272212ea9b354c900603568d238b4ab3/runtime/lua/vim/_system.lua
 
 ---@diagnostic disable
 local uv = vim.uv
@@ -98,14 +98,14 @@ function SystemObj:wait(timeout)
 
   local done = vim.wait(timeout or state.timeout or MAX_TIMEOUT, function()
     return state.result ~= nil
-  end)
+  end, nil, true)
 
   if not done then
     -- Send sigkill since this cannot be caught
     self:_timeout(SIG.KILL)
     vim.wait(timeout or state.timeout or MAX_TIMEOUT, function()
       return state.result ~= nil
-    end)
+    end, nil, true)
   end
 
   return state.result
