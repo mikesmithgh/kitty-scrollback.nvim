@@ -703,12 +703,19 @@ action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback
 ```
 
 ## 🧬 Environment Variables
-The environment variable `KITTY_SCROLLBACK_NVIM` is set to `true` while kitty-scrollback.nvim is active.
 
+| Environment Variable         | Description                                                               |
+| :--------------------------- | :------------------------------------------------------------------------ |
+| `KITTY_SCROLLBACK_NVIM`      | Set to `true` when kitty-scrollback.nvim is active.                       |                 
+| `KITTY_SCROLLBACK_NVIM_TMUX` | Set to `true` when kitty-scrollback.nvim is active and in a tmux session. |
+ 
 This can be used to in your Neovim configuration to provide kitty-scrollback.nvim specific behavior that may differ from a regular Neovim instance.
 ```lua
 if vim.env.KITTY_SCROLLBACK_NVIM == 'true' then
     -- kitty-scrollback.nvim specific configuration
+end
+if vim.env.KITTY_SCROLLBACK_NVIM_TMUX == 'true' then
+    -- kitty-scrollback.nvim tmux specific configuration
 end
 ```
 

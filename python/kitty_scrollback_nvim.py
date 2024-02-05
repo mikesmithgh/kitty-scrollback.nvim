@@ -75,6 +75,33 @@ def parse_nvim_args(args=[]):
     return ()
 
 
+def ksb_env():
+    return (
+        '--env',
+        'KITTY_SCROLLBACK_NVIM=true',
+    )
+
+
+def ksb_tmux_env(w):
+    fg_process_entrypoints = list(
+        map(
+            lambda pd: next(
+                iter(pd.get(
+                    'cmdline',
+                    [],
+                )),
+                None,
+            ),
+            w.child.foreground_processes,
+        ))
+    if 'tmux' in fg_process_entrypoints:
+        return (
+            '--env',
+            'KITTY_SCROLLBACK_NVIM_TMUX=true',
+        )
+    return ()
+
+
 def parse_env(args):
     env_args = []
     for idx, arg in reversed(list(enumerate(args))):
@@ -137,7 +164,7 @@ def handle_result(args: List[str],
 
         config = parse_config(args)
         cwd = parse_cwd(args)
-        env = parse_env(args)
+        env = parse_env(args) + ksb_env() + ksb_tmux_env(w)
         kitty_data_str = pipe_data(w, target_window_id, config, kitty_path)
         kitty_data = json.dumps(kitty_data_str)
 
@@ -150,8 +177,6 @@ def handle_result(args: List[str],
 
         kitty_args = (
             '--copy-env',
-            '--env',
-            'KITTY_SCROLLBACK_NVIM=true',
             '--type',
             'overlay',
             '--title',
