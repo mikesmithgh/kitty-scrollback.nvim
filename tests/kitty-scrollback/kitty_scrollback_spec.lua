@@ -246,19 +246,55 @@ $
     )
   end)
 
-  it('should have environment variable set', function()
+  it('should have environment variables set', function()
     h.assert_screen_match(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
-        h.with_pause_seconds_before([[:=vim.env.KITTY_SCROLLBACK_NVIM]], 1),
+        h.with_pause_seconds_before(
+          h.send_as_string(
+            [[:lua vim.print({ KITTY_SCROLLBACK_NVIM = vim.env.KITTY_SCROLLBACK_NVIM, KITTY_SCROLLBACK_NVIM_TMUX = vim.env.KITTY_SCROLLBACK_NVIM_TMUX })]]
+          ),
+          1
+        ),
       }),
       {
         pattern = [[
 .*
-:=vim.env.KITTY_SCROLLBACK_NVIM
-true
-Press ENTER or type command to continue.*]],
+{
+  KITTY_SCROLLBACK_NVIM = "true"
+}
+.*]],
       }
     )
+
+    h.kitty_remote_close_window()
+
+    h.assert_screen_match(
+      h.feed_kitty({
+        [[tmux]],
+        h.open_kitty_scrollback_nvim(),
+        h.with_pause_seconds_before(
+          h.send_as_string(
+            [[:lua vim.print({ KITTY_SCROLLBACK_NVIM = vim.env.KITTY_SCROLLBACK_NVIM, KITTY_SCROLLBACK_NVIM_TMUX = vim.env.KITTY_SCROLLBACK_NVIM_TMUX })]]
+          ),
+          1
+        ),
+      }),
+      {
+        pattern = [[
+.*
+{
+  KITTY_SCROLLBACK_NVIM = "true",
+  KITTY_SCROLLBACK_NVIM_TMUX = "true"
+}
+.*]],
+      }
+    )
+
+    -- exit tmux session
+    h.kitty_remote_close_window()
+    h.feed_kitty({
+      [[exit]],
+    })
   end)
 end)
