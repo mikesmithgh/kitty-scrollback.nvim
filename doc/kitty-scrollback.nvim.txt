@@ -209,7 +209,7 @@ This section outlines the required configuration for kitty-scrollback.nvim.
     kitty.conf <https://sw.kovidgoyal.net/kitty/conf/>
 
 >sh
-        nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
+        nvim --headless +'KittyScrollbackGenerateKittens'
 <
 - Completely close and reopen Kitty
 - Check the health of kitty-scrollback.nvim
