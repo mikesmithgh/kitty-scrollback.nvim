@@ -291,7 +291,7 @@ This section outlines the required configuration for kitty-scrollback.nvim.
   - Do not add the option `no-prompt-mark`
 - Generate the default kitty-scrollback.nvim [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) mappings and add them to [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/) 
   ```sh
-  nvim --headless +'KittyScrollbackGenerateKittens' +'set nonumber' +'set norelativenumber' +'%print' +'quit!' 2>&1
+  nvim --headless +'KittyScrollbackGenerateKittens'
   ```
 - Completely close and reopen Kitty
 - Check the health of kitty-scrollback.nvim
