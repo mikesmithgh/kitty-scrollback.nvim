@@ -1,3 +1,10 @@
+## [4.0.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.0.2...v4.0.3) (2024-02-10)
+
+
+### Bug Fixes
+
+* print configs for KittyScrollbackGenerateKittens if headless mode ([#190](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/190)) ([fca2b05](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/fca2b05d153bc75f75e46745e6d9fef785a08c30)), closes [#189](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/189)
+
 ## [4.0.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.0.1...v4.0.2) (2024-02-01)
 
 
