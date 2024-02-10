@@ -135,6 +135,13 @@ M.generate_kittens = function(generate_modes)
   })
   vim.api.nvim_set_current_buf(bufid)
   vim.api.nvim_buf_set_lines(bufid, 0, -1, false, configs)
+
+  if #vim.api.nvim_list_uis() == 0 then -- if nvim is running in headless mode
+    for _, line in pairs(configs) do
+      vim.print(line)
+    end
+    M.quit_all()
+  end
 end
 
 M.checkhealth = function()
