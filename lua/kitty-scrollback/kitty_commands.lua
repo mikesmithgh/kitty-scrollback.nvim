@@ -144,7 +144,7 @@ local function get_scrollback_cmd(kitty_data, get_text_opts)
 
   if kitty_data.tmux then
     scrollback_cmd =
-      string.format([[tmux capture-pane -t%s -e -p -S - -E -]], kitty_data.tmux.pane_id)
+      string.format([[tmux capture-pane -t%s -J -e -p -S - -E -]], kitty_data.tmux.pane_id)
     full_cmd = scrollback_cmd .. ' | ' .. sed_cmd .. ' && ' .. start_set_title_cmd
   end
 
