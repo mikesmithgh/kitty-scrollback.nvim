@@ -119,10 +119,12 @@ local system_handle_error = function(cmd, sys_opts, ignore_error)
   return ok, result
 end
 
-M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
-  local kitty_get_text_cmd = string.format(
+---@param kitty_data KsbKittyData
+---@param get_text_opts any
+local function get_scrollback_cmd(kitty_data, get_text_opts)
+  local scrollback_cmd = string.format(
     [[%s @ get-text --match="id:%s" %s]],
-    p.kitty_data.kitty_path,
+    kitty_data.kitty_path,
     kitty_data.window_id,
     get_text_opts
   )
@@ -132,17 +134,31 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
   local start_set_title_cmd = 'printf "\x1b]2;"'
-  local full_cmd = kitty_get_text_cmd
+  local full_cmd = scrollback_cmd
     .. ' | '
     .. sed_cmd
     .. ' && '
     .. flush_stdout_cmd
     .. ' && '
     .. start_set_title_cmd
+
+  if kitty_data.tmux then
+    scrollback_cmd =
+      string.format([[tmux capture-pane -t%s -e -p -S - -E -]], kitty_data.tmux.pane_id)
+    full_cmd = scrollback_cmd .. ' | ' .. sed_cmd .. ' && ' .. start_set_title_cmd
+  end
+
+  return scrollback_cmd, full_cmd
+end
+
+---@param kitty_data KsbKittyData
+---@param get_text_opts any
+---@param on_exit_cb any
+M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
+  local scrollback_cmd, full_cmd = get_scrollback_cmd(kitty_data, get_text_opts)
   local stdout
   local stderr
   local tail_max = 10
-
   -- set the shell used for termopen to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
   vim.o.shell = 'sh'
 
@@ -173,7 +189,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
           end
 
           if error_index > 0 then
-            display_error(kitty_get_text_cmd, {
+            display_error(scrollback_cmd, {
               entrypoint = 'termopen() :: exit_code = 0 and error_index > 0',
               full_cmd = full_cmd,
               code = 1, -- exit code is not returned through pipe but we can assume 1 due to error message

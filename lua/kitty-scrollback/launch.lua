@@ -34,6 +34,12 @@ local M = {}
 ---@field allow_remote_control string 'password' | 'socket-only' | 'socket' | 'no' | 'n' | 'false' | 'yes' | 'y' | 'true'
 ---@field listen_on string
 
+---@class KsbTmuxData
+---@field socket_path string server socket path
+---@field pid string server PID
+---@field session_id string unique session ID
+---@field pane_id string unique pane ID
+
 ---@class KsbKittyData
 ---@field scrolled_by integer the number of lines currently scrolled in kitty
 ---@field cursor_x integer position of the cusor in the column in kitty
@@ -48,6 +54,7 @@ local M = {}
 ---@field kitty_config_dir string kitty configuration directory path
 ---@field kitty_version table kitty version
 ---@field kitty_path string kitty executable path
+---@field tmux KsbTmuxData|nil tmux data
 
 ---@class KsbPrivate
 ---@field orig_columns number
@@ -216,6 +223,30 @@ local function config_to_opts(config)
   return type(config) == 'table' and config or {}
 end
 
+local function load_kitty_data(kitty_data_str)
+  p.kitty_data = vim.fn.json_decode(kitty_data_str)
+  if vim.env.TMUX then
+    ---@diagnostic disable-next-line: missing-fields
+    p.kitty_data.tmux = {
+      pane_id = vim.env.TMUX_PANE,
+    }
+    local tmux_keys = {
+      'socket_path',
+      'pid',
+      'session_id',
+    }
+    local idx = 1
+    for v in string.gmatch(vim.env.TMUX, '([^,]+)') do
+      if tmux_keys[idx] == 'session_id' then
+        v = '$' .. v
+      end
+      p.kitty_data.tmux[tmux_keys[idx]] = v
+      idx = idx + 1
+    end
+  end
+  return p.kitty_data
+end
+
 ---Setup and configure kitty-scrollback.nvim
 ---@param kitty_data_str string
 M.setup = function(kitty_data_str)
@@ -224,7 +255,7 @@ M.setup = function(kitty_data_str)
     pcall(vim.fn.getchar, 0)
   end, { ['repeat'] = 80 }) -- 2 seconds
 
-  p.kitty_data = vim.fn.json_decode(kitty_data_str)
+  p.kitty_data = load_kitty_data(kitty_data_str)
   load_requires() -- must be after p.kitty_data initialized
 
   -- if a config at the first index found, that will be applied to all configurations regardless of prefix
