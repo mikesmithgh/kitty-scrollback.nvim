@@ -36,7 +36,7 @@ jobs:
           - 'stable'  # v0.9.5
           - 'nightly' 
         kitty_version: 
-          - 'stable'  # 0.32.1
+          - 'stable'  # 0.32.2
           - 'nightly'
         include:
           # nvim versions + kitty stable
@@ -63,6 +63,8 @@ jobs:
             kitty_version: '0.31.0'
           - nvim_version: 'stable'
             kitty_version: '0.32.0'
+          - nvim_version: 'stable'
+            kitty_version: '0.32.1'
       fail-fast: false
     runs-on: ubuntu-22.04
     steps:
