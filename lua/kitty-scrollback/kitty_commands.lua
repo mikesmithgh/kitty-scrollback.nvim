@@ -142,7 +142,7 @@ local function get_scrollback_cmd(kitty_data, get_text_opts)
     .. ' && '
     .. start_set_title_cmd
 
-  if kitty_data.tmux then
+  if kitty_data.tmux and next(kitty_data.tmux) then
     scrollback_cmd =
       string.format([[tmux capture-pane -t%s -J -e -p -S - -E -]], kitty_data.tmux.pane_id)
     full_cmd = scrollback_cmd .. ' | ' .. sed_cmd .. ' && ' .. start_set_title_cmd
@@ -159,6 +159,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   local stdout
   local stderr
   local tail_max = 10
+
   -- set the shell used for termopen to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
   vim.o.shell = 'sh'
 
