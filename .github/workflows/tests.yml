@@ -38,6 +38,7 @@ jobs:
         kitty_version: 
           - 'stable'  # 0.32.2
           - 'nightly'
+        # update __branch-protection-rules.json and run __update_branch_protection_rules.sh when modified
         include:
           # nvim versions + kitty stable
           - nvim_version: 'v0.9.0'
