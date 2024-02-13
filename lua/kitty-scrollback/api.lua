@@ -117,20 +117,39 @@ M.generate_kittens = function(generate_modes)
       'kitty @ kitten ' .. kitty_scrollback_kitten
     )
   end, builtin_map_configs)
+  table.insert(builtin_command_configs, '')
+
+  local builtin_tmux_configs = {
+    '# Browse tmux pane in nvim',
+    [[bind [ run-shell 'kitty @ kitten ]]
+      .. kitty_scrollback_kitten
+      .. [[ --env "TMUX=$TMUX" --env "TMUX_PANE=#{pane_id}"']],
+    '',
+  }
 
   local configs = {}
 
+  local filetype
   if target_gen_modes['maps'] then
     vim.list_extend(configs, alias_config)
     vim.list_extend(configs, builtin_map_configs)
     table.insert(configs, '')
+    filetype = 'kitty'
   end
   if target_gen_modes['commands'] then
     vim.list_extend(configs, builtin_command_configs)
+    filetype = 'sh'
+  end
+  if target_gen_modes['tmux'] then
+    vim.list_extend(configs, builtin_tmux_configs)
+    filetype = 'tmux'
+  end
+  if #vim.tbl_values(target_gen_modes) > 1 then
+    filetype = nil
   end
 
   local bufid = vim.api.nvim_create_buf(true, true)
-  vim.api.nvim_set_option_value('filetype', 'kitty', {
+  vim.api.nvim_set_option_value('filetype', filetype or '', {
     buf = bufid,
   })
   vim.api.nvim_set_current_buf(bufid)

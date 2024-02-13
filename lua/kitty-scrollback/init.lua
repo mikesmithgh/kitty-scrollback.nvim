@@ -20,7 +20,7 @@ M.setup = function(configs)
   end, {
     nargs = '*',
     complete = function()
-      return { 'maps', 'commands' }
+      return { 'maps', 'commands', 'tmux' }
     end,
   })
 
