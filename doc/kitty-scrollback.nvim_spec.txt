@@ -64,6 +64,14 @@ M.setup({kitty_data_str})                        *kitty-scrollback.launch.setup*
         {kitty_data_str}  (string)
 
 
+                              *kitty-scrollback.launch.KsbKittyGetTextArguments*
+KsbKittyGetTextArguments
+
+    Fields: ~
+        {kitty}  (string)  kitty args for get-text
+        {tmux}   (string)  tmux args for capture-pane
+
+
 M.launch()                                      *kitty-scrollback.launch.launch*
     Launch kitty-scrollack.nvim with configured scrollback buffer
 
