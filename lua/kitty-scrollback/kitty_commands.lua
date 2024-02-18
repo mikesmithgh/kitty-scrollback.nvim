@@ -120,13 +120,12 @@ local system_handle_error = function(cmd, sys_opts, ignore_error)
 end
 
 ---@param kitty_data KsbKittyData
----@param get_text_opts any
-local function get_scrollback_cmd(kitty_data, get_text_opts)
-  local scrollback_cmd = string.format(
-    [[%s @ get-text --match="id:%s" %s]],
+---@param get_text_args KsbKittyGetTextArguments
+local function get_scrollback_cmd(kitty_data, get_text_args)
+  local scrollback_cmd = ([[%s @ get-text --match="id:%s" %s]]):format(
     kitty_data.kitty_path,
     kitty_data.window_id,
-    get_text_opts
+    get_text_args.kitty
   )
   local sed_cmd = [[sed -E ]]
     .. [[-e 's/\r//g' ]] -- added to remove /r added by --add-wrap-markers, (--add-wrap-markers is used to add empty lines at end of screen)
@@ -143,8 +142,10 @@ local function get_scrollback_cmd(kitty_data, get_text_opts)
     .. start_set_title_cmd
 
   if kitty_data.tmux and next(kitty_data.tmux) then
-    scrollback_cmd =
-      string.format([[tmux capture-pane -t%s -J -e -p -S - -E -]], kitty_data.tmux.pane_id)
+    scrollback_cmd = ([[tmux capture-pane -p -t%s %s]]):format(
+      kitty_data.tmux.pane_id,
+      get_text_args.tmux
+    )
     full_cmd = scrollback_cmd .. ' | ' .. sed_cmd .. ' && ' .. start_set_title_cmd
   end
 
@@ -152,8 +153,8 @@ local function get_scrollback_cmd(kitty_data, get_text_opts)
 end
 
 ---@param kitty_data KsbKittyData
----@param get_text_opts any
----@param on_exit_cb any
+---@param get_text_opts KsbKittyGetTextArguments
+---@param on_exit_cb function
 M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
   local scrollback_cmd, full_cmd = get_scrollback_cmd(kitty_data, get_text_opts)
   local stdout
