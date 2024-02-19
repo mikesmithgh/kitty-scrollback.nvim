@@ -87,6 +87,12 @@ FEATURES                                      *kitty-scrollback.nvim-features*
 - `kitty-scrollback.nvim` automatically closes and executes the content of the paste window
 
 
+`-` `😾 [🧪 Experimental] tmux support`
+
+- Open tmux’s pane history (default mapping `<C-b>[`)
+- That’s it! You are in Neovim, navigate the scrollback buffer.
+
+
 MIGRATING TO V4.0.0                *kitty-scrollback.nvim-migrating-to-v4.0.0*
 
 
@@ -238,6 +244,26 @@ This section outlines the required configuration for kitty-scrollback.nvim.
         map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
         # Show clicked command output in nvim
         mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
+<
+
+
+[ EXPERIMENTAL] TMUX SETUP ~
+
+Setup instructions to integrate kitty-scrollback.nvim with tmux
+<https://github.com/tmux/tmux>. The steps are optional and only necessary if
+you wish to add tmux support to kitty-scrollback.nvim.
+
+- Generate the tmux kitty-scrollback.nvim mappings and add them to
+    `$HOME/.tmux.conf` or `$XDG_CONFIG_HOME/tmux/tmux.conf`
+
+>sh
+        nvim --headless +'KittyScrollbackGenerateKittens tmux'
+<
+- See example .tmux.conf for reference.
+
+>tmux
+    # Browse tmux pane in nvim
+    bind [ run-shell 'kitty @ kitten /path/to/your/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --env "TMUX=$TMUX" --env "TMUX_PANE=#{pane_id}"'
 <
 
 
