@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.0.3...v4.1.0) (2024-02-19)
+
+
+### Features
+
+* add experimental tmux support ([#191](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/191)) ([8b1f70b](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/8b1f70b951ef439eb8d3810505258814c55d6f57))
+
 ## [4.0.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.0.2...v4.0.3) (2024-02-10)
 
 
