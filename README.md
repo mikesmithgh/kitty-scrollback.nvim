@@ -31,7 +31,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - 🏃 [Quickstart](#-quickstart)
 - 📦 [Installation](#-installation)
 - 🛠️ [Setup](#%EF%B8%8F-setup)
-  - [[🧪 Experimental] tmux setup](#-experimental-tmux-setup)
+  - [tmux setup (🧪 experimental )](#tmux-setup--experimental-)
   - [Kitten Arguments](#kitten-arguments)
   - [Plugin Configuration](#plugin-configuration)
     - [Overriding Builtin Configurations](#overriding-builtin-configurations)
@@ -167,7 +167,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 </details>
 
 <details> 
-<summary>😾 [🧪 Experimental] tmux support</summary>
+<summary>😾 tmux support (🧪 experimental )</summary>
   
 <!-- TODO: add demo -->
 - Open tmux's pane history (default mapping `<C-b>[`)
@@ -330,7 +330,12 @@ alter all default shortcuts that use [kitty_mod](https://sw.kovidgoyal.net/kitty
   mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
   ```
 
-### [🧪 Experimental] tmux setup
+### tmux setup (🧪 experimental )
+
+
+> [!WARNING]\
+> 🧪 tmux support is currently experimental
+> If you have questions or encounter any issues using tmux, please comment on [#115](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/115)
 
 Setup instructions to integrate kitty-scrollback.nvim with [tmux](https://github.com/tmux/tmux). The steps are optional and only
 necessary if you wish to add tmux support to kitty-scrollback.nvim.
