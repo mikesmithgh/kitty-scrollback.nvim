@@ -48,6 +48,8 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - 📄 [Filetypes](#-filetypes)
 - 🫡 [Commands](#-commands)
 - ⌨️ [Keymaps](#%EF%B8%8F-keymaps)
+- 🪛 [Optional Setup](#-optional-setup)
+  - [tmux (🧪 experimental )](#tmux--experimental-)
 - 👏 [Recommendations](#-recommendations)
 - 🤝 [Acknowledgements](#-acknowledgements)
 - 🐶 [Alternatives](#-alternatives)
@@ -163,6 +165,15 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - Modify the content in the paste window
 - Execute the content of the paste window in Kitty (default mapping `<C-CR>`)
 - `kitty-scrollback.nvim` automatically closes and executes the content of the paste window
+
+</details>
+
+<details> 
+<summary>😾 tmux support (🧪 experimental )</summary>
+  
+<!-- TODO: add demo -->
+- Open a tmux pane's scrollback history (default mapping `<C-b>[`)
+- That's it! You are in Neovim, navigate the scrollback buffer.
 
 </details>
 
@@ -769,6 +780,45 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 | `<Plug>(KsbNormalYankEnd)`    | `<Leader>Y`     | n     |                            | Maps to `"+y$`                                                                          |
 | `<Plug>(KsbNormalYank)`       | `<Leader>y`     | n     |                            | Maps to `"+y`                                                                           |
 | `<Plug>(KsbNormalYankLine)`   | `<Leader>yy`    | n     |                            | Maps to `"+yy`                                                                          |
+
+
+## 🪛 Optional Setup
+
+### tmux (🧪 experimental )
+
+> [!WARNING]\
+> 🧪 tmux support is currently experimental
+> If you have questions or encounter any issues using tmux, please comment on [#115](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/115)
+
+Setup instructions to integrate kitty-scrollback.nvim with [tmux](https://github.com/tmux/tmux). These steps are optional and only
+necessary if you wish to add tmux support to kitty-scrollback.nvim.
+
+- Generate the tmux kitty-scrollback.nvim mappings and add them to `$HOME/.tmux.conf` or `$XDG_CONFIG_HOME/tmux/tmux.conf`
+
+```sh
+nvim --headless +'KittyScrollbackGenerateKittens tmux'
+```
+
+- You may need to source your tmux configuration for these changes to be reflected in a current tmux session.
+
+```sh
+tmux source $HOME/.tmux.conf 
+# or 
+tmux source $XDG_CONFIG_HOME/tmux/tmux.conf
+```
+
+- By default, kitty-scrollback.nvim overrides the default key binding `[` for opening `copy-mode`. If you use the default prefix key `<C-b>` and the
+default key binding `[`, then test opening a tmux's pane scrollback history with kitty-scrollback.nvim by pressing `<C-b>[`. 
+  - You can still access Kitty's scrollback history (default mapping `<C-S-h>`) in a tmux session. However, this is scoped to Kitty and it will only
+  show the current screen. When you open the tmux pane's scrollback history (default mapping `<C-b>[`), this is scoped to tmux and will display all
+  of the scrollback history for that tmux session.
+
+- See example .tmux.conf for reference.
+
+```tmux
+# Browse tmux pane in nvim
+bind [ run-shell 'kitty @ kitten /path/to/your/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --env "TMUX=$TMUX" --env "TMUX_PANE=#{pane_id}"'
+```
 
 ## 👏 Recommendations
 

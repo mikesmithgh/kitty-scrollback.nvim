@@ -13,22 +13,32 @@ KsbKittyOpts                              *kitty-scrollback.launch.KsbKittyOpts*
         {listen_on}                        (string)
 
 
+KsbTmuxData                                *kitty-scrollback.launch.KsbTmuxData*
+
+    Fields: ~
+        {socket_path}  (string)  server socket path
+        {pid}          (string)  server PID
+        {session_id}   (string)  unique session ID
+        {pane_id}      (string)  unique pane ID
+
+
 KsbKittyData                              *kitty-scrollback.launch.KsbKittyData*
 
     Fields: ~
-        {scrolled_by}              (integer)       the number of lines currently scrolled in kitty
-        {cursor_x}                 (integer)       position of the cusor in the column in kitty
-        {cursor_y}                 (integer)       position of the cursor in the row in kitty
-        {lines}                    (integer)       the number of rows of the screen in kitty
-        {columns}                  (integer)       the number of columns of the screen in kitty
-        {window_id}                (integer)       the id of the window to get scrollback text
-        {window_title}             (string)        the title of the window to get scrollback text
-        {ksb_dir}                  (string)        the base runtime path of kitty-scrollback.nvim
-        {kitty_scrollback_config}  (string)        the config name of user config options
-        {kitty_opts}               (KsbKittyOpts)  relevant kitty configuration values
-        {kitty_config_dir}         (string)        kitty configuration directory path
-        {kitty_version}            (table)         kitty version
-        {kitty_path}               (string)        kitty executable path
+        {scrolled_by}              (integer)          the number of lines currently scrolled in kitty
+        {cursor_x}                 (integer)          position of the cusor in the column in kitty
+        {cursor_y}                 (integer)          position of the cursor in the row in kitty
+        {lines}                    (integer)          the number of rows of the screen in kitty
+        {columns}                  (integer)          the number of columns of the screen in kitty
+        {window_id}                (integer)          the id of the window to get scrollback text
+        {window_title}             (string)           the title of the window to get scrollback text
+        {ksb_dir}                  (string)           the base runtime path of kitty-scrollback.nvim
+        {kitty_scrollback_config}  (string)           the config name of user config options
+        {kitty_opts}               (KsbKittyOpts)     relevant kitty configuration values
+        {kitty_config_dir}         (string)           kitty configuration directory path
+        {kitty_version}            (table)            kitty version
+        {kitty_path}               (string)           kitty executable path
+        {tmux}                     (KsbTmuxData|nil)  tmux data
 
 
 KsbPrivate                                  *kitty-scrollback.launch.KsbPrivate*
@@ -52,6 +62,14 @@ M.setup({kitty_data_str})                        *kitty-scrollback.launch.setup*
 
     Parameters: ~
         {kitty_data_str}  (string)
+
+
+                              *kitty-scrollback.launch.KsbKittyGetTextArguments*
+KsbKittyGetTextArguments
+
+    Fields: ~
+        {kitty}  (string)  kitty args for get-text
+        {tmux}   (string)  tmux args for capture-pane
 
 
 M.launch()                                      *kitty-scrollback.launch.launch*

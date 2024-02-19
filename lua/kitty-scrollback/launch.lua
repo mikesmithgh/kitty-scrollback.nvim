@@ -34,6 +34,12 @@ local M = {}
 ---@field allow_remote_control string 'password' | 'socket-only' | 'socket' | 'no' | 'n' | 'false' | 'yes' | 'y' | 'true'
 ---@field listen_on string
 
+---@class KsbTmuxData
+---@field socket_path string server socket path
+---@field pid string server PID
+---@field session_id string unique session ID
+---@field pane_id string unique pane ID
+
 ---@class KsbKittyData
 ---@field scrolled_by integer the number of lines currently scrolled in kitty
 ---@field cursor_x integer position of the cusor in the column in kitty
@@ -48,6 +54,7 @@ local M = {}
 ---@field kitty_config_dir string kitty configuration directory path
 ---@field kitty_version table kitty version
 ---@field kitty_path string kitty executable path
+---@field tmux KsbTmuxData|nil tmux data
 
 ---@class KsbPrivate
 ---@field orig_columns number
@@ -308,6 +315,45 @@ M.setup = function(kitty_data_str)
   return true
 end
 
+---@class KsbKittyGetTextArguments
+---@field kitty string kitty args for get-text
+---@field tmux string tmux args for capture-pane
+
+---@return KsbKittyGetTextArguments
+local function get_text_opts()
+  local ansi = '--ansi'
+  local tmux_ansi = '-e'
+  if not opts.kitty_get_text.ansi then
+    ansi = ''
+    tmux_ansi = ''
+  end
+
+  local clear_selection = '--clear-selection'
+  if not opts.kitty_get_text.clear_selection then
+    clear_selection = ''
+  end
+
+  local extent = '--extent=all'
+  local tmux_extent = '-S - -E -'
+  local extent_opt = opts.kitty_get_text.extent
+  if extent_opt then
+    extent = '--extent=' .. extent_opt
+    if extent_opt == 'screen' then
+      tmux_extent = '-S 0 -E -'
+    end
+  end
+
+  -- always add wrap markers, wrap markers are important to add blank lines with /r to
+  -- fill the screen when setting the cursor position
+  local add_wrap_markers = '--add-wrap-markers'
+  local tmux_add_wrap_markers = '-J'
+
+  return {
+    kitty = ansi .. ' ' .. clear_selection .. ' ' .. add_wrap_markers .. ' ' .. extent,
+    tmux = tmux_ansi .. ' ' .. tmux_add_wrap_markers .. ' ' .. tmux_extent,
+  }
+end
+
 ---Launch kitty-scrollack.nvim with configured scrollback buffer
 M.launch = function()
   local kitty_data = p.kitty_data
@@ -324,28 +370,6 @@ M.launch = function()
 
     ksb_autocmds.load_autocmds()
 
-    local ansi = '--ansi'
-    if not opts.kitty_get_text.ansi then
-      ansi = ''
-    end
-
-    local clear_selection = '--clear-selection'
-    if not opts.kitty_get_text.clear_selection then
-      clear_selection = ''
-    end
-
-    local extent = '--extent=all'
-    local extent_opt = opts.kitty_get_text.extent
-    if extent_opt then
-      extent = '--extent=' .. extent_opt
-    end
-
-    -- always add wrap markers, wrap markers are important to add blank lines with /r to
-    -- fill the screen when setting the cursor position
-    local add_wrap_markers = '--add-wrap-markers'
-
-    local get_text_opts = ansi .. ' ' .. clear_selection .. ' ' .. add_wrap_markers .. ' ' .. extent
-
     -- increase the number of columns temporary so that the width is used during the
     -- terminal command kitty @ get-text. this avoids hard wrapping lines to the
     -- current window size. Note: a larger min_cols appears to impact performance
@@ -355,7 +379,7 @@ M.launch = function()
       vim.o.columns = min_cols
     end
     vim.schedule(function()
-      ksb_kitty_cmds.get_text_term(kitty_data, get_text_opts, function()
+      ksb_kitty_cmds.get_text_term(kitty_data, get_text_opts(), function()
         -- NOTE(#58): nvim v0.9 support
         -- vim.o.columns is resized automatically in nvim v0.9.1 when we trigger kitty so send a SIGWINCH signal
         -- vim.o.columns is explicitly set to resize appropriatley on v0.9.0
