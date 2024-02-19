@@ -87,7 +87,7 @@ FEATURES                                      *kitty-scrollback.nvim-features*
 - `kitty-scrollback.nvim` automatically closes and executes the content of the paste window
 
 
-`-` `😾 [🧪 Experimental] tmux support`
+`-` `😾 tmux support (🧪 experimental )`
 
 - Open tmux’s pane history (default mapping `<C-b>[`)
 - That’s it! You are in Neovim, navigate the scrollback buffer.
@@ -247,8 +247,13 @@ This section outlines the required configuration for kitty-scrollback.nvim.
 <
 
 
-[ EXPERIMENTAL] TMUX SETUP ~
+TMUX SETUP ( EXPERIMENTAL ) ~
 
+
+  *⚠* *WARNING* 
+  tmux support is currently experimental If you have questions or encounter any
+  issues using tmux, please comment on #115
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/115>
 Setup instructions to integrate kitty-scrollback.nvim with tmux
 <https://github.com/tmux/tmux>. The steps are optional and only necessary if
 you wish to add tmux support to kitty-scrollback.nvim.
