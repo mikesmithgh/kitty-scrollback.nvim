@@ -31,7 +31,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - 🏃 [Quickstart](#-quickstart)
 - 📦 [Installation](#-installation)
 - 🛠️ [Setup](#%EF%B8%8F-setup)
-- ⚙️ [Configuration](#%EF%B8%8F-configuration)
+  - [[🧪 Experimental] tmux setup](#-experimental-tmux-setup)
   - [Kitten Arguments](#kitten-arguments)
   - [Plugin Configuration](#plugin-configuration)
     - [Overriding Builtin Configurations](#overriding-builtin-configurations)
@@ -163,6 +163,15 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - Modify the content in the paste window
 - Execute the content of the paste window in Kitty (default mapping `<C-CR>`)
 - `kitty-scrollback.nvim` automatically closes and executes the content of the paste window
+
+</details>
+
+<details> 
+<summary>😾 [🧪 Experimental] tmux support</summary>
+  
+<!-- TODO: add demo -->
+- Open tmux's pane history (default mapping `<C-b>[`)
+- That's it! You are in Neovim, navigate the scrollback buffer.
 
 </details>
 
@@ -320,6 +329,22 @@ alter all default shortcuts that use [kitty_mod](https://sw.kovidgoyal.net/kitty
   # Show clicked command output in nvim
   mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
   ```
+
+### [🧪 Experimental] tmux setup
+
+Setup instructions to integrate kitty-scrollback.nvim with [tmux](https://github.com/tmux/tmux). The steps are optional and only
+necessary if you wish to add tmux support to kitty-scrollback.nvim.
+
+- Generate the tmux kitty-scrollback.nvim mappings and add them to `$HOME/.tmux.conf` or `$XDG_CONFIG_HOME/tmux/tmux.conf`
+  ```sh
+  nvim --headless +'KittyScrollbackGenerateKittens tmux'
+  ```
+
+- See example .tmux.conf for reference.
+```tmux
+# Browse tmux pane in nvim
+bind [ run-shell 'kitty @ kitten /path/to/your/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --env "TMUX=$TMUX" --env "TMUX_PANE=#{pane_id}"'
+```
 
 ## ⚙️ Configuration
 
