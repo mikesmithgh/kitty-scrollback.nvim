@@ -48,7 +48,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - 📄 [Filetypes](#-filetypes)
 - 🫡 [Commands](#-commands)
 - ⌨️ [Keymaps](#%EF%B8%8F-keymaps)
-- [🪛 Optional Setup](#-optional-setup)
+- 🪛 [Optional Setup](#-optional-setup)
   - [tmux (🧪 experimental )](#tmux--experimental-)
 - 👏 [Recommendations](#-recommendations)
 - 🤝 [Acknowledgements](#-acknowledgements)
