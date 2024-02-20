@@ -1,7 +1,17 @@
+---@class KsbBufWinData
+---@field bufid integer|nil
+---@field winid integer|nil
+
+---@class KsbPasteWindowData
+---@field scrollback_buffer KsbBufWinData data for the scrollback buffer
+---@field paste_window KsbBufWinData data for the paste window
+---@field paste_window_footer KsbBufWinData data for the paste window footer
+
 ---@class KsbCallbacks
 ---@field after_setup fun(kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after initializing kitty-scrollback.nvim
 ---@field after_launch fun(kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after launch started to process the scrollback buffer
 ---@field after_ready fun(kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after scrollback buffer is loaded and cursor is positioned
+---@field after_paste_window_ready fun(paste_window_data:KsbPasteWindowData, kitty_data:KsbKittyData, opts:KsbOpts)|nil callback executed after the paste window is opened or resized
 
 ---@class KsbKittyGetText
 ---@field ansi boolean|nil If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.

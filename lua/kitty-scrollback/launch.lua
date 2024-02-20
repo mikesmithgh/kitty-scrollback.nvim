@@ -59,15 +59,15 @@ local M = {}
 ---@class KsbPrivate
 ---@field orig_columns number
 ---@field orig_normal_hl table|nil
----@field bufid number|nil
+---@field bufid integer|nil the buffer ID of the scrollback buffer
 ---@field winid integer|nil the initial window ID of the scrollback buffer, this ID is not always guaranteed to be correct if the user has modified the window layout
----@field paste_bufid number|nil
----@field kitty_loading_winid number|nil
+---@field kitty_loading_winid number|nil the ID of the kitty overlay loading window, this is kitty window not a nvim window
 ---@field kitty_colors table
 ---@field kitty_data KsbKittyData
----@field paste_winid number|nil
----@field footer_winid number|nil
----@field footer_bufid number|nil
+---@field paste_winid integer|nil the window ID of the paste window
+---@field paste_bufid integer|nil the buffer ID of the paste window
+---@field footer_winid integer|nil the window ID of the paste window footer
+---@field footer_bufid integer|nil the buffer ID of the paste window footer
 ---@field pos table|nil
 local p = {}
 
