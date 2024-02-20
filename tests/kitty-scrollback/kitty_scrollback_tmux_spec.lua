@@ -172,7 +172,7 @@ $ # 30
     )
   end)
 
-  it('should have tmux enviornment variables set', function()
+  it('should have tmux environment variables set', function()
     h.assert_screen_match(
       h.feed_kitty({
         h.open_tmux_kitty_scrollback_nvim(),
