@@ -12,6 +12,8 @@ local ksb_api
 local ksb_keymaps
 ---@module 'kitty-scrollback.kitty_commands'
 local ksb_kitty_cmds
+---@module 'kitty-scrollback.tmux_commands'
+local ksb_tmux_cmds
 ---@module 'kitty-scrollback.util'
 local ksb_util
 ---@module 'kitty-scrollback.autocommands'
@@ -156,6 +158,12 @@ local set_cursor_position = vim.schedule_wrap(function(d)
   local y = d.cursor_y - 1 - tab_offset
   local scrolled_by = d.scrolled_by
   local lines = d.lines - tab_offset
+  if p.kitty_data.tmux and next(p.kitty_data.tmux) then
+    local ok, status_option = ksb_tmux_cmds.show_status_option()
+    if ok then
+      lines = lines - status_option
+    end
+  end
   if y < 0 then
     -- adjust when on first line of terminal
     lines = lines + math.abs(y)
@@ -210,6 +218,7 @@ local function load_requires()
   ksb_api = require('kitty-scrollback.api')
   ksb_keymaps = require('kitty-scrollback.keymaps')
   ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
+  ksb_tmux_cmds = require('kitty-scrollback.tmux_commands')
   ksb_util = require('kitty-scrollback.util')
   ksb_autocmds = require('kitty-scrollback.autocommands')
   ksb_health = require('kitty-scrollback.health')
@@ -290,6 +299,7 @@ M.setup = function(kitty_data_str)
 
   ksb_util.setup(p, opts)
   ksb_kitty_cmds.setup(p, opts)
+  ksb_tmux_cmds.setup(p, opts)
   ksb_win.setup(p, opts)
   ksb_footer_win.setup(p, opts)
   ksb_autocmds.setup(p, opts)
@@ -357,7 +367,6 @@ end
 
 ---Launch kitty-scrollack.nvim with configured scrollback buffer
 M.launch = function()
-  local kitty_data = p.kitty_data
   vim.schedule(function()
     local buf_lines = vim.api.nvim_buf_get_lines(0, 0, 1, false)
     local no_buf_content = vim.api.nvim_buf_line_count(0) == 1 and buf_lines[1] == ''
@@ -381,7 +390,7 @@ M.launch = function()
       vim.o.columns = min_cols
     end
     vim.schedule(function()
-      ksb_kitty_cmds.get_text_term(kitty_data, get_text_opts(), function()
+      ksb_kitty_cmds.get_text_term(get_text_opts(), function()
         -- NOTE(#58): nvim v0.9 support
         -- vim.o.columns is resized automatically in nvim v0.9.1 when we trigger kitty so send a SIGWINCH signal
         -- vim.o.columns is explicitly set to resize appropriatley on v0.9.0
@@ -390,7 +399,7 @@ M.launch = function()
 
         ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
         if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
-          set_cursor_position(kitty_data)
+          set_cursor_position(p.kitty_data)
         end
         ksb_win.show_status_window()
 
@@ -422,7 +431,7 @@ M.launch = function()
         then
           ksb_util.restore_and_redraw()
           vim.schedule(function()
-            opts.callbacks.after_ready(kitty_data, opts)
+            opts.callbacks.after_ready(p.kitty_data, opts)
           end)
         end
         ksb_api.close_kitty_loading_window()
@@ -437,7 +446,7 @@ M.launch = function()
       and type(opts.callbacks.after_launch) == 'function'
     then
       vim.schedule(function()
-        opts.callbacks.after_launch(kitty_data, opts)
+        opts.callbacks.after_launch(p.kitty_data, opts)
       end)
     end
   end)

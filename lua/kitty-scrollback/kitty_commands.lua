@@ -1,5 +1,5 @@
 ---@mod kitty-scrollback.kitty_commands
-local ksb_health = require('kitty-scrollback.health')
+local ksb_tmux = require('kitty-scrollback.tmux_commands')
 local ksb_util = require('kitty-scrollback.util')
 local M = {}
 
@@ -23,108 +23,11 @@ local error_header = {
   '',
 }
 
-local display_error = function(cmd, r)
-  local msg = vim.list_extend({}, error_header)
-  local stdout = r.stdout or ''
-  local stderr = r.stderr or ''
-  local err = {}
-  if r.entrypoint then
-    table.insert(err, '*entrypoint:* |' .. r.entrypoint:gsub('(%s+)', '|%1|') .. '| ')
-  end
-  table.insert(err, '*command:* ' .. cmd)
-  if r.pid then
-    table.insert(err, '*pid:* ' .. r.pid)
-  end
-  if r.channel_id then
-    table.insert(err, '*channel_id:* ' .. r.channel_id)
-  end
-  if r.code then
-    table.insert(err, '*code:* ' .. r.code)
-  end
-  if r.signal then
-    table.insert(err, '*signal:* ' .. r.signal)
-  end
-
-  if r.full_cmd then
-    table.insert(err, '*full_command:* ')
-    table.insert(err, '>sh')
-    table.insert(err, '    ' .. r.full_cmd)
-    table.insert(err, '<')
-  end
-
-  table.insert(err, '*stdout:*')
-
-  local out = {}
-  for line in stdout:gmatch('[^\r\n]+') do
-    table.insert(out, '  ' .. line)
-  end
-  if next(out) then
-    table.insert(err, '')
-    vim.list_extend(err, out)
-  else
-    table.insert(err, '  <none>')
-  end
-  table.insert(err, '')
-  table.insert(err, '*stderr:*')
-  if #stderr > 0 then
-    for line in stderr:gmatch('[^\r\n]+') do
-      table.insert(err, '')
-      table.insert(err, '  ' .. line)
-    end
-  else
-    table.insert(err, '  <none>')
-  end
-  table.insert(err, '')
-  local error_bufid = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_set_current_buf(error_bufid)
-  vim.o.conceallevel = 2
-  vim.o.concealcursor = 'n'
-  vim.o.foldenable = false
-  vim.api.nvim_set_option_value('filetype', 'checkhealth', {
-    buf = error_bufid,
-  })
-  ksb_util.restore_and_redraw()
-  local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
-  if stderr:match('.*allow_remote_control.*') then
-    vim.list_extend(msg, ksb_health.advice().allow_remote_control)
-  end
-  if stderr:match('.*/dev/tty.*') then
-    vim.list_extend(msg, ksb_health.advice().listen_on)
-  end
-  vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, vim.list_extend(msg, err))
-  M.close_kitty_loading_window() -- cannot use ignore parameter or will be infinite recursion
-  ksb_util.restore_and_redraw()
-  local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
-  if response ~= 2 then
-    ksb_util.quitall()
-  end
-end
-
-local system_handle_error = function(cmd, sys_opts, ignore_error)
-  local proc = vim.system(cmd, sys_opts or {})
-  local result = proc:wait()
-  local ok = result.code == 0
-
-  if not ignore_error and not ok then
-    display_error(table.concat(cmd, ' '), {
-      entrypoint = 'vim.system()',
-      pid = proc.pid,
-      code = result.code,
-      signal = result.signal,
-      stdout = result.stdout,
-      stderr = result.stderr,
-    })
-  end
-
-  return ok, result
-end
-
----@param kitty_data KsbKittyData
 ---@param get_text_args KsbKittyGetTextArguments
-local function get_scrollback_cmd(kitty_data, get_text_args)
+local function get_scrollback_cmd(get_text_args)
   local scrollback_cmd = ([[%s @ get-text --match="id:%s" %s]]):format(
-    kitty_data.kitty_path,
-    kitty_data.window_id,
+    p.kitty_data.kitty_path,
+    p.kitty_data.window_id,
     get_text_args.kitty
   )
   local sed_cmd = [[sed -E ]]
@@ -141,22 +44,18 @@ local function get_scrollback_cmd(kitty_data, get_text_args)
     .. ' && '
     .. start_set_title_cmd
 
-  if kitty_data.tmux and next(kitty_data.tmux) then
-    scrollback_cmd = ([[tmux capture-pane -p -t%s %s]]):format(
-      kitty_data.tmux.pane_id,
-      get_text_args.tmux
-    )
+  if p.kitty_data.tmux and next(p.kitty_data.tmux) then
+    scrollback_cmd = ksb_tmux.get_scrollback_cmd(get_text_args)
     full_cmd = scrollback_cmd .. ' | ' .. sed_cmd .. ' && ' .. start_set_title_cmd
   end
 
   return scrollback_cmd, full_cmd
 end
 
----@param kitty_data KsbKittyData
 ---@param get_text_opts KsbKittyGetTextArguments
 ---@param on_exit_cb function
-M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
-  local scrollback_cmd, full_cmd = get_scrollback_cmd(kitty_data, get_text_opts)
+M.get_text_term = function(get_text_opts, on_exit_cb)
+  local scrollback_cmd, full_cmd = get_scrollback_cmd(get_text_opts)
   local stdout
   local stderr
   local tail_max = 10
@@ -191,7 +90,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
           end
 
           if error_index > 0 then
-            display_error(scrollback_cmd, {
+            ksb_util.display_error(scrollback_cmd, {
               entrypoint = 'termopen() :: exit_code = 0 and error_index > 0',
               full_cmd = full_cmd,
               code = 1, -- exit code is not returned through pipe but we can assume 1 due to error message
@@ -206,7 +105,7 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
                 '\n'
               ),
               stderr = stderr and table.concat(stderr, '\n') or nil,
-            })
+            }, error_header)
           end
         end
         on_exit_cb(id, exit_code, event)
@@ -218,21 +117,21 @@ M.get_text_term = function(kitty_data, get_text_opts, on_exit_cb)
               :gsub([[\x1b\\]], '')
               :gsub(';k=s', '')
           or nil
-        display_error(full_cmd, {
+        ksb_util.display_error(full_cmd, {
           entrypoint = 'termopen() :: exit_code ~= 0',
           code = exit_code,
           channel_id = id,
           stdout = out,
           stderr = stderr and table.concat(stderr, '\n') or nil,
-        })
+        }, error_header)
       end
     end,
   })
   if not success then
-    display_error(full_cmd, {
+    ksb_util.display_error(full_cmd, {
       entrypoint = 'termopen() :: pcall(vim.fn.termopen) error returned',
       stderr = error or nil,
-    })
+    }, error_header)
   end
 
   -- restore the original shell after processing termopen
@@ -265,13 +164,13 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     cmd_str = cmd_str .. '\r'
   end
 
-  system_handle_error({
+  ksb_util.system_handle_error({
     p.kitty_data.kitty_path,
     '@',
     'send-text',
     '--match=id:' .. p.kitty_data.window_id,
     cmd_str,
-  })
+  }, error_header)
   ksb_util.quitall()
 end
 
@@ -281,34 +180,34 @@ M.send_paste_buffer_text_to_kitty_and_quit = function(execute_command)
 end
 
 M.list_kitty_windows = function()
-  return system_handle_error({
+  return ksb_util.system_handle_error({
     p.kitty_data.kitty_path,
     '@',
     'ls',
-  })
+  }, error_header)
 end
 
 M.close_kitty_loading_window = function(ignore_error)
   if p and p.kitty_loading_winid then
     local winid = p.kitty_loading_winid
     p.kitty_loading_winid = nil
-    return system_handle_error({
+    return ksb_util.system_handle_error({
       p.kitty_data.kitty_path,
       '@',
       'close-window',
       '--match=id:' .. winid,
-    }, {}, ignore_error)
+    }, error_header, {}, ignore_error)
   end
   return true
 end
 
 M.signal_winchanged_to_kitty_child_process = function()
-  system_handle_error({
+  ksb_util.system_handle_error({
     p.kitty_data.kitty_path,
     '@',
     'signal-child',
     'SIGWINCH',
-  })
+  }, error_header)
 end
 
 M.open_kitty_loading_window = function(env)
@@ -336,7 +235,7 @@ M.open_kitty_loading_window = function(env)
     '--env',
     'KITTY_SCROLLBACK_NVIM_NVIM_ICON=' .. tostring(opts.status_window.icons.nvim),
   }, vim.list_extend(env or {}, { p.kitty_data.ksb_dir .. '/python/loading.py' }))
-  local ok, result = system_handle_error(kitty_cmd)
+  local ok, result = ksb_util.system_handle_error(kitty_cmd, error_header)
   if ok then
     p.kitty_loading_winid = tonumber(result.stdout)
   end
@@ -344,12 +243,12 @@ end
 
 M.get_kitty_colors = function(kitty_data, ignore_error, no_window_id)
   local match = no_window_id and nil or '--match=id:' .. kitty_data.window_id
-  local ok, result = system_handle_error({
+  local ok, result = ksb_util.system_handle_error({
     p.kitty_data.kitty_path,
     '@',
     'get-colors',
     match,
-  }, { text = true }, ignore_error)
+  }, error_header, { text = true }, ignore_error)
   if not ok then
     return ok, result
   end
@@ -363,14 +262,18 @@ M.get_kitty_colors = function(kitty_data, ignore_error, no_window_id)
 end
 
 M.send_text_to_clipboard = function(text)
-  return system_handle_error({
-    p.kitty_data.kitty_path,
-    '+kitten',
-    'clipboard',
-    '/dev/stdin',
-  }, {
-    stdin = text,
-  })
+  return ksb_util.system_handle_error(
+    {
+      p.kitty_data.kitty_path,
+      '+kitten',
+      'clipboard',
+      '/dev/stdin',
+    },
+    error_header,
+    {
+      stdin = text,
+    }
+  )
 end
 
 return M

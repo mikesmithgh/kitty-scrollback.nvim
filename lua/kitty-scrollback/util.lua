@@ -1,4 +1,6 @@
 ---@mod kitty-scrollback.util
+local ksb_health = require('kitty-scrollback.health')
+
 local M = {}
 
 ---@type KsbPrivate
@@ -98,5 +100,101 @@ M.plug_mapping_names = {
   EXECUTE_CMD = '<Plug>(KsbExecuteCmd)',
   PASTE_CMD = '<Plug>(KsbPasteCmd)',
 }
+
+M.display_error = function(cmd, r, header)
+  local msg = vim.list_extend({}, header or {})
+  local stdout = r.stdout or ''
+  local stderr = r.stderr or ''
+  local err = {}
+  if r.entrypoint then
+    table.insert(err, '*entrypoint:* |' .. r.entrypoint:gsub('(%s+)', '|%1|') .. '| ')
+  end
+  table.insert(err, '*command:* ' .. cmd)
+  if r.pid then
+    table.insert(err, '*pid:* ' .. r.pid)
+  end
+  if r.channel_id then
+    table.insert(err, '*channel_id:* ' .. r.channel_id)
+  end
+  if r.code then
+    table.insert(err, '*code:* ' .. r.code)
+  end
+  if r.signal then
+    table.insert(err, '*signal:* ' .. r.signal)
+  end
+
+  if r.full_cmd then
+    table.insert(err, '*full_command:* ')
+    table.insert(err, '>sh')
+    table.insert(err, '    ' .. r.full_cmd)
+    table.insert(err, '<')
+  end
+
+  table.insert(err, '*stdout:*')
+
+  local out = {}
+  for line in stdout:gmatch('[^\r\n]+') do
+    table.insert(out, '  ' .. line)
+  end
+  if next(out) then
+    table.insert(err, '')
+    vim.list_extend(err, out)
+  else
+    table.insert(err, '  <none>')
+  end
+  table.insert(err, '')
+  table.insert(err, '*stderr:*')
+  if #stderr > 0 then
+    for line in stderr:gmatch('[^\r\n]+') do
+      table.insert(err, '')
+      table.insert(err, '  ' .. line)
+    end
+  else
+    table.insert(err, '  <none>')
+  end
+  table.insert(err, '')
+  local error_bufid = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_name(error_bufid, vim.fn.tempname() .. '.ksb_errorbuf')
+  vim.api.nvim_set_current_buf(error_bufid)
+  vim.o.conceallevel = 2
+  vim.o.concealcursor = 'n'
+  vim.o.foldenable = false
+  vim.api.nvim_set_option_value('filetype', 'checkhealth', {
+    buf = error_bufid,
+  })
+  M.restore_and_redraw()
+  local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
+  if stderr:match('.*allow_remote_control.*') then
+    vim.list_extend(msg, ksb_health.advice().allow_remote_control)
+  end
+  if stderr:match('.*/dev/tty.*') then
+    vim.list_extend(msg, ksb_health.advice().listen_on)
+  end
+  vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, vim.list_extend(msg, err))
+  M.restore_and_redraw()
+  local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
+  if response ~= 2 then
+    M.quitall()
+  end
+end
+
+M.system_handle_error = function(cmd, error_header, sys_opts, ignore_error)
+  local proc = vim.system(cmd, sys_opts or {})
+  local result = proc:wait()
+  local ok = result.code == 0
+
+  if not ignore_error and not ok then
+    M.display_error(table.concat(cmd, ' '), {
+      entrypoint = 'vim.system()',
+      pid = proc.pid,
+      code = result.code,
+      signal = result.signal,
+      stdout = result.stdout,
+      stderr = result.stderr,
+    }, error_header)
+  end
+
+  return ok, result
+end
 
 return M
