@@ -46,14 +46,15 @@ KsbPrivate                                  *kitty-scrollback.launch.KsbPrivate*
     Fields: ~
         {orig_columns}         (number)
         {orig_normal_hl}       (table|nil)
-        {bufid}                (number|nil)
-        {paste_bufid}          (number|nil)
-        {kitty_loading_winid}  (number|nil)
+        {bufid}                (integer|nil)   the buffer ID of the scrollback buffer
+        {winid}                (integer|nil)   the initial window ID of the scrollback buffer, this ID is not always guaranteed to be correct if the user has modified the window layout
+        {kitty_loading_winid}  (number|nil)    the ID of the kitty overlay loading window, this is kitty window not a nvim window
         {kitty_colors}         (table)
         {kitty_data}           (KsbKittyData)
-        {paste_winid}          (number|nil)
-        {footer_winid}         (number|nil)
-        {footer_bufid}         (number|nil)
+        {paste_winid}          (integer|nil)   the window ID of the paste window
+        {paste_bufid}          (integer|nil)   the buffer ID of the paste window
+        {footer_winid}         (integer|nil)   the window ID of the paste window footer
+        {footer_bufid}         (integer|nil)   the buffer ID of the paste window footer
         {pos}                  (table|nil)
 
 
@@ -83,12 +84,28 @@ M.setup_and_launch({kitty_data_str})  *kitty-scrollback.launch.setup_and_launch*
         {kitty_data_str}  (string)
 
 
+KsbBufWinData                                       *default_opts.KsbBufWinData*
+
+    Fields: ~
+        {bufid}  (integer|nil)
+        {winid}  (integer|nil)
+
+
+KsbPasteWindowData                             *default_opts.KsbPasteWindowData*
+
+    Fields: ~
+        {scrollback_buffer}    (KsbBufWinData)  data for the scrollback buffer
+        {paste_window}         (KsbBufWinData)  data for the paste window
+        {paste_window_footer}  (KsbBufWinData)  data for the paste window footer
+
+
 KsbCallbacks                                         *default_opts.KsbCallbacks*
 
     Fields: ~
-        {after_setup}   (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after initializing kitty-scrollback.nvim
-        {after_launch}  (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after launch started to process the scrollback buffer
-        {after_ready}   (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after scrollback buffer is loaded and cursor is positioned
+        {after_setup}               (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)                                       callback executed after initializing kitty-scrollback.nvim
+        {after_launch}              (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)                                       callback executed after launch started to process the scrollback buffer
+        {after_ready}               (fun(kitty_data:KsbKittyData,opts:KsbOpts)|nil)                                       callback executed after scrollback buffer is loaded and cursor is positioned
+        {after_paste_window_ready}  (fun(paste_window_data:KsbPasteWindowData,kitty_data:KsbKittyData,opts:KsbOpts)|nil)  callback executed after the paste window is opened or resized
 
 
 KsbKittyGetText                                   *default_opts.KsbKittyGetText*
