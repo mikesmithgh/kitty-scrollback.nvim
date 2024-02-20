@@ -60,6 +60,7 @@ local M = {}
 ---@field orig_columns number
 ---@field orig_normal_hl table|nil
 ---@field bufid number|nil
+---@field winid integer|nil the initial window ID of the scrollback buffer, this ID is not always guaranteed to be correct if the user has modified the window layout
 ---@field paste_bufid number|nil
 ---@field kitty_loading_winid number|nil
 ---@field kitty_colors table
@@ -367,6 +368,7 @@ M.launch = function()
       p.bufid = vim.api.nvim_create_buf(true, true)
       vim.api.nvim_set_current_buf(p.bufid)
     end
+    p.winid = vim.api.nvim_get_current_win()
 
     ksb_autocmds.load_autocmds()
 
