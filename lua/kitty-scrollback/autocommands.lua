@@ -49,6 +49,16 @@ M.set_scrollback_buffer_enter_autocmd = function()
       end
     end,
   })
+  vim.api.nvim_create_autocmd({ 'BufEnter' }, {
+    group = vim.api.nvim_create_augroup(
+      'KittyScrollBackNvimScrollbackBufEnterError',
+      { clear = true }
+    ),
+    pattern = { '*.ksb_errorbuf' },
+    callback = function()
+      ksb_kitty_cmds.close_kitty_loading_window(true)
+    end,
+  })
 end
 
 M.set_paste_window_resized_autocmd = function()
