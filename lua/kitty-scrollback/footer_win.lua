@@ -1,4 +1,7 @@
 ---@mod kitty-scrollback.footer_win
+local ksb_util = require('kitty-scrollback.util')
+local plug = ksb_util.plug_mapping_names
+
 local M = {}
 
 ---@type KsbPrivate
@@ -72,36 +75,55 @@ M.open_footer_window = function(winopts, refresh_only)
     })
   end
 
-  local mapped_to_ksb_keymaps = vim.tbl_filter(function(km)
-    if not km.rhs then
-      return false
-    end
-    return km.rhs:match('^%<Plug%>%(Ksb.*%)$')
-  end, vim.api.nvim_get_keymap('a'))
+  local mapped_to_ksb_keymaps = vim.tbl_filter(
+    function(km)
+      if not km.rhs then
+        return false
+      end
+      return km.rhs:match('^%<Plug%>%(Ksb.*%)$')
+    end,
+    -- '' is normal, visual, and operator-pending mode
+    -- ! is insert and command-line mode
+    vim.list_extend(
+      vim.list_extend(vim.api.nvim_get_keymap(''), vim.api.nvim_get_keymap('!')),
+      vim.list_extend(
+        vim.api.nvim_buf_get_keymap(p.paste_bufid, ''),
+        vim.api.nvim_buf_get_keymap(p.paste_bufid, '!')
+      )
+    )
+  )
 
   local footer_keys = {
-    ['<Plug>(KsbNormalYank)'] = vim.fn.keytrans((vim.g.mapleader or '\\') .. 'y'):gsub('<lt>', '<'),
-    ['<Plug>(KsbExecuteCmd)'] = '<C-CR>',
-    ['<Plug>(KsbPasteCmd)'] = '<S-CR>',
-    ['<Plug>(KsbToggleFooter)'] = 'g?',
+    [plug.NORMAL_YANK] = false,
+    [plug.EXECUTE_CMD] = false,
+    [plug.PASTE_CMD] = false,
+    [plug.TOGGLE_FOOTER] = false,
   }
 
+  -- buffer local mappings are appended and will take precedence over global mappings
   for _, km in pairs(mapped_to_ksb_keymaps) do
     local rhs = km.rhs
-    if footer_keys[rhs] then
+    if footer_keys[rhs] ~= nil then
       local lhs = vim.fn.keytrans(km.lhs):gsub('<lt>', '<')
       footer_keys[rhs] = lhs
     end
   end
 
-  local write_msg = '`:w` *Paste* '
-  local footer_msg = {
-    '`' .. footer_keys['<Plug>(KsbNormalYank)'] .. '` *Yank* ',
-    '`' .. footer_keys['<Plug>(KsbExecuteCmd)'] .. '` *Execute* ',
-    '`' .. footer_keys['<Plug>(KsbPasteCmd)'] .. '` *Paste* ',
-    write_msg,
-    '`' .. footer_keys['<Plug>(KsbToggleFooter)'] .. '` *Toggle* *Mappings*',
-  }
+  local footer_msg = {}
+  if footer_keys[plug.NORMAL_YANK] then
+    table.insert(footer_msg, ('`%s` *Yank*'):format(footer_keys[plug.NORMAL_YANK]))
+  end
+  if footer_keys[plug.EXECUTE_CMD] then
+    table.insert(footer_msg, ('`%s` *Execute*'):format(footer_keys[plug.EXECUTE_CMD]))
+  end
+  if footer_keys[plug.PASTE_CMD] then
+    table.insert(footer_msg, ('`%s` *Paste*'):format(footer_keys[plug.PASTE_CMD]))
+  end
+  table.insert(footer_msg, '`:w` *Paste* ')
+  if footer_keys[plug.TOGGLE_FOOTER] then
+    table.insert(footer_msg, ('`%s` *Toggle* *Mappings*'):format(footer_keys[plug.TOGGLE_FOOTER]))
+  end
+
   local padding = math.floor(winopts.width / #footer_msg) - 2
   local string_with_padding = '%' .. math.floor(padding / 2) .. 's'
   local string_with_half_padding = '%' .. math.floor(padding / 4) .. 's'
