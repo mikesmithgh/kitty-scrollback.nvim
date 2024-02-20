@@ -1,3 +1,10 @@
+## [4.2.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.2.0...v4.2.1) (2024-02-20)
+
+
+### Bug Fixes
+
+* adjust tmux position based on status option and add .ksb_errorbuf ([a55226d](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/a55226d5027fd34cdca92bcd3832d50c0929c1bd))
+
 # [4.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.1.0...v4.2.0) (2024-02-20)
 
 
