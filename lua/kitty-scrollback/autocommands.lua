@@ -72,6 +72,18 @@ M.set_paste_window_resized_autocmd = function()
           vim.schedule(function()
             local cur_winopts = ksb_footer_win.footer_winopts(current_winopts)
             pcall(vim.api.nvim_win_set_config, p.footer_winid, cur_winopts)
+            if
+              opts.callbacks
+              and opts.callbacks.after_paste_window_ready
+              and type(opts.callbacks.after_paste_window_ready) == 'function'
+            then
+              local paste_window_data = {
+                scrollback_buffer = { bufid = p.bufid, winid = p.winid },
+                paste_window = { bufid = p.paste_bufid, winid = p.paste_winid },
+                paste_window_footer = { bufid = p.footer_bufid, winid = p.footer_winid },
+              }
+              opts.callbacks.after_paste_window_ready(paste_window_data, p.kitty_data, opts)
+            end
             ksb_footer_win.open_footer_window(cur_winopts, true)
           end)
         end
