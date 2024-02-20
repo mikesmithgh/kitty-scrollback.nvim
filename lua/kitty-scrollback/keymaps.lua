@@ -1,5 +1,7 @@
 ---@mod kitty-scrollback.keymaps
 local ksb_api = require('kitty-scrollback.api')
+local ksb_util = require('kitty-scrollback.util')
+local plug = ksb_util.plug_mapping_names
 
 ---@type KsbPrivate
 local p ---@diagnostic disable-line: unused-local
@@ -17,22 +19,24 @@ local function set_default(modes, lhs, rhs, keymap_opts)
   end
 end
 
-local function set_defaults()
-  set_default({ 'v' }, '<leader>Y', '<Plug>(KsbVisualYankLine)', {})
-  set_default({ 'v' }, '<leader>y', '<Plug>(KsbVisualYank)', {})
-  set_default({ 'n' }, '<leader>Y', '<Plug>(KsbNormalYankEnd)', {})
-  set_default({ 'n' }, '<leader>y', '<Plug>(KsbNormalYank)', {})
-  set_default({ 'n' }, '<leader>yy', '<Plug>(KsbYankLine)', {})
+local function set_global_defaults()
+  set_default({ 'v' }, '<leader>Y', plug.VISUAL_YANK_LINE, {})
+  set_default({ 'v' }, '<leader>y', plug.VISUAL_YANK, {})
+  set_default({ 'n' }, '<leader>Y', plug.NORMAL_YANK_END, {})
+  set_default({ 'n' }, '<leader>y', plug.NORMAL_YANK, {})
+  set_default({ 'n' }, '<leader>yy', plug.YANK_LINE, {})
 
-  set_default({ 'n' }, '<esc>', '<Plug>(KsbCloseOrQuitAll)', {})
-  set_default({ 'n', 't', 'i' }, '<c-c>', '<Plug>(KsbQuitAll)', {})
+  set_default({ 'n' }, '<esc>', plug.CLOSE_OR_QUIT_ALL, {})
+  set_default({ 'n', 't', 'i' }, '<c-c>', plug.QUIT_ALL, {})
 
-  set_default({ 'n' }, 'g?', '<Plug>(KsbToggleFooter)', {})
-  set_default({ 'n', 'i' }, '<c-cr>', '<Plug>(KsbExecuteCmd)', {})
-  set_default({ 'n', 'i' }, '<s-cr>', '<Plug>(KsbPasteCmd)', {})
+  set_default({ 'v' }, '<c-cr>', plug.EXECUTE_VISUAL_CMD, {})
+  set_default({ 'v' }, '<s-cr>', plug.PASTE_VISUAL_CMD, {})
+end
 
-  set_default({ 'v' }, '<c-cr>', '<Plug>(KsbExecuteVisualCmd)', {})
-  set_default({ 'v' }, '<s-cr>', '<Plug>(KsbPasteVisualCmd)', {})
+local function set_local_defaults()
+  set_default({ '' }, 'g?', plug.TOGGLE_FOOTER, {})
+  set_default({ 'n', 'i' }, '<c-cr>', plug.EXECUTE_CMD, {})
+  set_default({ 'n', 'i' }, '<s-cr>', plug.PASTE_CMD, {})
 end
 
 M.setup = function(private, options)
@@ -42,21 +46,21 @@ M.setup = function(private, options)
   if opts.keymaps_enabled then
     vim.keymap.set(
       { 'n' },
-      '<Plug>(KsbCloseOrQuitAll)',
+      plug.CLOSE_OR_QUIT_ALL,
       vim.schedule_wrap(ksb_api.close_or_quit_all),
       {}
     )
-    vim.keymap.set({ 'n', 't', 'i' }, '<Plug>(KsbQuitAll)', ksb_api.quit_all, {})
+    vim.keymap.set({ 'n', 't', 'i' }, plug.QUIT_ALL, ksb_api.quit_all, {})
 
-    vim.keymap.set({ 'v' }, '<Plug>(KsbVisualYankLine)>', '"+Y', {})
-    vim.keymap.set({ 'v' }, '<Plug>(KsbVisualYank)', '"+y', {})
-    vim.keymap.set({ 'v' }, '<Plug>(KsbExecuteVisualCmd)', ksb_api.execute_visual_command, {})
-    vim.keymap.set({ 'v' }, '<Plug>(KsbPasteVisualCmd)', ksb_api.paste_visual_command, {})
-    vim.keymap.set({ 'n' }, '<Plug>(KsbNormalYankEnd)', '"+y$', {})
-    vim.keymap.set({ 'n' }, '<Plug>(KsbNormalYank)', '"+y', {})
-    vim.keymap.set({ 'n' }, '<Plug>(KsbYankLine)', '"+yy', {})
+    vim.keymap.set({ 'v' }, plug.YANK_LINE, '"+Y', {})
+    vim.keymap.set({ 'v' }, plug.VISUAL_YANK, '"+y', {})
+    vim.keymap.set({ 'v' }, plug.EXECUTE_VISUAL_CMD, ksb_api.execute_visual_command, {})
+    vim.keymap.set({ 'v' }, plug.PASTE_VISUAL_CMD, ksb_api.paste_visual_command, {})
+    vim.keymap.set({ 'n' }, plug.NORMAL_YANK_END, '"+y$', {})
+    vim.keymap.set({ 'n' }, plug.NORMAL_YANK, '"+y', {})
+    vim.keymap.set({ 'n' }, plug.YANK_LINE, '"+yy', {})
 
-    set_defaults()
+    set_global_defaults()
   end
 end
 
@@ -65,9 +69,13 @@ M.set_buffer_local_keymaps = function(bufid)
     return
   end
   bufid = bufid or true
-  vim.keymap.set({ 'n', 'i' }, '<Plug>(KsbExecuteCmd)', ksb_api.execute_command, { buffer = bufid })
-  vim.keymap.set({ 'n', 'i' }, '<Plug>(KsbPasteCmd)', ksb_api.paste_command, { buffer = bufid })
-  vim.keymap.set({ 'n' }, '<Plug>(KsbToggleFooter)', ksb_api.toggle_footer, { buffer = bufid })
+
+  if opts.keymaps_enabled then
+    set_local_defaults()
+    vim.keymap.set({ 'n', 'i' }, plug.EXECUTE_CMD, ksb_api.execute_command, { buffer = bufid })
+    vim.keymap.set({ 'n', 'i' }, plug.PASTE_CMD, ksb_api.paste_command, { buffer = bufid })
+    vim.keymap.set({ '' }, plug.TOGGLE_FOOTER, ksb_api.toggle_footer, { buffer = bufid })
+  end
 end
 
 return M
