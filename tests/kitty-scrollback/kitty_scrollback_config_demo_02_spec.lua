@@ -16,7 +16,7 @@ local ksb_work_dir
 local shell = h.debug(h.is_github_action and '/bin/bash' or (vim.o.shell .. ' --noprofile --norc'))
 
 local kitty_cmd = h.debug({
-  'kitty',
+  h.kitty,
   '--listen-on=unix:' .. tmpsock,
   '--config',
   ksb_dir .. 'tests/kitty.conf',

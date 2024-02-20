@@ -26,7 +26,7 @@ describe('kitty-scrollback.nvim', function()
     vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
     tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
     local kitty_cmd = h.debug({
-      'kitty',
+      h.kitty,
       '--listen-on=unix:' .. tmpsock,
       '--config',
       ksb_dir .. 'tests/kitty.conf',

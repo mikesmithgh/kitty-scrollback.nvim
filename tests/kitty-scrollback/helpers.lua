@@ -2,6 +2,7 @@ local M = {}
 local current_tmpsocket
 local assert = require('luassert.assert')
 
+M.kitty = 'kitty'
 M.debug_enabled = vim.env.RUNNER_DEBUG == '1'
 M.is_github_action = vim.env.GITHUB_ACTIONS == 'true'
 M.is_headless = (#vim.api.nvim_list_uis() == 0)
