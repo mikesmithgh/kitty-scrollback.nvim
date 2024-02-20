@@ -1,3 +1,17 @@
+# [4.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.1.0...v4.2.0) (2024-02-20)
+
+
+### Bug Fixes
+
+* add buffer name suffix .ksb_footerbuf to footer ([4f234de](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/4f234de744cb0e84aa34e1e58654a8348ea96304))
+* create separate set_local_defaults function ([2c6812a](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/2c6812abff7bb440ca4ae08310c6907324786ed4))
+* include buffer local mappings when resolving footer keymaps ([af2aa25](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/af2aa252866d4c29a60b6a9c76ef010ee81f27f5))
+
+
+### Features
+
+* add after_paste_window_ready callback ([646a41e](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/646a41ea3d0f4168cdb710833a64237d13fec0ef)), closes [#197](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/197)
+
 # [4.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.0.3...v4.1.0) (2024-02-19)
 
 
