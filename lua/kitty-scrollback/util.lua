@@ -81,4 +81,22 @@ M.quitall = function()
   vim.cmd.quitall({ bang = true })
 end
 
+M.plug_mapping_names = {
+  VISUAL_YANK_LINE = '<Plug>(KsbVisualYankLine)',
+  VISUAL_YANK = '<Plug>(KsbVisualYank)',
+  NORMAL_YANK_END = '<Plug>(KsbNormalYankEnd)',
+  NORMAL_YANK = '<Plug>(KsbNormalYank)',
+  YANK_LINE = '<Plug>(KsbYankLine)',
+
+  CLOSE_OR_QUIT_ALL = '<Plug>(KsbCloseOrQuitAll)',
+  QUIT_ALL = '<Plug>(KsbQuitAll)',
+
+  EXECUTE_VISUAL_CMD = '<Plug>(KsbExecuteVisualCmd)',
+  PASTE_VISUAL_CMD = '<Plug>(KsbPasteVisualCmd)',
+
+  TOGGLE_FOOTER = '<Plug>(KsbToggleFooter)',
+  EXECUTE_CMD = '<Plug>(KsbExecuteCmd)',
+  PASTE_CMD = '<Plug>(KsbPasteCmd)',
+}
+
 return M
