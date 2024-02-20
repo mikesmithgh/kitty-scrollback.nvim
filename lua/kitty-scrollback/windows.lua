@@ -126,6 +126,7 @@ M.open_paste_window = function(start_insert)
   end
   if start_insert then
     vim.schedule(function()
+      ---@diagnostic disable-next-line: param-type-mismatch
       vim.fn.cursor(vim.fn.line('$', p.paste_winid), 1)
       vim.cmd.startinsert({ bang = true })
     end)
