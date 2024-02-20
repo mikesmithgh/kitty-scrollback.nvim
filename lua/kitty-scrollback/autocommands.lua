@@ -1,5 +1,4 @@
 ---@mod kitty-scrollback.autocommands
-local ksb_api = require('kitty-scrollback.api')
 local ksb_footer_win = require('kitty-scrollback.footer_win')
 local ksb_hl = require('kitty-scrollback.highlights')
 local ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
@@ -71,9 +70,9 @@ M.set_paste_window_resized_autocmd = function()
             ksb_win.paste_winopts(lnum, col, height_offset)
           )
           vim.schedule(function()
-            local len_winopts = ksb_footer_win.footer_winopts(current_winopts)
-            pcall(vim.api.nvim_win_set_config, p.footer_winid, len_winopts)
-            ksb_footer_win.open_footer_window(len_winopts, true)
+            local cur_winopts = ksb_footer_win.footer_winopts(current_winopts)
+            pcall(vim.api.nvim_win_set_config, p.footer_winid, cur_winopts)
+            ksb_footer_win.open_footer_window(cur_winopts, true)
           end)
         end
       end
