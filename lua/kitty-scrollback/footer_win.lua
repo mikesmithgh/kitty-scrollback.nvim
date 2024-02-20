@@ -93,6 +93,13 @@ M.open_footer_window = function(winopts, refresh_only)
     )
   )
 
+  local default_footer_keys = {
+    ['<Plug>(KsbNormalYank)'] = vim.fn.keytrans((vim.g.mapleader or '\\') .. 'y'):gsub('<lt>', '<'),
+    ['<Plug>(KsbExecuteCmd)'] = '<C-CR>',
+    ['<Plug>(KsbPasteCmd)'] = '<S-CR>',
+    ['<Plug>(KsbToggleFooter)'] = 'g?',
+  }
+
   local footer_keys = {
     [plug.NORMAL_YANK] = false,
     [plug.EXECUTE_CMD] = false,
@@ -105,21 +112,24 @@ M.open_footer_window = function(winopts, refresh_only)
     local rhs = km.rhs
     if footer_keys[rhs] ~= nil then
       local lhs = vim.fn.keytrans(km.lhs):gsub('<lt>', '<')
-      footer_keys[rhs] = lhs
+      if not footer_keys[rhs] or (footer_keys[rhs] and lhs ~= default_footer_keys[rhs]) then
+        footer_keys[rhs] = lhs
+      end
     end
   end
 
+  local write_msg = '`:w` *Paste* '
   local footer_msg = {}
   if footer_keys[plug.NORMAL_YANK] then
-    table.insert(footer_msg, ('`%s` *Yank*'):format(footer_keys[plug.NORMAL_YANK]))
+    table.insert(footer_msg, ('`%s` *Yank* '):format(footer_keys[plug.NORMAL_YANK]))
   end
   if footer_keys[plug.EXECUTE_CMD] then
-    table.insert(footer_msg, (' `%s` *Execute*'):format(footer_keys[plug.EXECUTE_CMD]))
+    table.insert(footer_msg, ('`%s` *Execute* '):format(footer_keys[plug.EXECUTE_CMD]))
   end
   if footer_keys[plug.PASTE_CMD] then
-    table.insert(footer_msg, (' `%s` *Paste*'):format(footer_keys[plug.PASTE_CMD]))
+    table.insert(footer_msg, ('`%s` *Paste* '):format(footer_keys[plug.PASTE_CMD]))
   end
-  table.insert(footer_msg, ' `:w` *Paste* ')
+  table.insert(footer_msg, write_msg)
   if footer_keys[plug.TOGGLE_FOOTER] then
     table.insert(footer_msg, ('`%s` *Toggle* *Mappings*'):format(footer_keys[plug.TOGGLE_FOOTER]))
   end
