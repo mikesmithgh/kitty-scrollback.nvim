@@ -114,12 +114,12 @@ M.open_footer_window = function(winopts, refresh_only)
     table.insert(footer_msg, ('`%s` *Yank*'):format(footer_keys[plug.NORMAL_YANK]))
   end
   if footer_keys[plug.EXECUTE_CMD] then
-    table.insert(footer_msg, ('`%s` *Execute*'):format(footer_keys[plug.EXECUTE_CMD]))
+    table.insert(footer_msg, (' `%s` *Execute*'):format(footer_keys[plug.EXECUTE_CMD]))
   end
   if footer_keys[plug.PASTE_CMD] then
-    table.insert(footer_msg, ('`%s` *Paste*'):format(footer_keys[plug.PASTE_CMD]))
+    table.insert(footer_msg, (' `%s` *Paste*'):format(footer_keys[plug.PASTE_CMD]))
   end
-  table.insert(footer_msg, '`:w` *Paste* ')
+  table.insert(footer_msg, ' `:w` *Paste* ')
   if footer_keys[plug.TOGGLE_FOOTER] then
     table.insert(footer_msg, ('`%s` *Toggle* *Mappings*'):format(footer_keys[plug.TOGGLE_FOOTER]))
   end
