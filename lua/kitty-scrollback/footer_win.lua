@@ -57,6 +57,7 @@ M.open_footer_window = function(winopts, refresh_only)
   if not refresh_only or refresh_only == nil then
     -- if buffer already exists, assume window is already created and just read
     p.footer_bufid = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_name(p.footer_bufid, vim.fn.tempname() .. '.ksb_footerbuf')
     vim.api.nvim_set_option_value('filetype', 'help', {
       buf = p.footer_bufid,
     })
