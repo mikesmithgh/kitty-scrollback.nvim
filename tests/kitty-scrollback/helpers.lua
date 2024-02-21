@@ -289,10 +289,10 @@ M.send_without_newline = function(input)
   end
 end
 
-M.open_kitty_scrollback_nvim = function()
+M.open_kitty_scrollback_nvim = function(config)
   return {
     opts = {
-      open_kitty_scrollback_nvim = true,
+      open_kitty_scrollback_nvim = config or true,
     },
   }
 end
@@ -404,9 +404,10 @@ M.feed_kitty = function(input, pause_seconds_after)
       end
     end
 
-    if feed_opts.open_kitty_scrollback_nvim then
+    local open_ksb = feed_opts.open_kitty_scrollback_nvim
+    if open_ksb then
       M.pause_seconds()
-      M.kitty_remote_kitten_kitty_scrollback_nvim()
+      M.kitty_remote_kitten_kitty_scrollback_nvim(type(open_ksb) == 'table' and open_ksb or {})
       M.pause_seconds()
     elseif feed_opts.open_tmux_kitty_scrollback_nvim then
       M.pause_seconds()
@@ -673,7 +674,7 @@ M.ksb_dir = function()
   )
 end
 
-M.init_nvim = function()
+M.init_nvim = function(config_override)
   local config_dir = vim.fn.fnamemodify(vim.fn.fnamemodify(vim.fn.stdpath('config'), ':h'), ':p')
   local nvim_config_dir = config_dir .. 'ksb-nvim-tests'
   local is_directory = vim.fn.isdirectory(nvim_config_dir) > 0
@@ -681,7 +682,26 @@ M.init_nvim = function()
     vim.system({ 'rm', '-rf', nvim_config_dir }):wait()
   end
   vim.fn.mkdir(nvim_config_dir, 'p')
-  vim.uv.fs_copyfile(M.ksb_dir() .. [[tests/example.lua]], nvim_config_dir .. '/init.lua')
+  local init_lua = nvim_config_dir .. '/init.lua'
+  local example_lua = M.ksb_dir() .. [[tests/example.lua]]
+  vim.uv.fs_copyfile(example_lua, init_lua)
+
+  if config_override then
+    local init_config = {}
+    local example_config = vim.fn.readfile(example_lua)
+    for _, line in pairs(example_config) do
+      if string.match(line, [[^require%('kitty%-scrollback'%)%.setup]]) then
+        break
+      end
+      table.insert(init_config, line)
+    end
+    table.insert(init_config, [[require('kitty-scrollback').setup(]])
+    for line in config_override:gmatch('[^\r\n]+') do
+      table.insert(init_config, line)
+    end
+    table.insert(init_config, [[)]])
+    vim.fn.writefile(init_config, init_lua)
+  end
 end
 
 return M
