@@ -19,7 +19,7 @@ describe('kitty-scrollback.nvim', function()
   test_pastewin_opts = {
     paste_window = {
       winopts_overrides = function(winopts)
-         winopts.border = { '▛', '▀', '▜', '▐', '▟', '▄', '▙', '▌' } 
+         winopts.border = { '▛', '▀', '▜', '▐', '▟', '▄', '▙', '▌' }
          return winopts
        end,
     },
@@ -27,11 +27,31 @@ describe('kitty-scrollback.nvim', function()
   test_footer_opts = {
     paste_window = {
       footer_winopts_overrides = function(winopts)
-         winopts.border = { '▛', '▀', '▜', '▐', '▟', '▄', '▙', '▌' } 
+         winopts.border = { '▛', '▀', '▜', '▐', '▟', '▄', '▙', '▌' }
          return winopts
        end,
     },
-  }
+  },
+  test_after_paste_window_ready = {
+    callbacks = {
+      after_paste_window_ready = function(pastewin_data, kitty_data, opts)
+        local stc = '%#ErrorMsg#%{(v:lnum%2)?" "."a":""}' .. '%#WarningMsg#%{!(v:lnum%2)?" "."b":""} '
+        vim.api.nvim_set_option_value('statuscolumn', stc, {
+          win = pastewin_data.paste_window.winid,
+        })
+
+        vim.keymap.set({ '' }, '<Tab>', '<Plug>(KsbToggleFooter)', {
+          buffer = pastewin_data.paste_window.bufid,
+        })
+
+        if pastewin_data.paste_window_footer.winid then
+          vim.api.nvim_set_option_value('statuscolumn', 'help:', {
+            win = pastewin_data.paste_window_footer.winid,
+          })
+        end
+      end,
+    },
+  },
 }
 ]])
 
@@ -343,6 +363,39 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
 ]],
         cursor_y = 2,
         cursor_x = 3,
+      }
+    )
+  end)
+
+  it('should call after_paste_window_ready', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.open_kitty_scrollback_nvim({
+          '--config',
+          'test_after_paste_window_ready',
+        }),
+        [[a]],
+      }),
+      {
+        stdout = [[
+$🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔🭾
+ ▏a                                                                                                       ▕
+ ▏b                                                                                                       ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ ▏                                                                                                        ▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+ ▏                                                                                                        ▕
+ ▏help:    \y Yank          <C-CR> Execute          <S-CR> Paste          :w Paste          <Tab> Toggle M▕
+ 🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
+]],
+        cursor_y = 3,
+        cursor_x = 5,
       }
     )
   end)
