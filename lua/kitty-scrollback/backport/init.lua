@@ -8,7 +8,7 @@ local M = {}
 local function backport_version()
   if type(vim.version().__tostring) ~= 'function' then
     -- NOTE: copied __tostring from
-    -- https://github.com/neovim/neovim/blob/ae3eed53d6100598b6d26fe58e3e97541e03f3c1/runtime/lua/vim/version.lua#L123
+    -- https://github.com/neovim/neovim/blob/8ba552bd59b0ed9f316ad1473126b603f35c912a/runtime/lua/vim/version.lua#L125
 
     local Version = {}
     function Version:__tostring()
@@ -27,12 +27,12 @@ local function backport_version()
     end
 
     -- NOTE: copied setmetatable from
-    -- https://github.com/neovim/neovim/blob/ae3eed53d6100598b6d26fe58e3e97541e03f3c1/runtime/lua/vim/version.lua#L444
+    -- https://github.com/neovim/neovim/blob/8ba552bd59b0ed9f316ad1473126b603f35c912a/runtime/lua/vim/version.lua#L451
     setmetatable(vim.version, {
       --- Returns the current Nvim version.
-      ---@return Version
+      ---@return vim.Version
       __call = function()
-        local version = vim.fn.api_info().version
+        local version = vim.fn.api_info().version ---@type vim.Version
         -- Workaround: vim.fn.api_info().version reports "prerelease" as a boolean.
         version.prerelease = version.prerelease and 'dev' or nil
         return setmetatable(version, Version)
