@@ -332,6 +332,12 @@ alter all default shortcuts that use [kitty_mod](https://sw.kovidgoyal.net/kitty
   mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
   ```
 
+- Start in the search mode (Optional)
+  You can start to search the scrollback buffer immediately without to type the extra `?` key
+  ```sh
+  map kitty_mod+f kitty_scrollback_nvim --nvim-args -c 'call feedkeys("?")'
+  ```
+
 ## ⚙️ Configuration
 
 This section provides details on how to customize your kitty-scrollback.nvim configuration.
