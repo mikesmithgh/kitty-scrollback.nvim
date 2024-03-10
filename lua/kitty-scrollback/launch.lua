@@ -253,8 +253,13 @@ M.setup = function(kitty_data_str)
   local global_opts = config_to_opts(config_source.configs[1])
   local user_config = config_source.configs[config_name]
   if not user_config and not config_name:match('^ksb_builtin_.*') then
+    local orig_config_name = config_name
     vim.defer_fn(function()
-      vim.notify('No configuration found with the name ' .. config_name, vim.log.levels.ERROR, {})
+      vim.notify(
+        'kitty-scrollback.nvim: no configuration found with the name "' .. orig_config_name .. '"',
+        vim.log.levels.ERROR,
+        {}
+      )
     end, 1000)
     config_name = 'ksb_builtin_get_text_all'
     user_config = config_source.configs[config_name]
