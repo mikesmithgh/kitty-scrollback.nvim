@@ -49,17 +49,26 @@ vim = nvim_color + nvim_icon + reset
 if style_simple:
     spinner = itertools.cycle(['-', '-', '\\', '\\', '|', '|', '/', '/'])
 else:
-    spinner = itertools.cycle(
-        ['⠋',
-         '⠙',
-         '⠹',
-         '⠸',
-         '⠼',
-         '⠴',
-         '⠦',
-         '⠧',
-         '⠇',
-         '⠏'])
+    # spinner = itertools.cycle([
+    #     '⠏',
+    #     '⠋',
+    #     '⠙',
+    #     '⠹',
+    #     '⠸',
+    #     '⠼',
+    #     '⠴',
+    #     '⠦',
+    #     '⠧',
+    #     '⠇',
+    # ])
+    spinner = itertools.cycle([
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+    ])
 
 start = time.time()
 quit_msg = f'{timer_color}(ctrl+c to quit)'
@@ -103,4 +112,4 @@ while True and time_elapsed < close_threshold_seconds:
         print(line)
         if time_elapsed > 4.9:
             print(quit_msg.rjust(size.columns + len(timer_color)))
-    time.sleep(0.08)
+    time.sleep(0.12)
