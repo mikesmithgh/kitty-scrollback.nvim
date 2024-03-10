@@ -255,9 +255,12 @@ configuration.
 
 
   `ℹ` `NOTE` 
-  The Advanced Configuration Examples
-<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples>
-  section of the Wiki provides detailed demos of each configuration option.
+  The Advanced Configuration
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#advanced-configuration>
+  section of the wiki provides useful configurations
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#useful-configurations>
+  and detailed demos of each configuration option
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples>.
 
 KITTEN ARGUMENTS ~
 
