@@ -1,3 +1,10 @@
+## [4.2.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.2.1...v4.2.2) (2024-03-10)
+
+
+### Bug Fixes
+
+* no longer overwriting config name in error ([#206](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/206)) ([6e96a31](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/6e96a310c5b4bbe40e6c530b7623ee24202e1f8c))
+
 ## [4.2.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.2.0...v4.2.1) (2024-02-20)
 
 
