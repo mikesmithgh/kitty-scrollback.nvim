@@ -65,7 +65,8 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 > [!TIP]\
 > Expand each section under the [Features](#-features) section to see a demo.
 >
-> Check out [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) for more demos! 
+> Check out the [wiki](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki) for 
+> [detailed demos of each configuration option](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples), [useful configurations](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#useful-configurations), and more.
 
 <!-- panvimdoc-ignore-end -->
 
@@ -337,8 +338,8 @@ alter all default shortcuts that use [kitty_mod](https://sw.kovidgoyal.net/kitty
 This section provides details on how to customize your kitty-scrollback.nvim configuration.
 
 > [!NOTE]\
-> The [Advanced Configuration Examples](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples) section of the Wiki provides
-> detailed demos of each configuration option.
+> The [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#advanced-configuration) section of the wiki provides
+> [useful configurations](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#useful-configurations) and [detailed demos of each configuration option](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples).
 
 ### Kitten Arguments
 Arguments that can be passed to the `kitty_scrollback_nvim` [Kitten](https://sw.kovidgoyal.net/kitty/kittens_intro/) defined in [kitty.conf](https://sw.kovidgoyal.net/kitty/conf/). You can provide 
