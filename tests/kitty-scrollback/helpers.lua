@@ -631,14 +631,10 @@ M.wait_for_kitty_remote_connection = function(
         M.debug_enabled = true
       end
     end
+    M.debug('Kitty starting...')
     kitty_instance = M.debug(vim.system(kitty_cmd, kitty_opts, function(obj)
       M.debug('Kitty exiting...')
-      M.debug('code:', obj.code)
-      M.debug('signal:', obj.signal)
-      M.debug('stdout:')
-      M.debug(obj.stdout)
-      M.debug('stderr:')
-      M.debug(obj.stderr)
+      M.debug(obj)
     end))
     ready = false
     tmpsock_ftype = nil
@@ -661,7 +657,7 @@ M.wait_for_kitty_remote_connection = function(
     local current_debug_enabled = M.debug_enabled
     M.debug_enabled = true
     ready = tmpsock_ftype == 'socket' and (M.debug(M.kitty_remote_ls():wait()).code == 0)
-    M.debug(tmpsock .. ' ftype ' .. tmpsock_ftype)
+    M.debug(string.format("tmpsock: '%s', tmpsock_ftype: '%s'", tmpsock, tmpsock_ftype))
     M.debug_enabled = current_debug_enabled
   end
 
