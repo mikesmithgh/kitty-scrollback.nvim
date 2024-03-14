@@ -411,9 +411,9 @@ M.feed_kitty = function(input, pause_seconds_after)
       M.pause_seconds()
     elseif feed_opts.open_tmux_kitty_scrollback_nvim then
       M.pause_seconds()
-      M.kitty_remote_send_text(M.control_b()[1])
+      M.debug(M.kitty_remote_send_text(M.control_b()[1]))
       M.pause_seconds(0.03)
-      M.kitty_remote_send_text('[')
+      M.debug(M.kitty_remote_send_text('['))
       M.pause_seconds()
     else
       local content = line
@@ -423,16 +423,16 @@ M.feed_kitty = function(input, pause_seconds_after)
 
       if feed_opts.send_by == 'string' then
         M.pause_seconds(0.2)
-        M.kitty_remote_send_text(content)
+        M.debug(M.kitty_remote_send_text(content))
         M.pause_seconds(0.2)
       elseif feed_opts.send_by == 'char' then
         content:gsub('.', function(c)
-          M.kitty_remote_send_text(c)
+          M.debug(M.kitty_remote_send_text(c))
           M.pause_seconds(0.03)
         end)
       end
       if feed_opts.newline then
-        M.kitty_remote_send_text('\n')
+        M.debug(M.kitty_remote_send_text('\n'))
       end
     end
   end
@@ -631,7 +631,15 @@ M.wait_for_kitty_remote_connection = function(
         M.debug_enabled = true
       end
     end
-    kitty_instance = M.debug(vim.system(kitty_cmd, kitty_opts))
+    kitty_instance = M.debug(vim.system(kitty_cmd, kitty_opts, function(obj)
+      M.debug('Kitty exiting...')
+      M.debug('code:', obj.code)
+      M.debug('signal:', obj.signal)
+      M.debug('stdout:')
+      M.debug(obj.stdout)
+      M.debug('stderr:')
+      M.debug(obj.stderr)
+    end))
     ready = false
     tmpsock_ftype = nil
     vim.fn.wait(timeout, function()
@@ -642,7 +650,7 @@ M.wait_for_kitty_remote_connection = function(
     if ready then
       break
     end
-    kitty_instance:kill(2)
+    kitty_instance:kill(9)
     kitty_instance = nil
     vim.fn.delete(vim.fn.fnamemodify(tmpsock, ':p'), 'rf')
     M.pause_seconds(i * 2)
