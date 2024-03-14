@@ -96,7 +96,7 @@ describe('kitty-scrollback.nvim', function()
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 3),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_first_cmd_output_on_screen 
 first_cmd_output_on_screen means the output of the first command that was run in the window on screen
