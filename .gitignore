@@ -3,3 +3,4 @@
 .DS_Store
 tmp_vimdoc_workdir/
 tmp/
+doc/tags
