@@ -87,6 +87,7 @@ describe('kitty-scrollback.nvim', function()
   before_all()
 
   before_each(h.pause_seconds)
+  after_each(h.kitty_remote_close_window)
 
   it('ksb_builtin_get_text_all', function()
     h.assert_screen_equals(
@@ -142,7 +143,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_all_plain', function()
@@ -200,7 +200,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_builtin_last_cmd_output', function()
@@ -256,7 +255,6 @@ TRUECOLOR
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_last_cmd_output_plain', function()
@@ -310,7 +308,6 @@ TRUECOLOR
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_builtin_last_visited_cmd_output', function()
@@ -420,12 +417,11 @@ Show clicked command output in kitty-scrollback.nvim
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
-    h.move_forward_one_prompt()
-    h.move_forward_one_prompt()
   end)
 
   it('ksb_example_get_text_last_visited_cmd_output_plain', function()
+    h.move_forward_one_prompt()
+    h.move_forward_one_prompt()
     h.move_to_first_prompt()
 
     h.kitty_remote_kitten_kitty_scrollback_nvim({
@@ -530,12 +526,11 @@ Show clicked command output in kitty-scrollback.nvim
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
-    h.move_forward_one_prompt()
-    h.move_forward_one_prompt()
   end)
 
   it('ksb_example_callbacks', function()
+    h.move_forward_one_prompt()
+    h.move_forward_one_prompt()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--config',
       'ksb_example_callbacks',
@@ -576,7 +571,6 @@ N▏# kitty-scrollback after_setup callback triggered @]],
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_status_win_autoclose', function()
@@ -631,7 +625,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_status_win_show_timer', function()
@@ -694,7 +687,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_status_win_vim', function()
@@ -753,7 +745,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_status_win_simple', function()
@@ -812,7 +803,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   after_all()

@@ -86,6 +86,7 @@ describe('kitty-scrollback.nvim', function()
   before_all()
 
   before_each(h.pause_seconds)
+  after_each(h.kitty_remote_close_window)
 
   it('ksb_example_paste_win_register_disabled', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
@@ -212,7 +213,6 @@ Press ENTER or type command to continue
         cursor_x = 40,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_paste_win_register', function()
@@ -332,7 +332,6 @@ Press ENTER or type command to continue
         cursor_x = 40,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_paste_win_winblend', function()
@@ -390,7 +389,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_paste_win_winopts', function()
@@ -445,7 +443,6 @@ $
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_restore_opts', function()
@@ -503,7 +500,6 @@ t🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 7,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_status_win_disabled', function()
@@ -558,7 +554,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_env_nvim_appname', function()
@@ -667,7 +662,6 @@ Press ENTER or type command to continue
         cursor_x = 40,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_nvim_args_darkblue', function()
@@ -732,7 +726,6 @@ Press ENTER or type command to continue
         cursor_x = 40,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_builtin_checkhealth', function()
@@ -751,7 +744,6 @@ kitty-scrollback: Neovim version
       cursor_y = 1,
       cursor_x = 1,
     })
-    h.kitty_remote_close_window()
   end)
 
   after_all()

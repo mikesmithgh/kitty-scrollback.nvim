@@ -86,6 +86,7 @@ describe('kitty-scrollback.nvim', function()
   before_all()
 
   before_each(h.pause_seconds)
+  after_each(h.kitty_remote_close_window)
 
   it('ksb_example_highlight_overrides', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
@@ -190,7 +191,6 @@ $
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_visual_selection_highlight_mode_reverse', function()
@@ -298,7 +298,6 @@ $
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_keymaps_custom', function()
@@ -356,7 +355,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_keymaps_disabled', function()
@@ -414,7 +412,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_paste_win_filetype', function()
@@ -472,7 +469,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_paste_win_hide_mappings', function()
@@ -530,7 +526,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_paste_win_highlight_as_float', function()
@@ -588,7 +583,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   after_all()
