@@ -82,6 +82,10 @@ end
 
 local it = screencapture.wrap_it(it, tmpsock, 11)
 
+-- TODO: seeing some flakiness in github runners, adding a delay to see if this helps
+-- we may want to add conditional delays depending on if the test is running locally vs a github runner
+local append_delay = 3
+
 describe('kitty-scrollback.nvim', function()
   before_all()
 
@@ -97,7 +101,7 @@ describe('kitty-scrollback.nvim', function()
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]]), 3),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), append_delay),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_first_cmd_output_on_screen 
 first_cmd_output_on_screen means the output of the first command that was run in the window on screen
@@ -145,7 +149,7 @@ first_cmd_output_on_screen means the output of the first command that was run in
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), append_delay),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_first_cmd_output_on_screen_plain 
 first_cmd_output_on_screen means the output of the first command that was run in the window on screen
@@ -193,7 +197,7 @@ first_cmd_output_on_screen means the output of the first command that was run in
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), append_delay),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_last_non_empty_output 
 The output from the last command run in the window that had some non empty output
@@ -248,7 +252,7 @@ TRUECOLOR
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), append_delay),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_last_non_empty_output_plain 
 The output from the last command run in the window that had some non empty output
@@ -301,7 +305,7 @@ TRUECOLOR
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), append_delay),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_screen 
 All text currently on the screen, excluding the scrollback history
@@ -358,7 +362,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), append_delay),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_screen_plain 
 All text currently on the screen as plaintext, excluding the scrollback history
@@ -418,7 +422,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), append_delay),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_selection 
 Currently selected text
@@ -478,7 +482,7 @@ o                             .       .
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), append_delay),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_selection_plain 
 Currently selected text as plaintext
@@ -538,7 +542,7 @@ o                             .       .
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), append_delay),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_get_text_selection_keep_selection 
 Currently selected text, keep text selected after closing kitty-scrollback.nvim
