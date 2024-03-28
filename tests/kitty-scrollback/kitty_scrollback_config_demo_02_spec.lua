@@ -86,6 +86,7 @@ describe('kitty-scrollback.nvim', function()
   before_all()
 
   before_each(h.pause_seconds)
+  after_each(h.kitty_remote_close_window)
 
   it('ksb_example_get_text_first_cmd_output_on_screen', function()
     h.move_to_first_prompt()
@@ -133,7 +134,6 @@ first_cmd_output_on_screen means the output of the first command that was run in
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_first_cmd_output_on_screen_plain', function()
@@ -182,7 +182,6 @@ first_cmd_output_on_screen means the output of the first command that was run in
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_last_non_empty_output', function()
@@ -238,7 +237,6 @@ TRUECOLOR
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_last_non_empty_output_plain', function()
@@ -294,7 +292,6 @@ TRUECOLOR
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_screen', function()
@@ -352,7 +349,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_screen_plain', function()
@@ -410,7 +406,6 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         cursor_x = 3,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_selection', function()
@@ -471,7 +466,6 @@ o                             .       .
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_selection_plain', function()
@@ -532,7 +526,6 @@ o                             .       .
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   it('ksb_example_get_text_selection_keep_selection', function()
@@ -593,7 +586,6 @@ o                             .       .
         cursor_x = 2,
       }
     )
-    h.kitty_remote_close_window()
   end)
 
   after_all()
