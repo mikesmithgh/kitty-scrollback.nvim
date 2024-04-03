@@ -164,7 +164,7 @@ kitty-scrollback: Neovim version
 line1
 line2
 line3]]),
-        h.shift_enter(),
+        h.with_pause_seconds_before(h.shift_enter()),
         [[EOF]],
       }),
       {
