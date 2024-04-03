@@ -80,7 +80,15 @@ M.clear_yank_autocommand_and_get_visual_selection = function()
 end
 
 M.quitall = function()
-  vim.cmd.quitall({ bang = true })
+  if vim.fn.getcmdwintype() == '' then
+    vim.cmd.quitall({ bang = true })
+  else
+    -- in command-line window, we have to exit both the command-line window and neovim
+    vim.cmd.quit({ bang = true })
+    vim.defer_fn(function()
+      vim.cmd.quitall({ bang = true })
+    end, 250)
+  end
 end
 
 M.plug_mapping_names = {

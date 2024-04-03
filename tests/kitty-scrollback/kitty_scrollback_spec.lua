@@ -399,4 +399,25 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
       }
     )
   end)
+
+  it('should send text to kitty from command-line window', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.open_kitty_scrollback_nvim(),
+        h.send_without_newline([[q:i]]),
+        h.send_without_newline([[# in command-line window]]),
+        h.send_without_newline(h.esc()),
+        h.send_without_newline([[V]]),
+        h.shift_enter(),
+      }),
+      {
+        stdout = [[
+$ # in command-line window
+]],
+        cursor_y = 1,
+        cursor_x = 27,
+      },
+      'kitty-scrollback.nvim content did not match the terminal screen'
+    )
+  end)
 end)
