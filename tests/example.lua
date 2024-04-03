@@ -240,9 +240,7 @@ require('kitty-scrollback').setup({
   },
   ksb_example_paste_win_highlight_as_float = {
     paste_window = {
-      highlight_as_normal_win = function()
-        return false
-      end,
+      highlight_as_normal_win = false,
     },
   },
   ksb_example_paste_win_register = {
