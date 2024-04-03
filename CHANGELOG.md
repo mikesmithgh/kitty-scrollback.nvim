@@ -1,3 +1,10 @@
+## [4.2.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.2.2...v4.2.3) (2024-04-03)
+
+
+### Bug Fixes
+
+* close command-line window before quitting ([12d82c5](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/12d82c5029eb204c825abd97f966bf00000dbd03)), closes [#213](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/213)
+
 ## [4.2.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.2.1...v4.2.2) (2024-03-10)
 
 
