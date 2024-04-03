@@ -582,7 +582,7 @@ CONFIGURATION OPTIONS
     
       -- KsbPasteWindowOpts? options for paste window that sends commands to Kitty
       paste_window = {
-        -- fun(): boolean? If function returns true, use Normal highlight group. If false, use NormalFloat
+        --- BoolOrFn? If true, use Normal highlight group. If false, use NormalFloat
         highlight_as_normal_win = nil,
         -- string? The filetype of the paste window
         filetype = nil,
@@ -590,9 +590,9 @@ CONFIGURATION OPTIONS
         hide_footer = false,
         -- integer? The winblend setting of the window, see :help winblend
         winblend = 0,
-        -- fun(paste_winopts: KsbWinOpts): table<string,any>? Paste float window overrides, see nvim_open_win() for configuration
+        -- KsbWinOptsOverride? Paste float window overrides, see nvim_open_win() for configuration
         winopts_overrides = nil,
-        -- fun(footer_winopts: KsbWinOpts, paste_winopts: KsbWinOpts): table<string,any>? Paste footer window overrides, see nvim_open_win() for configuration
+        -- KsbFooterWinOptsOverride? Paste footer window overrides, see nvim_open_win() for configuration
         footer_winopts_overrides = nil,
         -- string? register used during yanks to paste window, see :h registers
         yank_register = '',

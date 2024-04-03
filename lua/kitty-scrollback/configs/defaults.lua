@@ -30,18 +30,20 @@
 ---@field show_timer boolean If true, show a timer in the status window while kitty-scrollback.nvim is loading
 ---@field icons KsbStatusWindowIcons Icons displayed in the status window, defaults to 󰄛 󰣐 
 
+---@alias BoolOrFn boolean|fun():boolean
 ---@alias KsbWinOpts table<string, any>
-
 ---@alias KsbWinOptsOverrideFunction fun(paste_winopts:KsbWinOpts):KsbWinOpts
+---@alias KsbWinOptsOverride KsbWinOpts|fun(paste_winopts:KsbWinOpts):KsbWinOpts
 ---@alias KsbFooterWinOptsOverrideFunction fun(footer_winopts:KsbWinOpts, paste_winopts:KsbWinOpts):KsbWinOpts
+---@alias KsbFooterWinOptsOverride KsbWinOpts|KsbFooterWinOptsOverrideFunction
 
 ---@class KsbPasteWindowOpts
----@field highlight_as_normal_win nil|fun():boolean If function returns true, use Normal highlight group. If false, use NormalFloat
+---@field highlight_as_normal_win BoolOrFn|nil If true, use Normal highlight group. If false, use NormalFloat
 ---@field filetype string|nil The filetype of the paste window
 ---@field hide_footer boolean|nil If true, hide mappings in the footer when the paste window is initially opened
 ---@field winblend integer|nil The winblend setting of the window, see :help winblend
----@field winopts_overrides KsbWinOptsOverrideFunction|nil Paste float window overrides, see nvim_open_win() for configuration
----@field footer_winopts_overrides KsbFooterWinOptsOverrideFunction|nil Paste footer window overrides, see nvim_open_win() for configuration
+---@field winopts_overrides KsbWinOptsOverride|nil Paste float window overrides, see nvim_open_win() for configuration
+---@field footer_winopts_overrides KsbFooterWinOptsOverride|nil Paste footer window overrides, see nvim_open_win() for configuration
 ---@field yank_register string|nil register used during yanks to paste window, see :h registers
 ---@field yank_register_enabled boolean|nil If true, the `yank_register` copies content to the paste window. If false, disable yank to paste window
 

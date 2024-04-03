@@ -37,12 +37,15 @@ M.footer_winopts = function(paste_winopts)
     style = 'minimal',
   }
 
-  if opts.paste_window.footer_winopts_overrides then
+  local footer_winopts_overrides = opts.paste_window.footer_winopts_overrides
+  if footer_winopts_overrides and type(footer_winopts_overrides) == 'function' then
     footer_winopts = vim.tbl_deep_extend(
       'force',
       footer_winopts,
       opts.paste_window.footer_winopts_overrides(footer_winopts, paste_winopts) or {}
     )
+  elseif type(footer_winopts_overrides) == 'table' then
+    footer_winopts = vim.tbl_deep_extend('force', footer_winopts, footer_winopts_overrides)
   end
 
   return footer_winopts

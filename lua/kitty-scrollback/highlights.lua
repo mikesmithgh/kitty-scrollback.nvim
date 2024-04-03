@@ -55,8 +55,14 @@ end
 
 local function pastewin_color()
   local hl_as_normal = M.has_default_or_vim_colorscheme()
-  if opts.paste_window.highlight_as_normal_win then
+
+  if
+    opts.paste_window.highlight_as_normal_win
+    and type(opts.paste_window.highlight_as_normal_win) == 'function'
+  then
     hl_as_normal = opts.paste_window.highlight_as_normal_win()
+  else
+    hl_as_normal = opts.paste_window.highlight_as_normal_win == true
   end
   local hl_name = hl_as_normal and 'Normal' or 'NormalFloat'
   local hl_def = vim.api.nvim_get_hl(0, { name = hl_name, link = false })

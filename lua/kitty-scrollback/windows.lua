@@ -57,9 +57,12 @@ M.paste_winopts = function(row, col, height_offset)
     end
   end
 
-  if opts.paste_window.winopts_overrides then
+  local winopts_overrides = opts.paste_window.winopts_overrides
+  if winopts_overrides and type(winopts_overrides) == 'function' then
     winopts =
       vim.tbl_deep_extend('force', winopts, opts.paste_window.winopts_overrides(winopts) or {})
+  elseif type(winopts_overrides) == 'table' then
+    winopts = vim.tbl_deep_extend('force', winopts, winopts_overrides)
   end
 
   return winopts
