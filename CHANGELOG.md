@@ -1,3 +1,10 @@
+# [4.3.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.2.3...v4.3.0) (2024-04-03)
+
+
+### Features
+
+* update paste_window options to be either a table of function ([#220](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/220)) ([f1df70c](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/f1df70cddea4a7259d56e84de65fe8addccb9ee3))
+
 ## [4.2.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.2.2...v4.2.3) (2024-04-03)
 
 
