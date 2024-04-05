@@ -54,10 +54,10 @@ describe('kitty-scrollback.nvim', function()
     h.assert_screen_equals(
       h.feed_kitty({
         h.with_pause_seconds_before([[ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_ci_test -N '']]),
-        [[cat ~/.ssh/id_ed25519_ci_test >> ~/.ssh/authorized_keys]],
-        [[ssh -i ~/.ssh/id_ed25519_ci_test localhost]],
+        [[cat ~/.ssh/id_ed25519_ci_test.pub >> ~/.ssh/authorized_keys]],
+        [[ssh -o "StrictHostKeyChecking no" -i ~/.ssh/id_ed25519_ci_test localhost]],
         h.with_pause_seconds_before([[clear; \]]),
-        [==[[ -n "$SSH_CONNECTION" ] && echo "You are connected via SSH."; || echo "You are not connected via SSH."; \]==],
+        [==[[ -n "$SSH_CONNECTION" ] && echo "You are connected via SSH." || echo "You are not connected via SSH."; \]==],
         [[read -r]],
         h.open_kitty_scrollback_nvim(),
       }),
