@@ -125,7 +125,7 @@ def parse_cwd(args):
             cwd_args = args[idx + 1]
             del args[idx:idx + 2]
             return ('--cwd', cwd_args)
-    return ('--cwd', 'root')
+    return ('--cwd', 'current')
 
 
 def nvim_err_cmd(err_file):
