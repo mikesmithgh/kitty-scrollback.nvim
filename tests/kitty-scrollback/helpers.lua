@@ -29,7 +29,7 @@ local color_table = {
 }
 
 -- copied from plenary.busted
-local color_string = function(color, str)
+M.color_string = function(color, str)
   if not M.is_headless then
     return '[' .. str .. ']'
   end
@@ -46,7 +46,7 @@ end
 
 ---@diagnostic disable-next-line: unused-vararg
 M.ignore = function(desc, ...)
-  print(color_string('yellow', 'Ignored'), '||', desc)
+  print(M.color_string('yellow', 'Ignored'), '||', desc)
 end
 
 M.setup_backport = function()
@@ -444,7 +444,7 @@ M.feed_kitty = function(input, pause_seconds_after)
     last_line:match('^(.*)\x1b%[%?25[hl]\x1b%[(%d+);(%d+)H\x1b.*$')
 
   if start_of_line == nil then
-    print(color_string('red', 'last_line is ' .. last_line:gsub('\x1b', '^[')))
+    print(M.color_string('red', 'last_line is ' .. last_line:gsub('\x1b', '^[')))
     assert.is_not_nil(start_of_line)
   end
 
@@ -465,8 +465,8 @@ local function debug_print_differences(actual, expected)
 
     for i = 1, minLength do
       if actual:sub(i, i) ~= expected:sub(i, i) then
-        actual_result = actual_result .. color_string('red', actual:sub(i, i))
-        expected_result = expected_result .. color_string('green', expected:sub(i, i))
+        actual_result = actual_result .. M.color_string('red', actual:sub(i, i))
+        expected_result = expected_result .. M.color_string('green', expected:sub(i, i))
       else
         actual_result = actual_result .. actual:sub(i, i)
         expected_result = expected_result .. expected:sub(i, i)
@@ -479,17 +479,17 @@ local function debug_print_differences(actual, expected)
     end
 
     print(
-      color_string(
+      M.color_string(
         'red',
         '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
       )
     )
-    print(color_string('green', 'Expected:'))
+    print(M.color_string('green', 'Expected:'))
     print(expected_result)
-    print(color_string('red', 'Actual:'))
+    print(M.color_string('red', 'Actual:'))
     print(actual_result)
     print(
-      color_string(
+      M.color_string(
         'red',
         '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
       )
