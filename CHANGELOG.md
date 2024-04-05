@@ -1,3 +1,10 @@
+## [4.3.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.0...v4.3.1) (2024-04-05)
+
+
+### Bug Fixes
+
+* use root for cwd instead of current ([#222](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/222)) ([db38665](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/db38665bb573e7f62e0a435612f5f8abd0a9855c))
+
 # [4.3.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.2.3...v4.3.0) (2024-04-03)
 
 
