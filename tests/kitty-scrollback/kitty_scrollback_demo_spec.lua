@@ -65,11 +65,15 @@ describe('kitty-scrollback.nvim', function()
     h.feed_kitty({
       h.send_as_string([[source ]] .. ksb_dir .. [[tests/bashrc]]),
       h.send_as_string([[cd ]] .. ksb_work_dir),
-      h.send_as_string([[
+      h.send_as_string([[git checkout main]]),
+      h.with_pause_seconds_before(
+        h.send_as_string([[
 echo '-- demo' >> README.md 
 echo '-- demo' >> lua/kitty-scrollback/init.lua
 echo '-- demo' >> lua/kitty-scrollback/api.lua
 echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
+        3
+      ),
       h.with_pause_seconds_before(h.send_without_newline(h.clear())),
     })
   end)
