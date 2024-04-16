@@ -1,5 +1,5 @@
 -- NOTE: copied from
--- https://github.com/neovim/neovim/blob/be1d09c4272212ea9b354c900603568d238b4ab3/runtime/lua/vim/_system.lua
+-- https://github.com/neovim/neovim/blob/2fc2343728831d890a043def5d9d714947737cf6/runtime/lua/vim/_system.lua
 
 ---@diagnostic disable
 local uv = vim.uv
@@ -22,6 +22,7 @@ local uv = vim.uv
 --- @field stderr? string
 
 --- @class vim.SystemState
+--- @field cmd string[]
 --- @field handle? uv.uv_process_t
 --- @field timer?  uv.uv_timer_t
 --- @field pid? integer
@@ -60,6 +61,7 @@ local function close_handles(state)
 end
 
 --- @class vim.SystemObj
+--- @field cmd string[]
 --- @field pid integer
 --- @field private _state vim.SystemState
 --- @field wait fun(self: vim.SystemObj, timeout?: integer): vim.SystemCompleted
@@ -72,6 +74,7 @@ local SystemObj = {}
 --- @return vim.SystemObj
 local function new_systemobj(state)
   return setmetatable({
+    cmd = state.cmd,
     pid = state.pid,
     _state = state,
   }, { __index = SystemObj })
