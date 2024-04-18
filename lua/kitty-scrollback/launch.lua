@@ -153,7 +153,7 @@ local function set_options()
 end
 
 local set_cursor_position = vim.schedule_wrap(function(d)
-  local tab_offset = ksb_util.tab_offset()
+  local tab_offset = ksb_util.line_offset()
   local x = d.cursor_x - 1
   local y = d.cursor_y - 1 - tab_offset
   local scrolled_by = d.scrolled_by

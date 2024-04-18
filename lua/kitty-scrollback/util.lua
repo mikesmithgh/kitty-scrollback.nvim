@@ -63,10 +63,21 @@ end
 
 M.tab_offset = function()
   -- if always displaying a tabline or if displaying a tabline when more than one tab exists
-  if vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr('$') > 1) then
+  if vim.o.showtabline >= 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr('$') > 1) then
     return 1
   end
   return 0
+end
+
+M.winbar_offset = function()
+  if vim.o.winbar ~= '' then
+    return 1
+  end
+  return 0
+end
+
+M.line_offset = function()
+  return M.tab_offset() + M.winbar_offset()
 end
 
 M.clear_yank_autocommand_and_get_visual_selection = function()
