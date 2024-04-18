@@ -1,3 +1,10 @@
+## [4.3.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.1...v4.3.2) (2024-04-18)
+
+
+### Bug Fixes
+
+* adjust pastewin position when winbar is set ([#232](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/232)) ([e291b9e](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/e291b9e611a9c9ce25adad6bb1c4a9b850963de2)), closes [#119](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/119)
+
 ## [4.3.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.0...v4.3.1) (2024-04-05)
 
 
