@@ -1,3 +1,10 @@
+## [4.3.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.2...v4.3.3) (2024-04-18)
+
+
+### Bug Fixes
+
+* try child foreground cwd instead of root ([#234](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/234)) ([70f148a](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/70f148a25cd11d159e0fe168152c20c264f6f30c)), closes [#233](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/233)
+
 ## [4.3.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.1...v4.3.2) (2024-04-18)
 
 
