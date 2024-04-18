@@ -119,13 +119,15 @@ def parse_config(args):
     return 'ksb_builtin_get_text_all'
 
 
-def parse_cwd(args):
+def parse_cwd(args, default_cwd):
     for idx, arg in reversed(list(enumerate(args))):
         if arg == '--cwd' and (idx + 1 < len(args)):
             cwd_args = args[idx + 1]
             del args[idx:idx + 2]
             return ('--cwd', cwd_args)
-    return ('--cwd', 'root')
+    if default_cwd:
+        return ('--cwd', default_cwd)
+    return ()
 
 
 def nvim_err_cmd(err_file):
@@ -160,7 +162,7 @@ def handle_result(args: List[str],
             return
 
         config = parse_config(args)
-        cwd = parse_cwd(args)
+        cwd = parse_cwd(args, w.child.foreground_cwd)
         env = parse_env(args)
         tmux_data = parse_tmux_env(env)
         kitty_data_str = pipe_data(w,
