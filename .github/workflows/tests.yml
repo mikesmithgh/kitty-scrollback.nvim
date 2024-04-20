@@ -25,8 +25,8 @@ on:
         type: string
         default: 'stable'
   schedule:
-    # every 3 hours
-    - cron: "0 */3 * * *"
+    # 6am EST
+    - cron: "0 10 * * *"
 
 jobs:
   plenary:
