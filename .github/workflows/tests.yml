@@ -63,7 +63,7 @@ jobs:
           - nvim_version: 'stable'
             kitty_version: '0.33.1'
       fail-fast: false
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout repository
       if: ${{ !(inputs.enable_debug_tmate || inputs.enable_debug_vnc) || (inputs.debug_kitty_version == matrix.kitty_version && inputs.debug_nvim_version == matrix.nvim_version) }}
