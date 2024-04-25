@@ -632,6 +632,11 @@ M.wait_for_kitty_remote_connection = function(
       end
     end
     M.debug('Kitty starting...')
+    kitty_opts = vim.tbl_extend('force', {
+      env = {
+        KSB_DIR = M.ksb_dir(),
+      },
+    }, kitty_opts)
     kitty_instance = M.debug(vim.system(kitty_cmd, kitty_opts, function(obj)
       M.debug('Kitty exiting...')
       M.debug(obj)
