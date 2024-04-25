@@ -131,7 +131,6 @@ $ # 31
     h.assert_screen_equals(
       h.feed_kitty({
         h.send_without_newline(h.send_as_string([[gg0]])),
-        h.open_tmux_kitty_scrollback_nvim(),
       }),
       {
         stdout = h.with_status_win([[
