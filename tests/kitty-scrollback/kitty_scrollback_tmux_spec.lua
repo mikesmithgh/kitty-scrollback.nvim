@@ -17,6 +17,12 @@ local shell = h.debug(h.is_github_action and '/bin/bash' or (vim.o.shell .. ' --
 describe('kitty-scrollback.nvim', function()
   h.init_nvim()
 
+  vim.fn.writefile({
+    [[bind [ run-shell 'kitty @ kitten ]]
+      .. ksb_dir
+      .. [[python/kitty_scrollback_nvim.py --env "TMUX=$TMUX" --env "TMUX_PANE=#{pane_id}"']],
+  }, './tmp/tmux.conf')
+
   before_each(function()
     vim.fn.mkdir(ksb_dir .. 'tests/workdir', 'p')
     tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
@@ -37,7 +43,7 @@ describe('kitty-scrollback.nvim', function()
     h.feed_kitty({
       h.with_pause_seconds_before(h.send_without_newline(h.clear())),
       h.send_as_string(
-        ([[tmux -S %s -f %stests/tmux.conf new-session -c %s %s]]):format(
+        ([[tmux -S %s -f %stmp/tmux.conf new-session -c %s %s]]):format(
           tmux_tmpsock,
           ksb_dir,
           ksb_dir .. 'tests/workdir',
@@ -131,7 +137,6 @@ $ # 31
     h.assert_screen_equals(
       h.feed_kitty({
         h.send_without_newline(h.send_as_string([[gg0]])),
-        h.open_tmux_kitty_scrollback_nvim(),
       }),
       {
         stdout = h.with_status_win([[
