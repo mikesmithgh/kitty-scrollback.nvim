@@ -190,6 +190,7 @@ def handle_result(args: List[str],
         ) + env + cwd
 
         nvim_args = parse_nvim_args(args) + (
+            '-n',  # Don't use swap file to avoid error if it's in use.
             '--cmd',
             ' lua'
             ' vim.api.nvim_create_autocmd([[VimEnter]], {'
