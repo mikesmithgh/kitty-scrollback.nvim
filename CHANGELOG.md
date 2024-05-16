@@ -1,3 +1,11 @@
+## [4.3.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.3...v4.3.4) (2024-05-16)
+
+
+### Bug Fixes
+
+* disable existing swap file is found message ([e947826](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/e94782605fdcb054309f5ab187d0c645bb382ef4))
+* disable swapfile for kitty-scrollback buffers ([772acac](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/772acac09e84a116dd06ebe9696c1244f3fc1dbc))
+
 ## [4.3.3](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.2...v4.3.3) (2024-04-18)
 
 
