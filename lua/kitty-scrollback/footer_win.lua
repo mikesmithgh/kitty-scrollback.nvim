@@ -64,9 +64,8 @@ M.open_footer_window = function(winopts, refresh_only)
     -- if buffer already exists, assume window is already created and just read
     p.footer_bufid = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_buf_set_name(p.footer_bufid, vim.fn.tempname() .. '.ksb_footerbuf')
-    vim.api.nvim_set_option_value('filetype', 'help', {
-      buf = p.footer_bufid,
-    })
+    vim.api.nvim_set_option_value('filetype', 'help', { buf = p.footer_bufid })
+    vim.api.nvim_set_option_value('swapfile', false, { buf = p.paste_bufid })
 
     p.footer_winid = vim.api.nvim_open_win(p.footer_bufid, false, M.footer_winopts(winopts))
 
