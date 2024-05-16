@@ -33,10 +33,10 @@ jobs:
     strategy:
       matrix:
         nvim_version: 
-          - 'stable'  # v0.9.5
+          - 'stable'  # v0.10.0
           - 'nightly' 
         kitty_version: 
-          - 'stable'  # 0.34
+          - 'stable'  # 0.34.1
           - 'nightly'
         # update __branch-protection-rules.json and run __update_branch_protection_rules.sh when modified
         # test all version of nvim released as of v0.9.0
@@ -45,11 +45,7 @@ jobs:
           # nvim versions + kitty stable
           - nvim_version: 'v0.9.0'
             kitty_version: 'stable'
-          - nvim_version: 'v0.9.1'
-            kitty_version: 'stable'
-          - nvim_version: 'v0.9.2'
-            kitty_version: 'stable'
-          - nvim_version: 'v0.9.4'  # nvim 'v0.9.3' does not exist, this was an issue with neovim macos release
+          - nvim_version: 'v0.9.5'
             kitty_version: 'stable'
           # nvim stable + kitty versions
           - nvim_version: 'stable'
