@@ -126,7 +126,7 @@ local function set_options()
   vim.o.termguicolors = true
 
   -- preferred optional opts
-  vim.opt.shortmess:append('I') -- no intro message
+  vim.opt.shortmess:append('AI') -- no existing swap file or intro message
   vim.o.laststatus = 0
   vim.o.scrolloff = 0
   vim.o.cmdheight = 0
