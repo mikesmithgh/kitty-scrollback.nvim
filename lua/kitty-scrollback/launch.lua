@@ -382,6 +382,7 @@ M.launch = function()
       p.bufid = vim.api.nvim_create_buf(true, true)
       vim.api.nvim_set_current_buf(p.bufid)
     end
+    vim.api.nvim_set_option_value('swapfile', false, { buf = p.bufid })
     p.winid = vim.api.nvim_get_current_win()
 
     ksb_autocmds.load_autocmds()
