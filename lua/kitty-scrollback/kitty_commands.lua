@@ -149,7 +149,6 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
   local start_bracketed_paste = [[\x1b[200~]] -- see https://cirw.in/blog/bracketed-paste
   local stop_bracketed_paste = [[\x1b[201~]] -- see https://cirw.in/blog/bracketed-paste
 
-  -- TODO: add workaround docs for bash double escape issue
   cmd_str = start_bracketed_paste .. cmd_str .. stop_bracketed_paste
 
   ksb_util.system_handle_error({
