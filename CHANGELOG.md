@@ -1,3 +1,10 @@
+## [4.3.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.4...v4.3.5) (2024-05-23)
+
+
+### Bug Fixes
+
+* **fish:** use empty bracketed paste instead of NUL char ([#251](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/251)) ([af16e06](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/af16e06b3e26d73aeafe89c684b802671b2dd577)), closes [#250](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/250)
+
 ## [4.3.4](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.3...v4.3.4) (2024-05-16)
 
 
