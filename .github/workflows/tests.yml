@@ -81,7 +81,7 @@ jobs:
       if: ${{ !(inputs.enable_debug_tmate || inputs.enable_debug_vnc) || (inputs.debug_kitty_version == matrix.kitty_version && inputs.debug_nvim_version == matrix.nvim_version) }}
       run: |
         sudo apt update
-        sudo apt install -y xfce4 libxcb-xkb1 xsel tmux
+        sudo apt install -y xfce4 libxcb-xkb1 xsel tmux fish
         # homebrew is not used but is required to reproduce an issue for a test case
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
