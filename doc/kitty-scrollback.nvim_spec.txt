@@ -247,8 +247,8 @@ KsbGenKittenModes                       *kitty-scrollback.api.KsbGenKittenModes*
 M.generate_kittens()                     *kitty-scrollback.api.generate_kittens*
 
 
-                                   *kitty-scrollback.api.generate_edit_commands*
-M.generate_edit_commands()
+                            *kitty-scrollback.api.generate_command_line_editing*
+M.generate_command_line_editing()
 
 
 M.checkhealth()                               *kitty-scrollback.api.checkhealth*
