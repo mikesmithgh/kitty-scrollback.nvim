@@ -1,8 +1,8 @@
 #!/bin/sh
 
 if [ -z "$1" ]; then
-	printf 'missing input file\n'
-	exit 2
+  printf 'missing input file\n'
+  exit 2
 fi
 
 # set input_file to the last argument
@@ -16,8 +16,9 @@ ksb_input_dir=$(mktemp -d)
 ksb_input_file="$ksb_input_dir/input.ksb_editcommand"
 cp "$input_file" "$ksb_input_file"
 
-kitty @ kitten /Users/mike/gitrepos/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py \
-	--env "KITTY_SCROLLBACK_NVIM_EDIT_INPUT=$ksb_input_file"
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+ksb_dir=$(dirname "$script_dir")
+kitty @ kitten "$ksb_dir/python/kitty_scrollback_nvim.py" --env "KITTY_SCROLLBACK_NVIM_EDIT_INPUT=$ksb_input_file"
 
 # small delay before to avoid adding an extra prompt after
 # this command has exited and before kitty-scrollback.nvim
