@@ -442,6 +442,13 @@ M.launch = function()
             opts.callbacks.after_ready(p.kitty_data, opts)
           end)
         end
+        if vim.env.KITTY_SCROLLBACK_NVIM_EDIT_INPUT then
+          vim.schedule(function()
+            local input_lines = vim.fn.readfile(vim.env.KITTY_SCROLLBACK_NVIM_EDIT_INPUT)
+            ksb_win.open_paste_window(#input_lines == 1 and input_lines[1] == '')
+            vim.api.nvim_buf_set_lines(p.paste_bufid, 0, -1, false, input_lines)
+          end)
+        end
         ksb_api.close_kitty_loading_window()
         if block_input_timer then
           vim.fn.timer_stop(block_input_timer)
