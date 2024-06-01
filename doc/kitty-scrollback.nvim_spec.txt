@@ -39,6 +39,7 @@ KsbKittyData                              *kitty-scrollback.launch.KsbKittyData*
         {kitty_version}            (table)            kitty version
         {kitty_path}               (string)           kitty executable path
         {tmux}                     (KsbTmuxData|nil)  tmux data
+        {shell}                    (string)           kitty shell program to execute
 
 
 KsbPrivate                                  *kitty-scrollback.launch.KsbPrivate*
@@ -175,7 +176,7 @@ KsbPasteWindowOpts                             *default_opts.KsbPasteWindowOpts*
 
     Fields: ~
         {highlight_as_normal_win}   (BoolOrFn|nil)                  If true, use Normal highlight group. If false, use NormalFloat
-        {filetype}                  (string|nil)                    The filetype of the paste window
+        {filetype}                  (string|nil)                    The filetype of the paste window. If nil, use the shell that is configured for kitty
         {hide_footer}               (boolean|nil)                   If true, hide mappings in the footer when the paste window is initially opened
         {winblend}                  (integer|nil)                   The winblend setting of the window, see :help winblend
         {winopts_overrides}         (KsbWinOptsOverride|nil)        Paste float window overrides, see nvim_open_win() for configuration
