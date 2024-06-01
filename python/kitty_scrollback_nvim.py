@@ -205,6 +205,17 @@ def handle_result(args: List[str],
             ' })')
 
         cmd = ('launch', ) + kitty_args + ('nvim', ) + nvim_args
+
+        print()
+        print('=== kitty-scrollback.nvim debugging start ===')
+        print()
+        print(f'which nvim: {shutil.which('nvim')}')
+        print()
+        print('kitty command: ' + ' '.join(cmd))
+        print()
+        print('=== kitty-scrollback.nvim debugging stop ===')
+        print()
+
         boss.call_remote_control(w, cmd)
     else:
         raise Exception(f'Failed to get window with id: {target_window_id}')
