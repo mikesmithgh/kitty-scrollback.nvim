@@ -1,3 +1,10 @@
+## [4.3.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.5...v4.3.6) (2024-06-01)
+
+
+### Bug Fixes
+
+* **pastewin:** default the paste window's filetype to kitty's shell ([#256](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/256)) ([9294cc5](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/9294cc5b2f3a957532eb5120161234eaafa4753a)), closes [#254](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/254)
+
 ## [4.3.5](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.4...v4.3.5) (2024-05-23)
 
 
