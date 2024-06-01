@@ -57,6 +57,7 @@ local M = {}
 ---@field kitty_version table kitty version
 ---@field kitty_path string kitty executable path
 ---@field tmux KsbTmuxData|nil tmux data
+---@field shell string kitty shell program to execute
 
 ---@class KsbPrivate
 ---@field orig_columns number

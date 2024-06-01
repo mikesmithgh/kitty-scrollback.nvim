@@ -463,4 +463,22 @@ $ # in command-line window
       'kitty-scrollback.nvim content did not match the terminal screen'
     )
   end)
+
+  it('should have bash filetype for paste window', function()
+    h.assert_screen_match(
+      h.feed_kitty({
+        h.open_kitty_scrollback_nvim(),
+        h.send_without_newline([[a]]),
+        h.send_without_newline(h.esc()),
+        [[:set filetype?]],
+      }),
+      {
+        pattern = [[
+.*
+:set filetype%?
+  filetype=bash
+Press ENTER or type command to continue.*]],
+      }
+    )
+  end)
 end)

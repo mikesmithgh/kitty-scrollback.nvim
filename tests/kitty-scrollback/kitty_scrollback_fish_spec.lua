@@ -92,4 +92,22 @@ fish $ echo autocomplete test
       }
     )
   end)
+
+  it('should have fish filetype for paste window', function()
+    h.assert_screen_match(
+      h.feed_kitty({
+        h.open_kitty_scrollback_nvim(),
+        h.send_without_newline([[a]]),
+        h.send_without_newline(h.esc()),
+        [[:set filetype?]],
+      }),
+      {
+        pattern = [[
+.*
+:set filetype%?
+  filetype=fish
+Press ENTER or type command to continue.*]],
+      }
+    )
+  end)
 end)
