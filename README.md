@@ -588,7 +588,7 @@ The configuration precedence is `default` > `global` > `builtin` > `user` where 
   paste_window = {
     --- BoolOrFn? If true, use Normal highlight group. If false, use NormalFloat
     highlight_as_normal_win = nil,
-    -- string? The filetype of the paste window
+    -- string? The filetype of the paste window. If nil, use the shell that is configured for kitty
     filetype = nil,
     -- boolean? If true, hide mappings in the footer when the paste window is initially opened
     hide_footer = false,

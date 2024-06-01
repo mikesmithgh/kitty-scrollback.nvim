@@ -39,7 +39,7 @@
 
 ---@class KsbPasteWindowOpts
 ---@field highlight_as_normal_win BoolOrFn|nil If true, use Normal highlight group. If false, use NormalFloat
----@field filetype string|nil The filetype of the paste window
+---@field filetype string|nil The filetype of the paste window. If nil, use the shell that is configured for kitty
 ---@field hide_footer boolean|nil If true, hide mappings in the footer when the paste window is initially opened
 ---@field winblend integer|nil The winblend setting of the window, see :help winblend
 ---@field winopts_overrides KsbWinOptsOverride|nil Paste float window overrides, see nvim_open_win() for configuration

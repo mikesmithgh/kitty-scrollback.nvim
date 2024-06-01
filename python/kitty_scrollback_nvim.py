@@ -4,6 +4,7 @@ from kitty.boss import Boss
 from kittens.tui.handler import result_handler
 from kitty.fast_data_types import get_options
 from kitty.constants import config_dir, version
+from kitty.utils import resolved_shell
 
 import json
 import os
@@ -87,6 +88,7 @@ def pipe_data(w, target_window_id, config, kitty_path, tmux_data):
         'kitty_config_dir': config_dir,
         'kitty_version': version,
         'tmux': tmux_data,
+        'shell': resolved_shell(kitty_opts)[0]
     }
 
 
