@@ -10,6 +10,7 @@ import json
 import os
 import inspect
 import shutil
+import sys
 
 ksb_dir = os.path.dirname(
     os.path.dirname(os.path.abspath(inspect.getfile(lambda: None))))
@@ -209,7 +210,12 @@ def handle_result(args: List[str],
         print()
         print('=== kitty-scrollback.nvim debugging start ===')
         print()
-        print(f'which nvim: {shutil.which('nvim')}')
+        print(f'python version: {sys.version}')
+        print(f'python version_info: {sys.version_info}')
+        print()
+        print('PATH: ' + os.environ.get("PATH", None))
+        print()
+        print(f'which nvim: {shutil.which("nvim")}')
         print()
         print('kitty command: ' + ' '.join(cmd))
         print()
