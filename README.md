@@ -835,6 +835,12 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 ## 🪛 Optional Setup
 
+### command-line editing
+
+- Supports `bash`, `fish`, and `zsh`
+- Run `:KittyScrollbackGenerateCommandLineEditing bash|fish|zsh`
+- `$KITTY_SCROLLBACK_NVIM_EDIT_ARGS` can be used to pass arguments to kitty-scrollback.nvim in command-line editing mode
+
 ### tmux (🧪 experimental )
 
 > [!WARNING]\

@@ -18,7 +18,8 @@ cp "$input_file" "$ksb_input_file"
 
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 ksb_dir=$(dirname "$script_dir")
-kitty @ kitten "$ksb_dir/python/kitty_scrollback_nvim.py" --env "KITTY_SCROLLBACK_NVIM_EDIT_INPUT=$ksb_input_file"
+# shellcheck disable=SC2086
+kitty @ kitten "$ksb_dir/python/kitty_scrollback_nvim.py" --env "KITTY_SCROLLBACK_NVIM_MODE=command_line_editing" --env "KITTY_SCROLLBACK_NVIM_EDIT_INPUT=$ksb_input_file" $KITTY_SCROLLBACK_NVIM_EDIT_ARGS
 
 # small delay before to avoid adding an extra prompt after
 # this command has exited and before kitty-scrollback.nvim

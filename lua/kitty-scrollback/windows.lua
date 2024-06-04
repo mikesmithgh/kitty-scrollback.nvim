@@ -71,14 +71,14 @@ end
 M.open_paste_window = function(start_insert)
   vim.cmd.stopinsert()
 
-  if vim.env.KITTY_SCROLLBACK_NVIM_EDIT_INPUT then
+  if ksb_util.command_line_editing_mode then
     p.pos = nil
   end
 
   if not p.pos then
     if
       (opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all')
-      and vim.env.KITTY_SCROLLBACK_NVIM_EDIT_INPUT == nil
+      and not ksb_util.command_line_editing_mode
     then
       vim.notify(
         'kitty-scrollback.nvim: missing position with extent=' .. opts.kitty_get_text.extent,
