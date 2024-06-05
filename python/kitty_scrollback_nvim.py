@@ -5,6 +5,7 @@ from kittens.tui.handler import result_handler
 from kitty.fast_data_types import get_options
 from kitty.constants import config_dir, version
 from kitty.utils import resolved_shell
+from kitty.shell_integration import get_effective_ksi_env_var
 
 import json
 import os
@@ -17,18 +18,6 @@ ksb_dir = os.path.dirname(
 
 def main():
     raise SystemExit('Must be run as kitten kitty_scrollback_nvim')
-
-
-def get_kitty_shell_integration(kitty_opts, w):
-    # KITTY_SHELL_INTEGRATION env var takes precedence over opts
-    # kitty v0.30.1 is returning empty window envs so fallback on opts
-    # see https://github.com/kovidgoyal/kitty/issues/6749
-    shell_integration_opts = kitty_opts.shell_integration or frozenset(
-        {'enabled'})
-    shell_integration = w.child.environ.get(
-        'KITTY_SHELL_INTEGRATION',
-        ' '.join(list(shell_integration_opts)))
-    return shell_integration.split()
 
 
 def parse_tmux_env(env):
@@ -57,7 +46,7 @@ def parse_tmux_env(env):
 # based on kitty source window.py
 def pipe_data(w, target_window_id, config, kitty_path, tmux_data):
     kitty_opts = get_options()
-    kitty_shell_integration = get_kitty_shell_integration(kitty_opts, w)
+    kitty_shell_integration = get_effective_ksi_env_var(kitty_opts)
     return {
         'kitty_path': kitty_path,
         'kitty_scrollback_config': config,
@@ -70,6 +59,7 @@ def pipe_data(w, target_window_id, config, kitty_path, tmux_data):
         'window_title': w.title,
         'ksb_dir': ksb_dir,
         'kitty_opts': {
+            # shell_integration is no longer used by our validation (ref: #71), consider deprecating
             "shell_integration":
             kitty_shell_integration,
             "scrollback_fill_enlarged_window":

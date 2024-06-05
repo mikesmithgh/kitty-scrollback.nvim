@@ -194,13 +194,14 @@ M.check_nvim_version = function(version, check_only)
   return false
 end
 
+-- TODO: update README, test this, breaking change, make announcement
 M.check_kitty_version = function(check_only)
   if not check_only then
-    vim.health.start('kitty-scrollback: Kitty version 0.29+')
+    vim.health.start('kitty-scrollback: Kitty version 0.32.2+')
   end
   local kitty_version = p.kitty_data.kitty_version
   local kitty_version_str = 'kitty ' .. table.concat(kitty_version, '.')
-  if vim.version.cmp(kitty_version, { 0, 29, 0 }) >= 0 then
+  if vim.version.cmp(kitty_version, { 0, 32, 2 }) >= 0 then
     if not check_only then
       vim.health.ok(kitty_version_str)
     end
@@ -292,7 +293,6 @@ end
 ---@class KsbAdvice
 ---@field allow_remote_control table
 ---@field listen_on table
----@field kitty_shell_integration table
 ---@field nvim_version table
 ---@field kitty_version table
 
@@ -346,27 +346,6 @@ M.advice = function()
       'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control for additional',
       'information on configuring the *allow_remote_control* option.',
       '',
-    },
-    kitty_shell_integration = {
-      'Remove `disabled` and `no-prompt-mark` from *shell_integration* if present in your Kitty configuration.',
-      '',
-      'Current *kitty_get_text* options:',
-      '`    opts = {`',
-      '`        kitty_get_text = {`',
-      [[`            extent = ']] .. extent .. [[',`]],
-      [[`            ansi = ]] .. ansi .. [[,`]],
-      [[`            clear_selection = ]] .. clear_selection .. [[,`]],
-      '`        },`',
-      '`    }`',
-      '',
-      'See https://sw.kovidgoyal.net/kitty/remote-control/#cmdoption-kitty-get-text-extent for',
-      'more information on *extent* or run `kitty @ get-text --help`',
-      '',
-      'Current *shell_integration* options:',
-      [[`    KITTY_SHELL_INTEGRATION=']] .. shell_integration .. [['`]],
-      '',
-      'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.shell_integration for more information',
-      'on *shell_integration*',
     },
   }
 end
