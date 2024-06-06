@@ -392,7 +392,7 @@ map kitty_mod+h kitty_scrollback_nvim --config myconfig
 
 The value of an entry in the options table can either be a table (`KsbOpts`) or a function (`fun(KsbKittyData):KsbOpts`). `KsbKittyData` contains metadata
 about Kitty and the scrollback buffer that may be useful when defining a configuration. The structure of `KsbKittyData` is defined in [lua/kitty-scrollback/launch.lua](./lua/kitty-scrollback/launch.lua).
-For example, you could add an additional configuration named `myfnconfig` 😂 that only loads the entire scrollback history if the user scrolled past the number of lines on the screen.
+For example, you could add an additional configuration named `myfnconfig` 😹 that only loads the entire scrollback history if the user scrolled past the number of lines on the screen.
 
 ```lua
 require('kitty-scrollback').setup({
