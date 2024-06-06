@@ -283,7 +283,7 @@ M.setup = function(kitty_data_str)
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM '
       .. tostring(vim.version())
       .. '. '
-      .. table.concat(ksb_health.advice().nvim_version)
+      .. table.concat(ksb_health.advice.nvim_version)
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
       ksb_util.quitall()
@@ -292,8 +292,9 @@ M.setup = function(kitty_data_str)
   if not ksb_health.check_kitty_version(true) then
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version kitty '
       .. table.concat(p.kitty_data.kitty_version, '.')
-      .. '. '
-      .. table.concat(ksb_health.advice().kitty_version)
+      .. '.\n\n'
+      .. table.concat(ksb_health.advice.kitty_version, '\n')
+      .. '\n'
     local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
     if response ~= 2 then
       ksb_util.quitall()

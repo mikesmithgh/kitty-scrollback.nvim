@@ -32,10 +32,10 @@ local function check_kitty_remote_control()
     local stderr = result.stderr:gsub('\n', '') or ''
     local msg = {}
     if stderr:match('.*/dev/tty.*') then
-      msg = M.advice().listen_on
+      msg = M.advice.listen_on
     end
     if stderr:match('.*allow_remote_control.*') then
-      msg = M.advice().allow_remote_control
+      msg = M.advice.allow_remote_control
     end
     local advice = {
       table.concat(msg, '\n'),
@@ -188,7 +188,7 @@ M.check_nvim_version = function(version, check_only)
     return true
   else
     if not check_only then
-      vim.health.error(nvim_version, M.advice().nvim_version)
+      vim.health.error(nvim_version, M.advice.nvim_version)
     end
   end
   return false
@@ -208,7 +208,7 @@ M.check_kitty_version = function(check_only)
     return true
   else
     if not check_only then
-      vim.health.error(kitty_version_str, M.advice().kitty_version)
+      vim.health.error(kitty_version_str, M.advice.kitty_version)
     end
   end
   return false
@@ -297,53 +297,46 @@ end
 ---@field kitty_version table
 
 ---@return KsbAdvice
-M.advice = function()
-  local extent = 'nil'
-  local ansi = 'nil'
-  local clear_selection = 'nil'
-  if opts then
-    extent = opts.kitty_get_text.extent
-    ansi = tostring(opts.kitty_get_text.ansi)
-    clear_selection = tostring(opts.kitty_get_text.clear_selection)
-  end
-
-  return {
-    nvim_version = {
-      'Neovim version 0.9 or greater is required to work with kitty-scrollback.nvim',
-    },
-    kitty_version = {
-      'Kitty version 0.29 or greater is required to work with kitty-scrollback.nvim',
-    },
-    allow_remote_control = {
-      'Kitty must be configured to allow remote control connections. Add the configuration',
-      '*allow_remote_control* to Kitty. For example, `allow_remote_control socket-only`',
-      'Changing *allow_remote_control* by reloading the config is not supported so you must ',
-      'completely close and reopen Kitty for the change to take effect.',
-      '',
-      'Compatible values with kitty-scrollback.nvim for the option *allow_remote_control* are',
-      '`yes`, `socket`, or `socket-only`.',
-      '',
-      'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control for additional',
-      'information on configuring the *allow_remote_control* option.',
-      '',
-    },
-    listen_on = {
-      'Kitty must be configured to listen on a Unix socket for remote control connections.',
-      'Add the configuration *listen_on* to Kitty. For example, `listen_on unix:/tmp/mykitty`',
-      'Changing *listen_on* by reloading the config is not supported so you must completely',
-      'close and reopen Kitty for the change to take effect.',
-      '',
-      'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on for additional information',
-      'on configuring the *listen_on* option.',
-      '',
-      'If *listen_on* is properly configured, check that the option *allow_remote_control* is',
-      'set to either `yes`, `socket`, or `socket-only`.',
-      '',
-      'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control for additional',
-      'information on configuring the *allow_remote_control* option.',
-      '',
-    },
-  }
-end
+M.advice = {
+  nvim_version = {
+    'Neovim version 0.9 or greater is required to work with kitty-scrollback.nvim.',
+  },
+  kitty_version = {
+    'Kitty version 0.32.2 or greater is required to work with kitty-scrollback.nvim.',
+    'If you are using version 0.29 through 0.32.1 of Kitty and cannot upgrade, then',
+    'you can still use tag v4.3.6 of kitty-scrollback.nvim',
+    '',
+    'See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v4.3.6',
+  },
+  allow_remote_control = {
+    'Kitty must be configured to allow remote control connections. Add the configuration',
+    '*allow_remote_control* to Kitty. For example, `allow_remote_control socket-only`',
+    'Changing *allow_remote_control* by reloading the config is not supported so you must ',
+    'completely close and reopen Kitty for the change to take effect.',
+    '',
+    'Compatible values with kitty-scrollback.nvim for the option *allow_remote_control* are',
+    '`yes`, `socket`, or `socket-only`.',
+    '',
+    'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control for additional',
+    'information on configuring the *allow_remote_control* option.',
+    '',
+  },
+  listen_on = {
+    'Kitty must be configured to listen on a Unix socket for remote control connections.',
+    'Add the configuration *listen_on* to Kitty. For example, `listen_on unix:/tmp/mykitty`',
+    'Changing *listen_on* by reloading the config is not supported so you must completely',
+    'close and reopen Kitty for the change to take effect.',
+    '',
+    'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on for additional information',
+    'on configuring the *listen_on* option.',
+    '',
+    'If *listen_on* is properly configured, check that the option *allow_remote_control* is',
+    'set to either `yes`, `socket`, or `socket-only`.',
+    '',
+    'See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.allow_remote_control for additional',
+    'information on configuring the *allow_remote_control* option.',
+    '',
+  },
+}
 
 return M
