@@ -307,10 +307,6 @@ M.advice = function()
     clear_selection = tostring(opts.kitty_get_text.clear_selection)
   end
 
-  local shell_integration = 'nil'
-  if p then
-    shell_integration = table.concat(p.kitty_data.kitty_opts.shell_integration, ' ')
-  end
   return {
     nvim_version = {
       'Neovim version 0.9 or greater is required to work with kitty-scrollback.nvim',
