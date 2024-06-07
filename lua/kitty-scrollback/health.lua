@@ -194,7 +194,6 @@ M.check_nvim_version = function(version, check_only)
   return false
 end
 
--- TODO: update README, test this, breaking change, make announcement
 M.check_kitty_version = function(check_only)
   if not check_only then
     vim.health.start('kitty-scrollback: Kitty version 0.32.2+')
