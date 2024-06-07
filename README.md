@@ -26,7 +26,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 ## 📖 Contents
 
 - ✨ [Features](#-features)
-- [🚀 Migrating to v5.0.0](#-migrating-to-v500)
+- 🚀[Migrating to v5.0.0](#-migrating-to-v500)
 - 📚 [Prerequisites](#-prerequisites)
 - 🏃 [Quickstart](#-quickstart)
 - 📦 [Installation](#-installation)
