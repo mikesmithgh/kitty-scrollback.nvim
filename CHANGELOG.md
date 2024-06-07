@@ -1,3 +1,13 @@
+# [5.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.6...v5.0.0) (2024-06-07)
+
+
+* feat!: use Kitty's builtin bracketed paste ([#257](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/257)) ([89ba2b1](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/89ba2b1cf7a865761b3f01ba2d2f53e5c2e493a6))
+
+
+### BREAKING CHANGES
+
+* remove support for Kitty versions < 0.32.2
+
 ## [4.3.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.5...v4.3.6) (2024-06-01)
 
 
