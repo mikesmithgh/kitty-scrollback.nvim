@@ -26,7 +26,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 ## 📖 Contents
 
 - ✨ [Features](#-features)
-- 🚀 [Migrating to v4.0.0](#-migrating-to-v400)
+- [🚀 Migrating to v5.0.0](#-migrating-to-v500)
 - 📚 [Prerequisites](#-prerequisites)
 - 🏃 [Quickstart](#-quickstart)
 - 📦 [Installation](#-installation)
@@ -178,9 +178,9 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 
 </details>
 
-## 🚀 Migrating to v4.0.0
+## 🚀 Migrating to v5.0.0
 > [!IMPORTANT]\
-> v4.0.0 has breaking changes and requires steps to properly migrate from v3.X.X.
+> v5.0.0 has breaking changes and requires steps to properly migrate from v4.X.X.
 > 
 > You can ignore this section if you have not previously installed any version of kitty-scrollback.nvim
 
@@ -188,7 +188,8 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 
   <summary>Migration Steps</summary>
 
-  If you have any problems or questions migrating to `v4.0.0`, please open an [issue](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues) or
+  If you have any problems or questions migrating to `v5.0.0`, please open an 
+  [issue](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues) or
   [discussion](https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions).
   
   <!-- panvimdoc-ignore-start -->
@@ -197,20 +198,14 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   
   <!-- panvimdoc-ignore-end -->
 
-  - Previously, kitty-scrollback.nvim did not open Neovim with your Neovim configuration by default. This has changed to loading your Neovim 
-  configuration by default, with the ability to opt out. If you prefer to continue not loading your Neovim configuration, then follow the
-  steps at [No Configuration](#no-configuration).
-  - If you previously used the flag `--no-nvim-args`, then delete it from your configuration because it no longer has any effect. The flag 
-  `--nvim-args` remains unchanged and can still be used.
-  - `ksb_example` configurations have been removed and can no longer be referenced by name. If you were previously referencing an example configuration
-  by name, then you can manually copy it from [./tests/example.lua](./tests/example.lua) into your kitty-scrollback.nvim configuration. See 
-  [Plugin Configuration](#plugin-configuration) for detailed instructions on configuration kitty-scrollback.nvim. 
-  - The command `KittyScrollbackGenerateKittens` and api `generate_kittens` no longer have an option to generate `ksb_example` configurations.
-    - The command `KittyScrollbackGenerateKittens` no longer accepts the bang `!` modifier
-    - The api `generate_kittens` signature removed the `all` parameter
-  - The reserved `global` configuration name has been removed and global options are now configured by the first element of the options table without a key.
-  See [Global Configuration](#global-configuration) for more details.
-  - The undocumented reserved `default` configuration name has been removed. kitty-scrollback.nvim defaults to `ksb_builtin_get_text_all` if no configuration is provided.
+  - kitty-scrollback.nvim v5.0.0 uses Kitty's builtin `--bracketed-paste` option when sending
+    commands to Kitty. The `--bracketed-paste` option was added in Kitty 0.32.2. If you are
+    using an older version of Kitty, then upgrade to the latest version or at least 0.32.2.
+  - Alternatively, if you are unable to upgrade Kitty, then you can still use tag 
+    [v4.3.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v4.3.6) of 
+    kitty-scrollback.nvim.
+  - See [kitten-send-text](https://sw.kovidgoyal.net/kitty/remote-control/#kitten-send-text) 
+    for more information on the `--bracketed-paste` option.
 
 </details>
 
@@ -246,7 +241,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
     event = { 'User KittyScrollbackLaunch' },
     -- version = '*', -- latest stable version, may have breaking changes if major version changed
-    -- version = '^4.0.0', -- pin major version, include fixes and features that do not have breaking changes
+    -- version = '^5.0.0', -- pin major version, include fixes and features that do not have breaking changes
     config = function()
       require('kitty-scrollback').setup()
     end,
@@ -266,7 +261,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
     event = { 'User KittyScrollbackLaunch' },
     -- tag = '*', -- latest stable version, may have breaking changes if major version changed
-    -- tag = 'v4.0.0', -- pin specific tag
+    -- tag = 'v5.0.0', -- pin specific tag
     config = function()
       require('kitty-scrollback').setup()
     end,
