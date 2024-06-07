@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from string import Template
 from typing import List
 from kitty.boss import Boss
 from kittens.tui.handler import result_handler
@@ -13,9 +14,33 @@ import inspect
 
 ksb_dir = os.path.dirname(
     os.path.dirname(os.path.abspath(inspect.getfile(lambda: None))))
-kitty_not_found_error = '😿 Failed to find kitty executable. Please check your environment variable PATH.'
-# TODO add more details
-nvim_not_found_error = '😿 Failed to find nvim executable. Please check your environment variable PATH.'
+cmd_not_found_title = Template(
+    '😿 Failed to find $cmd executable. Please check your environment variable PATH.'
+)
+cmd_not_found_error = Template("""
+Kitty failed to find $cmd in your PATH. If your PATH environment looks correct
+and you are on MacOS, you may need to add an override to the file
+<kitty config dir>/macos-launch-services-cmdline due to limitations of Apple
+allowing you to use command line options with GUI applications.
+
+  Please read the following section from the Kitty FAQ:
+    How do I specify command line options for kitty on macOS?
+    See https://sw.kovidgoyal.net/kitty/faq/#how-do-i-specify-command-line-options-for-kitty-on-macos
+
+  For example, you could get the values of your current PATH environment variable and add them
+  to ~/.config/kitty/macos-launch-services-cmdline which would look similar to the following.
+
+  --override env=PATH="/Users/bram/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/sbin"
+
+  After updating the macos-launch-services-cmdline file, completely quit and reopen Kitty
+  to pick up those changes. If $cmd is in the PATH you specified, then this error should no longer occur.
+
+Additionally, you can configure exe_search_path in Kitty to add additional paths that Kitty
+will use to find programs to run. See https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.exe_search_path
+
+
+
+""")
 open_an_issue_msg = """
  |\\___/|
 =) ^Y^ (=
@@ -146,7 +171,10 @@ def handle_result(args: List[str],
     if w is not None:
         kitty_path = which('kitty')
         if not kitty_path:
-            boss.show_error(kitty_not_found_error, open_an_issue_msg)
+            boss.show_error(
+                cmd_not_found_title.substitute(cmd='kitty'),
+                cmd_not_found_error.substitute(cmd='kitty') +
+                open_an_issue_msg)
             return
 
         config = parse_config(args)
@@ -192,7 +220,9 @@ def handle_result(args: List[str],
 
         nvim_path = which('nvim')
         if not nvim_path:
-            boss.show_error(nvim_not_found_error, open_an_issue_msg)
+            boss.show_error(
+                cmd_not_found_title.substitute(cmd='nvim'),
+                cmd_not_found_error.substitute(cmd='nvim') + open_an_issue_msg)
             return
 
         cmd = ('launch', ) + kitty_args + (nvim_path, ) + nvim_args
