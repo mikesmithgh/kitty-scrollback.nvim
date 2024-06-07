@@ -4,16 +4,30 @@ from kitty.boss import Boss
 from kittens.tui.handler import result_handler
 from kitty.fast_data_types import get_options
 from kitty.constants import config_dir, version
-from kitty.utils import resolved_shell
+from kitty.utils import resolved_shell, which
 from kitty.shell_integration import get_effective_ksi_env_var
 
 import json
 import os
 import inspect
-import shutil
 
 ksb_dir = os.path.dirname(
     os.path.dirname(os.path.abspath(inspect.getfile(lambda: None))))
+kitty_not_found_error = '😿 Failed to find kitty executable. Please check your environment variable PATH.'
+# TODO add more details
+nvim_not_found_error = '😿 Failed to find nvim executable. Please check your environment variable PATH.'
+open_an_issue_msg = """
+ |\\___/|
+=) ^Y^ (=
+ \\  ^  /       If you have any issues or questions using kitty-scrollback.nvim then
+  )=*=(        please create an issue at
+ /     \\       https://github.com/mikesmithgh/kitty-scrollback.nvim/issues
+ |     |
+/| | | |\\
+\\| | |_|/\\
+ /_// ___/
+    \\_)
+"""
 
 
 def main():
@@ -122,22 +136,6 @@ def parse_cwd(args, default_cwd):
     return ()
 
 
-def nvim_err_cmd(err_file):
-    return (
-        'launch',
-        '--copy-env',
-        '--type',
-        'overlay',
-        '--title',
-        'kitty-scrollback.nvim :: error',
-        'nvim',
-    ) + parse_nvim_args() + (
-        '-c',
-        'lua vim.api.nvim_set_hl(0, [[Normal]], {})',
-        err_file,
-    )
-
-
 @result_handler(type_of_input=None, no_ui=True, has_ready_notification=False)
 def handle_result(args: List[str],
                   result: str,
@@ -146,11 +144,9 @@ def handle_result(args: List[str],
     del args[0]
     w = boss.window_id_map.get(target_window_id)
     if w is not None:
-        kitty_path = shutil.which('kitty')
+        kitty_path = which('kitty')
         if not kitty_path:
-            boss.call_remote_control(
-                w,
-                nvim_err_cmd(f'{ksb_dir}/scripts/kitty_not_found.txt'))
+            boss.show_error(kitty_not_found_error, open_an_issue_msg)
             return
 
         config = parse_config(args)
@@ -194,7 +190,12 @@ def handle_result(args: List[str],
             ' end,'
             ' })')
 
-        cmd = ('launch', ) + kitty_args + ('nvim', ) + nvim_args
+        nvim_path = which('nvim')
+        if not nvim_path:
+            boss.show_error(nvim_not_found_error, open_an_issue_msg)
+            return
+
+        cmd = ('launch', ) + kitty_args + (nvim_path, ) + nvim_args
         boss.call_remote_control(w, cmd)
     else:
         raise Exception(f'Failed to get window with id: {target_window_id}')
