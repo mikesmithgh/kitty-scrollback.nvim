@@ -238,7 +238,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     'mikesmithgh/kitty-scrollback.nvim',
     enabled = true,
     lazy = true,
-    cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
+    cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth', 'KittyScrollbackGenerateCommandLineEditing' },
     event = { 'User KittyScrollbackLaunch' },
     -- version = '*', -- latest stable version, may have breaking changes if major version changed
     -- version = '^5.0.0', -- pin major version, include fixes and features that do not have breaking changes
@@ -258,7 +258,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     'mikesmithgh/kitty-scrollback.nvim',
     disable = false,
     opt = true,
-    cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
+    cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth', 'KittyScrollbackGenerateCommandLineEditing' },
     event = { 'User KittyScrollbackLaunch' },
     -- tag = '*', -- latest stable version, may have breaking changes if major version changed
     -- tag = 'v5.0.0', -- pin specific tag
@@ -737,7 +737,7 @@ require("lazy").setup({
   "mikesmithgh/kitty-scrollback.nvim",
   enabled = true,
   lazy = true,
-  cmd = { "KittyScrollbackGenerateKittens", "KittyScrollbackCheckHealth" },
+  cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth', 'KittyScrollbackGenerateCommandLineEditing' },
   event = { "User KittyScrollbackLaunch" },
   config = function()
     require("kitty-scrollback").setup({
@@ -808,10 +808,11 @@ require('kitty-scrollback').setup({
 ## 🫡 Commands
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 
-| Command                                             | API                                                    | Description                                                             |
-| :-------------------------------------------------- | :----------------------------------------------------- | :---------------------------------------------------------------------- |
-| `:KittyScrollbackGenerateKittens [generate_modes]`  | `generate_kittens(table<string\|'commands'\|'maps'>)?` | Generate Kitten commands used as reference for configuring `kitty.conf` |                 
-| `:KittyScrollbackCheckHealth`                       | `checkhealth()`                                        | Run `:checkhealth kitty-scrollback` in the context of Kitty             |
+| Command                                             | API                                                           | Description                                                                                       |
+| :-------------------------------------------------- | :------------------------------------------------------------ | :------------------------------------------------------------------------------------------------ |
+| `:KittyScrollbackGenerateKittens [generate_modes]`  | `generate_kittens(table<string\|'commands'\|'maps'>)?`        | Generate Kitten commands used as reference for configuring `kitty.conf`                           |
+| `:KittyScrollbackCheckHealth`                       | `checkhealth()`                                               | Run `:checkhealth kitty-scrollback` in the context of Kitty                                       |
+| `:KittyScrollbackGenerateCommandLineEditing`        | `generate_command_line_editing(string\|'bash'\|'fish'\|'zsh)` | Generate command-line editing commands used as reference for configuring `bash`, `fish`, or `zsh` |
 
 ## ⌨️ Keymaps
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
@@ -833,6 +834,12 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 
 ## 🪛 Optional Setup
+
+### command-line editing
+
+- Supports `bash`, `fish`, and `zsh`
+- Run `:KittyScrollbackGenerateCommandLineEditing bash|fish|zsh`
+- `$KITTY_SCROLLBACK_NVIM_EDIT_ARGS` can be used to pass arguments to kitty-scrollback.nvim in command-line editing mode
 
 ### tmux (🧪 experimental )
 
