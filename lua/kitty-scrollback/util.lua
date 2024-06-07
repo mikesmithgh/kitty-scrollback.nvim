@@ -184,10 +184,10 @@ M.display_error = function(cmd, r, header)
   M.restore_and_redraw()
   local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
   if stderr:match('.*allow_remote_control.*') then
-    vim.list_extend(msg, ksb_health.advice().allow_remote_control)
+    vim.list_extend(msg, ksb_health.advice.allow_remote_control)
   end
   if stderr:match('.*/dev/tty.*') then
-    vim.list_extend(msg, ksb_health.advice().listen_on)
+    vim.list_extend(msg, ksb_health.advice.listen_on)
   end
   vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, vim.list_extend(msg, err))
   M.restore_and_redraw()

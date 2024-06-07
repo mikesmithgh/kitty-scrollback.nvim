@@ -139,6 +139,8 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
 end
 
 M.send_lines_to_kitty_and_quit = function(lines, execute_command)
+  local bracketed_paste = 'auto' -- used only if the program running in the window has turned on bracketed paste mode
+
   -- convert table to string separated by carriage returns
   local cmd_str = table.concat(
     vim.tbl_filter(function(l)
@@ -146,25 +148,23 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     end, lines),
     '\r'
   )
-  local start_bracketed_paste = [[\x1b[200~]] -- see https://cirw.in/blog/bracketed-paste
-  local stop_bracketed_paste = [[\x1b[201~]] -- see https://cirw.in/blog/bracketed-paste
-
-  cmd_str = start_bracketed_paste .. cmd_str .. stop_bracketed_paste
+  cmd_str = cmd_str
 
   ksb_util.system_handle_error({
     p.kitty_data.kitty_path,
     '@',
     'send-text',
     '--match=id:' .. p.kitty_data.window_id,
+    '--bracketed-paste=' .. bracketed_paste,
     cmd_str,
   }, error_header)
 
   if execute_command then
     -- add a carriage return to execute command
     cmd_str = '\r'
+    bracketed_paste = 'disable'
   else
-    -- an empty bracketed paste is used to deselect the text after pasting to the terminal
-    cmd_str = start_bracketed_paste .. stop_bracketed_paste
+    cmd_str = ''
   end
 
   ksb_util.system_handle_error({
@@ -172,6 +172,7 @@ M.send_lines_to_kitty_and_quit = function(lines, execute_command)
     '@',
     'send-text',
     '--match=id:' .. p.kitty_data.window_id,
+    '--bracketed-paste=' .. bracketed_paste,
     cmd_str,
   }, error_header)
 
