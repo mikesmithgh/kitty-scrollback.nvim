@@ -119,7 +119,7 @@ MIGRATING TO V5.0.0                *kitty-scrollback.nvim-migrating-to-v5.0.0*
 PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
 
 - Neovim v0.9+ <https://github.com/neovim/neovim/releases>
-- Kitty v0.29+ <https://github.com/kovidgoyal/kitty/releases>
+- Kitty v0.32.2+ <https://github.com/kovidgoyal/kitty/releases>
 
 
 QUICKSTART                                  *kitty-scrollback.nvim-quickstart*
