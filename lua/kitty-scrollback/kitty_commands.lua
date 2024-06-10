@@ -25,7 +25,7 @@ local error_header = {
 
 ---@param get_text_args KsbKittyGetTextArguments
 local function get_scrollback_cmd(get_text_args)
-  local scrollback_cmd = ([[%s @ get-text --match="id:%s" %s]]):format(
+  local scrollback_cmd = ([[%s @ get-text --match=id:%s %s]]):format(
     p.kitty_data.kitty_path,
     p.kitty_data.window_id,
     get_text_args.kitty
@@ -62,6 +62,20 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
 
   -- set the shell used for termopen to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
   vim.o.shell = 'sh'
+
+  local debug_dir = vim.fs.joinpath(vim.fn.stdpath('data'), 'kitty-scrollback.nvim', 'debug')
+  vim.fn.mkdir(debug_dir, 'p')
+  local the_cmd = vim.split(scrollback_cmd, ' ')
+  local the_log = vim.fs.joinpath(debug_dir, 'scrollback_cmd.log')
+  vim.fn.writefile(vim.list_extend({ 'command:' }, the_cmd), the_log, 'a')
+  local the_out = vim.system(the_cmd):wait()
+  vim.fn.writefile({ 'signal: ' .. the_out.signal }, the_log, 'a')
+  vim.fn.writefile({ 'code: ' .. the_out.code }, the_log, 'a')
+  vim.fn.writefile({ 'stderr: ' .. the_out.stderr }, the_log, 'a')
+  vim.fn.writefile({ 'stdout: ' }, the_log, 'a')
+  for _, l in pairs(vim.split(the_out.stdout, '\n') or {}) do
+    vim.fn.writefile({ l }, the_log, 'a')
+  end
 
   local success, error = pcall(vim.fn.termopen, full_cmd, {
     stdout_buffered = true,
