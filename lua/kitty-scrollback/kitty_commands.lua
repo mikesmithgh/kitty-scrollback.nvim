@@ -52,6 +52,17 @@ local function get_scrollback_cmd(get_text_args)
   return scrollback_cmd, full_cmd
 end
 
+local function defer_resize_term(min_cols)
+  local orig_columns = vim.o.columns
+  if vim.o.columns < min_cols then
+    vim.defer_fn(function()
+      vim.o.columns = min_cols
+      vim.api.nvim_set_option_value('columns', min_cols, { scope = 'global' })
+    end, 0)
+  end
+  return orig_columns
+end
+
 ---@param get_text_opts KsbKittyGetTextArguments
 ---@param on_exit_cb function
 M.get_text_term = function(get_text_opts, on_exit_cb)
@@ -60,9 +71,14 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
   local stderr
   local tail_max = 10
 
+  -- increase the number of columns temporary so that the width is used during the
+  -- terminal command kitty @ get-text. this avoids hard wrapping lines to the
+  -- current window size. Note: a larger min_cols appears to impact performance
+  -- defer is used as a timing workaround because this is expected to be called right before termopen
+  p.orig_columns = defer_resize_term(300)
+
   -- set the shell used for termopen to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
   vim.o.shell = 'sh'
-
   local success, error = pcall(vim.fn.termopen, full_cmd, {
     stdout_buffered = true,
     stderr_buffered = true,
@@ -73,6 +89,11 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
       stderr = data
     end,
     on_exit = function(id, exit_code, event)
+      -- NOTE(#58): nvim v0.9 support
+      -- vim.o.columns is resized automatically in nvim v0.9.1 when we trigger kitty so send a SIGWINCH signal
+      -- vim.o.columns is explicitly set to resize appropriatley on v0.9.0
+      -- see https://github.com/neovim/neovim/pull/23503
+      vim.o.columns = p.orig_columns
       if exit_code == 0 then
         -- no need to check allow_remote_control or dev/tty because earlier commands would have reported the error
         if #stdout >= 2 then

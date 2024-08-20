@@ -389,22 +389,8 @@ M.launch = function()
 
     ksb_autocmds.load_autocmds()
 
-    -- increase the number of columns temporary so that the width is used during the
-    -- terminal command kitty @ get-text. this avoids hard wrapping lines to the
-    -- current window size. Note: a larger min_cols appears to impact performance
-    local min_cols = 300
-    p.orig_columns = vim.o.columns
-    if vim.o.columns < min_cols then
-      vim.o.columns = min_cols
-    end
     vim.schedule(function()
       ksb_kitty_cmds.get_text_term(get_text_opts(), function()
-        -- NOTE(#58): nvim v0.9 support
-        -- vim.o.columns is resized automatically in nvim v0.9.1 when we trigger kitty so send a SIGWINCH signal
-        -- vim.o.columns is explicitly set to resize appropriatley on v0.9.0
-        -- see https://github.com/neovim/neovim/pull/23503
-        vim.o.columns = p.orig_columns
-
         ksb_kitty_cmds.signal_winchanged_to_kitty_child_process()
         if opts.kitty_get_text.extent == 'screen' or opts.kitty_get_text.extent == 'all' then
           set_cursor_position(p.kitty_data)
