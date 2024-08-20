@@ -234,56 +234,6 @@ $
     )
   end)
 
-  it([[should remove \r wrap markers and display line up to 300 columns]], function()
-    h.assert_screen_equals(
-      h.feed_kitty({
-        h.send_as_string([[printf '
-
-]] .. string.rep('A', 300) .. [[
-0123456789
-']]),
-        h.open_kitty_scrollback_nvim(),
-      }),
-      {
-        stdout = h.with_status_win([[
-$ printf '
-> 
-> AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AA0123456789
-> '
-
-
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-0123456789
-$ 
-]]),
-        cursor_y = 12,
-        cursor_x = 3,
-      },
-      'kitty-scrollback.nvim did not have expected removed wrap marker results'
-    )
-    h.assert_screen_equals(
-      h.feed_kitty({
-        h.send_without_newline(h.esc()),
-      }),
-      {
-        stdout = [[
-$ printf '
-> 
-> AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0123456789
-> '
-
-
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0123456789
-$ 
-]],
-        cursor_y = 12,
-        cursor_x = 3,
-      },
-      'kitty-scrollback.nvim did not have expected wrap marker results'
-    )
-  end)
-
   it('should temporarily block user input on start', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim()
     h.assert_screen_not_match(
@@ -478,6 +428,78 @@ $ # in command-line window
 :set filetype%?
   filetype=bash
 Press ENTER or type command to continue.*]],
+      }
+    )
+  end)
+
+  it([[should remove \r wrap markers and display line up to 300 columns]], function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.send_as_string([[printf '
+
+]] .. string.rep('A', 300) .. [[
+0123456789
+']]),
+        h.open_kitty_scrollback_nvim(),
+      }),
+      {
+        stdout = h.with_status_win([[
+$ printf '
+> 
+> AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AA0123456789
+> '
+
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+0123456789
+$ 
+]]),
+        cursor_y = 12,
+        cursor_x = 3,
+      },
+      'kitty-scrollback.nvim did not have expected removed wrap marker results'
+    )
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.send_without_newline(h.esc()),
+      }),
+      {
+        stdout = [[
+$ printf '
+> 
+> AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0123456789
+> '
+
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0123456789
+$ 
+]],
+        cursor_y = 12,
+        cursor_x = 3,
+      },
+      'kitty-scrollback.nvim did not have expected wrap marker results'
+    )
+  end)
+
+  it('should hard wrap at 300 columns', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.with_pause_seconds_before(
+          [[for ((i = 0; i < 90; i++)); do echo -n "123456789|"; done; echo;]]
+        ),
+        h.open_kitty_scrollback_nvim(),
+      }),
+      {
+        stdout = h.with_status_win([[
+$ for ((i = 0; i < 90; i++)); do echo -n "123456789|"; done; echo;
+123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|1234567
+123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|1234567
+123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|1234567
+$                                                                                                          
+]]),
+        cursor_y = 11, -- cursor position is not ideal but good enough for hardwrap workaround for now
+        cursor_x = 3,
       }
     )
   end)
