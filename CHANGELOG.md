@@ -1,3 +1,10 @@
+## [5.0.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v5.0.0...v5.0.1) (2024-08-20)
+
+
+### Bug Fixes
+
+* defer setting 'columns' to hardwrap at 300 columns ([#267](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/267)) ([2f267c3](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/2f267c315bea50cd67ea3fd23f78e586fb2915c5))
+
 # [5.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v4.3.6...v5.0.0) (2024-06-07)
 
 
