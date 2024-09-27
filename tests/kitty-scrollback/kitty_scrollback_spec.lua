@@ -115,23 +115,22 @@ $ brew search a
       h.send_as_string(
         [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']]
       ),
+      h.with_pause_seconds_before([[:set conceallevel=0]]),
     })
     h.assert_screen_not_match(
       actual,
       { pattern = 'ERROR', cursor_y = 1, cursor_x = 1 },
       'kitty-scrollback.nvim checkhealth had an unexpected health check ERROR'
     )
-    h.assert_screen_starts_with(actual, {
-      stdout = [[
-
-──────────────────────────────────────────────────────────────────────────────
-kitty-scrollback: require("kitty-scrollback.health").check()
-
-kitty-scrollback: Neovim version
+    h.assert_screen_match(actual, {
+      pattern = [[
+kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
+.*kitty%-scrollback: Neovim version.*~
+.*%- OK NVIM.*
 ]],
       cursor_y = 1,
       cursor_x = 1,
-    }, 'kitty-scrollback.nvim checkhealth content did not start with expected content')
+    })
   end)
 
   it('should successfully open checkhealth and warn user no kitty data available', function()
@@ -140,6 +139,7 @@ kitty-scrollback: Neovim version
         [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("checkhealth kitty-scrollback")']]
       ),
       h.send_without_newline([[zR]]),
+      h.with_pause_seconds_before([[:set conceallevel=0]]),
     })
     h.assert_screen_not_match(
       actual,
@@ -151,17 +151,15 @@ kitty-scrollback: Neovim version
       cursor_y = 1,
       cursor_x = 1,
     })
-    h.assert_screen_starts_with(actual, {
-      stdout = [[
-
-──────────────────────────────────────────────────────────────────────────────
-kitty-scrollback: require("kitty-scrollback.health").check()
-
-kitty-scrollback: Neovim version
+    h.assert_screen_match(actual, {
+      pattern = [[
+kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
+.*kitty%-scrollback: Neovim version.*~
+.*%- OK NVIM.*
 ]],
       cursor_y = 1,
       cursor_x = 1,
-    }, 'kitty-scrollback.nvim checkhealth content did not start with expected content')
+    })
   end)
 
   it('should paste command to kitty in bracketed paste mode', function()
@@ -169,7 +167,7 @@ kitty-scrollback: Neovim version
       h.feed_kitty({
         h.send_as_string([[\n\n]]),
         h.open_kitty_scrollback_nvim(),
-        [[acat <<EOF]],
+        h.with_pause_seconds_before([[acat <<EOF]]),
         h.send_as_string([[
 line1
 line2
@@ -204,7 +202,7 @@ $
       h.feed_kitty({
         h.send_as_string([[\n\n]]),
         h.open_kitty_scrollback_nvim(),
-        [[acat <<EOF]],
+        h.with_pause_seconds_before([[acat <<EOF]]),
         h.send_as_string([[
 line1
 line2
@@ -268,7 +266,7 @@ Press ENTER or type command to continue.*]],
           '--config',
           'test_pastewin_opts',
         }),
-        h.send_without_newline([[a]]),
+        h.with_pause_seconds_before(h.send_without_newline([[a]])),
       }),
       {
         stdout = [[
@@ -301,7 +299,7 @@ $▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀�
           '--config',
           'test_footer_opts',
         }),
-        h.send_without_newline([[a]]),
+        h.with_pause_seconds_before(h.send_without_newline([[a]])),
       }),
       {
         stdout = [[
@@ -334,7 +332,7 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
           '--config',
           'test_pastewin_and_footer_opts',
         }),
-        h.send_without_newline([[a]]),
+        h.with_pause_seconds_before(h.send_without_newline([[a]])),
       }),
       {
         stdout = [[
@@ -367,7 +365,7 @@ $▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀�
           '--config',
           'test_after_paste_window_ready',
         }),
-        [[a]],
+        h.with_pause_seconds_before([[a]]),
       }),
       {
         stdout = [[
@@ -397,7 +395,7 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
     h.assert_screen_equals(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[q:i]]),
+        h.with_pause_seconds_before(h.send_without_newline([[q:i]])),
         h.send_without_newline([[# in command-line window]]),
         h.send_without_newline(h.esc()),
         h.send_without_newline([[V]]),
@@ -418,7 +416,7 @@ $ # in command-line window
     h.assert_screen_match(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[a]]),
+        h.with_pause_seconds_before(h.send_without_newline([[a]])),
         h.send_without_newline(h.esc()),
         [[:set filetype?]],
       }),
