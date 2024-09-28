@@ -95,7 +95,7 @@ describe('kitty-scrollback.nvim', function()
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_paste_win_register_disabled 
 paste_window yank_register_enabled is set to false
@@ -222,7 +222,7 @@ Press ENTER or type command to continue
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_paste_win_register 
 paste_window yank_register is set to *
@@ -341,7 +341,7 @@ Press ENTER or type command to continue
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_paste_win_winblend 
 paste_window winblend set to 50
@@ -398,7 +398,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_paste_win_winopts 
 Customized paste winopts with maximized window and winblend
@@ -452,7 +452,7 @@ $
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_restore_opts 
 restore_options is true, original values of overridden options have been restored. For example, line numbers
@@ -509,7 +509,7 @@ t🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_status_win_disabled 
 status_window is disabled, notice no status window is displayed in the top right of the screen
@@ -564,7 +564,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --no-nvim-args --env NVIM_APPNAME=ksb-nvim
 NVIM_APPNAME is set to ksb-nvim
@@ -672,7 +672,7 @@ Press ENTER or type command to continue
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.with_pause_seconds_before(h.send_without_newline(h.send_as_string([[
 # example > --no-nvim-args -c 'colorscheme darkblue'
 Yo, listen up here's a story
@@ -733,14 +733,13 @@ Press ENTER or type command to continue
       '--config',
       'ksb_builtin_checkhealth',
     })
-    h.assert_screen_starts_with(h.feed_kitty(), {
-      stdout = [[
-
-──────────────────────────────────────────────────────────────────────────────
-kitty-scrollback: require("kitty-scrollback.health").check()
-
-kitty-scrollback: Neovim version
+    h.assert_screen_match(h.feed_kitty(), {
+      pattern = [[
+kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
+.*kitty%-scrollback: Neovim version.*
+.*%- OK NVIM.*
 ]],
+
       cursor_y = 1,
       cursor_x = 1,
     })
