@@ -733,21 +733,16 @@ Press ENTER or type command to continue
       '--config',
       'ksb_builtin_checkhealth',
     })
-    h.assert_screen_match(
-      h.feed_kitty({
-        h.with_pause_seconds_before([[:set conceallevel=0]]),
-      }),
-      {
-        pattern = [[
+    h.assert_screen_match(h.feed_kitty(), {
+      pattern = [[
 kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
-.*kitty%-scrollback: Neovim version.*~
+.*kitty%-scrollback: Neovim version.*
 .*%- OK NVIM.*
 ]],
 
-        cursor_y = 1,
-        cursor_x = 1,
-      }
-    )
+      cursor_y = 1,
+      cursor_x = 1,
+    })
   end)
 
   after_all()

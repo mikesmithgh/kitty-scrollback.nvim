@@ -115,7 +115,6 @@ $ brew search a
       h.send_as_string(
         [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']]
       ),
-      h.with_pause_seconds_before([[:set conceallevel=0]]),
     })
     h.assert_screen_not_match(
       actual,
@@ -125,7 +124,7 @@ $ brew search a
     h.assert_screen_match(actual, {
       pattern = [[
 kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
-.*kitty%-scrollback: Neovim version.*~
+.*kitty%-scrollback: Neovim version.*
 .*%- OK NVIM.*
 ]],
       cursor_y = 1,
@@ -139,7 +138,6 @@ kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
         [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("checkhealth kitty-scrollback")']]
       ),
       h.send_without_newline([[zR]]),
-      h.with_pause_seconds_before([[:set conceallevel=0]]),
     })
     h.assert_screen_not_match(
       actual,
@@ -154,7 +152,7 @@ kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
     h.assert_screen_match(actual, {
       pattern = [[
 kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
-.*kitty%-scrollback: Neovim version.*~
+.*kitty%-scrollback: Neovim version.*
 .*%- OK NVIM.*
 ]],
       cursor_y = 1,
