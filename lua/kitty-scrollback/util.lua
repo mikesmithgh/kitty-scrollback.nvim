@@ -216,4 +216,7 @@ M.system_handle_error = function(cmd, error_header, sys_opts, ignore_error)
   return ok, result
 end
 
+M.command_line_editing_mode = vim.env.KITTY_SCROLLBACK_NVIM_MODE == 'command_line_editing'
+M.command_line_editing_mode_input = vim.env.KITTY_SCROLLBACK_NVIM_EDIT_INPUT
+
 return M
