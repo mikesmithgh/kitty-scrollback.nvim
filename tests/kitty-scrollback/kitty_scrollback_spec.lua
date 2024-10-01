@@ -460,7 +460,7 @@ $
     )
     h.assert_screen_equals(
       h.feed_kitty({
-        h.send_without_newline(h.esc()),
+        [[:quit]],
       }),
       {
         stdout = [[

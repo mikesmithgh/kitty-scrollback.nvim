@@ -95,7 +95,7 @@ describe('kitty-scrollback.nvim', function()
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_highlight_overrides 
 Custom KittyScrollbackNvim highlight overrides
@@ -147,7 +147,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
       h.feed_kitty({
         h.send_without_newline([[VG]]),
         h.with_pause_seconds_before(h.send_without_newline(h.esc())),
-        h.with_pause_seconds_before(h.send_without_newline(h.esc())),
+        h.with_pause_seconds_before([[:quit]]),
         h.send_without_newline([[V15k]]),
         h.send_without_newline(h.with_pause_seconds_before(nil, 2)),
       }),
@@ -254,7 +254,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
       h.feed_kitty({
         h.send_without_newline([[VG]]),
         h.with_pause_seconds_before(h.send_without_newline(h.esc())),
-        h.with_pause_seconds_before(h.send_without_newline(h.esc())),
+        h.with_pause_seconds_before([[:quit]]),
         h.send_without_newline([[V15k]]),
         h.send_without_newline(h.with_pause_seconds_before(nil, 2)),
       }),
