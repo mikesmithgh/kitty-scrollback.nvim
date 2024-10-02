@@ -393,8 +393,10 @@ $🭽▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
     h.assert_screen_equals(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
-        h.with_pause_seconds_before(h.send_without_newline([[q:i]])),
-        h.send_without_newline([[# in command-line window]]),
+        h.with_pause_seconds_before(h.send_without_newline([[:]])),
+        h.with_pause_seconds_before(h.control_f()),
+        h.send_without_newline([[i]]),
+        h.with_pause_seconds_before(h.send_without_newline([[# in command-line window]])),
         h.send_without_newline(h.esc()),
         h.send_without_newline([[V]]),
         h.shift_enter(),
@@ -458,7 +460,7 @@ $
     )
     h.assert_screen_equals(
       h.feed_kitty({
-        h.send_without_newline(h.esc()),
+        [[:quit]],
       }),
       {
         stdout = [[
