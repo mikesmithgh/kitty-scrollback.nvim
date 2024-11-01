@@ -1,4 +1,5 @@
 {
-  "runtime/lua/vim/_system.lua": "691140fdecfa0c3dd28bd68505a47941c26fdf7efb9bfcd72d338e0cb59fe466",
-  "runtime/lua/vim/version.lua": "6d5b925c8af9ad769c6a19e89319a8ad12def13a4184135f490a3b0cb0add4ef"
+  "runtime/lua/vim/_editor.lua": "800e0cca6acc3f53563ceee152e3237cc2be5de915ef40f7f0302daa992d4b17",
+  "runtime/lua/vim/_system.lua": "acf6253586bbe9f08acbb4845260c8d704f8c4e432df3510b92e9fb987eacb6f",
+  "runtime/lua/vim/version.lua": "681dafb4dad3ca135047112b5c744f1c54759eea4676a94c55cbe0ffce0eb930"
 }
