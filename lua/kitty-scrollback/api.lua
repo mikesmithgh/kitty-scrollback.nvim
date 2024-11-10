@@ -174,17 +174,28 @@ M.checkhealth = function()
     require('kitty-scrollback.backport').setup()
   end
   if vim.fn.has('nvim-0.9') > 0 then
-    vim
-      .system({
-        -- fallback to 'kitty' because checkhealth can be called outside of standard setup flow
-        (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path or 'kitty',
-        '@',
-        'kitten',
-        kitty_scrollback_kitten,
-        '--config',
-        'ksb_builtin_checkhealth',
-      })
-      :wait()
+    local temp_buf = vim.api.nvim_create_buf(true, true)
+    vim.api.nvim_buf_set_text(temp_buf, 0, 0, 0, 0, {
+      (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path
+        or 'kitty'
+          .. ' @ '
+          .. 'kitten '
+          .. kitty_scrollback_kitten
+          .. ' --config'
+          .. ' ksb_builtin_checkhealth',
+    })
+    vim.api.nvim_win_set_buf(0, temp_buf)
+    -- vim
+    --   .system({
+    --     -- fallback to 'kitty' because checkhealth can be called outside of standard setup flow
+    --     (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path or 'kitty',
+    --     '@',
+    --     'kitten',
+    --     kitty_scrollback_kitten,
+    --     '--config',
+    --     'ksb_builtin_checkhealth',
+    --   })
+    --   :wait()
   else
     -- fallback on checkhealth for earlier versions of nvim
     vim.cmd.checkhealth('kitty-scrollback')
