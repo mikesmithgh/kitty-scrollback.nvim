@@ -103,10 +103,11 @@ M.kitty_remote_get_text = function(args, ...)
 end
 
 M.kitty_remote_send_text_cmd = function(txt)
-  return vim.list_extend(M.kitty_remote_cmd(), { 'send-text', txt })
+  return vim.list_extend(M.kitty_remote_cmd(), { 'send-text', '--match=recent:0', txt })
 end
 
 M.kitty_remote_send_text = function(txt, ...)
+  M.debug(M.kitty_remote_send_text_cmd(txt), ...)
   return M.debug(vim.system(M.kitty_remote_send_text_cmd(txt), ...):wait())
 end
 
