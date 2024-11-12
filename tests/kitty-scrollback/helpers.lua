@@ -65,7 +65,7 @@ M.temp_tmux_socket = function(tmp_dir)
     vim.system(vim.list_extend({ 'mktemp', '-d' }, tmp_dir and { '-p', tmp_dir } or {})):wait()
   )
   if tmpdir_proc.code ~= 0 then
-    print(tmpdir_proc)
+    print(vim.inspect(tmpdir_proc))
   end
   assert.is.equal(tmpdir_proc.code, 0)
   local tmpdir = tmpdir_proc.stdout:gsub('\n', '')
@@ -79,7 +79,7 @@ M.tempsocket = function(tmp_dir)
     vim.system(vim.list_extend({ 'mktemp', '-d' }, tmp_dir and { '-p', tmp_dir } or {})):wait()
   )
   if tmpdir_proc.code ~= 0 then
-    print(tmpdir_proc)
+    print(vim.inspect(tmpdir_proc))
   end
   assert.is.equal(tmpdir_proc.code, 0)
   local tmpdir = tmpdir_proc.stdout:gsub('\n', '')
@@ -94,7 +94,7 @@ end
 M.kitty_remote_get_text_cmd = function(args)
   return vim.list_extend(
     M.kitty_remote_cmd(),
-    vim.list_extend({ 'get-text', '--add-cursor', '--extent=all' }, args or {})
+    vim.list_extend({ 'get-text', '--match=recent:0', '--add-cursor', '--extent=all' }, args or {})
   )
 end
 
@@ -136,7 +136,7 @@ M.kitty_remote_ls = function()
 end
 
 M.kitty_remote_kitten_cmd = function()
-  return vim.list_extend(M.kitty_remote_cmd(), { 'kitten' })
+  return vim.list_extend(M.kitty_remote_cmd(), { 'kitten', '--match=recent:0' })
 end
 
 M.kitty_remote_kitten_kitty_scrollback_nvim_cmd = function(ksb_args)
@@ -149,7 +149,9 @@ M.kitty_remote_kitten_kitty_scrollback_nvim_cmd = function(ksb_args)
 end
 
 M.kitty_remote_kitten_kitty_scrollback_nvim = function(ksb_args, ...)
-  return vim.system(M.kitty_remote_kitten_kitty_scrollback_nvim_cmd(ksb_args), ...)
+  return M.debug(
+    vim.system(M.debug(M.kitty_remote_kitten_kitty_scrollback_nvim_cmd(ksb_args), ...))
+  )
 end
 
 M.kitty_remote_kitten_kitty_scroll_prompt_cmd = function(direction, select_cmd_output)
@@ -439,7 +441,12 @@ M.feed_kitty = function(input, pause_seconds_after)
   end
   M.pause_seconds(pause_seconds_after or 3) -- longer pause for linux
 
-  local stdout = M.debug(M.kitty_remote_get_text()).stdout
+  local get_text_proc = M.debug(M.kitty_remote_get_text())
+  if get_text_proc.code ~= 0 then
+    print(vim.inspect(get_text_proc))
+  end
+  assert.is.equal(get_text_proc.code, 0)
+  local stdout = get_text_proc.stdout
   local last_line = stdout:match('.*\n(.*)\n')
   local start_of_line, cursor_y, cursor_x =
     last_line:match('^(.*)\x1b%[%?25[hl]\x1b%[(%d+);(%d+)H\x1b.*$')
