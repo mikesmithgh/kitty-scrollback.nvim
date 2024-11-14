@@ -213,12 +213,17 @@ local function check_kitty_debug_config()
   local kitty_debug_config_kitten =
     vim.api.nvim_get_runtime_file('python/kitty_debug_config.py', false)[1]
   local debug_config_log = vim.fn.stdpath('data') .. '/kitty-scrollback.nvim/debug_config.log'
+  local kitty_path = (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path
+    or 'kitty'
+  local window_match = (p and p.kitty_data and p.kitty_data.window_id)
+      and ('--match=id:%s'):format(p.kitty_data.window_id)
+    or '--match=recent:0'
   local result = vim
     .system({
-      (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path or 'kitty',
+      kitty_path,
       '@',
       'kitten',
-      '--match=recent:0',
+      window_match,
       kitty_debug_config_kitten,
       debug_config_log,
     })
