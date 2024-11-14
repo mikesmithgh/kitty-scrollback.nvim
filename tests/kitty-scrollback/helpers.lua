@@ -149,9 +149,13 @@ M.kitty_remote_kitten_kitty_scrollback_nvim_cmd = function(ksb_args)
 end
 
 M.kitty_remote_kitten_kitty_scrollback_nvim = function(ksb_args, ...)
-  return M.debug(
-    vim.system(M.debug(M.kitty_remote_kitten_kitty_scrollback_nvim_cmd(ksb_args), ...))
+  local ksb_proc = M.debug(
+    vim.system(M.debug(M.kitty_remote_kitten_kitty_scrollback_nvim_cmd(ksb_args), ...)):wait()
   )
+  if ksb_proc.code ~= 0 then
+    print(vim.inspect(ksb_proc))
+  end
+  return ksb_proc
 end
 
 M.kitty_remote_kitten_kitty_scroll_prompt_cmd = function(direction, select_cmd_output)
