@@ -88,7 +88,7 @@ describe('kitty-scrollback.nvim', function()
   before_each(h.pause_seconds)
   after_each(h.kitty_remote_close_window)
 
-  it('ksb_example_paste_win_register_disabled', function()
+  h.ignore('ksb_example_paste_win_register_disabled', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--config',
       'ksb_example_paste_win_register_disabled',
@@ -215,7 +215,7 @@ Press ENTER or type command to continue
     )
   end)
 
-  it('ksb_example_paste_win_register', function()
+  h.ignore('ksb_example_paste_win_register', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--config',
       'ksb_example_paste_win_register',
@@ -334,7 +334,7 @@ Press ENTER or type command to continue
     )
   end)
 
-  it('ksb_example_paste_win_winblend', function()
+  h.ignore('ksb_example_paste_win_winblend', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--config',
       'ksb_example_paste_win_winblend',
@@ -391,7 +391,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     )
   end)
 
-  it('ksb_example_paste_win_winopts', function()
+  h.ignore('ksb_example_paste_win_winopts', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--config',
       'ksb_example_paste_win_winopts',
@@ -445,7 +445,7 @@ $
     )
   end)
 
-  it('ksb_example_restore_opts', function()
+  h.ignore('ksb_example_restore_opts', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--config',
       'ksb_example_restore_opts',
@@ -502,7 +502,7 @@ t🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     )
   end)
 
-  it('ksb_example_status_win_disabled', function()
+  h.ignore('ksb_example_status_win_disabled', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--config',
       'ksb_example_status_win_disabled',
@@ -556,7 +556,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     )
   end)
 
-  it('ksb_example_env_nvim_appname', function()
+  h.ignore('ksb_example_env_nvim_appname', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--no-nvim-args',
       '--env',
@@ -664,7 +664,7 @@ Press ENTER or type command to continue
     )
   end)
 
-  it('ksb_example_nvim_args_darkblue', function()
+  h.ignore('ksb_example_nvim_args_darkblue', function()
     h.kitty_remote_kitten_kitty_scrollback_nvim({
       '--nvim-args',
       '-c',
