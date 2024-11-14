@@ -106,7 +106,7 @@ MIGRATING TO V6.0.0                *kitty-scrollback.nvim-migrating-to-v6.0.0*
     If you have any problems or questions migrating to `v6.0.0`, please open an
     issue <https://github.com/mikesmithgh/kitty-scrollback.nvim/issues> or
     discussion <https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions>.
-    - kitty-scrollback.nvim v6.0.0 changes the default keymap for quitting
+    - kitty-scrollback.nvim v6.0.0 changed the default keymap for quitting
         kitty-scrollback.nvim from `<Esc>` to `q`. No steps are necessary if you prefer
         this new behavior.
         If you prefer the previous behavior of using `<Esc>` to exit
