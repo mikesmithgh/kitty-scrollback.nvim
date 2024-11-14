@@ -214,7 +214,13 @@ local function check_kitty_debug_config()
     vim.api.nvim_get_runtime_file('python/kitty_debug_config.py', false)[1]
   local debug_config_log = vim.fn.stdpath('data') .. '/kitty-scrollback.nvim/debug_config.log'
   local result = vim
-    .system({ p.kitty_data.kitty_path, '@', 'kitten', kitty_debug_config_kitten, debug_config_log })
+    .system({
+      p.kitty_data.kitty_path,
+      '@',
+      'kitten',
+      kitty_debug_config_kitten,
+      debug_config_log,
+    })
     :wait()
   if result.code == 0 then
     if vim.fn.filereadable(debug_config_log) then
@@ -271,17 +277,17 @@ end
 
 M.check = function()
   require('kitty-scrollback.backport').setup()
-  if
-    M.check_nvim_version('nvim-0.9')
-    and check_kitty_scrollback_nvim_version()
-    and check_kitty_remote_control()
-    and check_has_kitty_data()
-    and M.check_kitty_version()
-  then
-    check_clipboard()
-    check_sed()
-    check_kitty_debug_config()
-  end
+  M.check_nvim_version('nvim-0.9')
+  -- if
+  --   and check_kitty_scrollback_nvim_version()
+  --   and check_kitty_remote_control()
+  --   and check_has_kitty_data()
+  --   and M.check_kitty_version()
+  -- then
+  --   check_clipboard()
+  --   check_sed()
+  --   check_kitty_debug_config()
+  -- end
 end
 
 ---@class KsbAdvice
