@@ -215,9 +215,10 @@ local function check_kitty_debug_config()
   local debug_config_log = vim.fn.stdpath('data') .. '/kitty-scrollback.nvim/debug_config.log'
   local result = vim
     .system({
-      p.kitty_data.kitty_path,
+      (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path or 'kitty',
       '@',
       'kitten',
+      '--match=recent:0',
       kitty_debug_config_kitten,
       debug_config_log,
     })
@@ -286,7 +287,7 @@ M.check = function()
   then
     check_clipboard()
     check_sed()
-    -- check_kitty_debug_config()
+    check_kitty_debug_config()
   end
 end
 
