@@ -89,8 +89,8 @@ echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
     h.assert_screen_equals(
       h.feed_kitty({
         [[git status]],
-        h.open_kitty_scrollback_nvim(),
-        [[?README.md]],
+        h.with_pause_seconds_before(h.open_kitty_scrollback_nvim()),
+        h.with_pause_seconds_before([[?README.md]]),
         h.send_without_newline(h.control_v()),
         h.send_without_newline([[jjj$]]),
         h.with_pause_seconds_before(h.send_without_newline([[yddggI]]), 1),
@@ -104,7 +104,7 @@ echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
         h.send_without_newline(h.control_enter()),
         h.with_pause_seconds_before([[git status]], 1),
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[4k3V]]),
+        h.with_pause_seconds_before(h.send_without_newline([[4k3V]])),
         h.with_pause_seconds_before(h.send_without_newline([[yggO]]), 1),
         [[printf "\\033[0m\\033[38;2;167;192;128m"]],
         h.send_without_newline([[cat <<EOF]]),
@@ -112,7 +112,7 @@ echo '-- demo' >> lua/kitty-scrollback/health.lua]]),
         h.shift_enter(),
         [[EOF]],
         h.with_pause_seconds_before(h.open_kitty_scrollback_nvim()),
-        h.send_without_newline([[a]]),
+        h.with_pause_seconds_before(h.send_without_newline([[a]])),
         h.send_without_newline(h.esc()),
         h.with_pause_seconds_before(h.send_without_newline([[g?aloldino]])),
         h.send_without_newline(h.esc()),
@@ -190,7 +190,7 @@ $
     h.feed_kitty({
       [[git status]],
       h.open_kitty_scrollback_nvim(),
-      [[?README.md]],
+      h.with_pause_seconds_before([[?README.md]]),
       h.send_without_newline([[viW]]),
       h.with_pause_seconds_before(h.send_without_newline([[\y]]), 1),
     }, 0)
@@ -237,7 +237,7 @@ $
           h.send_without_newline([[printf "\n  kitty-scrollback.nvim pasted \e[35m]])
         ),
         h.open_kitty_scrollback_nvim(),
-        [[?README.md]],
+        h.with_pause_seconds_before([[?README.md]], 2),
         h.send_without_newline([[viW]]),
         h.with_pause_seconds_before(h.send_without_newline([[y]]), 1),
         h.with_pause_seconds_before(h.send_without_newline([[ggA\\e[0m to kitty\\n\\n"]]), 1),
@@ -278,7 +278,7 @@ $
           h.send_without_newline([[printf "\n  kitty-scrollback.nvim pasted \e[35m]])
         ),
         h.open_kitty_scrollback_nvim(),
-        [[?README.md]],
+        h.with_pause_seconds_before([[?README.md]], 2),
         h.send_without_newline([[viW]]),
         h.with_pause_seconds_before(h.send_without_newline(h.shift_enter()), 1),
         h.with_pause_seconds_before([[\e[0m to kitty\n\n"]], 1),
@@ -315,7 +315,7 @@ $
       h.feed_kitty({
         [[git status]],
         h.open_kitty_scrollback_nvim(),
-        [[?README.md]],
+        h.with_pause_seconds_before([[?README.md]], 2),
         h.send_without_newline([[viW]]),
         h.with_pause_seconds_before(h.send_without_newline([[y]]), 1),
         h.with_pause_seconds_before(
@@ -366,7 +366,7 @@ $
           )
         ),
         h.open_kitty_scrollback_nvim(),
-        [[?README.md]],
+        h.with_pause_seconds_before([[?README.md]], 2),
         h.send_without_newline([[viW]]),
         h.with_pause_seconds_before(h.send_without_newline(h.control_enter()), 1),
       }),

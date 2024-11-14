@@ -10,8 +10,12 @@ M.is_headless = (#vim.api.nvim_list_uis() == 0)
 
 --- @return any # given arguments.
 M.debug = function(...)
-  if M.debug_enabled then
+  local first = select(1, ...)
+  if M.debug_enabled or (first.code and first.code ~= 0) then
     print(vim.inspect(...))
+    if first.code then
+      assert.is.equal(first.code, 0)
+    end
     return ...
   end
   return ...
@@ -65,7 +69,7 @@ M.temp_tmux_socket = function(tmp_dir)
     vim.system(vim.list_extend({ 'mktemp', '-d' }, tmp_dir and { '-p', tmp_dir } or {})):wait()
   )
   if tmpdir_proc.code ~= 0 then
-    print(tmpdir_proc)
+    print(vim.inspect(tmpdir_proc))
   end
   assert.is.equal(tmpdir_proc.code, 0)
   local tmpdir = tmpdir_proc.stdout:gsub('\n', '')
@@ -79,7 +83,7 @@ M.tempsocket = function(tmp_dir)
     vim.system(vim.list_extend({ 'mktemp', '-d' }, tmp_dir and { '-p', tmp_dir } or {})):wait()
   )
   if tmpdir_proc.code ~= 0 then
-    print(tmpdir_proc)
+    print(vim.inspect(tmpdir_proc))
   end
   assert.is.equal(tmpdir_proc.code, 0)
   local tmpdir = tmpdir_proc.stdout:gsub('\n', '')
@@ -94,7 +98,7 @@ end
 M.kitty_remote_get_text_cmd = function(args)
   return vim.list_extend(
     M.kitty_remote_cmd(),
-    vim.list_extend({ 'get-text', '--add-cursor', '--extent=all' }, args or {})
+    vim.list_extend({ 'get-text', '--match=recent:0', '--add-cursor', '--extent=all' }, args or {})
   )
 end
 
@@ -103,11 +107,11 @@ M.kitty_remote_get_text = function(args, ...)
 end
 
 M.kitty_remote_send_text_cmd = function(txt)
-  return vim.list_extend(M.kitty_remote_cmd(), { 'send-text', txt })
+  return vim.list_extend(M.kitty_remote_cmd(), { 'send-text', '--match=recent:0', txt })
 end
 
 M.kitty_remote_send_text = function(txt, ...)
-  return M.debug(vim.system(M.kitty_remote_send_text_cmd(txt), ...):wait())
+  return M.debug(vim.system(M.debug(M.kitty_remote_send_text_cmd(txt)), ...):wait())
 end
 
 M.kitty_remote_set_title_cmd = function(title)
@@ -119,7 +123,7 @@ M.kitty_remote_set_title = function(title, ...)
 end
 
 M.kitty_remote_close_window_cmd = function()
-  return vim.list_extend(M.kitty_remote_cmd(), { 'close-window' })
+  return vim.list_extend(M.kitty_remote_cmd(), { 'close-window', '--match=recent:0' })
 end
 
 M.kitty_remote_close_window = function()
@@ -135,7 +139,7 @@ M.kitty_remote_ls = function()
 end
 
 M.kitty_remote_kitten_cmd = function()
-  return vim.list_extend(M.kitty_remote_cmd(), { 'kitten' })
+  return vim.list_extend(M.kitty_remote_cmd(), { 'kitten', '--match=recent:0' })
 end
 
 M.kitty_remote_kitten_kitty_scrollback_nvim_cmd = function(ksb_args)
@@ -148,7 +152,9 @@ M.kitty_remote_kitten_kitty_scrollback_nvim_cmd = function(ksb_args)
 end
 
 M.kitty_remote_kitten_kitty_scrollback_nvim = function(ksb_args, ...)
-  return vim.system(M.kitty_remote_kitten_kitty_scrollback_nvim_cmd(ksb_args), ...)
+  return M.debug(
+    vim.system(M.debug(M.kitty_remote_kitten_kitty_scrollback_nvim_cmd(ksb_args), ...)):wait()
+  )
 end
 
 M.kitty_remote_kitten_kitty_scroll_prompt_cmd = function(direction, select_cmd_output)
@@ -438,7 +444,7 @@ M.feed_kitty = function(input, pause_seconds_after)
   end
   M.pause_seconds(pause_seconds_after or 3) -- longer pause for linux
 
-  local stdout = M.debug(M.kitty_remote_get_text()).stdout
+  local stdout = M.kitty_remote_get_text().stdout
   local last_line = stdout:match('.*\n(.*)\n')
   local start_of_line, cursor_y, cursor_x =
     last_line:match('^(.*)\x1b%[%?25[hl]\x1b%[(%d+);(%d+)H\x1b.*$')
