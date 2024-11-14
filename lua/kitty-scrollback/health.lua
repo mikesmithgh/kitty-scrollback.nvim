@@ -13,51 +13,50 @@ M.setup = function(private, options)
 end
 
 local function check_kitty_remote_control()
-  return true
-  -- vim.health.start('kitty-scrollback: Kitty remote control')
-  -- local cmd = {
-  --   -- fallback to 'kitty' because checkhealth can be called outside of standard setup flow
-  --   (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path or 'kitty',
-  --   '@',
-  --   'ls',
-  -- }
-  -- local sys_opts = {}
-  -- local proc = vim.system(cmd, sys_opts or {})
-  -- local result = proc:wait()
-  -- local ok = result.code == 0
-  -- local code_msg = '`kitty @ ls` exited with code *' .. result.code .. '*'
-  -- if ok then
-  --   vim.health.ok(code_msg)
-  --   return true
-  -- else
-  --   local stderr = result.stderr:gsub('\n', '') or ''
-  --   local msg = {}
-  --   if stderr:match('.*/dev/tty.*') then
-  --     msg = M.advice.listen_on
-  --   end
-  --   if stderr:match('.*allow_remote_control.*') then
-  --     msg = M.advice.allow_remote_control
-  --   end
-  --   local advice = {
-  --     table.concat(msg, '\n'),
-  --   }
-  --   local kitty_opts = {}
-  --   if type(p) == 'table' and next(p.kitty_data) then
-  --     kitty_opts = p.kitty_data.kitty_opts
-  --     table.insert(
-  --       advice,
-  --       table.concat({
-  --         '*allow_remote_control* and *listen_on* are currently configured as:',
-  --         '  `allow_remote_control ' .. kitty_opts.allow_remote_control .. '`',
-  --         '  `listen_on ' .. kitty_opts.listen_on .. '`',
-  --       }, '\n')
-  --     )
-  --   else
-  --     table.insert(advice, 'ERROR Failed to read `allow_remote_control` and `listen_on`')
-  --   end
-  --   vim.health.error(code_msg .. '\n      `' .. stderr .. '` ', advice)
-  -- end
-  -- return false
+  vim.health.start('kitty-scrollback: Kitty remote control')
+  local cmd = {
+    -- fallback to 'kitty' because checkhealth can be called outside of standard setup flow
+    (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path or 'kitty',
+    '@',
+    'ls',
+  }
+  local sys_opts = {}
+  local proc = vim.system(cmd, sys_opts or {})
+  local result = proc:wait()
+  local ok = result.code == 0
+  local code_msg = '`kitty @ ls` exited with code *' .. result.code .. '*'
+  if ok then
+    vim.health.ok(code_msg)
+    return true
+  else
+    local stderr = result.stderr:gsub('\n', '') or ''
+    local msg = {}
+    if stderr:match('.*/dev/tty.*') then
+      msg = M.advice.listen_on
+    end
+    if stderr:match('.*allow_remote_control.*') then
+      msg = M.advice.allow_remote_control
+    end
+    local advice = {
+      table.concat(msg, '\n'),
+    }
+    local kitty_opts = {}
+    if type(p) == 'table' and next(p.kitty_data) then
+      kitty_opts = p.kitty_data.kitty_opts
+      table.insert(
+        advice,
+        table.concat({
+          '*allow_remote_control* and *listen_on* are currently configured as:',
+          '  `allow_remote_control ' .. kitty_opts.allow_remote_control .. '`',
+          '  `listen_on ' .. kitty_opts.listen_on .. '`',
+        }, '\n')
+      )
+    else
+      table.insert(advice, 'ERROR Failed to read `allow_remote_control` and `listen_on`')
+    end
+    vim.health.error(code_msg .. '\n      `' .. stderr .. '` ', advice)
+  end
+  return false
 end
 
 local function check_has_kitty_data()
@@ -210,29 +209,29 @@ M.check_kitty_version = function(check_only)
 end
 
 local function check_kitty_debug_config()
-  -- vim.health.start('kitty-scrollback: Kitty debug config')
-  -- local kitty_debug_config_kitten =
-  --   vim.api.nvim_get_runtime_file('python/kitty_debug_config.py', false)[1]
-  -- local debug_config_log = vim.fn.stdpath('data') .. '/kitty-scrollback.nvim/debug_config.log'
-  -- local result = vim
-  --   .system({
-  --     p.kitty_data.kitty_path,
-  --     '@',
-  --     'kitten',
-  --     kitty_debug_config_kitten,
-  --     debug_config_log,
-  --   })
-  --   :wait()
-  -- if result.code == 0 then
-  --   if vim.fn.filereadable(debug_config_log) then
-  --     vim.health.ok(table.concat(vim.fn.readfile(debug_config_log), '\n   '))
-  --   else
-  --     vim.health.error('cannot read ' .. debug_config_log)
-  --   end
-  -- else
-  --   local stderr = result.stderr:gsub('\n', '') or ''
-  --   vim.health.error(stderr)
-  -- end
+  vim.health.start('kitty-scrollback: Kitty debug config')
+  local kitty_debug_config_kitten =
+    vim.api.nvim_get_runtime_file('python/kitty_debug_config.py', false)[1]
+  local debug_config_log = vim.fn.stdpath('data') .. '/kitty-scrollback.nvim/debug_config.log'
+  local result = vim
+    .system({
+      p.kitty_data.kitty_path,
+      '@',
+      'kitten',
+      kitty_debug_config_kitten,
+      debug_config_log,
+    })
+    :wait()
+  if result.code == 0 then
+    if vim.fn.filereadable(debug_config_log) then
+      vim.health.ok(table.concat(vim.fn.readfile(debug_config_log), '\n   '))
+    else
+      vim.health.error('cannot read ' .. debug_config_log)
+    end
+  else
+    local stderr = result.stderr:gsub('\n', '') or ''
+    vim.health.error(stderr)
+  end
 end
 
 local function check_kitty_scrollback_nvim_version()
@@ -287,7 +286,7 @@ M.check = function()
   then
     check_clipboard()
     check_sed()
-    check_kitty_debug_config()
+    -- check_kitty_debug_config()
   end
 end
 
