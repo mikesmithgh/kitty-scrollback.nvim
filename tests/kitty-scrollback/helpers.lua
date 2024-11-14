@@ -10,8 +10,12 @@ M.is_headless = (#vim.api.nvim_list_uis() == 0)
 
 --- @return any # given arguments.
 M.debug = function(...)
-  if M.debug_enabled then
+  local first = select(1, ...)
+  if M.debug_enabled or (first.code and first.code ~= 0) then
     print(vim.inspect(...))
+    if first.code then
+      assert.is.equal(first.code, 0)
+    end
     return ...
   end
   return ...
@@ -107,8 +111,7 @@ M.kitty_remote_send_text_cmd = function(txt)
 end
 
 M.kitty_remote_send_text = function(txt, ...)
-  M.debug(M.kitty_remote_send_text_cmd(txt), ...)
-  return M.debug(vim.system(M.kitty_remote_send_text_cmd(txt), ...):wait())
+  return M.debug(vim.system(M.debug(M.kitty_remote_send_text_cmd(txt)), ...):wait())
 end
 
 M.kitty_remote_set_title_cmd = function(title)
@@ -149,13 +152,9 @@ M.kitty_remote_kitten_kitty_scrollback_nvim_cmd = function(ksb_args)
 end
 
 M.kitty_remote_kitten_kitty_scrollback_nvim = function(ksb_args, ...)
-  local ksb_proc = M.debug(
+  return M.debug(
     vim.system(M.debug(M.kitty_remote_kitten_kitty_scrollback_nvim_cmd(ksb_args), ...)):wait()
   )
-  if ksb_proc.code ~= 0 then
-    print(vim.inspect(ksb_proc))
-  end
-  return ksb_proc
 end
 
 M.kitty_remote_kitten_kitty_scroll_prompt_cmd = function(direction, select_cmd_output)
@@ -445,12 +444,7 @@ M.feed_kitty = function(input, pause_seconds_after)
   end
   M.pause_seconds(pause_seconds_after or 3) -- longer pause for linux
 
-  local get_text_proc = M.debug(M.kitty_remote_get_text())
-  if get_text_proc.code ~= 0 then
-    print(vim.inspect(get_text_proc))
-  end
-  assert.is.equal(get_text_proc.code, 0)
-  local stdout = get_text_proc.stdout
+  local stdout = M.kitty_remote_get_text().stdout
   local last_line = stdout:match('.*\n(.*)\n')
   local start_of_line, cursor_y, cursor_x =
     last_line:match('^(.*)\x1b%[%?25[hl]\x1b%[(%d+);(%d+)H\x1b.*$')
