@@ -729,20 +729,21 @@ Press ENTER or type command to continue
   end)
 
   it('ksb_builtin_checkhealth', function()
-    h.kitty_remote_kitten_kitty_scrollback_nvim({
-      '--config',
-      'ksb_builtin_checkhealth',
-    })
-    h.assert_screen_match(h.feed_kitty(), {
-      pattern = [[
+    h.assert_screen_match(
+      h.feed_kitty({
+        h.open_kitty_scrollback_nvim({ '--config', 'ksb_builtin_checkhealth' }),
+      }),
+      {
+        pattern = [[
 kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
 .*kitty%-scrollback: Neovim version.*
 .*%- OK NVIM.*
 ]],
 
-      cursor_y = 1,
-      cursor_x = 1,
-    })
+        cursor_y = 1,
+        cursor_x = 1,
+      }
+    )
   end)
 
   after_all()
