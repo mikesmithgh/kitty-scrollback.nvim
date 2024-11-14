@@ -120,7 +120,7 @@ M.kitty_remote_set_title = function(title, ...)
 end
 
 M.kitty_remote_close_window_cmd = function()
-  return vim.list_extend(M.kitty_remote_cmd(), { 'close-window' })
+  return vim.list_extend(M.kitty_remote_cmd(), { 'close-window', '--match=recent:0' })
 end
 
 M.kitty_remote_close_window = function()
