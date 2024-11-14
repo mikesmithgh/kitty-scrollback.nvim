@@ -1,3 +1,10 @@
+## [5.0.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v5.0.1...v5.0.2) (2024-11-14)
+
+
+### Bug Fixes
+
+* remove kitty debug config from checkhealth ([dd4bd78](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/dd4bd78abbae4256a29c7cdecbe778957bb932b5))
+
 ## [5.0.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v5.0.0...v5.0.1) (2024-08-20)
 
 

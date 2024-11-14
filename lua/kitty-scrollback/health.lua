@@ -208,26 +208,6 @@ M.check_kitty_version = function(check_only)
   return false
 end
 
-local function check_kitty_debug_config()
-  vim.health.start('kitty-scrollback: Kitty debug config')
-  local kitty_debug_config_kitten =
-    vim.api.nvim_get_runtime_file('python/kitty_debug_config.py', false)[1]
-  local debug_config_log = vim.fn.stdpath('data') .. '/kitty-scrollback.nvim/debug_config.log'
-  local result = vim
-    .system({ p.kitty_data.kitty_path, '@', 'kitten', kitty_debug_config_kitten, debug_config_log })
-    :wait()
-  if result.code == 0 then
-    if vim.fn.filereadable(debug_config_log) then
-      vim.health.ok(table.concat(vim.fn.readfile(debug_config_log), '\n   '))
-    else
-      vim.health.error('cannot read ' .. debug_config_log)
-    end
-  else
-    local stderr = result.stderr:gsub('\n', '') or ''
-    vim.health.error(stderr)
-  end
-end
-
 local function check_kitty_scrollback_nvim_version()
   local current_version = nil
   local tag_cmd = { 'git', 'describe', '--exact-match', '--tags' }
@@ -254,14 +234,14 @@ local function check_kitty_scrollback_nvim_version()
       vim.health.ok('     ' .. msg)
     end
   vim.health.start('kitty-scrollback: kitty-scrollback.nvim version')
-  health_fn([[  `|`\___/`|`       ]] .. header .. [[
-         =) `^`Y`^` (=
-          \  *^*  /       If you have any issues or questions using *kitty-scrollback.nvim* then     
-          ` )=*=( `       please create an issue at                                                    
+  health_fn([[  /\___/|       ]] .. header .. [[
+         =) ^Y^ (=
+          \  ^  /       If you have any issues or questions using *kitty-scrollback.nvim* then     
+           )=*=(        please create an issue at                                                    
           /     \       https://github.com/mikesmithgh/kitty-scrollback.nvim/issues and              
           |     |       provide the `KittyScrollbackCheckHealth` report.                               
          /| | | |\                                                                                    
-         \| | `|`_`|`/\
+         \| | \_|/\
           /_// ___/     *Bonus* *points* *for* *cat* *memes*
              \_)       ]])
 
@@ -280,7 +260,6 @@ M.check = function()
   then
     check_clipboard()
     check_sed()
-    check_kitty_debug_config()
   end
 end
 
