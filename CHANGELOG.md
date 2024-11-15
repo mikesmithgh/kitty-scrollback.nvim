@@ -1,3 +1,38 @@
+# [6.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v5.0.2...v6.0.0) (2024-11-15)
+
+
+* feat!: exit kitty-scrollback.nvim with q key instead of esc ([#272](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/272)) ([1ae369b](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/1ae369be4186857bddeeb49561d3dccafc13b801))
+
+
+### BREAKING CHANGES
+
+* Change the default keymap for quitting kitty-scrollback.nvim from `<Esc>` to `q`.
+
+If you prefer the previous behavior of using `<Esc>` to exit kitty-scrollback.nvim, this can be reconfigured by
+adding the following to your kitty-scrollback.nvim setup.
+
+```lua
+vim.keymap.set({ 'n' }, '<Esc>', '<Plug>(KsbCloseOrQuitAll)', {})
+```
+
+For example, if you are using lazy.nvim, it would look something like this
+
+```lua
+return {
+  {
+    'mikesmithgh/kitty-scrollback.nvim',
+    lazy = true,
+    cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
+    event = { 'User KittyScrollbackLaunch' },
+    config = function()
+      vim.keymap.set({ 'n' }, '<Esc>', '<Plug>(KsbCloseOrQuitAll)', {}) -- quit kitty-scrollback.nvim with Esc key
+      -- vim.keymap.set({ 'n' }, 'q', '<Plug>(KsbCloseOrQuitAll)', {}) -- uncomment if you would like to also quit with the q key
+      require('kitty-scrollback').setup()
+    end,
+  },
+}
+```
+
 ## [5.0.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v5.0.1...v5.0.2) (2024-11-14)
 
 
