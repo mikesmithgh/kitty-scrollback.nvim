@@ -267,7 +267,10 @@ This section provides details on how to customize your kitty-scrollback.nvim
 configuration.
 
 
-  `ℹ` `NOTE` 
+  |‼| |IMPORTANT|
+  Please review the Recommended Configurations for other plugins
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#recommended-configurations-for-other-plugins>
+  section of the wiki to prevent conflicts with other plugins.
   The Advanced Configuration
 <https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#advanced-configuration>
   section of the wiki provides useful configurations
