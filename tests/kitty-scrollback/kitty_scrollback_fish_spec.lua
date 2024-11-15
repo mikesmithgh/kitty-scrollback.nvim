@@ -54,7 +54,7 @@ end
       h.feed_kitty({
         h.with_pause_seconds_before([[echo autocomplete test]]),
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[a]]),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline([[echo]]),
         h.send_without_newline(h.control_enter()),
       }),
@@ -77,7 +77,7 @@ fish $
       h.feed_kitty({
         h.with_pause_seconds_before([[echo autocomplete test]]),
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[a]]),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline([[echo]]),
         h.send_without_newline(h.shift_enter()),
       }),
@@ -97,7 +97,7 @@ fish $ echo autocomplete test
     h.assert_screen_match(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[a]]),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.esc()),
         [[:set filetype?]],
       }),

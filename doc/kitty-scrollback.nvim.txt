@@ -5,7 +5,7 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 
 1. kitty-scrollback.nvim         |kitty-scrollback.nvim-kitty-scrollback.nvim|
   - Features                                  |kitty-scrollback.nvim-features|
-  - Migrating to v5.0.0            |kitty-scrollback.nvim-migrating-to-v5.0.0|
+  - Migrating to v6.0.0            |kitty-scrollback.nvim-migrating-to-v6.0.0|
   - Prerequisites                        |kitty-scrollback.nvim-prerequisites|
   - Quickstart                              |kitty-scrollback.nvim-quickstart|
   - Installation                          |kitty-scrollback.nvim-installation|
@@ -94,26 +94,45 @@ FEATURES                                      *kitty-scrollback.nvim-features*
 - That’s it! You are in Neovim, navigate the scrollback buffer.
 
 
-MIGRATING TO V5.0.0                *kitty-scrollback.nvim-migrating-to-v5.0.0*
+MIGRATING TO V6.0.0                *kitty-scrollback.nvim-migrating-to-v6.0.0*
 
 
   |‼| |IMPORTANT|
-  v5.0.0 has breaking changes and requires steps to properly migrate from v4.X.X.
+  v6.0.0 has breaking changes.
   You can ignore this section if you have not previously installed any version of
   kitty-scrollback.nvim
 
 `-` `Migration Steps`
-    If you have any problems or questions migrating to `v5.0.0`, please open an
+    If you have any problems or questions migrating to `v6.0.0`, please open an
     issue <https://github.com/mikesmithgh/kitty-scrollback.nvim/issues> or
     discussion <https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions>.
-    - kitty-scrollback.nvim v5.0.0 uses Kitty’s builtin `--bracketed-paste` option when sending
-        commands to Kitty. The `--bracketed-paste` option was added in Kitty 0.32.2. If you are
-        using an older version of Kitty, then upgrade to the latest version or at least 0.32.2.
-    - Alternatively, if you are unable to upgrade Kitty, then you can still use tag
-        v4.3.6 <https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v4.3.6> of
-        kitty-scrollback.nvim.
-    - See kitten-send-text <https://sw.kovidgoyal.net/kitty/remote-control/#kitten-send-text>
-        for more information on the `--bracketed-paste` option.
+    - kitty-scrollback.nvim v6.0.0 changes the default keymap for quitting
+        kitty-scrollback.nvim from `<Esc>` to `q`. No steps are necessary if you prefer
+        this new behavior.
+        If you prefer the previous behavior of using `<Esc>` to exit
+        kitty-scrollback.nvim, this can be reconfigured by adding the following to your
+        kitty-scrollback.nvim setup.
+
+>lua
+            vim.keymap.set({ 'n' }, '<Esc>', '<Plug>(KsbCloseOrQuitAll)', {})
+<
+        For example, if you are using lazy.nvim, it would look something like this
+
+>lua
+            return {
+              {
+                'mikesmithgh/kitty-scrollback.nvim',
+                lazy = true,
+                cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
+                event = { 'User KittyScrollbackLaunch' },
+                config = function()
+                  vim.keymap.set({ 'n' }, '<Esc>', '<Plug>(KsbCloseOrQuitAll)', {}) -- quit kitty-scrollback.nvim with Esc key
+                  -- vim.keymap.set({ 'n' }, 'q', '<Plug>(KsbCloseOrQuitAll)', {}) -- uncomment if you would like to also quit with the q key
+                  require('kitty-scrollback').setup()
+                end,
+              },
+            }
+<
 
 
 PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
@@ -150,7 +169,7 @@ INSTALLATION                              *kitty-scrollback.nvim-installation*
         cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth', 'KittyScrollbackGenerateCommandLineEditing' },
         event = { 'User KittyScrollbackLaunch' },
         -- version = '*', -- latest stable version, may have breaking changes if major version changed
-        -- version = '^5.0.0', -- pin major version, include fixes and features that do not have breaking changes
+        -- version = '^6.0.0', -- pin major version, include fixes and features that do not have breaking changes
         config = function()
           require('kitty-scrollback').setup()
         end,
@@ -168,7 +187,7 @@ INSTALLATION                              *kitty-scrollback.nvim-installation*
         cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth', 'KittyScrollbackGenerateCommandLineEditing' },
         event = { 'User KittyScrollbackLaunch' },
         -- tag = '*', -- latest stable version, may have breaking changes if major version changed
-        -- tag = 'v5.0.0', -- pin specific tag
+        -- tag = 'v6.0.0', -- pin specific tag
         config = function()
           require('kitty-scrollback').setup()
         end,
@@ -248,7 +267,10 @@ This section provides details on how to customize your kitty-scrollback.nvim
 configuration.
 
 
-  `ℹ` `NOTE` 
+  |‼| |IMPORTANT|
+  Please review the Recommended Configurations for other plugins
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#recommended-configurations-for-other-plugins>
+  section of the wiki to prevent conflicts with other plugins.
   The Advanced Configuration
 <https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#advanced-configuration>
   section of the wiki provides useful configurations
@@ -876,7 +898,7 @@ The API is available via the `kitty-scrollback.api` module. e.g.,
 <Plug>(KsbToggleFooter)       g?           n       toggle_footer()            Toggle the paste window footer that
                                                                                 displays mappings
 
-<Plug>(KsbCloseOrQuitAll)     <Esc>        n       close_or_quit_all()        If the current buffer is the paste
+<Plug>(KsbCloseOrQuitAll)     q            n       close_or_quit_all()        If the current buffer is the paste
                                                                                 buffer, then close the window.
                                                                                 Otherwise quit Neovim
 

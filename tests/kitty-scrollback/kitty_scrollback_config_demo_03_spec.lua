@@ -95,7 +95,7 @@ describe('kitty-scrollback.nvim', function()
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_highlight_overrides 
 Custom KittyScrollbackNvim highlight overrides
@@ -147,7 +147,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
       h.feed_kitty({
         h.send_without_newline([[VG]]),
         h.with_pause_seconds_before(h.send_without_newline(h.esc())),
-        h.with_pause_seconds_before(h.send_without_newline(h.esc())),
+        h.with_pause_seconds_before([[:quit]]),
         h.send_without_newline([[V15k]]),
         h.send_without_newline(h.with_pause_seconds_before(nil, 2)),
       }),
@@ -200,7 +200,7 @@ $
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_visual_selection_highlight_mode_reverse 
 ksb_example_visual_selection_highlight_mode is set to 'reverse'
@@ -254,7 +254,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
       h.feed_kitty({
         h.send_without_newline([[VG]]),
         h.with_pause_seconds_before(h.send_without_newline(h.esc())),
-        h.with_pause_seconds_before(h.send_without_newline(h.esc())),
+        h.with_pause_seconds_before([[:quit]]),
         h.send_without_newline([[V15k]]),
         h.send_without_newline(h.with_pause_seconds_before(nil, 2)),
       }),
@@ -307,7 +307,7 @@ $
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_keymaps_custom 
 Custom keymap overrides
@@ -364,7 +364,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_keymaps_disabled 
 Disable default keymaps
@@ -478,7 +478,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_paste_win_hide_mappings 
 paste_window hide_footer is set to true, hide paste window footer
@@ -535,7 +535,7 @@ $🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
     })
     h.assert_screen_equals(
       h.feed_kitty({
-        h.with_pause_seconds_before(h.send_without_newline([[a]])),
+        h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
 # example > --config ksb_example_paste_win_highlight_as_float 
 paste_window highlight_as_normal_win is set to false, disable paste window highlight as normal

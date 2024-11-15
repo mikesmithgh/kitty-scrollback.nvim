@@ -8,7 +8,7 @@ local M = {}
 local function backport_version()
   if type(vim.version().__tostring) ~= 'function' then
     -- NOTE: copied __tostring from
-    -- https://github.com/neovim/neovim/blob/0d3f2c4904d552635da07a6e2b4e75520b514940/runtime/lua/vim/version.lua#L125
+    -- https://github.com/neovim/neovim/blob/1d4ba8c1edba064421b34c1197c3470a09798218/runtime/lua/vim/version.lua#L125
 
     local Version = {}
     function Version:__tostring()
@@ -27,7 +27,7 @@ local function backport_version()
     end
 
     -- NOTE: copied setmetatable from
-    -- https://github.com/neovim/neovim/blob/0d3f2c4904d552635da07a6e2b4e75520b514940/runtime/lua/vim/version.lua#L455
+    -- https://github.com/neovim/neovim/blob/1d4ba8c1edba064421b34c1197c3470a09798218/runtime/lua/vim/version.lua#L463
     setmetatable(vim.version, {
       --- Returns the current Nvim version.
       ---@return vim.Version
@@ -56,7 +56,9 @@ local function backport_uv()
 end
 
 local function backport_system()
-  -- copied from _editor.lua
+  -- NOTE: copied vim.system from
+  -- https://github.com/neovim/neovim/blob/1d4ba8c1edba064421b34c1197c3470a09798218/runtime/lua/vim/_editor.lua#L143
+  -- _editor.lua is not checked by validate-backport due to frequent changes and minimal impact to vim.system
   ---@diagnostic disable-next-line: duplicate-set-field
   vim.system = function(cmd, opts, on_exit)
     if type(opts) == 'function' then

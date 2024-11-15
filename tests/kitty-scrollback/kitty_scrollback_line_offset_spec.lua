@@ -48,7 +48,7 @@ describe('kitty-scrollback.nvim', function()
       h.feed_kitty({
         h.enter(),
         h.open_kitty_scrollback_nvim(),
-        [[:set tabline=tabline\ header]],
+        h.with_pause_seconds_before([[:set tabline=tabline\ header]]),
         [[:set showtabline=0]],
         h.send_without_newline([[a]]),
       }),
@@ -81,7 +81,7 @@ $▏                                                                            
       h.feed_kitty({
         h.enter(),
         h.open_kitty_scrollback_nvim(),
-        [[:set tabline=tabline\ header]],
+        h.with_pause_seconds_before([[:set tabline=tabline\ header]]),
         [[:set showtabline=1]],
         h.send_without_newline([[a]]),
       }),
@@ -115,7 +115,7 @@ $▏                                                                            
       h.feed_kitty({
         h.send_without_newline(h.enter()),
         h.open_kitty_scrollback_nvim(),
-        [[:set tabline=tabline\ header]],
+        h.with_pause_seconds_before([[:set tabline=tabline\ header]]),
         [[:set showtabline=1]],
         [[:tab new]],
         h.send_without_newline([[gta]]),
@@ -150,7 +150,7 @@ $▏                                                                            
       h.feed_kitty({
         h.send_without_newline(h.enter()),
         h.open_kitty_scrollback_nvim(),
-        [[:set tabline=tabline\ header]],
+        h.with_pause_seconds_before([[:set tabline=tabline\ header]]),
         [[:set showtabline=2]],
         h.send_without_newline([[a]]),
       }),
@@ -184,7 +184,7 @@ $▏                                                                            
       h.feed_kitty({
         h.send_without_newline(h.enter()),
         h.open_kitty_scrollback_nvim(),
-        [[:set winbar=winbar\ header]],
+        h.with_pause_seconds_before([[:set winbar=winbar\ header]]),
         h.send_without_newline([[a]]),
       }),
       {
@@ -217,7 +217,7 @@ $▏                                                                            
       h.feed_kitty({
         h.send_without_newline(h.enter()),
         h.open_kitty_scrollback_nvim(),
-        [[:set tabline=tabline\ header]],
+        h.with_pause_seconds_before([[:set tabline=tabline\ header]]),
         [[:set showtabline=2]],
         [[:set winbar=winbar\ header]],
         h.send_without_newline([[a]]),

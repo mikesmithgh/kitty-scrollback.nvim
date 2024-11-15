@@ -281,6 +281,7 @@ M.checkhealth = function()
         (p and p.kitty_data and p.kitty_data.kitty_path) and p.kitty_data.kitty_path or 'kitty',
         '@',
         'kitten',
+        '--match=recent:0',
         kitty_scrollback_kitten,
         '--config',
         'ksb_builtin_checkhealth',

@@ -47,7 +47,7 @@ describe('kitty-scrollback.nvim', function()
     h.assert_screen_equals(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[aecho start echo stop]]),
+        h.with_pause_seconds_before(h.send_without_newline([[aecho start echo stop]])),
         h.esc(),
         h.send_without_newline([[vBB]]),
         h.send_without_newline(h.control_enter()),
@@ -69,7 +69,7 @@ $
       h.feed_kitty({
         [[echo echo start stop]],
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[kV]]),
+        h.with_pause_seconds_before(h.send_without_newline([[kV]])),
         h.send_without_newline(h.control_enter()),
       }),
       {
@@ -91,7 +91,7 @@ $
       h.feed_kitty({
         [[echo aaecho start stop]],
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[k]]),
+        h.with_pause_seconds_before(h.send_without_newline([[k]])),
         h.send_without_newline(h.control_v()),
         h.send_without_newline([[kww]]),
         h.send_without_newline(h.control_enter()),
@@ -116,7 +116,7 @@ $
     h.assert_screen_equals(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[aecho start echo stop]]),
+        h.with_pause_seconds_before(h.send_without_newline([[aecho start echo stop]])),
         h.esc(),
         h.send_without_newline([[vBB]]),
         h.send_without_newline(h.shift_enter()),
@@ -136,7 +136,7 @@ $ echo stop
       h.feed_kitty({
         [[echo echo start stop]],
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[kV]]),
+        h.with_pause_seconds_before(h.send_without_newline([[kV]])),
         h.send_without_newline(h.shift_enter()),
       }),
       {
@@ -156,7 +156,7 @@ $ echo start stop
       h.feed_kitty({
         [[echo aaecho start stop]],
         h.open_kitty_scrollback_nvim(),
-        h.send_without_newline([[k]]),
+        h.with_pause_seconds_before(h.send_without_newline([[k]])),
         h.send_without_newline(h.control_v()),
         h.send_without_newline([[kww]]),
         h.send_without_newline(h.shift_enter()),
