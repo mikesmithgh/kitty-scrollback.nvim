@@ -352,7 +352,10 @@ alter all default shortcuts that use [kitty_mod](https://sw.kovidgoyal.net/kitty
 
 This section provides details on how to customize your kitty-scrollback.nvim configuration.
 
-> [!NOTE]\
+> [!IMPORTANT]\
+> Please review the [Recommended Configurations for other plugins](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#recommended-configurations-for-other-plugins) 
+> section of the wiki to prevent conflicts with other plugins.
+>
 > The [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#advanced-configuration) section of the wiki provides
 > [useful configurations](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#useful-configurations) and [detailed demos of each configuration option](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples).
 
