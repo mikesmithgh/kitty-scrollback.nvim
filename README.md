@@ -26,7 +26,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 ## 📖 Contents
 
 - ✨ [Features](#-features)
-- 🚀 [Migrating to v5.0.0](#-migrating-to-v500)
+- 🚀 [Migrating to v6.0.0](#-migrating-to-v600)
 - 📚 [Prerequisites](#-prerequisites)
 - 🏃 [Quickstart](#-quickstart)
 - 📦 [Installation](#-installation)
@@ -178,9 +178,9 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 
 </details>
 
-## 🚀 Migrating to v5.0.0
+## 🚀 Migrating to v6.0.0
 > [!IMPORTANT]\
-> v5.0.0 has breaking changes and requires steps to properly migrate from v4.X.X.
+> v6.0.0 has breaking changes.
 > 
 > You can ignore this section if you have not previously installed any version of kitty-scrollback.nvim
 
@@ -188,7 +188,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 
   <summary>Migration Steps</summary>
 
-  If you have any problems or questions migrating to `v5.0.0`, please open an 
+  If you have any problems or questions migrating to `v6.0.0`, please open an 
   [issue](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues) or
   [discussion](https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions).
   
@@ -198,14 +198,34 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
   
   <!-- panvimdoc-ignore-end -->
 
-  - kitty-scrollback.nvim v5.0.0 uses Kitty's builtin `--bracketed-paste` option when sending
-    commands to Kitty. The `--bracketed-paste` option was added in Kitty 0.32.2. If you are
-    using an older version of Kitty, then upgrade to the latest version or at least 0.32.2.
-  - Alternatively, if you are unable to upgrade Kitty, then you can still use tag 
-    [v4.3.6](https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v4.3.6) of 
-    kitty-scrollback.nvim.
-  - See [kitten-send-text](https://sw.kovidgoyal.net/kitty/remote-control/#kitten-send-text) 
-    for more information on the `--bracketed-paste` option.
+  - kitty-scrollback.nvim v6.0.0 changes the default keymap for quitting kitty-scrollback.nvim from `<Esc>` to `q`.
+    No steps are necessary if you prefer this new behavior.
+
+
+    If you prefer the previous behavior of using `<Esc>` to exit kitty-scrollback.nvim, this can be reconfigured by
+    adding the following to your kitty-scrollback.nvim setup.
+
+    ```lua
+    vim.keymap.set({ 'n' }, '<Esc>', '<Plug>(KsbCloseOrQuitAll)', {})
+    ```
+
+    For example, if you are using lazy.nvim, it would look something like this
+
+    ```lua
+    return {
+      {
+        'mikesmithgh/kitty-scrollback.nvim',
+        lazy = true,
+        cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
+        event = { 'User KittyScrollbackLaunch' },
+        config = function()
+          vim.keymap.set({ 'n' }, '<Esc>', '<Plug>(KsbCloseOrQuitAll)', {}) -- quit kitty-scrollback.nvim with Esc key
+          -- vim.keymap.set({ 'n' }, 'q', '<Plug>(KsbCloseOrQuitAll)', {}) -- uncomment if you would like to also quit with the q key
+          require('kitty-scrollback').setup()
+        end,
+      },
+    }
+    ```
 
 </details>
 
@@ -241,7 +261,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
     event = { 'User KittyScrollbackLaunch' },
     -- version = '*', -- latest stable version, may have breaking changes if major version changed
-    -- version = '^5.0.0', -- pin major version, include fixes and features that do not have breaking changes
+    -- version = '^6.0.0', -- pin major version, include fixes and features that do not have breaking changes
     config = function()
       require('kitty-scrollback').setup()
     end,
@@ -261,7 +281,7 @@ sh -c "$(curl -s https://raw.githubusercontent.com/mikesmithgh/kitty-scrollback.
     cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
     event = { 'User KittyScrollbackLaunch' },
     -- tag = '*', -- latest stable version, may have breaking changes if major version changed
-    -- tag = 'v5.0.0', -- pin specific tag
+    -- tag = 'v6.0.0', -- pin specific tag
     config = function()
       require('kitty-scrollback').setup()
     end,
@@ -332,7 +352,10 @@ alter all default shortcuts that use [kitty_mod](https://sw.kovidgoyal.net/kitty
 
 This section provides details on how to customize your kitty-scrollback.nvim configuration.
 
-> [!NOTE]\
+> [!IMPORTANT]\
+> Please review the [Recommended Configurations for other plugins](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#recommended-configurations-for-other-plugins) 
+> section of the wiki to prevent conflicts with other plugins.
+>
 > The [Advanced Configuration](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#advanced-configuration) section of the wiki provides
 > [useful configurations](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki#useful-configurations) and [detailed demos of each configuration option](https://github.com/mikesmithgh/kitty-scrollback.nvim/wiki/Advanced-Configuration-Examples).
 
@@ -823,7 +846,7 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 | `<Plug>(KsbExecuteVisualCmd)` | `<C-CR>`        | v     | `execute_visual_command()` | Execute the contents of visual selection in Kitty                                       |
 | `<Plug>(KsbPasteVisualCmd)`   | `<S-CR>`        | v     | `paste_visual_command()`   | Paste the contents of visual selection to Kitty without executing                       |
 | `<Plug>(KsbToggleFooter)`     | `g?`            | n     | `toggle_footer()`          | Toggle the paste window footer that displays mappings                                   |
-| `<Plug>(KsbCloseOrQuitAll)`   | `<Esc>`         | n     | `close_or_quit_all()`      | If the current buffer is the paste buffer, then close the window. Otherwise quit Neovim |
+| `<Plug>(KsbCloseOrQuitAll)`   | `q`             | n     | `close_or_quit_all()`      | If the current buffer is the paste buffer, then close the window. Otherwise quit Neovim |
 | `<Plug>(KsbQuitAll)`          | `<C-c>`         | n,i,t | `quit_all()`               | Quit Neovim                                                                             |
 | `<Plug>(KsbVisualYankLine)`   | `<Leader>Y`     | v     |                            | Maps to `"+Y`                                                                           |
 | `<Plug>(KsbVisualYank)`       | `<Leader>y`     | v     |                            | Maps to `"+y`                                                                           |

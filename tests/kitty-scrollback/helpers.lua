@@ -347,6 +347,15 @@ M.control_v = function()
   }
 end
 
+M.control_f = function()
+  return {
+    [[\x06]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
 M.esc = function()
   return {
     [[\x1b]],
