@@ -1,5 +1,5 @@
 -- NOTE: copied from
--- https://github.com/neovim/neovim/blob/72a1df60652f20f5f47bf120ee0bc08466837f31/runtime/lua/vim/_system.lua
+-- https://github.com/neovim/neovim/blob/ca760e645ba4d1fdb0b6fff3ac98231c3d683306/runtime/lua/vim/_system.lua
 
 ---@diagnostic disable
 local uv = vim.uv
@@ -49,15 +49,6 @@ local function close_handle(handle)
   if handle and not handle:is_closing() then
     handle:close()
   end
-end
-
----@param state vim.SystemState
-local function close_handles(state)
-  close_handle(state.handle)
-  close_handle(state.stdin)
-  close_handle(state.stdout)
-  close_handle(state.stderr)
-  close_handle(state.timer)
 end
 
 --- @class vim.SystemObj
@@ -136,9 +127,7 @@ function SystemObj:write(data)
     -- (https://github.com/neovim/neovim/pull/17620#discussion_r820775616)
     stdin:write('', function()
       stdin:shutdown(function()
-        if stdin then
-          stdin:close()
-        end
+        close_handle(stdin)
       end)
     end)
   end
@@ -150,25 +139,52 @@ function SystemObj:is_closing()
   return handle == nil or handle:is_closing() or false
 end
 
----@param output fun(err:string?, data: string?)|false
----@return uv.uv_stream_t?
----@return fun(err:string?, data: string?)? Handler
-local function setup_output(output)
-  if output == nil then
-    return assert(uv.new_pipe(false)), nil
+--- @param output? uv.read_start.callback|false
+--- @param text? boolean
+--- @return uv.uv_stream_t? pipe
+--- @return uv.read_start.callback? handler
+--- @return string[]? data
+local function setup_output(output, text)
+  if output == false then
+    return
   end
+
+  local bucket --- @type string[]?
+  local handler --- @type uv.read_start.callback
 
   if type(output) == 'function' then
-    return assert(uv.new_pipe(false)), output
+    handler = output
+  else
+    bucket = {}
+    handler = function(err, data)
+      if err then
+        error(err)
+      end
+      if text and data then
+        bucket[#bucket + 1] = data:gsub('\r\n', '\n')
+      else
+        bucket[#bucket + 1] = data
+      end
+    end
   end
 
-  assert(output == false)
-  return nil, nil
+  local pipe = assert(uv.new_pipe(false))
+
+  --- @type uv.read_start.callback
+  local function handler_with_close(err, data)
+    handler(err, data)
+    if data == nil then
+      pipe:read_stop()
+      pipe:close()
+    end
+  end
+
+  return pipe, handler_with_close, bucket
 end
 
----@param input string|string[]|true|nil
----@return uv.uv_stream_t?
----@return string|string[]?
+--- @param input? string|string[]|boolean
+--- @return uv.uv_stream_t?
+--- @return string|string[]?
 local function setup_input(input)
   if not input then
     return
@@ -212,28 +228,6 @@ local function setup_env(env, clear_env)
   return renv
 end
 
---- @param stream uv.uv_stream_t
---- @param text? boolean
---- @param bucket string[]
---- @return fun(err: string?, data: string?)
-local function default_handler(stream, text, bucket)
-  return function(err, data)
-    if err then
-      error(err)
-    end
-    if data ~= nil then
-      if text then
-        bucket[#bucket + 1] = data:gsub('\r\n', '\n')
-      else
-        bucket[#bucket + 1] = data
-      end
-    else
-      stream:read_stop()
-      stream:close()
-    end
-  end
-end
-
 local is_win = vim.fn.has('win32') == 1
 
 local M = {}
@@ -259,9 +253,9 @@ local function spawn(cmd, opts, on_exit, on_error)
   return handle, pid_or_err --[[@as integer]]
 end
 
----@param timeout integer
----@param cb fun()
----@return uv.uv_timer_t
+--- @param timeout integer
+--- @param cb fun()
+--- @return uv.uv_timer_t
 local function timer_oneshot(timeout, cb)
   local timer = assert(uv.new_timer())
   timer:start(timeout, 0, function()
@@ -277,7 +271,12 @@ end
 --- @param signal integer
 --- @param on_exit fun(result: vim.SystemCompleted)?
 local function _on_exit(state, code, signal, on_exit)
-  close_handles(state)
+  close_handle(state.handle)
+  close_handle(state.stdin)
+  close_handle(state.timer)
+
+  -- #30846: Do not close stdout/stderr here, as they may still have data to
+  -- read. They will be closed in uv.read_start on EOF.
 
   local check = assert(uv.new_check())
   check:start(function()
@@ -315,6 +314,15 @@ local function _on_exit(state, code, signal, on_exit)
   end)
 end
 
+--- @param state vim.SystemState
+local function _on_error(state)
+  close_handle(state.handle)
+  close_handle(state.stdin)
+  close_handle(state.stdout)
+  close_handle(state.stderr)
+  close_handle(state.timer)
+end
+
 --- Run a system command
 ---
 --- @param cmd string[]
@@ -330,8 +338,8 @@ function M.run(cmd, opts, on_exit)
 
   opts = opts or {}
 
-  local stdout, stdout_handler = setup_output(opts.stdout)
-  local stderr, stderr_handler = setup_output(opts.stderr)
+  local stdout, stdout_handler, stdout_data = setup_output(opts.stdout, opts.text)
+  local stderr, stderr_handler, stderr_data = setup_output(opts.stderr, opts.text)
   local stdin, towrite = setup_input(opts.stdin)
 
   --- @type vim.SystemState
@@ -341,7 +349,9 @@ function M.run(cmd, opts, on_exit)
     timeout = opts.timeout,
     stdin = stdin,
     stdout = stdout,
+    stdout_data = stdout_data,
     stderr = stderr,
+    stderr_data = stderr_data,
   }
 
   --- @diagnostic disable-next-line:missing-fields
@@ -356,17 +366,15 @@ function M.run(cmd, opts, on_exit)
   }, function(code, signal)
     _on_exit(state, code, signal, on_exit)
   end, function()
-    close_handles(state)
+    _on_error(state)
   end)
 
-  if stdout then
-    state.stdout_data = {}
-    stdout:read_start(stdout_handler or default_handler(stdout, opts.text, state.stdout_data))
+  if stdout and stdout_handler then
+    stdout:read_start(stdout_handler)
   end
 
-  if stderr then
-    state.stderr_data = {}
-    stderr:read_start(stderr_handler or default_handler(stderr, opts.text, state.stderr_data))
+  if stderr and stderr_handler then
+    stderr:read_start(stderr_handler)
   end
 
   local obj = new_systemobj(state)
