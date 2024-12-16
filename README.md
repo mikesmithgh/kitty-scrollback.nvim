@@ -49,7 +49,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - 🫡 [Commands](#-commands)
 - ⌨️ [Keymaps](#%EF%B8%8F-keymaps)
 - 🪛 [Optional Setup](#-optional-setup)
-  - [command-line editing](#command-line-editing)
+  - [Command-line editing](#command-line-editing)
   - [tmux (🧪 experimental )](#tmux--experimental-)
 - 👏 [Recommendations](#-recommendations)
 - 🤝 [Acknowledgements](#-acknowledgements)
@@ -174,7 +174,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 
 <!-- TODO: add demo -->
 > [!NOTE]  
-> This requires extra steps to setup. See optional [command-line editing setup](#command-line-editing).
+> This requires extra steps to setup. See optional [Command-line editing setup](#command-line-editing).
   
 <!-- TODO: add demo -->
 - Start typing a command in your shell
@@ -934,11 +934,10 @@ export VISUAL='~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_comma
 - Close and reopen your `bash` shell
 - Enter a command and press `<C-x><C-e>`, you should now be editing your command line with kitty-scrollback.nvim!
 
-> [!NOTE]  
-> Since this configuration is making use of the `VISUAL` environment variable. The environment variable `KITTY_SCROLLBACK_VISUAL` 
-> can be used for cases where programs open `VISUAL` that do not involve command-line editing. By default, if `KITTY_SCROLLBACK_VISUAL`
-> is not set, it will default to `nvim`. For example, if you open a file with `less` and press `v` to open the file with the `VISUAL`
-> editor, it will open in the command defined in `KITTY_SCROLLBACK_VISUAL`. So, in this case open in `nvim` as you typically would expect. 
+Since this configuration is making use of the `VISUAL` environment variable. The environment variable `KITTY_SCROLLBACK_VISUAL` 
+can be used for cases where programs open `VISUAL` that do not involve command-line editing. By default, if `KITTY_SCROLLBACK_VISUAL`
+is not set, it will default to `nvim`. For example, if you open a file with `less` and press `v` to open the file with the `VISUAL`
+editor, it will open in the command defined in `KITTY_SCROLLBACK_VISUAL`. So, in this case open in `nvim` as you typically would expect. 
   
 </details>
 <details> 
@@ -988,9 +987,8 @@ bind --mode insert \ee kitty_scrollback_edit_command_buffer
 - Close and reopen your `fish` shell
 - Enter a command and press `<M-e>` (where `M` is the alt key), you should now be editing your command line with kitty-scrollback.nvim!
 
-> [!NOTE]  
-> Since this example configuration is not rebinding `\ev`. You can still press `<M-v>` (where `M` is the alt key), to open then
-> command-line buffer in the editor defined in the `VISUAL` environment variable. This gives you some extra flexibility in the fish shell!
+Since this example configuration is not rebinding `\ev`. You can still press `<M-v>` (where `M` is the alt key), to open then
+command-line buffer in the editor defined in the `VISUAL` environment variable. This gives you some extra flexibility in the fish shell!
   
 </details>
 <details> 
@@ -1037,8 +1035,6 @@ bindkey '^x^e' kitty_scrollback_edit_command_line
 
 - Close and reopen your `zsh` shell
 - Enter a command and press `<C-x><C-e>`, you should now be editing your command line with kitty-scrollback.nvim!
-
-
 
 ### tmux (🧪 experimental )
 
