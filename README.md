@@ -172,10 +172,10 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <details> 
 <summary>😹 Edit the current command line (bash, fish, or zsh)</summary>
 
-<!-- TODO: add demo -->
+https://github.com/user-attachments/assets/6b4f177f-34c2-4ce7-9adb-15e0d3e19498
+
 This requires extra steps to setup. See optional [Command-line editing setup](#command-line-editing).
   
-<!-- TODO: add demo -->
 - Start typing a command in your shell
 - Open the current command line in kitty-scrollback.nvim with the following keybind
   - bash: `<C-x><C-e>`
