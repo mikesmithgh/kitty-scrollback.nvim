@@ -881,7 +881,7 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 ### Command-line editing
 
 > [!NOTE]  
-> Command-line editing is only supported for `bash`, `fish`, and `zsh`
+> Command-line editing is only supported for `bash`, `fish`, or `zsh`
 
 Generate the shell configuration and add them to the appropriate location. The comments in the shell configuration will provide
 additional setup instructions. `KittyScrollbackGenerateCommandLineEditing` requires one parameter, either `bash`, `fish`, or `zsh`.
