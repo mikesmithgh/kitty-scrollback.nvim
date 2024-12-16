@@ -173,8 +173,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <summary>😹 Edit the current command line (bash, fish, or zsh)</summary>
 
 <!-- TODO: add demo -->
-> [!NOTE]  
-> This requires extra steps to setup. See optional [Command-line editing setup](#command-line-editing).
+This requires extra steps to setup. See optional [Command-line editing setup](#command-line-editing).
   
 <!-- TODO: add demo -->
 - Start typing a command in your shell
@@ -189,8 +188,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 <summary>😾 tmux support (🧪 experimental )</summary>
   
 <!-- TODO: add demo -->
-> [!NOTE]  
-> This requires extra steps to setup. See optional [tmux setup](#tmux--experimental-).
+This requires extra steps to setup. See optional [tmux setup](#tmux--experimental-).
 
 - Open a tmux pane's scrollback history (default mapping `<C-b>[`)
 - That's it! You are in Neovim, navigate the scrollback buffer.
