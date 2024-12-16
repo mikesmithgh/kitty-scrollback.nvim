@@ -944,7 +944,7 @@ COMMAND-LINE EDITING ~
 
 
   `ℹ` `NOTE` 
-  Command-line editing is only supported for `bash`, `fish`, and `zsh`
+  Command-line editing is only supported for `bash`, `fish`, or `zsh`
 Generate the shell configuration and add them to the appropriate location. The
 comments in the shell configuration will provide additional setup instructions.
 `KittyScrollbackGenerateCommandLineEditing` requires one parameter, either
