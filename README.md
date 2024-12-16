@@ -878,7 +878,7 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 ## 🪛 Optional Setup
 
-### command-line editing
+### Command-line editing
 
 > [!NOTE]  
 > Command-line editing is only supported for `bash`, `fish`, and `zsh`
