@@ -90,6 +90,9 @@ FEATURES                                      *kitty-scrollback.nvim-features*
 
 `-` `😹 Edit the current command line (bash, fish, or zsh)`
 
+
+https://github.com/user-attachments/assets/6b4f177f-34c2-4ce7-9adb-15e0d3e19498
+
 This requires extra steps to setup. See optional
 |kitty-scrollback.nvim-command-line-editing-setup|.
 
