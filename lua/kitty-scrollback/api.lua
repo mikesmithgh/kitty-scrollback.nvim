@@ -199,10 +199,11 @@ M.generate_command_line_editing = function(shell)
       [[]],
     },
     fish = {
-      [[# add the following function and bindings to your fish config (e.g., ~/.config/fish/config.fish) ]],
+      [[# add the following function and bindings to your fish config]],
+      [[# e.g., ~/.config/fish/conf.d/kitty_scrollback_nvim.fish or ~/.config/fish/config.fish]],
       [[]],
       [[function kitty_scrollback_edit_command_buffer]],
-      [[  set -lx VISUAL ']] .. kitty_scrollback_edit_command_line .. [[']],
+      [[  set --local --export VISUAL ']] .. kitty_scrollback_edit_command_line .. [[']],
       [[  edit_command_buffer]],
       [[  commandline '']],
       [[end]],
@@ -218,7 +219,7 @@ M.generate_command_line_editing = function(shell)
       [[]],
       [[# [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode]],
       [[# by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS]],
-      [[# set -gx KITTY_SCROLLBACK_NVIM_EDIT_ARGS '']],
+      [[# set --global --export KITTY_SCROLLBACK_NVIM_EDIT_ARGS '']],
       [[]],
     },
     zsh = {
