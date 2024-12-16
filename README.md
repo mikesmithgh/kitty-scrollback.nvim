@@ -1028,11 +1028,10 @@ zle -N kitty_scrollback_edit_command_line
 
 bindkey '^x^e' kitty_scrollback_edit_command_line
 ```
-  
-</details>
-
 - Close and reopen your `zsh` shell
 - Enter a command and press `<C-x><C-e>`, you should now be editing your command line with kitty-scrollback.nvim!
+
+</details>
 
 ### tmux (🧪 experimental )
 
