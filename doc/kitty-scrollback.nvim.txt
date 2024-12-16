@@ -90,10 +90,9 @@ FEATURES                                      *kitty-scrollback.nvim-features*
 
 `-` `😹 Edit the current command line (bash, fish, or zsh)`
 
+This requires extra steps to setup. See optional
+|kitty-scrollback.nvim-command-line-editing-setup|.
 
-  `ℹ` `NOTE` 
-  This requires extra steps to setup. See optional
-  |kitty-scrollback.nvim-command-line-editing-setup|.
 - Start typing a command in your shell
 - Open the current command line in kitty-scrollback.nvim with the following keybind
     - bash: `<C-x><C-e>`
@@ -104,10 +103,9 @@ FEATURES                                      *kitty-scrollback.nvim-features*
 
 `-` `😾 tmux support (🧪 experimental )`
 
+This requires extra steps to setup. See optional
+|kitty-scrollback.nvim-tmux-setup|.
 
-  `ℹ` `NOTE` 
-  This requires extra steps to setup. See optional
-  |kitty-scrollback.nvim-tmux-setup|.
 - Open a tmux pane’s scrollback history (default mapping `<C-b>[`)
 - That’s it! You are in Neovim, navigate the scrollback buffer.
 
@@ -1002,15 +1000,14 @@ EXAMPLE SETUPS ~
 - Close and reopen your `bash` shell
 - Enter a command and press `<C-x><C-e>`, you should now be editing your command line with kitty-scrollback.nvim!
 
+Since this configuration is making use of the `VISUAL` environment variable.
+The environment variable `KITTY_SCROLLBACK_VISUAL` can be used for cases where
+programs open `VISUAL` that do not involve command-line editing. By default, if
+`KITTY_SCROLLBACK_VISUAL` is not set, it will default to `nvim`. For example,
+if you open a file with `less` and press `v` to open the file with the `VISUAL`
+editor, it will open in the command defined in `KITTY_SCROLLBACK_VISUAL`. So,
+in this case open in `nvim` as you typically would expect.
 
-  `ℹ` `NOTE` 
-  Since this configuration is making use of the `VISUAL` environment variable.
-  The environment variable `KITTY_SCROLLBACK_VISUAL` can be used for cases where
-  programs open `VISUAL` that do not involve command-line editing. By default, if
-  `KITTY_SCROLLBACK_VISUAL` is not set, it will default to `nvim`. For example,
-  if you open a file with `less` and press `v` to open the file with the `VISUAL`
-  editor, it will open in the command defined in `KITTY_SCROLLBACK_VISUAL`. So,
-  in this case open in `nvim` as you typically would expect.
 
 `-` `fish`
 - Run `nvim --headless +'KittyScrollbackGenerateCommandLineEditing fish'`. You
@@ -1059,12 +1056,11 @@ EXAMPLE SETUPS ~
 - Close and reopen your `fish` shell
 - Enter a command and press `<M-e>` (where `M` is the alt key), you should now be editing your command line with kitty-scrollback.nvim!
 
+Since this example configuration is not rebinding `\ev`. You can still press
+`<M-v>` (where `M` is the alt key), to open then command-line buffer in the
+editor defined in the `VISUAL` environment variable. This gives you some extra
+flexibility in the fish shell!
 
-  `ℹ` `NOTE` 
-  Since this example configuration is not rebinding `\ev`. You can still press
-  `<M-v>` (where `M` is the alt key), to open then command-line buffer in the
-  editor defined in the `VISUAL` environment variable. This gives you some extra
-  flexibility in the fish shell!
 
 `-` `zsh`
 - Run `nvim --headless +'KittyScrollbackGenerateCommandLineEditing zsh'`. You
