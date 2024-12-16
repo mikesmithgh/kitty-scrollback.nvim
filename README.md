@@ -49,6 +49,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - 🫡 [Commands](#-commands)
 - ⌨️ [Keymaps](#%EF%B8%8F-keymaps)
 - 🪛 [Optional Setup](#-optional-setup)
+  - [command-line editing](#command-line-editing)
   - [tmux (🧪 experimental )](#tmux--experimental-)
 - 👏 [Recommendations](#-recommendations)
 - 🤝 [Acknowledgements](#-acknowledgements)
@@ -168,11 +169,29 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - `kitty-scrollback.nvim` automatically closes and executes the content of the paste window
 
 </details>
+<details> 
+<summary>😹 Edit the current command line (bash, fish, or zsh)</summary>
 
+<!-- TODO: add demo -->
+> [!NOTE]  
+> This requires extra steps to setup. See optional [command-line editing setup](#command-line-editing).
+  
+<!-- TODO: add demo -->
+- Start typing a command in your shell
+- Open the current command line in kitty-scrollback.nvim with the following keybind
+  - bash: `<C-x><C-e>`
+  - fish: `<M-e>` or `<M-v>` (where `M` is the alt key)
+  - zsh: `<C-x><C-e>`
+- Modify the command and do any additional operations that you typically would perform in kitty-scrollback.nvim
+
+</details>
 <details> 
 <summary>😾 tmux support (🧪 experimental )</summary>
   
 <!-- TODO: add demo -->
+> [!NOTE]  
+> This requires extra steps to setup. See optional [tmux setup](#tmux--experimental-).
+
 - Open a tmux pane's scrollback history (default mapping `<C-b>[`)
 - That's it! You are in Neovim, navigate the scrollback buffer.
 
@@ -787,7 +806,10 @@ action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback
 ```
 
 ## 🧬 Environment Variables
-The environment variable `KITTY_SCROLLBACK_NVIM` is set to `true` while kitty-scrollback.nvim is active.
+The environment variable `KITTY_SCROLLBACK_NVIM` is set to `'true'` while kitty-scrollback.nvim is active.
+> [!NOTE]  
+> `'true'` is a string because `KITTY_SCROLLBACK_NVIM` is an environment variable. Make sure to use a string `'true'` in Lua
+> instead of accidentally using a boolean `true`. Otherwise, the conditional checks will not operate as expected.
 
 This can be used to in your Neovim configuration to provide kitty-scrollback.nvim specific behavior that may differ from a regular Neovim instance.
 ```lua
@@ -860,9 +882,163 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 ### command-line editing
 
-- Supports `bash`, `fish`, and `zsh`
-- Run `:KittyScrollbackGenerateCommandLineEditing bash|fish|zsh`
-- `$KITTY_SCROLLBACK_NVIM_EDIT_ARGS` can be used to pass arguments to kitty-scrollback.nvim in command-line editing mode
+> [!NOTE]  
+> Command-line editing is only supported for `bash`, `fish`, and `zsh`
+
+Generate the shell configuration and add them to the appropriate location. The comments in the shell configuration will provide
+additional setup instructions. `KittyScrollbackGenerateCommandLineEditing` requires one parameter, either `bash`, `fish`, or `zsh`.
+  ```sh
+  nvim --headless +'KittyScrollbackGenerateCommandLineEditing <shell>' # replace <shell> with bash, fish, or zsh
+  ```
+
+The generated configuration will mention the environment variable `KITTY_SCROLLBACK_NVIM_EDIT_ARGS`. This can be used to pass arguments to kitty-scrollback.nvim in command-line editing mode.
+This allows [Kitten Arguments](#kitten-arguments) setup specific to opening kitty-scrollback.nvim in command-line editing mode
+that you may want to configure differently your standard kitty-scrollback.nvim setup.
+
+### Example setups
+<details> 
+<summary>bash</summary>
+ 
+- Run `nvim --headless +'KittyScrollbackGenerateCommandLineEditing bash'`. You should see similar output to the following:
+
+```bash
+
+# add the following environment variables to your bash config (e.g., ~/.bashrc)
+# the editor defined in KITTY_SCROLLBACK_VISUAL will be used in place of VISUAL
+# for other scenarios that are not editing the command-line. For example, C-xC-e
+# will edit the current command-line in kitty-scrollback.nvim and pressing v in
+# less will open the file in $KITTY_SCROLLBACK_VISUAL (defaults to nvim if not
+# defined)
+export KITTY_SCROLLBACK_VISUAL='nvim'
+export VISUAL='~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.bash'
+
+# [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode
+# by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS
+# export KITTY_SCROLLBACK_NVIM_EDIT_ARGS=''
+
+# [optional] customize your readline config (e.g., ~/.inputrc) 
+# default mapping in vi mode
+set keymap vi-command
+"v": vi-edit-and-execute-command
+
+# default mapping in emacs mode
+set keymap emacs
+"\C-x\C-e": edit-and-execute-command
+```
+- In this case, I will use the default mappings and not make any changes to `~/.inputrc`. Open, 
+`~/.bashrc` and add the following:
+```bash
+# ~/.bashrc
+export VISUAL='~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.bash'
+```
+- Close and reopen your `bash` shell
+- Enter a command and press `<C-x><C-e>`, you should now be editing your command line with kitty-scrollback.nvim!
+
+> [!NOTE]  
+> Since this configuration is making use of the `VISUAL` environment variable. The environment variable `KITTY_SCROLLBACK_VISUAL` 
+> can be used for cases where programs open `VISUAL` that do not involve command-line editing. By default, if `KITTY_SCROLLBACK_VISUAL`
+> is not set, it will default to `nvim`. For example, if you open a file with `less` and press `v` to open the file with the `VISUAL`
+> editor, it will open in the command defined in `KITTY_SCROLLBACK_VISUAL`. So, in this case open in `nvim` as you typically would expect. 
+  
+</details>
+<details> 
+<summary>fish</summary>
+ 
+- Run `nvim --headless +'KittyScrollbackGenerateCommandLineEditing fish'`. You should see similar output to the following:
+
+```fish
+# add the following function and bindings to your fish config
+# e.g., ~/.config/fish/conf.d/kitty_scrollback_nvim.fish or ~/.config/fish/config.fish
+
+function kitty_scrollback_edit_command_buffer
+  set --local --export VISUAL '~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.sh'
+  edit_command_buffer
+  commandline ''
+end
+
+bind --mode default \ee kitty_scrollback_edit_command_buffer
+bind --mode default \ev kitty_scrollback_edit_command_buffer
+
+bind --mode visual \ee kitty_scrollback_edit_command_buffer
+bind --mode visual \ev kitty_scrollback_edit_command_buffer
+
+bind --mode insert \ee kitty_scrollback_edit_command_buffer
+bind --mode insert \ev kitty_scrollback_edit_command_buffer
+
+# [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode
+# by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS
+# set --global --export KITTY_SCROLLBACK_NVIM_EDIT_ARGS ''
+```
+
+- In this case, I will map `<M-e>` to use kitty-scrollback.nvim and keep `<M-v>` with the default mappings. Open
+`~/.config/fish/conf.d/kitty_scrollback_nvim.fish` and add the following:
+
+```fish
+# ~/.config/fish/conf.d/kitty_scrollback_nvim.fish 
+function kitty_scrollback_edit_command_buffer
+    set --local --export VISUAL '~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.sh'
+    edit_command_buffer
+    commandline ''
+end
+
+bind --mode default \ee kitty_scrollback_edit_command_buffer
+bind --mode visual \ee kitty_scrollback_edit_command_buffer
+bind --mode insert \ee kitty_scrollback_edit_command_buffer
+```
+- Close and reopen your `fish` shell
+- Enter a command and press `<M-e>` (where `M` is the alt key), you should now be editing your command line with kitty-scrollback.nvim!
+
+> [!NOTE]  
+> Since this example configuration is not rebinding `\ev`. You can still press `<M-v>` (where `M` is the alt key), to open then
+> command-line buffer in the editor defined in the `VISUAL` environment variable. This gives you some extra flexibility in the fish shell!
+  
+</details>
+<details> 
+<summary>zsh</summary>
+ 
+- Run `nvim --headless +'KittyScrollbackGenerateCommandLineEditing zsh'`. You should see similar output to the following:
+
+```zsh
+# add the following environment variables to your zsh config (e.g., ~/.zshrc)
+
+autoload -Uz edit-command-line
+zle -N edit-command-line
+
+function kitty_scrollback_edit_command_line() { 
+  local VISUAL='~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.sh'
+  zle edit-command-line
+  zle kill-whole-line
+}
+zle -N kitty_scrollback_edit_command_line
+
+bindkey '^x^e' kitty_scrollback_edit_command_line
+
+# [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode
+# by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS
+# export KITTY_SCROLLBACK_NVIM_EDIT_ARGS=''
+```
+- Open `~/.zshrc` and add the following:
+```zsh
+# ~/.zshrc
+autoload -Uz edit-command-line
+zle -N edit-command-line
+
+function kitty_scrollback_edit_command_line() { 
+  local VISUAL='~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.sh'
+  zle edit-command-line
+  zle kill-whole-line
+}
+zle -N kitty_scrollback_edit_command_line
+
+bindkey '^x^e' kitty_scrollback_edit_command_line
+```
+  
+</details>
+
+- Close and reopen your `zsh` shell
+- Enter a command and press `<C-x><C-e>`, you should now be editing your command line with kitty-scrollback.nvim!
+
+
 
 ### tmux (🧪 experimental )
 
