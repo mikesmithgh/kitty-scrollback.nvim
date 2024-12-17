@@ -945,8 +945,8 @@ COMMAND-LINE EDITING ~
 
   `ℹ` `NOTE` 
   Command-line editing is only supported for `bash`, `fish`, or `zsh`
-Generate the shell configuration and add them to the appropriate location. The
-comments in the shell configuration will provide additional setup instructions.
+Generate the configuration and add it to the appropriate location. The comments
+in the configuration will provide additional setup instructions.
 `KittyScrollbackGenerateCommandLineEditing` requires one parameter, either
 `bash`, `fish`, or `zsh`. `sh nvim --headless
 +'KittyScrollbackGenerateCommandLineEditing <shell>' # replace <shell> with
@@ -957,7 +957,7 @@ The generated configuration will mention the environment variable
 kitty-scrollback.nvim in command-line editing mode. This allows
 |kitty-scrollback.nvim-kitten-arguments| setup specific to opening
 kitty-scrollback.nvim in command-line editing mode that you may want to
-configure differently your standard kitty-scrollback.nvim setup.
+configure differently than your standard kitty-scrollback.nvim setup.
 
 
 EXAMPLE SETUPS ~
