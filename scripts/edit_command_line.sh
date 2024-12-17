@@ -9,6 +9,18 @@ fi
 # the last argument is used because in the case of zsh, commands maybe be passed before the filename e.g., (-c)
 for input_file; do true; done
 
+case "$input_file" in
+*.fish)
+  shell_type="fish"
+  ;;
+*.zsh)
+  shell_type="zsh"
+  ;;
+*)
+  shell_type="bash"
+  ;;
+esac
+
 # after exiting this script and before it has been read by kitty-scrollback.nvim
 # the contents of the original input_file may be altered
 # avoid this by copying the input_file to a new file that will be referenced
@@ -26,5 +38,7 @@ kitty @ kitten "$ksb_dir/python/kitty_scrollback_nvim.py" --env "KITTY_SCROLLBAC
 # has had time to get the scrollback buffer from kitty
 sleep 1
 
-# exit non-zero so that the command is not executed in bash
-exit 1
+if [ "$shell_type" = "bash" ]; then
+  # exit non-zero so that the command is not executed in bash
+  exit 1
+fi

@@ -37,6 +37,12 @@ describe('kitty-scrollback.nvim', function()
 function fish_prompt  
   echo "fish \$ " 
 end                   
+function kitty_scrollback_edit_command_buffer
+    set -lx VISUAL ']] .. ksb_dir .. [[/scripts/edit_command_line.sh'
+    edit_command_buffer
+    commandline ''
+end
+bind --mode default \\ee kitty_scrollback_edit_command_buffer
 ]]),
       h.with_pause_seconds_before(h.send_without_newline(h.clear())),
     })
@@ -107,6 +113,43 @@ fish $ echo autocomplete test
 :set filetype%?
   filetype=fish
 Press ENTER or type command to continue.*]],
+      }
+    )
+  end)
+
+  it('should open command in command-line editing mode', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.with_pause_seconds_before(h.send_without_newline([[nacho cheese]])),
+        h.alt_e(),
+        h.with_pause_seconds_before(h.send_without_newline([[ciwecho]]), 2),
+        h.send_without_newline(h.control_enter()),
+      }),
+      {
+        stdout = [[
+fish $ echo cheese
+cheese
+fish $
+]],
+        cursor_y = 3,
+        cursor_x = 8,
+      }
+    )
+  end)
+
+  it('should clear command if no-op in command-line editing mode', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.with_pause_seconds_before(h.send_without_newline([[nacho cheese]])),
+        h.alt_e(),
+        h.with_pause_seconds_before([[:qa!]]),
+      }),
+      {
+        stdout = [[
+fish $
+]],
+        cursor_y = 1,
+        cursor_x = 8,
       }
     )
   end)

@@ -883,7 +883,7 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 > [!NOTE]  
 > Command-line editing is only supported for `bash`, `fish`, or `zsh`
 
-Generate the shell configuration and add them to the appropriate location. The comments in the shell configuration will provide
+Generate the configuration and add it to the appropriate location. The comments in the configuration will provide
 additional setup instructions. `KittyScrollbackGenerateCommandLineEditing` requires one parameter, either `bash`, `fish`, or `zsh`.
   ```sh
   nvim --headless +'KittyScrollbackGenerateCommandLineEditing <shell>' # replace <shell> with bash, fish, or zsh
@@ -891,7 +891,7 @@ additional setup instructions. `KittyScrollbackGenerateCommandLineEditing` requi
 
 The generated configuration will mention the environment variable `KITTY_SCROLLBACK_NVIM_EDIT_ARGS`. This can be used to pass arguments to kitty-scrollback.nvim in command-line editing mode.
 This allows [Kitten Arguments](#kitten-arguments) setup specific to opening kitty-scrollback.nvim in command-line editing mode
-that you may want to configure differently your standard kitty-scrollback.nvim setup.
+that you may want to configure differently than your standard kitty-scrollback.nvim setup.
 
 ### Example setups
 <details> 
