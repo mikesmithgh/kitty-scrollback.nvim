@@ -117,7 +117,7 @@ Press ENTER or type command to continue.*]],
     )
   end)
 
-  it('should open command in command-line editing mode', function()
+  it('should open command in command-line editing mode for fish', function()
     h.assert_screen_equals(
       h.feed_kitty({
         h.with_pause_seconds_before(h.send_without_newline([[nacho cheese]])),
@@ -137,7 +137,7 @@ fish $
     )
   end)
 
-  it('should clear command if no-op in command-line editing mode', function()
+  it('should clear command if no-op in command-line editing mode for fish', function()
     h.assert_screen_equals(
       h.feed_kitty({
         h.with_pause_seconds_before(h.send_without_newline([[nacho cheese]])),
