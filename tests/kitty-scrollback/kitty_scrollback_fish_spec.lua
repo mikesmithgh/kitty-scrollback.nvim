@@ -38,7 +38,7 @@ function fish_prompt
   echo "fish \$ " 
 end                   
 function kitty_scrollback_edit_command_buffer
-    set -lx VISUAL ']] .. ksb_dir .. [[/scripts/edit_command_line.sh'
+    set -lx VISUAL ']] .. ksb_dir .. [[scripts/edit_command_line.sh'
     edit_command_buffer
     commandline ''
 end
