@@ -944,10 +944,10 @@ COMMAND-LINE EDITING ~
 
 
   `ℹ` `NOTE` 
-  Command-line editing is only supported for `bash`, `fish`, or `zsh` Only `zsh`
-  version 5.9 or greater is supported by kitty-scrollback.nvim for command-line
-  editing. If you are using `zsh`, please confirm you have a compatible version
-  by running `zsh --version`
+  Command-line editing is only supported for `bash`, `fish`, or `zsh`
+  Only `zsh` version 5.9 or greater is supported by kitty-scrollback.nvim for
+  command-line editing. If you are using `zsh`, please confirm you have a
+  compatible version by running `zsh --version`
 Generate the configuration and add it to the appropriate location. The comments
 in the configuration will provide additional setup instructions.
 `KittyScrollbackGenerateCommandLineEditing` requires one parameter, either
