@@ -882,6 +882,7 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 > [!NOTE]  
 > Command-line editing is only supported for `bash`, `fish`, or `zsh`
+>
 > Only `zsh` version 5.9 or greater is supported by kitty-scrollback.nvim for command-line editing. If you are using `zsh`,
 > please confirm you have a compatible version by running `zsh --version`
 
