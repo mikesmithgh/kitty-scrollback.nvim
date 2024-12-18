@@ -882,6 +882,8 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 > [!NOTE]  
 > Command-line editing is only supported for `bash`, `fish`, or `zsh`
+> Only `zsh` version 5.9 or greater is supported by kitty-scrollback.nvim for command-line editing. If you are using `zsh`,
+> please confirm you have a compatible version by running `zsh --version`
 
 Generate the configuration and add it to the appropriate location. The comments in the configuration will provide
 additional setup instructions. `KittyScrollbackGenerateCommandLineEditing` requires one parameter, either `bash`, `fish`, or `zsh`.
@@ -995,6 +997,9 @@ command-line buffer in the editor defined in the `VISUAL` environment variable. 
 - Run `nvim --headless +'KittyScrollbackGenerateCommandLineEditing zsh'`. You should see similar output to the following:
 
 ```zsh
+# IMPORTANT: kitty-scrollback.nvim only supports zsh 5.9 or greater for command-line editing,
+# please check your version by running: zsh --version
+
 # add the following environment variables to your zsh config (e.g., ~/.zshrc)
 
 autoload -Uz edit-command-line

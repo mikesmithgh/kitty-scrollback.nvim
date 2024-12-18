@@ -223,6 +223,9 @@ M.generate_command_line_editing = function(shell)
       [[]],
     },
     zsh = {
+      [[# IMPORTANT: kitty-scrollback.nvim only supports zsh 5.9 or greater for command-line editing,]],
+      [[# please check your version by running: zsh --version]],
+      [[]],
       [[# add the following environment variables to your zsh config (e.g., ~/.zshrc)]],
       [[]],
       [[autoload -Uz edit-command-line]],
