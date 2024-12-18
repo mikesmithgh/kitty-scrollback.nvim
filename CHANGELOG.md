@@ -1,3 +1,10 @@
+# [6.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.0.0...v6.1.0) (2024-12-18)
+
+
+### Features
+
+* edit the current command line for bash, fish, or zsh ([#253](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/253)) ([d8f5433](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/d8f5433153c4ff130fbef6095bd287b680ef2b6f)), closes [/www.gnu.org/software/bash/manual/html_node/Miscellaneous-Commands.html#index-edit_002dand_002dexecute_002dcommand-_0028C_002dx-C_002de_0029](https://github.com//www.gnu.org/software/bash/manual/html_node/Miscellaneous-Commands.html/issues/index-edit_002dand_002dexecute_002dcommand-_0028C_002dx-C_002de_0029) [#245](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/245)
+
 # [6.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v5.0.2...v6.0.0) (2024-11-15)
 
 
