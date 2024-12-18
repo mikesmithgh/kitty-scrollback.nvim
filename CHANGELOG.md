@@ -3,7 +3,14 @@
 
 ### Features
 
-* edit the current command line for bash, fish, or zsh ([#253](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/253)) ([d8f5433](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/d8f5433153c4ff130fbef6095bd287b680ef2b6f)), closes [/www.gnu.org/software/bash/manual/html_node/Miscellaneous-Commands.html#index-edit_002dand_002dexecute_002dcommand-_0028C_002dx-C_002de_0029](https://github.com//www.gnu.org/software/bash/manual/html_node/Miscellaneous-Commands.html/issues/index-edit_002dand_002dexecute_002dcommand-_0028C_002dx-C_002de_0029) [#245](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/245)
+* edit the current command line for bash, fish, or zsh ([#253](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/253)) ([d8f5433](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/d8f5433153c4ff130fbef6095bd287b680ef2b6f)), closes [#245](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/245)
+
+See [Command-line editing setup](https://github.com/mikesmithgh/kitty-scrollback.nvim/tree/main?tab=readme-ov-file#command-line-editing) for setup instructions.
+
+bash ([edit-and-execute-command](https://www.gnu.org/software/bash/manual/html_node/Miscellaneous-Commands.html#index-edit_002dand_002dexecute_002dcommand-_0028C_002dx-C_002de_0029)), fish ([edit_command_buffer](https://fishshell.com/docs/current/cmds/bind.html#additional-functions)), and zsh ([edit-command-line](https://zsh.sourceforge.io/Doc/Release/User-Contributions.html)) all have the ability to edit the current command in an external editor. The typical workflow is that you have a long command already entered in your shell that you need to modify and execute, this makes it easy to refine complex commands.
+
+After [setting up command-line editing in kitty-scrollback.nvim](https://github.com/mikesmithgh/kitty-scrollback.nvim/tree/main?tab=readme-ov-file#command-line-editing), you can open your current command in kitty-scrollback.nvim's paste window. The benefit of this approach compared to using a standard Neovim instance is that you still have access to the scrollback history and kitty-scrollback.nvim's [features](https://github.com/mikesmithgh/kitty-scrollback.nvim/tree/main?tab=readme-ov-file#-features) to help you quickly modify or execute the command.
+
 
 # [6.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v5.0.2...v6.0.0) (2024-11-15)
 
