@@ -428,6 +428,22 @@ M.launch = function()
             opts.callbacks.after_ready(p.kitty_data, opts)
           end)
         end
+        if ksb_util.command_line_editing_mode then
+          vim.schedule(function()
+            local input = ksb_util.command_line_editing_mode_input
+            if input == nil or input == '' then
+              vim.notify(
+                'kitty-scrollback.nvim: no input file found in environment variable KITTY_SCROLLBACK_NVIM_EDIT_INPUT',
+                vim.log.levels.ERROR,
+                {}
+              )
+            else
+              local input_lines = vim.fn.readfile(input)
+              ksb_win.open_paste_window(#input_lines == 1 and input_lines[1] == '')
+              vim.api.nvim_buf_set_lines(p.paste_bufid, 0, -1, false, input_lines)
+            end
+          end)
+        end
         ksb_api.close_kitty_loading_window()
         if block_input_timer then
           vim.fn.timer_stop(block_input_timer)

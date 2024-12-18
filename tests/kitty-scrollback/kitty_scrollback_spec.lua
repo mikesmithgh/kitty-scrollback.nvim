@@ -501,4 +501,53 @@ $
       }
     )
   end)
+
+  it('should open command in command-line editing mode for bash', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.with_pause_seconds_before(
+          h.send_as_string([[export VISUAL=']] .. ksb_dir .. [[scripts/edit_command_line.bash']])
+        ),
+        h.send_without_newline(h.clear()),
+        h.with_pause_seconds_before(h.send_without_newline([[pepperjack cheese]])),
+        h.send_without_newline(h.ctrl_x()),
+        h.ctrl_e(),
+        h.with_pause_seconds_before(h.send_without_newline([[ciwecho]]), 2),
+        h.send_without_newline(h.control_enter()),
+      }),
+      {
+        stdout = [[
+$ pepperjack cheese
+$ echo cheese
+cheese
+$
+]],
+        cursor_y = 4,
+        cursor_x = 3,
+      }
+    )
+  end)
+
+  it('should clear command if no-op in command-line editing mode for bash', function()
+    h.assert_screen_equals(
+      h.feed_kitty({
+        h.with_pause_seconds_before(
+          h.send_as_string([[export VISUAL=']] .. ksb_dir .. [[scripts/edit_command_line.bash']])
+        ),
+        h.send_without_newline(h.clear()),
+        h.with_pause_seconds_before(h.send_without_newline([[pepperjack cheese]])),
+        h.send_without_newline(h.ctrl_x()),
+        h.ctrl_e(),
+        h.with_pause_seconds_before([[:qa!]]),
+      }),
+      {
+        stdout = [[
+$ pepperjack cheese
+$
+]],
+        cursor_y = 2,
+        cursor_x = 3,
+      }
+    )
+  end)
 end)

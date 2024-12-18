@@ -311,6 +311,33 @@ M.open_tmux_kitty_scrollback_nvim = function()
   }
 end
 
+M.ctrl_x = function()
+  return {
+    [[\x18]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.ctrl_e = function()
+  return {
+    [[\x05]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
+M.alt_e = function()
+  return {
+    [[\x1be]],
+    opts = {
+      send_by = 'string',
+    },
+  }
+end
+
 M.control_enter = function()
   return {
     [[\x1b[13;5u]],

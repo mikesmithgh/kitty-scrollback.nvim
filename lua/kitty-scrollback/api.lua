@@ -163,6 +163,111 @@ M.generate_kittens = function(generate_modes)
   end
 end
 
+M.generate_command_line_editing = function(shell)
+  shell = (shell and next(shell)) and shell[1] or 'undefined'
+  local kitty_scrollback_edit_command_line = vim.fn.fnamemodify(
+    vim.api.nvim_get_runtime_file('scripts/edit_command_line.sh', false)[1],
+    ':p'
+  )
+  local kitty_scrollback_edit_command_line_bash = vim.fn.fnamemodify(
+    vim.api.nvim_get_runtime_file('scripts/edit_command_line.bash', false)[1],
+    ':p'
+  )
+
+  local configs = {
+    bash = {
+      [[# add the following environment variables to your bash config (e.g., ~/.bashrc)]],
+      [[# the editor defined in KITTY_SCROLLBACK_VISUAL will be used in place of VISUAL]],
+      [[# for other scenarios that are not editing the command-line. For example, C-xC-e]],
+      [[# will edit the current command-line in kitty-scrollback.nvim and pressing v in]],
+      [[# less will open the file in $KITTY_SCROLLBACK_VISUAL (defaults to nvim if not]],
+      [[# defined)]],
+      [[export KITTY_SCROLLBACK_VISUAL='nvim']],
+      [[export VISUAL=']] .. kitty_scrollback_edit_command_line_bash .. [[']],
+      [[# [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode]],
+      [[# by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS]],
+      [[# export KITTY_SCROLLBACK_NVIM_EDIT_ARGS='']],
+      [[]],
+      [[# [optional] customize your readline config (e.g., ~/.inputrc) ]],
+      [[# default mapping in vi mode]],
+      [[set keymap vi-command]],
+      [["v": vi-edit-and-execute-command]],
+      [[]],
+      [[# default mapping in emacs mode]],
+      [[set keymap emacs]],
+      [["\C-x\C-e": edit-and-execute-command]],
+      [[]],
+    },
+    fish = {
+      [[# add the following function and bindings to your fish config]],
+      [[# e.g., ~/.config/fish/conf.d/kitty_scrollback_nvim.fish or ~/.config/fish/config.fish]],
+      [[]],
+      [[function kitty_scrollback_edit_command_buffer]],
+      [[  set --local --export VISUAL ']] .. kitty_scrollback_edit_command_line .. [[']],
+      [[  edit_command_buffer]],
+      [[  commandline '']],
+      [[end]],
+      [[]],
+      [[bind --mode default \ee kitty_scrollback_edit_command_buffer]],
+      [[bind --mode default \ev kitty_scrollback_edit_command_buffer]],
+      [[]],
+      [[bind --mode visual \ee kitty_scrollback_edit_command_buffer]],
+      [[bind --mode visual \ev kitty_scrollback_edit_command_buffer]],
+      [[]],
+      [[bind --mode insert \ee kitty_scrollback_edit_command_buffer]],
+      [[bind --mode insert \ev kitty_scrollback_edit_command_buffer]],
+      [[]],
+      [[# [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode]],
+      [[# by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS]],
+      [[# set --global --export KITTY_SCROLLBACK_NVIM_EDIT_ARGS '']],
+      [[]],
+    },
+    zsh = {
+      [[# IMPORTANT: kitty-scrollback.nvim only supports zsh 5.9 or greater for command-line editing,]],
+      [[# please check your version by running: zsh --version]],
+      [[]],
+      [[# add the following environment variables to your zsh config (e.g., ~/.zshrc)]],
+      [[]],
+      [[autoload -Uz edit-command-line]],
+      [[zle -N edit-command-line]],
+      [[]],
+      [[function kitty_scrollback_edit_command_line() { ]],
+      [[  local VISUAL=']] .. kitty_scrollback_edit_command_line .. [[']],
+      [[  zle edit-command-line]],
+      [[  zle kill-whole-line]],
+      [[}]],
+      [[zle -N kitty_scrollback_edit_command_line]],
+      [[]],
+      [[bindkey '^x^e' kitty_scrollback_edit_command_line]],
+      [[]],
+      [[# [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode]],
+      [[# by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS]],
+      [[# export KITTY_SCROLLBACK_NVIM_EDIT_ARGS='']],
+      [[]],
+    },
+  }
+
+  ---@type table|string
+  local config = configs[shell]
+  if not config then
+    config = 'no config found for: ' .. shell
+  end
+
+  local bufid = vim.api.nvim_create_buf(true, true)
+  vim.api.nvim_set_option_value('filetype', shell or '', {
+    buf = bufid,
+  })
+  vim.api.nvim_set_current_buf(bufid)
+  vim.api.nvim_buf_set_lines(bufid, 0, -1, false, config)
+
+  if #vim.api.nvim_list_uis() == 0 then -- if nvim is running in headless mode
+    for _, line in pairs(config) do
+      vim.print(line)
+    end
+    M.quit_all()
+  end
+end
+
 M.checkhealth = function()
   local kitty_scrollback_kitten = vim.fn.fnamemodify(
     vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1],
