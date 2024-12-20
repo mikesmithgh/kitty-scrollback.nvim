@@ -1,5 +1,5 @@
 -- NOTE: copied from
--- https://github.com/neovim/neovim/blob/ca760e645ba4d1fdb0b6fff3ac98231c3d683306/runtime/lua/vim/_system.lua
+-- https://github.com/neovim/neovim/blob/909b18d05a8d472b12c156e1663282bf6f5ce307/runtime/lua/vim/_system.lua
 
 ---@diagnostic disable
 local uv = vim.uv
@@ -83,7 +83,8 @@ function SystemObj:_timeout(signal)
   self:kill(signal or SIG.TERM)
 end
 
-local MAX_TIMEOUT = 2 ^ 31
+-- Use max 32-bit signed int value to avoid overflow on 32-bit systems. #31633
+local MAX_TIMEOUT = 2 ^ 31 - 1
 
 --- @param timeout? integer
 --- @return vim.SystemCompleted
