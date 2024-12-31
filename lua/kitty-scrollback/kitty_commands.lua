@@ -74,12 +74,16 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
   -- increase the number of columns temporary so that the width is used during the
   -- terminal command kitty @ get-text. this avoids hard wrapping lines to the
   -- current window size. Note: a larger min_cols appears to impact performance
-  -- defer is used as a timing workaround because this is expected to be called right before termopen
+  -- defer is used as a timing workaround because this is expected to be called right before
+  -- opening the terminal
   p.orig_columns = defer_resize_term(300)
 
-  -- set the shell used for termopen to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
+  -- set the shell used to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
   vim.o.shell = 'sh'
-  local success, error = pcall(vim.fn.termopen, full_cmd, {
+
+  local open_term_fn = vim.fn.jobstart
+  local open_term_options = {
+    term = true,
     stdout_buffered = true,
     stderr_buffered = true,
     on_stdout = function(_, data)
@@ -112,7 +116,7 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
 
           if error_index > 0 then
             ksb_util.display_error(scrollback_cmd, {
-              entrypoint = 'termopen() :: exit_code = 0 and error_index > 0',
+              entrypoint = 'open_term_fn() :: exit_code = 0 and error_index > 0',
               full_cmd = full_cmd,
               code = 1, -- exit code is not returned through pipe but we can assume 1 due to error message
               channel_id = id,
@@ -139,7 +143,7 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
               :gsub(';k=s', '')
           or nil
         ksb_util.display_error(full_cmd, {
-          entrypoint = 'termopen() :: exit_code ~= 0',
+          entrypoint = 'open_term_fn() :: exit_code ~= 0',
           code = exit_code,
           channel_id = id,
           stdout = out,
@@ -147,15 +151,21 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
         }, error_header)
       end
     end,
-  })
+  }
+  if vim.fn.has('nvim-0.11') <= 0 then
+    open_term_fn = vim.fn.termopen
+    open_term_options.term = nil
+  end
+
+  local success, error = pcall(open_term_fn, full_cmd, open_term_options)
   if not success then
     ksb_util.display_error(full_cmd, {
-      entrypoint = 'termopen() :: pcall(vim.fn.termopen) error returned',
+      entrypoint = 'open_term_fn() :: pcall(open_term_fn) error returned',
       stderr = error or nil,
     }, error_header)
   end
 
-  -- restore the original shell after processing termopen
+  -- restore the original shell after processing
   vim.o.shell = p.orig_options.shell
 end
 

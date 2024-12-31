@@ -380,7 +380,7 @@ M.launch = function()
     if no_buf_content then
       p.bufid = vim.api.nvim_get_current_buf()
     else
-      -- buffer must be empty for termopen, dashboard plugins may write to the first buffer before kitty-scrollback.nvim loads
+      -- buffer must be empty for the terminal, dashboard plugins may write to the first buffer before kitty-scrollback.nvim loads
       p.bufid = vim.api.nvim_create_buf(true, true)
       vim.api.nvim_set_current_buf(p.bufid)
     end
