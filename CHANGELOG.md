@@ -1,3 +1,10 @@
+# [6.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.1.2...v6.2.0) (2024-12-31)
+
+
+### Features
+
+* use jobstart for Neovim v0.11+ instead of termopen ([#298](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/298)) ([2d24427](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/2d244272544cceea84f1249fbbb94297d907bbc9)), closes [#295](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/295)
+
 ## [6.1.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.1.1...v6.1.2) (2024-12-31)
 
 
