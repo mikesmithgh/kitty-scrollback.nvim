@@ -1,3 +1,10 @@
+## [6.1.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.1.1...v6.1.2) (2024-12-31)
+
+
+### Bug Fixes
+
+* update warning message during kitten generation if path contains whitespace ([#296](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/296)) ([a8d7b84](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/a8d7b849435d10021672064d9bba61ffe8d8bde6))
+
 ## [6.1.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.1.0...v6.1.1) (2024-12-30)
 
 
