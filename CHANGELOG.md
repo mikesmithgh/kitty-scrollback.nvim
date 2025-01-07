@@ -1,3 +1,10 @@
+## [6.2.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.2.0...v6.2.1) (2025-01-07)
+
+
+### Bug Fixes
+
+* improve jobstart error handling ([#299](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/299)) ([d72d742](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/d72d7423e2cbc1cc048035bb799c48731c708d0e)), closes [#282](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/282)
+
 # [6.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.1.2...v6.2.0) (2024-12-31)
 
 
