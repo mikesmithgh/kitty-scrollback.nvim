@@ -120,7 +120,35 @@ M.plug_mapping_names = {
   PASTE_CMD = '<Plug>(KsbPasteCmd)',
 }
 
-M.display_error = function(cmd, r, header)
+M.display_error = function(msg)
+  local error_header = {
+    '',
+    '==============================================================================',
+    'kitty-scrollback.nvim',
+    '',
+    'A fatal error occurred ~',
+  }
+  msg = msg or {}
+  local error_bufid = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_name(error_bufid, vim.fn.tempname() .. '.ksb_errorbuf')
+  vim.api.nvim_set_current_buf(error_bufid)
+  vim.o.conceallevel = 2
+  vim.o.concealcursor = 'n'
+  vim.o.foldenable = false
+  vim.api.nvim_set_option_value('filetype', 'checkhealth', {
+    buf = error_bufid,
+  })
+  M.restore_and_redraw()
+  local prompt_msg = 'kitty-scrollback.nvim: Fatal error, see logs.'
+  vim.api.nvim_buf_set_lines(error_bufid, 0, -1, false, vim.list_extend(error_header, msg))
+  M.restore_and_redraw()
+  local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
+  if response ~= 2 then
+    M.quitall()
+  end
+end
+
+M.display_cmd_error = function(cmd, r, header)
   local msg = vim.list_extend({}, header or {})
   local stdout = r.stdout or ''
   local stderr = r.stderr or ''
@@ -203,7 +231,7 @@ M.system_handle_error = function(cmd, error_header, sys_opts, ignore_error)
   local ok = result.code == 0
 
   if not ignore_error and not ok then
-    M.display_error(table.concat(cmd, ' '), {
+    M.display_cmd_error(table.concat(cmd, ' '), {
       entrypoint = 'vim.system()',
       pid = proc.pid,
       code = result.code,

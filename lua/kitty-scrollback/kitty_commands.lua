@@ -63,6 +63,8 @@ local function defer_resize_term(min_cols)
   return orig_columns
 end
 
+M.open_term_command = vim.fn.has('nvim-0.11') <= 0 and 'termopen' or 'jobstart'
+
 ---@param get_text_opts KsbKittyGetTextArguments
 ---@param on_exit_cb function
 M.get_text_term = function(get_text_opts, on_exit_cb)
@@ -81,9 +83,8 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
   -- set the shell used to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
   vim.o.shell = 'sh'
 
-  local open_term_fn = vim.fn.jobstart
+  local open_term_fn = vim.fn[M.open_term_command]
   local open_term_options = {
-    term = true,
     stdout_buffered = true,
     stderr_buffered = true,
     on_stdout = function(_, data)
@@ -115,7 +116,7 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
           end
 
           if error_index > 0 then
-            ksb_util.display_error(scrollback_cmd, {
+            ksb_util.display_cmd_error(scrollback_cmd, {
               entrypoint = 'open_term_fn() :: exit_code = 0 and error_index > 0',
               full_cmd = full_cmd,
               code = 1, -- exit code is not returned through pipe but we can assume 1 due to error message
@@ -142,7 +143,7 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
               :gsub([[\x1b\\]], '')
               :gsub(';k=s', '')
           or nil
-        ksb_util.display_error(full_cmd, {
+        ksb_util.display_cmd_error(full_cmd, {
           entrypoint = 'open_term_fn() :: exit_code ~= 0',
           code = exit_code,
           channel_id = id,
@@ -152,14 +153,13 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
       end
     end,
   }
-  if vim.fn.has('nvim-0.11') <= 0 then
-    open_term_fn = vim.fn.termopen
-    open_term_options.term = nil
+  if M.open_term_command == 'jobstart' then
+    open_term_options.term = true
   end
 
   local success, error = pcall(open_term_fn, full_cmd, open_term_options)
   if not success then
-    ksb_util.display_error(full_cmd, {
+    ksb_util.display_cmd_error(full_cmd, {
       entrypoint = 'open_term_fn() :: pcall(open_term_fn) error returned',
       stderr = error or nil,
     }, error_header)

@@ -409,8 +409,28 @@ M.launch = function()
             win = 0,
           }
         )
+
         ---@diagnostic disable-next-line: param-type-mismatch
-        vim.api.nvim_buf_delete(vim.fn.bufnr('#'), { force = true }) -- delete alt buffer after rename
+        local alternate_file_bufnr = vim.fn.bufnr('#')
+        if alternate_file_bufnr > 0 then
+          vim.api.nvim_buf_delete(alternate_file_bufnr, { force = true }) -- delete alt buffer after rename
+        else
+          ksb_util.display_error({
+            [[- ERROR alternate file not found]],
+            [[  `vim.fn.bufnr('#')` is ]]
+              .. alternate_file_bufnr
+              .. [[. Most likely `]]
+              .. ksb_kitty_cmds.open_term_command
+              .. [[` failed. ]],
+            [[  Please report the issue at https://github.com/mikesmithgh/kitty-scrollback.nvim/issues]],
+            [[  and provide the `KittyScrollbackCheckHealth` report.]],
+          })
+          ksb_api.close_kitty_loading_window()
+          if block_input_timer then
+            vim.fn.timer_stop(block_input_timer)
+          end
+          return
+        end
 
         if opts.restore_options then
           restore_orig_options()
