@@ -410,7 +410,6 @@ M.launch = function()
           }
         )
 
-        ---@diagnostic disable-next-line: param-type-mismatch
         local alternate_file_bufnr = vim.fn.bufnr('#')
         if alternate_file_bufnr > 0 then
           vim.api.nvim_buf_delete(alternate_file_bufnr, { force = true }) -- delete alt buffer after rename
