@@ -11,7 +11,7 @@ h.debug({
 local tmpsock
 local kitty_instance
 
-local shell = h.debug(h.is_github_action and '/bin/bash' or (vim.o.shell .. ' --noprofile --norc'))
+local shell = h.debug(h.is_github_action and '/bin/bash' or 'bash --noprofile --norc')
 
 describe('kitty-scrollback.nvim', function()
   h.init_nvim()

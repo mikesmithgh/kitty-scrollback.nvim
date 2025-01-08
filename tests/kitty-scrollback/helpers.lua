@@ -726,7 +726,10 @@ M.ksb_dir = function()
 end
 
 M.init_nvim = function(config_override)
-  local config_dir = vim.fn.fnamemodify(vim.fn.fnamemodify(vim.fn.stdpath('config'), ':h'), ':p')
+  --- @type string
+  --- @diagnostic disable-next-line:assign-type-mismatch
+  local config_path = vim.fn.stdpath('config')
+  local config_dir = vim.fn.fnamemodify(vim.fn.fnamemodify(config_path, ':h'), ':p')
   local nvim_config_dir = config_dir .. 'ksb-nvim-tests'
   local is_directory = vim.fn.isdirectory(nvim_config_dir) > 0
   if is_directory then
