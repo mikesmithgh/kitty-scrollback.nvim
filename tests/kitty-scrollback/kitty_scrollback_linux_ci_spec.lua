@@ -11,7 +11,7 @@ h.debug({
 local tmpsock
 local kitty_instance
 
-local shell = h.debug(h.is_github_action and '/bin/bash' or (vim.o.shell .. ' --noprofile --norc'))
+local shell = h.debug(h.is_github_action and '/bin/bash' or 'bash --noprofile --norc')
 
 local it = it
 if not (h.is_github_action and vim.fn.has('linux') ~= 0) then

@@ -1,6 +1,4 @@
 local h = require('tests.kitty-scrollback.helpers')
-local screencapture = require('tests.kitty-scrollback.screencapture')
-
 h.setup_backport()
 
 local ksb_dir = h.ksb_dir()
@@ -13,7 +11,7 @@ local tmpsock = h.tempsocket(ksb_dir .. 'tmp/')
 local kitty_instance
 local ksb_work_dir
 
-local shell = h.debug(h.is_github_action and '/bin/bash' or (vim.o.shell .. ' --noprofile --norc'))
+local shell = h.debug(h.is_github_action and '/bin/bash' or 'bash --noprofile --norc')
 
 local kitty_cmd = h.debug({
   h.kitty,
@@ -79,8 +77,6 @@ local function after_all()
   vim.fn.delete(vim.fn.fnamemodify(tmpsock, ':p:h'), 'rf')
   vim.fn.delete(ksb_work_dir, 'rf')
 end
-
-local it = screencapture.wrap_it(it, tmpsock, 27)
 
 describe('kitty-scrollback.nvim', function()
   before_all()
