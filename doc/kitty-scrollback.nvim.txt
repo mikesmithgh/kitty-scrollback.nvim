@@ -20,8 +20,6 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
   - Acknowledgements                  |kitty-scrollback.nvim-acknowledgements|
   - Alternatives                          |kitty-scrollback.nvim-alternatives|
 
-
-
 ==============================================================================
 1. kitty-scrollback.nvim         *kitty-scrollback.nvim-kitty-scrollback.nvim*
 
