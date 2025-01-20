@@ -10,35 +10,33 @@ on:
 jobs:
   check:
     runs-on: ubuntu-24.04
-
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Setup Neovim stable 
-      uses: rhysd/action-setup-vim@v1
-      with:
-        neovim: true
-        version: 'stable'
-
-    - name: Install dependencies
-      run: |
-        # homebrew
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        /home/linuxbrew/.linuxbrew/bin/brew install lua-language-server
-
-    - name: lua language server check
-      run: |
-        make check
-
-  style:
-    runs-on: ubuntu-24.04
-
-    permissions:
-      contents: write
-
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup Neovim stable 
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: 'stable'
+
+      - name: Install dependencies
+        run: |
+          # homebrew
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          /home/linuxbrew/.linuxbrew/bin/brew install lua-language-server
+
+      - name: lua language server check
+        run: |
+          make check
+
+  style:
+    needs: check
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
       - name: checkstylua
         uses: JohnnyMorganz/stylua-action@v3
         continue-on-error: true
@@ -46,6 +44,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
           args: --check .
+
       - name: formatstylua
         if: ${{ steps.checkstylua.outcome != 'success' }}
         uses: JohnnyMorganz/stylua-action@v2
@@ -53,6 +52,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
           args: .
+
       - uses: stefanzweifel/git-auto-commit-action@v4
         if: ${{ steps.checkstylua.outcome != 'success' }}
         with:
@@ -61,5 +61,4 @@ jobs:
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
-
 
