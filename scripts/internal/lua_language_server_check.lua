@@ -59,7 +59,6 @@ local input = vim.fn.readfile(tmp_path)
 local diagnostics = vim.json.decode(table.concat(input))
 local formatted_diagnostics = {}
 for filepath, file_diagnostics in pairs(diagnostics) do
-  vim.validate('diagnostics', file_diagnostics, vim.islist, 'a list of diagnostics')
   local path = filepath:gsub('^file://', ''):gsub('/%./', '/')
   for _, v in ipairs(file_diagnostics) do
     local item = {
