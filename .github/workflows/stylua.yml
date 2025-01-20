@@ -29,7 +29,7 @@ jobs:
 
     - name: lua language server check
       run: |
-      make check
+        make check
 
   style:
     runs-on: ubuntu-24.04
