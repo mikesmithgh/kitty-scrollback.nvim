@@ -16,6 +16,7 @@ local harness = require('plenary.test_harness')
 
 -- HACK: overwrite plenary _find_files_to_run to pass additional arguments to find
 -- originally this uses directory as the parameter
+---@diagnostic disable-next-line: duplicate-set-field
 harness._find_files_to_run = function(directory_and_find_args)
   local find_args = {}
   local directory
@@ -28,10 +29,12 @@ harness._find_files_to_run = function(directory_and_find_args)
   end)
 
   local finder
+  ---@diagnostic disable-next-line: missing-fields
   finder = Job:new({
     command = 'find',
     args = vim.list_extend({ directory, '-type', 'f', '-name', '*_spec.lua' }, find_args),
   })
 
+  ---@diagnostic disable-next-line: param-type-mismatch
   return vim.tbl_map(Path.new, finder:sync(vim.env.PLENARY_TEST_TIMEOUT))
 end

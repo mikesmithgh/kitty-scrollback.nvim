@@ -8,6 +8,29 @@ on:
       - 'main'
   workflow_dispatch:
 jobs:
+  check:
+    runs-on: ubuntu-24.04
+
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Neovim stable 
+      uses: rhysd/action-setup-vim@v1
+      with:
+        neovim: true
+        version: 'stable'
+
+    - name: Install dependencies
+      run: |
+        # homebrew
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        /home/linuxbrew/.linuxbrew/bin/brew install lua-language-server
+
+    - name: lua language server check
+      run: |
+      make check
+
   style:
     runs-on: ubuntu-24.04
 
