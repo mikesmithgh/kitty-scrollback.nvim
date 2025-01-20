@@ -410,7 +410,7 @@ M.launch = function()
           }
         )
 
-        local alternate_file_bufnr = vim.fn.bufnr('#')
+        local alternate_file_bufnr = -1
         if alternate_file_bufnr > 0 then
           vim.api.nvim_buf_delete(alternate_file_bufnr, { force = true }) -- delete alt buffer after rename
         else
@@ -421,8 +421,36 @@ M.launch = function()
               .. [[. Most likely `]]
               .. ksb_kitty_cmds.open_term_command
               .. [[` failed. ]],
-            [[  Please report the issue at https://github.com/mikesmithgh/kitty-scrollback.nvim/issues]],
-            [[  and provide the `KittyScrollbackCheckHealth` report.]],
+            [[]],
+            [[  If you are using Neovim nightly (NVIM v0.11), then you may need to update to the latest]],
+            [[  version of nightly. Please try updating Neovim to the latest version of nightly. If]],
+            [[  this error still occurs, then see if any additional help has been provided on the issue]],
+            [[  https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/303.]],
+            [[]],
+            [[  If you are unable to update to a newer version of Neovim nightly, you can workaround ]],
+            [[  the problem by pinning kitty-scrollback.nvim to `v6.1.2`.]],
+            [[  ]],
+            [[  For example, if you are using lazy.nvim]],
+            [[>lua]],
+            [[  return {]],
+            [[    {]],
+            [[      'mikesmithgh/kitty-scrollback.nvim',]],
+            [[      tag = 'v6.1.2',]],
+            [[      enabled = true,]],
+            [[      lazy = true,]],
+            [[      cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth', 'KittyScrollbackGenerateCommandLineEditing' },]],
+            [[      event = { 'User KittyScrollbackLaunch' },]],
+            [[      -- version = '*', -- latest stable version, may have breaking changes if major version changed]],
+            [[      -- version = '^6.0.0', -- pin major version, include fixes and features that do not have breaking changes]],
+            [[      config = function()]],
+            [[        require('kitty-scrollback').setup()]],
+            [[      end,]],
+            [[    },]],
+            [[  }]],
+            [[<]],
+            [[  If this is unrelated to issue #303, then create a new issue at ]],
+            [[  https://github.com/mikesmithgh/kitty-scrollback.nvim/issues and provide the ]],
+            [[  `KittyScrollbackCheckHealth` report.]],
           })
           ksb_api.close_kitty_loading_window()
           if block_input_timer then
