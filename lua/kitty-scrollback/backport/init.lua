@@ -71,8 +71,8 @@ local function backport_system()
   -- https://github.com/neovim/neovim/blob/1d4ba8c1edba064421b34c1197c3470a09798218/runtime/lua/vim/_editor.lua#L143
   -- _editor.lua is not checked by validate-backport due to frequent changes and minimal impact to vim.system
 
-  --- @param cmd (string[]) Command to execute
-  --- @param opts vim.SystemOpts? Options
+  ---@param cmd (string[]) Command to execute
+  ---@param opts vim.SystemOpts? Options
   ---@return vim.SystemObj Object
   vim.system = function(cmd, opts, on_exit)
     if type(opts) == 'function' then
