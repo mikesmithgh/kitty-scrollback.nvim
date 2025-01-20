@@ -22,7 +22,8 @@ jobs:
       - name: Install dependencies
         run: |
           mkdir -p "$GITHUB_WORKSPACE/tmp/lua_language_server"
-          curl -L -o "$GITHUB_WORKSPACE/tmp/lua_language_server/lua-language-server.tar.gz" https://github.com/LuaLS/lua-language-server/releases/download/3.13.5/lua-language-server-3.13.5-linux-x64.tar.gz
+          version=$(curl -I https://github.com/LuaLS/lua-language-server/releases/latest 2>/dev/null | grep 'location: https://github.com/LuaLS/lua-language-server/releases/tag/' | awk -F/ '{print $NF}')
+          curl -L -o "$GITHUB_WORKSPACE/tmp/lua_language_server/lua-language-server.tar.gz" https://github.com/LuaLS/lua-language-server/releases/download/$version/lua-language-server-$version-linux-x64.tar.gz
           cd "$GITHUB_WORKSPACE/tmp/lua_language_server"
           tar -xvf lua-language-server.tar.gz 
 
