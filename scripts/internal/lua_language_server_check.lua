@@ -11,7 +11,8 @@ local lua_language_server = vim.fn.stdpath('data')
 if vim.env.LUA_LS_SERVER then
   lua_language_server = vim.env.LUA_LS_SERVER
 elseif vim.env.GITHUB_ACTIONS == 'true' then
-  lua_language_server = [[/home/linuxbrew/.linuxbrew/bin/lua-language-server]]
+  lua_language_server = vim.env.GITHUB_WORKSPACE
+    .. [[/tmp/lua_language_server/bin/lua-language-server]]
 end
 
 local tmp_dir = (vim.env.TMPDIR or '/tmp/') .. 'lua_ls_report/'

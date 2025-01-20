@@ -21,9 +21,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # homebrew
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          /home/linuxbrew/.linuxbrew/bin/brew install lua-language-server
+          mkdir -p "$GITHUB_WORKSPACE/tmp/lua_language_server"
+          curl -L -o "$GITHUB_WORKSPACE/tmp/lua_language_server/lua-language-server.tar.gz" https://github.com/LuaLS/lua-language-server/releases/download/3.13.5/lua-language-server-3.13.5-linux-x64.tar.gz
+          cd "$GITHUB_WORKSPACE/tmp/lua_language_server"
+          tar -xvf lua-language-server.tar.gz 
 
       - name: (debug) Setup tmate session
         uses: mxschmitt/action-tmate@v3
