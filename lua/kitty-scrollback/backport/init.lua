@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field, duplicate-doc-field
 ---@mod kitty-scrollback.backport
 -- NOTE(#58): nvim v0.9 support
 

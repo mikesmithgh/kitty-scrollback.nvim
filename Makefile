@@ -43,4 +43,4 @@ check:
 		--noplugin \
 		-u ${TESTS_INIT} \
 		-c 'quit'
-	@LUA_LS_CONFIGPATH=scripts/internal/.luarc.json nvim -l scripts/internal/lua_language_server_check.lua
+	@LUA_LS_CONFIGPATH=scripts/internal/.luarc.json nvim -l scripts/internal/__lua_language_server_check.lua
