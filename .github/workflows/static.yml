@@ -1,4 +1,4 @@
-name: stylua
+name: static
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
       - 'main'
   workflow_dispatch:
 jobs:
-  check:
+  lua_language_server_check:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v3
@@ -31,7 +31,7 @@ jobs:
           make check
 
   style:
-    needs: check
+    needs: lua_language_server_check 
     runs-on: ubuntu-24.04
     permissions:
       contents: write
