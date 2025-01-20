@@ -82,16 +82,28 @@ else
   io.write(check_command_result.stdout)
   io.write('\27[0m\n')
   for _, v in ipairs(formatted_diagnostics) do
-    io.write(
-      ('\x1b]8;;file://%s\x1b\\%s\x1b]8;;\x1b\\:%s:%s: %s %s\n'):format(
-        v.file,
-        vim.fn.fnamemodify(v.file, ':.'),
-        v.line,
-        v.col,
-        v.severity,
-        v.message
+    if vim.env.GITHUB_ACTIONS == 'true' then
+      io.write(
+        ('%s:%s:%s: %s %s\n'):format(
+          vim.fn.fnamemodify(v.file, ':.'),
+          v.line,
+          v.col,
+          v.severity,
+          v.message
+        )
       )
-    )
+    else
+      io.write(
+        ('\x1b]8;;file://%s\x1b\\%s\x1b]8;;\x1b\\:%s:%s: %s %s\n'):format(
+          v.file,
+          vim.fn.fnamemodify(v.file, ':.'),
+          v.line,
+          v.col,
+          v.severity,
+          v.message
+        )
+      )
+    end
   end
   os.exit(1)
 end
