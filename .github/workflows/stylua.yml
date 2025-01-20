@@ -26,9 +26,6 @@ jobs:
           cd "$GITHUB_WORKSPACE/tmp/lua_language_server"
           tar -xvf lua-language-server.tar.gz 
 
-      - name: (debug) Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
       - name: lua language server check
         run: |
           make check
