@@ -285,6 +285,7 @@ M.generate_command_line_editing = function(shell)
     },
   }
 
+  ---@type table|string
   local config = configs[shell]
   if not config then
     vim.notify('no config found for: ' .. shell, vim.log.levels.ERROR, {})
