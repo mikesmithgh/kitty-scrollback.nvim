@@ -19,8 +19,8 @@ jobs:
           neovim: true
           version: 'stable'
 
-    - name: (debug) Setup tmate session
-      uses: mxschmitt/action-tmate@v3
+      - name: (debug) Setup tmate session
+        uses: mxschmitt/action-tmate@v3
 
       - name: Install dependencies
         run: |
