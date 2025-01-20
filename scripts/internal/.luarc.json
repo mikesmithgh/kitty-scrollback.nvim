@@ -1,0 +1,13 @@
+{
+  "diagnostics": {
+    "globals": [
+      "vim"
+    ],
+  },
+  "workspace": {
+    "library": [
+      "../tmp/plenary.nvim/lua",
+    ],
+    "checkThirdParty": false
+  },
+}

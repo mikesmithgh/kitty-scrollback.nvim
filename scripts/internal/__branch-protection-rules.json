@@ -2,6 +2,7 @@
   "required_status_checks": {
     "strict": true,
     "contexts": [
+      "lua_language_server_check",
       "style",
       "codespell",
       "plenary (stable, stable)",

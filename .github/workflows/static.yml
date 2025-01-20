@@ -1,4 +1,4 @@
-name: stylua
+name: static
 on:
   push:
     branches:
@@ -8,14 +8,37 @@ on:
       - 'main'
   workflow_dispatch:
 jobs:
-  style:
+  lua_language_server_check:
     runs-on: ubuntu-24.04
-
-    permissions:
-      contents: write
-
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup Neovim stable 
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: 'stable'
+
+      - name: Install dependencies
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/tmp/lua_language_server"
+          version=$(curl -sI 'https://github.com/LuaLS/lua-language-server/releases/latest' | grep 'location: https://github.com/LuaLS/lua-language-server/releases/tag/' | awk -F/ '{print $NF}' | tr -d '\r\n')
+          curl -sL -o "$GITHUB_WORKSPACE/tmp/lua_language_server/lua-language-server.tar.gz" "https://github.com/LuaLS/lua-language-server/releases/download/$version/lua-language-server-$version-linux-x64.tar.gz"
+          cd "$GITHUB_WORKSPACE/tmp/lua_language_server"
+          tar -xvf lua-language-server.tar.gz 
+
+      - name: lua language server check
+        run: |
+          make check
+
+  style:
+    needs: lua_language_server_check 
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
       - name: checkstylua
         uses: JohnnyMorganz/stylua-action@v3
         continue-on-error: true
@@ -23,6 +46,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
           args: --check .
+
       - name: formatstylua
         if: ${{ steps.checkstylua.outcome != 'success' }}
         uses: JohnnyMorganz/stylua-action@v2
@@ -30,6 +54,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
           args: .
+
       - uses: stefanzweifel/git-auto-commit-action@v4
         if: ${{ steps.checkstylua.outcome != 'success' }}
         with:
@@ -38,5 +63,4 @@ jobs:
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
-
 

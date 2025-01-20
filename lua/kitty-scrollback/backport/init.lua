@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field, duplicate-doc-field
 ---@mod kitty-scrollback.backport
 -- NOTE(#58): nvim v0.9 support
 
@@ -10,6 +11,16 @@ local function backport_version()
     -- NOTE: copied __tostring from
     -- https://github.com/neovim/neovim/blob/1d4ba8c1edba064421b34c1197c3470a09798218/runtime/lua/vim/version.lua#L125
 
+    ---@nodoc
+    ---@class vim.Version
+    ---@field [1] number
+    ---@field [2] number
+    ---@field [3] number
+    ---@field major number
+    ---@field minor number
+    ---@field patch number
+    ---@field prerelease? string
+    ---@field build? string
     local Version = {}
     function Version:__tostring()
       local ret = table.concat({ self.major, self.minor, self.patch }, '.')
@@ -59,7 +70,10 @@ local function backport_system()
   -- NOTE: copied vim.system from
   -- https://github.com/neovim/neovim/blob/1d4ba8c1edba064421b34c1197c3470a09798218/runtime/lua/vim/_editor.lua#L143
   -- _editor.lua is not checked by validate-backport due to frequent changes and minimal impact to vim.system
-  ---@diagnostic disable-next-line: duplicate-set-field
+
+  ---@param cmd (string[]) Command to execute
+  ---@param opts vim.SystemOpts? Options
+  ---@return vim.SystemObj Object
   vim.system = function(cmd, opts, on_exit)
     if type(opts) == 'function' then
       on_exit = opts
