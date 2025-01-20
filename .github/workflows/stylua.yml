@@ -25,6 +25,9 @@ jobs:
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           /home/linuxbrew/.linuxbrew/bin/brew install lua-language-server
 
+      - name: (debug) Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: lua language server check
         run: |
           make check
