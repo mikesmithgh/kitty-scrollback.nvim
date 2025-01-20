@@ -19,6 +19,9 @@ jobs:
           neovim: true
           version: 'stable'
 
+    - name: (debug) Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+
       - name: Install dependencies
         run: |
           mkdir -p "$GITHUB_WORKSPACE/tmp/lua_language_server"
