@@ -143,7 +143,12 @@ M.set_yank_post_autocmd = function()
         return
       end
 
-      if yankevent.regname == '+' then
+      -- TODO: make 'z' register configurable
+      local remove_newline_register = 'z'
+      if yankevent.regname == '+' or yankevent.regname == remove_newline_register then
+        if yankevent.regname == remove_newline_register then
+          vim.fn.setreg('+', { table.concat(yankevent.regcontents, '') }, 'c')
+        end
         if vim.fn.has('clipboard') > 0 then
           -- Contents should be copied to clipboard, return to Kitty
           local clipboard_tool = vim.api.nvim_call_function('provider#clipboard#Executable', {})
@@ -154,6 +159,7 @@ M.set_yank_post_autocmd = function()
             -- see issue https://github.com/astrand/xclip/issues/38#ref-commit-b042f6d
             defer_ms = 200
           end
+
           vim.defer_fn(function()
             ksb_util.quitall()
           end, defer_ms)
