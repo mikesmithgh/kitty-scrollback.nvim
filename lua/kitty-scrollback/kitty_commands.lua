@@ -118,7 +118,7 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
     on_exit = function(id, exit_code, event)
       -- NOTE(#58): nvim v0.9 support
       -- vim.o.columns is resized automatically in nvim v0.9.1 when we trigger kitty so send a SIGWINCH signal
-      -- vim.o.columns is explicitly set to resize appropriatley on v0.9.0
+      -- vim.o.columns is explicitly set to resize appropriately on v0.9.0
       -- see https://github.com/neovim/neovim/pull/23503
       vim.o.columns = p.orig_columns
       if exit_code == 0 then
