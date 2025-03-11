@@ -17,7 +17,8 @@
       "plenary (stable, 0.35.2)",
       "plenary (stable, 0.36.4)",
       "plenary (stable, 0.37.0)",
-      "plenary (stable, 0.38.1)"
+      "plenary (stable, 0.38.1)",
+      "plenary (stable, 0.39.1)"
     ]
   },
   "enforce_admins": false,
