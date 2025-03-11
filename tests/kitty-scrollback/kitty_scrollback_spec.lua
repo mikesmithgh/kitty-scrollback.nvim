@@ -245,12 +245,11 @@ $
     h.assert_screen_match(
       h.feed_kitty({
         h.open_kitty_scrollback_nvim(),
-        h.with_pause_seconds_before([[:=vim.env.KITTY_SCROLLBACK_NVIM]], 1),
+        h.with_pause_seconds_before([[:lua vim.print(vim.env.KITTY_SCROLLBACK_NVIM)]], 1),
       }),
       {
         pattern = [[
-.*
-:=vim.env.KITTY_SCROLLBACK_NVIM
+.*vim.env.KITTY_SCROLLBACK_NVIM.*
 true
 Press ENTER or type command to continue.*]],
       }
