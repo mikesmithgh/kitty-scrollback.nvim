@@ -181,12 +181,11 @@ $ # 30
     h.assert_screen_match(
       h.feed_kitty({
         h.open_tmux_kitty_scrollback_nvim(),
-        h.with_pause_seconds_before([[:=vim.env.TMUX]], 1),
+        h.with_pause_seconds_before([[:lua vim.print(vim.env.TMUX)]], 1),
       }),
       {
         pattern = [[
-.*
-:=vim.env.TMUX
+.*vim.env.TMUX.*
 .*tmux.sock.*,.*,.*
 Press ENTER or type command to continue.*]],
       }
@@ -194,12 +193,11 @@ Press ENTER or type command to continue.*]],
     h.assert_screen_match(
       h.feed_kitty({
         h.send_without_newline(h.enter()),
-        h.with_pause_seconds_before([[:=vim.env.TMUX_PANE]], 1),
+        h.with_pause_seconds_before([[:lua vim.print(vim.env.TMUX_PANE)]], 1),
       }),
       {
         pattern = [[
-.*
-:=vim.env.TMUX_PANE
+.*TMUX_PANE.*
 %%0
 Press ENTER or type command to continue.*]],
       }
