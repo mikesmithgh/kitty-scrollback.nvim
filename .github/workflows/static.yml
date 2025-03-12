@@ -22,9 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           mkdir -p "$GITHUB_WORKSPACE/tmp/lua_language_server"
-          # TODO update tests for luals 3.13.7+
-          # version=$(curl -sI 'https://github.com/LuaLS/lua-language-server/releases/latest' | grep 'location: https://github.com/LuaLS/lua-language-server/releases/tag/' | awk -F/ '{print $NF}' | tr -d '\r\n')
-          version='3.13.6'
+          version=$(curl -sI 'https://github.com/LuaLS/lua-language-server/releases/latest' | grep 'location: https://github.com/LuaLS/lua-language-server/releases/tag/' | awk -F/ '{print $NF}' | tr -d '\r\n')
           curl -sL -o "$GITHUB_WORKSPACE/tmp/lua_language_server/lua-language-server.tar.gz" "https://github.com/LuaLS/lua-language-server/releases/download/$version/lua-language-server-$version-linux-x64.tar.gz"
           cd "$GITHUB_WORKSPACE/tmp/lua_language_server"
           tar -xvf lua-language-server.tar.gz 
