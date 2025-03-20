@@ -113,7 +113,7 @@ $ brew search a
   it('should successfully open KittyScrollbackCheckHealth', function()
     local actual = h.feed_kitty({
       h.send_as_string(
-        [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']]
+        [[nvim --clean +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("KittyScrollbackCheckHealth")']]
       ),
     })
     h.assert_screen_not_match(
@@ -135,7 +135,7 @@ kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
   it('should successfully open checkhealth and warn user no kitty data available', function()
     local actual = h.feed_kitty({
       h.send_as_string(
-        [[nvim +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("checkhealth kitty-scrollback")']]
+        [[nvim --clean +'lua vim.opt.rtp:append("../..") vim.opt.rtp:append("../../kitty-scrollback.nvim") require("kitty-scrollback").setup() vim.cmd("checkhealth kitty-scrollback")']]
       ),
       h.send_without_newline([[zR]]),
     })
