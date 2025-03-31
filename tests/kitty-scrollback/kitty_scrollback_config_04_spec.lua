@@ -731,7 +731,7 @@ Press ENTER or type command to continue
       pattern = [[
 kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
 .*kitty%-scrollback: Neovim version.*
-.*%- OK NVIM.*
+.*%- .*OK NVIM.*
 ]],
 
       cursor_y = 1,
