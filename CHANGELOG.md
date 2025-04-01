@@ -1,3 +1,10 @@
+# [6.3.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.2.2...v6.3.0) (2025-04-01)
+
+
+### Features
+
+* remove jobstart workaround since Neovim v0.11 is released ([fea315d](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/fea315d016eec41e807d67dd8980fa119850694a)), closes [#306](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/306)
+
 ## [6.2.2](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.2.1...v6.2.2) (2025-01-20)
 
 
