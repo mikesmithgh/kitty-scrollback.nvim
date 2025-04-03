@@ -62,7 +62,7 @@ end
 local function check_has_kitty_data()
   vim.health.start('kitty-scrollback: Kitty data')
   if type(p) == 'table' and next(p.kitty_data) then
-    vim.health.ok('Kitty data available\n>lua\n' .. vim.inspect(p.kitty_data) .. '\n')
+    vim.health.ok('Kitty data available\n\n>lua\n' .. vim.inspect(p.kitty_data) .. '\n')
     return true
   else
     vim.health.warn('No Kitty data available unable to perform a complete healthcheck', {
@@ -229,21 +229,25 @@ local function check_kitty_scrollback_nvim_version()
       version_found and '`' .. current_version:gsub('%s$', '`\n') ---@diagnostic disable-line: need-check-nil
       or 'ERROR failed to determine version\n'
     )
-  local health_fn = not version_found and vim.health.warn
+  local health_fn = not version_found
+      and function(msg)
+        vim.health.warn('Catastrophe!\n' .. msg)
+      end
     or function(msg)
-      vim.health.ok('     ' .. msg)
+      vim.health.ok('Cattastic!\n' .. msg)
     end
   vim.health.start('kitty-scrollback: kitty-scrollback.nvim version')
-  health_fn([[  /\___/|       ]] .. header .. [[
-         =) ^Y^ (=
-          \  ^  /       If you have any issues or questions using *kitty-scrollback.nvim* then     
-           )=*=(        please create an issue at                                                    
-          /     \       https://github.com/mikesmithgh/kitty-scrollback.nvim/issues and              
-          |     |       provide the `KittyScrollbackCheckHealth` report.                               
-         /| | | |\                                                                                    
-         \| | \_|/\
-          /_// ___/     *Bonus* *points* *for* *cat* *memes*
-             \_)       ]])
+  health_fn([[
+   /\___/|       ]] .. header .. [[
+  =) ^Y^ (=
+   \  ^  /       If you have any issues or questions using *kitty-scrollback.nvim* then     
+    )=*=(        please create an issue at                                                    
+   /     \       https://github.com/mikesmithgh/kitty-scrollback.nvim/issues and              
+   |     |       provide the `KittyScrollbackCheckHealth` report.                               
+  /| | | |\                                                                                    
+  \| | \_|/\
+   /_// ___/     *Bonus* *points* *for* *cat* *memes*
+      \_)       ]])
 
   -- Always consider true even if git version is not found to provide additional health checks
   return true

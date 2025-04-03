@@ -125,7 +125,7 @@ $ brew search a
       pattern = [[
 kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
 .*kitty%-scrollback: Neovim version.*
-.*%- OK NVIM.*
+.*%- .*OK NVIM.*
 ]],
       cursor_y = 1,
       cursor_x = 1,
@@ -153,7 +153,7 @@ kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
       pattern = [[
 kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
 .*kitty%-scrollback: Neovim version.*
-.*%- OK NVIM.*
+.*%- .*OK NVIM.*
 ]],
       cursor_y = 1,
       cursor_x = 1,
