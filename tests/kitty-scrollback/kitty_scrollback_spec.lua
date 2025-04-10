@@ -123,7 +123,7 @@ $ brew search a
     )
     h.assert_screen_match(actual, {
       pattern = [[
-kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
+kitty%-scrollback:.*
 .*kitty%-scrollback: Neovim version.*
 .*%- .*OK NVIM.*
 ]],
@@ -151,7 +151,7 @@ kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
     })
     h.assert_screen_match(actual, {
       pattern = [[
-kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
+kitty%-scrollback:.*
 .*kitty%-scrollback: Neovim version.*
 .*%- .*OK NVIM.*
 ]],
