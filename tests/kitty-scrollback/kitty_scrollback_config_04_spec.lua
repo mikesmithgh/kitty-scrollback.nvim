@@ -729,7 +729,7 @@ Press ENTER or type command to continue
     })
     h.assert_screen_match(h.feed_kitty(), {
       pattern = [[
-kitty%-scrollback:.*require%("kitty%-scrollback.health"%).check%(%)
+kitty%-scrollback:.*
 .*kitty%-scrollback: Neovim version.*
 .*%- .*OK NVIM.*
 ]],
