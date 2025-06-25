@@ -1,5 +1,5 @@
 -- NOTE: copied from
--- https://github.com/neovim/neovim/blob/909b18d05a8d472b12c156e1663282bf6f5ce307/runtime/lua/vim/_system.lua
+-- https://github.com/neovim/neovim/blob/4369d7d9a7804b8f9c2254da9f153d428115334a/runtime/lua/vim/_system.lua
 
 ---@diagnostic disable
 local uv = vim.uv
@@ -140,10 +140,10 @@ function SystemObj:is_closing()
   return handle == nil or handle:is_closing() or false
 end
 
---- @param output? uv.read_start.callback|false
+--- @param output? fun(err: string?, data: string?)|false
 --- @param text? boolean
 --- @return uv.uv_stream_t? pipe
---- @return uv.read_start.callback? handler
+--- @return fun(err: string?, data: string?)? handler
 --- @return string[]? data
 local function setup_output(output, text)
   if output == false then
@@ -151,7 +151,7 @@ local function setup_output(output, text)
   end
 
   local bucket --- @type string[]?
-  local handler --- @type uv.read_start.callback
+  local handler --- @type fun(err: string?, data: string?)
 
   if type(output) == 'function' then
     handler = output
@@ -171,7 +171,8 @@ local function setup_output(output, text)
 
   local pipe = assert(uv.new_pipe(false))
 
-  --- @type uv.read_start.callback
+  --- @param err? string
+  --- @param data? string
   local function handler_with_close(err, data)
     handler(err, data)
     if data == nil then
@@ -249,7 +250,7 @@ local function spawn(cmd, opts, on_exit, on_error)
   local handle, pid_or_err = uv.spawn(cmd, opts, on_exit)
   if not handle then
     on_error()
-    error(pid_or_err)
+    error(('%s: "%s"'):format(pid_or_err, cmd))
   end
   return handle, pid_or_err --[[@as integer]]
 end
