@@ -1,9 +1,6 @@
 name: validate nvim backports
 on: 
   workflow_dispatch:
-  schedule:
-    # daily 9AM EST
-    - cron: "0 14 * * *"
 
 jobs:
   validate-nvim-backport:
