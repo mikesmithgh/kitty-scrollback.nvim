@@ -78,7 +78,7 @@ M.get_text_term = function(get_text_opts, on_exit_cb)
   -- current window size. Note: a larger min_cols appears to impact performance
   -- defer is used as a timing workaround because this is expected to be called right before
   -- opening the terminal
-  p.orig_columns = defer_resize_term(300)
+  p.orig_columns = defer_resize_term(opts.scrollback_buffer_cols)
 
   -- set the shell used to sh to avoid imcompatabiliies with other shells (e.g., nushell, fish, etc)
   vim.o.shell = 'sh'
