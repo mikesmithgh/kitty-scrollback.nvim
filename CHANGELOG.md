@@ -1,3 +1,10 @@
+# [6.4.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.3.0...v6.4.0) (2026-01-04)
+
+
+### Features
+
+* make temporary scrollback buffer columns configurable ([#343](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/343)) ([c73a59e](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/c73a59e90674242f0d21b4f8e4c661d311e70a17))
+
 # [6.3.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.2.2...v6.3.0) (2025-04-01)
 
 
