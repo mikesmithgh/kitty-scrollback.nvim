@@ -658,6 +658,24 @@ The configuration precedence is `default` > `global` > `builtin` > `user` where 
 }
 ```
 
+#### Enabling Text Wrapping
+
+To enable text wrapping in the scrollback buffer, you can use the `after_launch` callback to set the `wrap` option:
+
+```lua
+require('kitty-scrollback').setup({
+  {
+    callbacks = {
+      after_launch = function(kitty_data, opts)
+        vim.o.wrap = true
+      end,
+    },
+  },
+})
+```
+
+This configuration enables text wrapping for the entire scrollback buffer, making long lines wrap to fit within the window width. The `after_launch` callback is executed after the scrollback buffer has been loaded but before the cursor is positioned, making it an ideal place to set buffer-specific options like text wrapping.
+
 ### Nerd Fonts 
 
 By default, `kitty-scrollback.nvim` uses [Nerd Fonts](https://www.nerdfonts.com) in the status window. If you would like to 
