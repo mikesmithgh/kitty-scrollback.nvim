@@ -311,12 +311,7 @@ M.checkhealth = function()
     vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1],
     ':p'
   )
-  -- NOTE(#58): nvim v0.9 support
-  -- setup backports for v0.9 because checkhealth can be called outside of standard setup flow
-  if vim.fn.has('nvim-0.10') <= 0 then
-    require('kitty-scrollback.backport').setup()
-  end
-  if vim.fn.has('nvim-0.9') > 0 then
+  if vim.fn.has('nvim-0.10') > 0 then
     vim
       .system({
         -- fallback to 'kitty' because checkhealth can be called outside of standard setup flow

@@ -1,5 +1,4 @@
 local h = require('tests.kitty-scrollback.helpers')
-h.setup_backport()
 
 local ksb_dir = h.ksb_dir()
 

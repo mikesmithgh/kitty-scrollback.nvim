@@ -20,8 +20,6 @@ local ksb_util
 local ksb_autocmds
 ---@module 'kitty-scrollback.health'
 local ksb_health
----@module 'kitty-scrollback.backport'
-local ksb_backport
 ---@module 'kitty-scrollback.configs.defaults'
 local ksb_configs_defaults
 
@@ -223,7 +221,6 @@ local function load_requires()
   ksb_util = require('kitty-scrollback.util')
   ksb_autocmds = require('kitty-scrollback.autocommands')
   ksb_health = require('kitty-scrollback.health')
-  ksb_backport = require('kitty-scrollback.backport')
   ksb_configs_defaults = require('kitty-scrollback.configs.defaults')
 end
 
@@ -272,22 +269,19 @@ M.setup = function(kitty_data_str)
   end
   opts = vim.tbl_deep_extend('force', ksb_configs_defaults, global_opts, builtin_opts, user_opts)
 
-  ksb_backport.setup()
   ksb_health.setup(p, opts)
   if opts.checkhealth then
     vim.o.foldenable = false
-    vim.cmd.checkhealth('kitty-scrollback')
+    vim.cmd('checkhealth "kitty-scrollback"') -- prefer vim.cmd('checkhealth') over vim.cmd.checkhealth to support older versions of neovim
     return
   end
-  if not ksb_health.check_nvim_version('nvim-0.9', true) then
+  if not ksb_health.check_nvim_version('nvim-0.10', true) then
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM '
-      .. tostring(vim.version())
+      .. ksb_health.nvim_version()
       .. '. '
       .. table.concat(ksb_health.advice.nvim_version)
-    local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
-    if response ~= 2 then
-      ksb_util.quitall()
-    end
+    vim.fn.confirm(prompt_msg, '&Quit')
+    ksb_util.quitall()
   end
   if not ksb_health.check_kitty_version(true) then
     local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version kitty '
