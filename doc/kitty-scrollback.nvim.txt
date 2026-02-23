@@ -5,7 +5,7 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 
 1. kitty-scrollback.nvim         |kitty-scrollback.nvim-kitty-scrollback.nvim|
   - Features                                  |kitty-scrollback.nvim-features|
-  - Migrating to v6.0.0            |kitty-scrollback.nvim-migrating-to-v6.0.0|
+  - Migrating to v7.0.0            |kitty-scrollback.nvim-migrating-to-v7.0.0|
   - Prerequisites                        |kitty-scrollback.nvim-prerequisites|
   - Quickstart                              |kitty-scrollback.nvim-quickstart|
   - Installation                          |kitty-scrollback.nvim-installation|
@@ -111,45 +111,23 @@ This requires extra steps to setup. See optional
 - That’s it! You are in Neovim, navigate the scrollback buffer.
 
 
-MIGRATING TO V6.0.0                *kitty-scrollback.nvim-migrating-to-v6.0.0*
+MIGRATING TO V7.0.0                *kitty-scrollback.nvim-migrating-to-v7.0.0*
 
 
   |‼| |IMPORTANT|
-  v6.0.0 has breaking changes.
+  v7.0.0 has breaking changes.
   You can ignore this section if you have not previously installed any version of
   kitty-scrollback.nvim
 
 `-` `Migration Steps`
-    If you have any problems or questions migrating to `v6.0.0`, please open an
+    If you have any problems or questions migrating to `v7.0.0`, please open an
     issue <https://github.com/mikesmithgh/kitty-scrollback.nvim/issues> or
     discussion <https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions>.
-    - kitty-scrollback.nvim v6.0.0 changes the default keymap for quitting
-        kitty-scrollback.nvim from `<Esc>` to `q`. No steps are necessary if you prefer
-        this new behavior.
-        If you prefer the previous behavior of using `<Esc>` to exit
-        kitty-scrollback.nvim, this can be reconfigured by adding the following to your
-        kitty-scrollback.nvim setup.
-
->lua
-            vim.keymap.set({ 'n' }, '<Esc>', '<Plug>(KsbCloseOrQuitAll)', {})
-<
-        For example, if you are using lazy.nvim, it would look something like this
-
->lua
-            return {
-              {
-                'mikesmithgh/kitty-scrollback.nvim',
-                lazy = true,
-                cmd = { 'KittyScrollbackGenerateKittens', 'KittyScrollbackCheckHealth' },
-                event = { 'User KittyScrollbackLaunch' },
-                config = function()
-                  vim.keymap.set({ 'n' }, '<Esc>', '<Plug>(KsbCloseOrQuitAll)', {}) -- quit kitty-scrollback.nvim with Esc key
-                  -- vim.keymap.set({ 'n' }, 'q', '<Plug>(KsbCloseOrQuitAll)', {}) -- uncomment if you would like to also quit with the q key
-                  require('kitty-scrollback').setup()
-                end,
-              },
-            }
-<
+    - kitty-scrollback.nvim v7.0.0 dropped support for Neovim version 0.9.
+        If you are using Neovim version 9.0, please upgrade to 10.0 or greater.
+        If you are using Neovim version 9.0 and cannot upgrade, then you can still use
+        tag v6.4.0 of kitty-scrolback.nvim
+        See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v6.4.0
 
 
 PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
