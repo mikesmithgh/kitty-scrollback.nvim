@@ -640,6 +640,8 @@ CONFIGURATION OPTIONS
       checkhealth = false,
       -- string? Sets the mode for coloring the Visual highlight group in the scrollback buffer window. darken uses a darkened version of the Normal highlight group to improve readability. kitty uses the colors defined for selection_foreground and selection_background in your Kitty configuration. nvim uses the default colors defined in the Visual highlight group. reverse reverses the foreground and background colors of the visual selection.
       visual_selection_highlight_mode = 'darken',
+      -- integer? Temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
+      scrollback_columns = 300,
     }
 <
 

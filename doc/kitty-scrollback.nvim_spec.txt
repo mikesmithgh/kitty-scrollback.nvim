@@ -197,6 +197,7 @@ KsbOpts                                                   *default_opts.KsbOpts*
         {kitty_get_text}                   (KsbKittyGetText|nil)                           options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
         {checkhealth}                      (boolean|nil)                                   if true execute :checkhealth kitty-scrollback and skip setup
         {visual_selection_highlight_mode}  (string|"darken"|"kitty"|"nvim"|"reverse"|nil)
+        {scrollback_columns}               (integer|nil)                                   temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
 
 
 ==============================================================================
