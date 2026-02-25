@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.4.0...v7.0.0) (2026-02-25)
+
+
+* feat!: remove support for nvim v0.9 ([#334](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/334)) ([82f9de3](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/82f9de36c994e43fe87c36e477669704572869d3))
+
+
+### BREAKING CHANGES
+
+* remove support for Neovim version 0.9
+
+If you are using Neovim version 9.0 and cannot upgrade, then you can still use tag v6.4.0 of kitty-scrolback.nvim
+
 # [6.4.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v6.3.0...v6.4.0) (2026-01-04)
 
 
