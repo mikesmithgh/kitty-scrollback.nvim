@@ -92,12 +92,12 @@ end
 
 M.quitall = function()
   if vim.fn.getcmdwintype() == '' then
-    vim.cmd.quitall({ bang = true })
+    vim.cmd('quitall!') -- prefer vim.cmd('quitall') over vim.cmd.quitall to support older versions of neovim
   else
     -- in command-line window, we have to exit both the command-line window and neovim
     vim.cmd.quit({ bang = true })
     vim.defer_fn(function()
-      vim.cmd.quitall({ bang = true })
+      vim.cmd('quitall!') -- prefer vim.cmd('quitall') over vim.cmd.quitall to support older versions of neovim
     end, 250)
   end
 end

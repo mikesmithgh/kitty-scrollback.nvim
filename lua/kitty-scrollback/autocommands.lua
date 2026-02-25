@@ -12,6 +12,18 @@ local p
 ---@type KsbOpts
 local opts ---@diagnostic disable-line: unused-local
 
+---Normalize to string[]
+---@param value? string|string[]
+---@return string[]
+local function as_list(value)
+  if type(value) == 'string' then
+    return { value }
+  elseif type(value) == 'table' then
+    return value
+  end
+  return {}
+end
+
 M.setup = function(private, options)
   p = private
   opts = options ---@diagnostic disable-line: unused-local
@@ -127,7 +139,7 @@ M.set_term_enter_autocmd = function(bufid)
 end
 
 M.set_colorscheme_autocmd = function()
-  vim.api.nvim_create_autocmd({ 'Colorscheme' }, {
+  vim.api.nvim_create_autocmd({ 'ColorScheme' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimColorscheme', { clear = true }),
     callback = ksb_hl.set_highlights,
   })
@@ -195,7 +207,7 @@ M.set_yank_post_autocmd = function()
         end
 
         local contents = {}
-        for _, line in pairs(yankevent.regcontents) do
+        for _, line in ipairs(as_list(yankevent.regcontents)) do
           line = line:gsub('%s+$', '')
           table.insert(contents, line)
         end

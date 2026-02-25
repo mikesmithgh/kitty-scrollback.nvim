@@ -2,12 +2,13 @@
   "diagnostics": {
     "globals": [
       "vim"
-    ],
+    ]
   },
   "workspace": {
     "library": [
-      "${3rd}/busted/library",
+      "$VIMRUNTIME",
+      "${3rd}/busted/library"
     ],
     "checkThirdParty": false
-  },
+  }
 }

@@ -166,24 +166,37 @@ local function check_sed()
   end
 end
 
-M.check_nvim_version = function(version, check_only)
-  if not check_only then
-    vim.health.start('kitty-scrollback: Neovim version 0.9+')
+M.nvim_version = function()
+  local version = vim.version()
+  local mt = getmetatable(version)
+  local fmt_version = 'unknown'
+  if mt and mt.__tostring ~= nil then
+    fmt_version = tostring(version)
+  else
+    -- tostring for version table was introduced on NVIM 0.10, fallback for previous versions
+    fmt_version = table.concat({ version.major, version.minor, version.patch }, '.')
   end
-  local nvim_version = 'NVIM ' .. tostring(vim.version())
+  return fmt_version
+end
+
+M.check_nvim_version = function(version, check_only)
+  local start = vim.health and (vim.health.start or vim.health.report_start)
+    or require('health').report_start
+  local error = vim.health and (vim.health.error or vim.health.report_error)
+    or require('health').report_error
+
+  if not check_only then
+    start('kitty-scrollback: Neovim version 0.10+')
+  end
+  local nvim_version = 'NVIM ' .. M.nvim_version()
   if vim.fn.has(version) > 0 then
     if not check_only then
       vim.health.ok(nvim_version)
-      if vim.fn.has('nvim-0.10') <= 0 then
-        vim.health.info(
-          'If you are using a version of nvim that is less than 0.10, then formatting on this checkhealth may be malformed'
-        )
-      end
     end
     return true
   else
     if not check_only then
-      vim.health.error(nvim_version, M.advice.nvim_version)
+      error(nvim_version, M.advice.nvim_version)
     end
   end
   return false
@@ -254,9 +267,8 @@ local function check_kitty_scrollback_nvim_version()
 end
 
 M.check = function()
-  require('kitty-scrollback.backport').setup()
   if
-    M.check_nvim_version('nvim-0.9')
+    M.check_nvim_version('nvim-0.10')
     and check_kitty_scrollback_nvim_version()
     and check_kitty_remote_control()
     and check_has_kitty_data()
@@ -276,7 +288,11 @@ end
 ---@return KsbAdvice
 M.advice = {
   nvim_version = {
-    'Neovim version 0.9 or greater is required to work with kitty-scrollback.nvim.',
+    'Neovim version 0.10 or greater is required to work with kitty-scrollback.nvim. ',
+    'If you are using Neovim version 9.0 and cannot upgrade, then you can still use ',
+    'tag v6.4.0 of kitty-scrolback.nvim',
+    '',
+    'See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v6.4.0',
   },
   kitty_version = {
     'Kitty version 0.32.2 or greater is required to work with kitty-scrollback.nvim.',

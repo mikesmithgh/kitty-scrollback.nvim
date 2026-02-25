@@ -53,12 +53,6 @@ M.ignore = function(desc, ...)
   print(M.color_string('yellow', 'Ignored'), '||', desc)
 end
 
-M.setup_backport = function()
-  if vim.fn.has('nvim-0.10') <= 0 then
-    require('kitty-scrollback.backport').setup()
-  end
-end
-
 M.now = function()
   return vim.fn.strftime('%m-%d-%Y %H:%M:%S', vim.fn.localtime())
 end

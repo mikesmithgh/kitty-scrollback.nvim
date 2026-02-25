@@ -17,7 +17,7 @@ jobs:
         uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: 'stable'
+          version: 'nightly' # v0.12 needed for uv annotations
 
       - name: Install dependencies
         run: |
