@@ -272,7 +272,7 @@ M.setup = function(kitty_data_str)
   ksb_health.setup(p, opts)
   if opts.checkhealth then
     vim.o.foldenable = false
-    vim.cmd('checkhealth "kitty-scrollback"') -- prefer vim.cmd('checkhealth') over vim.cmd.checkhealth to support older versions of neovim
+    vim.cmd('checkhealth kitty-scrollback') -- prefer vim.cmd('checkhealth') over vim.cmd.checkhealth to support older versions of neovim
     return
   end
   if not ksb_health.check_nvim_version('nvim-0.10', true) then

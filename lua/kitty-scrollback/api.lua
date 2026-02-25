@@ -326,7 +326,7 @@ M.checkhealth = function()
       :wait()
   else
     -- fallback on checkhealth for earlier versions of nvim
-    vim.cmd.checkhealth('kitty-scrollback')
+    vim.cmd('checkhealth kitty-scrollback') -- prefer vim.cmd('checkhealth') over vim.cmd.checkhealth to support older versions of neovim
   end
 end
 
