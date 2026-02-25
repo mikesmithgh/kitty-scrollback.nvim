@@ -6,7 +6,8 @@
   },
   "workspace": {
     "library": [
-      "$VIMRUNTIME/lua",
+      "$VIMRUNTIME",
+      "/home/runner/nvim-stable/share/nvim/runtime",
       "${3rd}/busted/library",
     ],
     "checkThirdParty": false
