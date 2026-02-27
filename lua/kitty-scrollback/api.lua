@@ -94,48 +94,15 @@ M.generate_kittens = function(generate_modes)
   )
 
   local action_alias = 'kitty_scrollback_nvim'
-  local alias_config = {
-    '# kitty-scrollback.nvim Kitten alias',
-    'action_alias ' .. action_alias .. ' kitten ' .. kitty_scrollback_kitten,
-    '',
-  }
   local alias_config_quoted = ([[action_alias %s kitten '%s']]):format(
     action_alias,
     kitty_scrollback_kitten
   )
-
-  local alias_warn = {}
-  if kitty_scrollback_kitten:find('%s') then
-    alias_warn = {
-      [[# WARNING]],
-      [[#  ']] .. kitty_scrollback_kitten .. [[' contains whitespace.]],
-      [[#]],
-      [[#  If you are using Kitty version 0.39.0 or greater, then whitespace is allowed in the]],
-      [[#  path and you can ignore this warning. Just make sure that the kitten path is]],
-      [[#  wrapped in quotes. For example,]],
-      [[#]],
-      [[#    ]] .. alias_config_quoted,
-      [[#]],
-      [[#  If you are using Kitty version 0.38.1 or less, then you may receive an error opening]],
-      [[#  kitty-scrollback.nvim. If an error occurs, you can workaround this issue by symlinking]],
-      [[#  the kitty-scrollback.nvim plugin directory to Kitty's configuration directory with]],
-      [[#  the command:]],
-      [[#]],
-      [[#    ln -s ']]
-        .. vim.fn.fnamemodify(kitty_scrollback_kitten, ':h:h')
-        .. [[' ~/.config/kitty/kitty-scrollback.nvim]],
-      [[#]],
-      [[#  Then use the symlinked directory as the action_alias in kitty.conf instead of the real path]],
-      [[#]],
-      [[#    action_alias kitty_scrollback_nvim kitten kitty-scrollback.nvim/python/kitty_scrollback_nvim.py]],
-      [[#]],
-      [[#  Also, if you are using any kitty @ kitten commands update them to use the symlink path:]],
-      [[#]],
-      [[#    kitty kitten kitty-scrollback.nvim/python/kitty_scrollback_nvim.py]],
-      [[#]],
-      [[]],
-    }
-  end
+  local alias_config = {
+    '# kitty-scrollback.nvim Kitten alias',
+    alias_config_quoted,
+    '',
+  }
 
   local builtin_map_configs = {
     '# Browse scrollback buffer in nvim',
@@ -165,8 +132,6 @@ M.generate_kittens = function(generate_modes)
   }
 
   local configs = {}
-  vim.list_extend(configs, alias_warn)
-
   local filetype
   if target_gen_modes['maps'] then
     vim.list_extend(configs, alias_config)

@@ -5,6 +5,7 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 
 1. kitty-scrollback.nvim         |kitty-scrollback.nvim-kitty-scrollback.nvim|
   - Features                                  |kitty-scrollback.nvim-features|
+  - Migrating to v8.0.0            |kitty-scrollback.nvim-migrating-to-v8.0.0|
   - Migrating to v7.0.0            |kitty-scrollback.nvim-migrating-to-v7.0.0|
   - Prerequisites                        |kitty-scrollback.nvim-prerequisites|
   - Quickstart                              |kitty-scrollback.nvim-quickstart|
@@ -111,6 +112,26 @@ This requires extra steps to setup. See optional
 - That’s it! You are in Neovim, navigate the scrollback buffer.
 
 
+MIGRATING TO V8.0.0                *kitty-scrollback.nvim-migrating-to-v8.0.0*
+
+
+  |‼| |IMPORTANT|
+  v8.0.0 has breaking changes.
+  You can ignore this section if you have not previously installed any version of
+  kitty-scrollback.nvim
+
+`-` `Migration Steps`
+    If you have any problems or questions migrating to `v8.0.0`, please open an
+    issue <https://github.com/mikesmithgh/kitty-scrollback.nvim/issues> or
+    discussion <https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions>.
+    - kitty-scrollback.nvim v8.0.0 dropped support for Kitty version < 0.43.0.
+        If you are using an older version of Kitty, please upgrade to 0.43.0 or
+        greater.
+        If you are using version 0.32.2 through 0.42.2 of Kitty and cannot upgrade,
+        then you can still use tag v7.0.0 of kitty-scrollback.nvim
+        See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v7.0.0
+
+
 MIGRATING TO V7.0.0                *kitty-scrollback.nvim-migrating-to-v7.0.0*
 
 
@@ -133,7 +154,7 @@ MIGRATING TO V7.0.0                *kitty-scrollback.nvim-migrating-to-v7.0.0*
 PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
 
 - Neovim v0.10+ <https://github.com/neovim/neovim/releases>
-- Kitty v0.32.2+ <https://github.com/kovidgoyal/kitty/releases>
+- Kitty v0.43.0+ <https://github.com/kovidgoyal/kitty/releases>
 
 
 QUICKSTART                                  *kitty-scrollback.nvim-quickstart*

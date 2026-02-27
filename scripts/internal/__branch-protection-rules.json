@@ -11,17 +11,7 @@
       "plenary (nightly, nightly)",
       "plenary (v0.10.0, stable)",
       "plenary (v0.10.4, stable)",
-      "plenary (stable, 0.32.2)",
-      "plenary (stable, 0.33.1)",
-      "plenary (stable, 0.34.1)",
-      "plenary (stable, 0.35.2)",
-      "plenary (stable, 0.36.4)",
-      "plenary (stable, 0.37.0)",
-      "plenary (stable, 0.38.1)",
-      "plenary (stable, 0.39.1)",
-      "plenary (stable, 0.40.1)",
-      "plenary (stable, 0.41.1)",
-      "plenary (stable, 0.42.2)",
+      "plenary (stable, 0.43.0)",
       "plenary (stable, 0.43.1)",
       "plenary (stable, 0.44.0)"
     ]
