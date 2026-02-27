@@ -289,10 +289,8 @@ M.setup = function(kitty_data_str)
       .. '.\n\n'
       .. table.concat(ksb_health.advice.kitty_version, '\n')
       .. '\n'
-    local response = vim.fn.confirm(prompt_msg, '&Quit\n&Continue')
-    if response ~= 2 then
-      ksb_util.quitall()
-    end
+    vim.fn.confirm(prompt_msg, '&Quit')
+    ksb_util.quitall()
   end
 
   set_env()
