@@ -109,11 +109,20 @@ M.plug_mapping_names = {
   NORMAL_YANK = '<Plug>(KsbNormalYank)',
   YANK_LINE = '<Plug>(KsbYankLine)',
 
+  REMOVE_NEWLINE_VISUAL_YANK_LINE = '<Plug>(KsbRemoveNewlineVisualYankLine)',
+  REMOVE_NEWLINE_VISUAL_YANK = '<Plug>(KsbRemoveNewlineVisualYank)',
+  REMOVE_NEWLINE_NORMAL_YANK_END = '<Plug>(KsbRemoveNewlineNormalYankEnd)',
+  REMOVE_NEWLINE_NORMAL_YANK = '<Plug>(KsbRemoveNewlineNormalYank)',
+  REMOVE_NEWLINE_YANK_LINE = '<Plug>(KsbRemoveNewlineYankLine)',
+
   CLOSE_OR_QUIT_ALL = '<Plug>(KsbCloseOrQuitAll)',
   QUIT_ALL = '<Plug>(KsbQuitAll)',
 
   EXECUTE_VISUAL_CMD = '<Plug>(KsbExecuteVisualCmd)',
   PASTE_VISUAL_CMD = '<Plug>(KsbPasteVisualCmd)',
+
+  REMOVE_NEWLINE_EXECUTE_VISUAL_CMD = '<Plug>(KsbRemoveNewlineExecuteVisualCmd)',
+  REMOVE_NEWLINE_PASTE_VISUAL_CMD = '<Plug>(KsbRemoveNewlinePasteVisualCmd)',
 
   TOGGLE_FOOTER = '<Plug>(KsbToggleFooter)',
   EXECUTE_CMD = '<Plug>(KsbExecuteCmd)',

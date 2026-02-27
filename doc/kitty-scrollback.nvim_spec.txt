@@ -226,6 +226,10 @@ M.paste_command()                           *kitty-scrollback.api.paste_command*
     window contents to Kitty. Otherwise, no operation
 
 
+                      *kitty-scrollback.api.remove_newline_paste_visual_command*
+M.remove_newline_paste_visual_command()
+
+
                                      *kitty-scrollback.api.paste_visual_command*
 M.paste_visual_command()
 
