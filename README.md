@@ -29,6 +29,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 ## 📖 Contents
 
 - ✨ [Features](#-features)
+- 🚀 [Migrating to v8.0.0](#-migrating-to-v800)
 - 🚀 [Migrating to v7.0.0](#-migrating-to-v700)
 - 📚 [Prerequisites](#-prerequisites)
 - 🏃 [Quickstart](#-quickstart)
@@ -195,6 +196,36 @@ This requires extra steps to setup. See optional [tmux setup](#tmux--experimenta
 
 - Open a tmux pane's scrollback history (default mapping `<C-b>[`)
 - That's it! You are in Neovim, navigate the scrollback buffer.
+
+</details>
+
+## 🚀 Migrating to v8.0.0
+> [!IMPORTANT]\
+> v8.0.0 has breaking changes.
+> 
+> You can ignore this section if you have not previously installed any version of kitty-scrollback.nvim
+
+<details>
+
+  <summary>Migration Steps</summary>
+
+  If you have any problems or questions migrating to `v8.0.0`, please open an 
+  [issue](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues) or
+  [discussion](https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions).
+  
+  <!-- panvimdoc-ignore-start -->
+  
+  <img src="media/sad_kitty_thumbs_up.png" alt="sad-kitty-thumps-up" style="width: 20%" align="right" />
+  
+  <!-- panvimdoc-ignore-end -->
+
+  - kitty-scrollback.nvim v8.0.0 dropped support for Kitty version < 0.43.0.
+
+    If you are using an older version of Kitty, please upgrade to 0.43.0 or greater. 
+
+    If you are using version 0.32.2 through 0.42.2 of Kitty and cannot upgrade, then you can still use tag v7.0.0 of kitty-scrollback.nvim
+
+    See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v7.0.0
 
 </details>
 
