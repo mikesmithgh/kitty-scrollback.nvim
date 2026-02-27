@@ -1,6 +1,5 @@
 local M = {}
 local current_tmpsocket
-local current_tmux_tmpsocket
 local assert = require('luassert.assert')
 
 M.kitty = 'kitty'
@@ -55,20 +54,6 @@ end
 
 M.now = function()
   return vim.fn.strftime('%m-%d-%Y %H:%M:%S', vim.fn.localtime())
-end
-
-M.temp_tmux_socket = function(tmp_dir)
-  vim.fn.mkdir(tmp_dir, 'p')
-  local tmpdir_proc = M.debug(
-    vim.system(vim.list_extend({ 'mktemp', '-d' }, tmp_dir and { '-p', tmp_dir } or {})):wait()
-  )
-  if tmpdir_proc.code ~= 0 then
-    print(vim.inspect(tmpdir_proc))
-  end
-  assert.is.equal(tmpdir_proc.code, 0)
-  local tmpdir = tmpdir_proc.stdout:gsub('\n', '')
-  current_tmux_tmpsocket = M.debug(tmpdir .. '/tmux.sock')
-  return current_tmux_tmpsocket
 end
 
 M.tempsocket = function(tmp_dir)
@@ -297,14 +282,6 @@ M.open_kitty_scrollback_nvim = function(config)
   }
 end
 
-M.open_tmux_kitty_scrollback_nvim = function()
-  return {
-    opts = {
-      open_tmux_kitty_scrollback_nvim = true,
-    },
-  }
-end
-
 M.ctrl_x = function()
   return {
     [[\x18]],
@@ -429,7 +406,6 @@ M.feed_kitty = function(input, pause_seconds_after)
       send_by = 'char',
       newline = true,
       open_kitty_scrollback_nvim = false,
-      open_tmux_kitty_scrollback_nvim = false,
     }, (type(line) == 'table' and line.opts) and line.opts or {})
 
     if feed_opts.pause_before then
@@ -444,12 +420,6 @@ M.feed_kitty = function(input, pause_seconds_after)
     if open_ksb then
       M.pause_seconds()
       M.kitty_remote_kitten_kitty_scrollback_nvim(type(open_ksb) == 'table' and open_ksb or {})
-      M.pause_seconds()
-    elseif feed_opts.open_tmux_kitty_scrollback_nvim then
-      M.pause_seconds()
-      M.debug(M.kitty_remote_send_text(M.control_b()[1]))
-      M.pause_seconds(0.03)
-      M.debug(M.kitty_remote_send_text('['))
       M.pause_seconds()
     else
       local content = line

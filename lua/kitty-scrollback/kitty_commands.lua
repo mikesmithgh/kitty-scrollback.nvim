@@ -1,5 +1,4 @@
 ---@mod kitty-scrollback.kitty_commands
-local ksb_tmux = require('kitty-scrollback.tmux_commands')
 local ksb_util = require('kitty-scrollback.util')
 local M = {}
 
@@ -43,11 +42,6 @@ local function get_scrollback_cmd(get_text_args)
     .. flush_stdout_cmd
     .. ' && '
     .. start_set_title_cmd
-
-  if p.kitty_data.tmux and next(p.kitty_data.tmux) then
-    scrollback_cmd = ksb_tmux.get_scrollback_cmd(get_text_args)
-    full_cmd = scrollback_cmd .. ' | ' .. sed_cmd .. ' && ' .. start_set_title_cmd
-  end
 
   return scrollback_cmd, full_cmd
 end
