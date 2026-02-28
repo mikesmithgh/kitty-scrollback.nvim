@@ -187,7 +187,6 @@ This requires extra steps to setup. See optional [Command-line editing setup](#c
 - Modify the command and do any additional operations that you typically would perform in kitty-scrollback.nvim
 
 </details>
-<details> 
 
 ## 🚀 Migrating to v8.0.0
 > [!IMPORTANT]\
