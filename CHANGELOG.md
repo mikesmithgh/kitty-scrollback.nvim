@@ -1,3 +1,13 @@
+# [9.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v8.0.0...v9.0.0) (2026-03-02)
+
+
+* feat!: remove experimental support for tmux ([#350](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/350)) ([8965508](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/8965508ac3777e9eb1a4b61e8534cc475ee8e645)), closes [#115](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/115)
+
+
+### BREAKING CHANGES
+
+* remove experimental support for tmux
+
 # [8.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v7.0.0...v8.0.0) (2026-02-27)
 
 
