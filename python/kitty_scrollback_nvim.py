@@ -59,31 +59,8 @@ def main():
     raise SystemExit('Must be run as kitten kitty_scrollback_nvim')
 
 
-def parse_tmux_env(env):
-    tmux_data = {}
-    tmux = None
-    tmux_pane = None
-    for e in env:
-        env_kv = e.split('=')
-        if len(env_kv) == 2:
-            key = env_kv[0]
-            value = env_kv[1]
-            if key == 'TMUX':
-                tmux = value
-            if key == 'TMUX_PANE':
-                tmux_pane = value
-    if tmux:
-        tmux_parts = tmux.split(',')
-        if len(tmux_parts) == 3 and tmux_pane:
-            tmux_data['socket_path'] = tmux_parts[0]
-            tmux_data['pid'] = tmux_parts[1]
-            tmux_data['session_id'] = tmux_parts[2]
-            tmux_data['pane_id'] = tmux_pane
-    return tmux_data
-
-
 # based on kitty source window.py
-def pipe_data(w, target_window_id, config, kitty_path, tmux_data):
+def pipe_data(w, target_window_id, config, kitty_path):
     kitty_opts = get_options()
     kitty_shell_integration = get_effective_ksi_env_var(kitty_opts)
     return {
@@ -116,7 +93,6 @@ def pipe_data(w, target_window_id, config, kitty_path, tmux_data):
         },
         'kitty_config_dir': config_dir,
         'kitty_version': version,
-        'tmux': tmux_data,
         'shell': resolved_shell(kitty_opts)[0]
     }
 
@@ -180,12 +156,10 @@ def handle_result(args: List[str],
         config = parse_config(args)
         cwd = parse_cwd(args, w.child.foreground_cwd)
         env = parse_env(args)
-        tmux_data = parse_tmux_env(env)
         kitty_data_str = pipe_data(w,
                                    target_window_id,
                                    config,
-                                   kitty_path,
-                                   tmux_data)
+                                   kitty_path)
         kitty_data = json.dumps(kitty_data_str)
 
         if w.title.startswith('kitty-scrollback.nvim'):

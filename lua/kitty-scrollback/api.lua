@@ -123,14 +123,6 @@ M.generate_kittens = function(generate_modes)
   end, builtin_map_configs)
   table.insert(builtin_command_configs, '')
 
-  local builtin_tmux_configs = {
-    '# Browse tmux pane in nvim',
-    [[bind [ run-shell 'kitty @ kitten ]]
-      .. kitty_scrollback_kitten
-      .. [[ --env "TMUX=$TMUX" --env "TMUX_PANE=#{pane_id}"']],
-    '',
-  }
-
   local configs = {}
   local filetype
   if target_gen_modes['maps'] then
@@ -142,10 +134,6 @@ M.generate_kittens = function(generate_modes)
   if target_gen_modes['commands'] then
     vim.list_extend(configs, builtin_command_configs)
     filetype = 'sh'
-  end
-  if target_gen_modes['tmux'] then
-    vim.list_extend(configs, builtin_tmux_configs)
-    filetype = 'tmux'
   end
   if #vim.tbl_values(target_gen_modes) > 1 then
     filetype = nil
