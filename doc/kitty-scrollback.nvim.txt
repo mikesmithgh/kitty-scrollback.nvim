@@ -5,8 +5,7 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
 
 1. kitty-scrollback.nvim         |kitty-scrollback.nvim-kitty-scrollback.nvim|
   - Features                                  |kitty-scrollback.nvim-features|
-  - Migrating to v8.0.0            |kitty-scrollback.nvim-migrating-to-v8.0.0|
-  - Migrating to v7.0.0            |kitty-scrollback.nvim-migrating-to-v7.0.0|
+  - ‍ Breaking Changes Migration Steps|kitty-scrollback.nvim-‍-breaking-changes-migration-steps|
   - Prerequisites                        |kitty-scrollback.nvim-prerequisites|
   - Quickstart                              |kitty-scrollback.nvim-quickstart|
   - Installation                          |kitty-scrollback.nvim-installation|
@@ -103,43 +102,34 @@ This requires extra steps to setup. See optional
 - Modify the command and do any additional operations that you typically would perform in kitty-scrollback.nvim
 
 
-MIGRATING TO V8.0.0                *kitty-scrollback.nvim-migrating-to-v8.0.0*
+‍ BREAKING CHANGES MIGRATION STEPS*kitty-scrollback.nvim-‍-breaking-changes-migration-steps*
 
 
   |‼| |IMPORTANT|
-  v8.0.0 has breaking changes.
   You can ignore this section if you have not previously installed any version of
   kitty-scrollback.nvim
 
 `-` `Migration Steps`
-    If you have any problems or questions migrating to `v8.0.0`, please open an
-    issue <https://github.com/mikesmithgh/kitty-scrollback.nvim/issues> or
-    discussion <https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions>.
-    - kitty-scrollback.nvim v8.0.0 dropped support for Kitty version < 0.43.0.
-        If you are using an older version of Kitty, please upgrade to 0.43.0 or
-        greater.
-        If you are using version 0.32.2 through 0.42.2 of Kitty and cannot upgrade,
-        then you can still use tag v7.0.0 of kitty-scrollback.nvim
-        See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v7.0.0
 
+If you have any problems or questions migrating to a newer version of
+kitty-scrollback.nvim, please open an issue
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/issues> or discussion
+<https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions>.
 
-MIGRATING TO V7.0.0                *kitty-scrollback.nvim-migrating-to-v7.0.0*
-
-
-  |‼| |IMPORTANT|
-  v7.0.0 has breaking changes.
-  You can ignore this section if you have not previously installed any version of
-  kitty-scrollback.nvim
-
-`-` `Migration Steps`
-    If you have any problems or questions migrating to `v7.0.0`, please open an
-    issue <https://github.com/mikesmithgh/kitty-scrollback.nvim/issues> or
-    discussion <https://github.com/mikesmithgh/kitty-scrollback.nvim/discussions>.
-    - kitty-scrollback.nvim v7.0.0 dropped support for Neovim version 0.9.
-        If you are using Neovim version 9.0, please upgrade to 10.0 or greater.
-        If you are using Neovim version 9.0 and cannot upgrade, then you can still use
-        tag v6.4.0 of kitty-scrolback.nvim
-        See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v6.4.0
+- kitty-scrollback.nvim v9.0.0 dropped experimental support for tmux.
+    If you are using the tmux functionality, then you can still use tag v8.0.0 of
+    kitty-scrolback.nvim.
+    See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v8.0.0
+- kitty-scrollback.nvim v8.0.0 dropped support for Kitty version < 0.43.0.
+    If you are using an older version of Kitty, please upgrade to 0.43.0 or
+    greater. If you are using version 0.32.2 through 0.42.2 of Kitty and cannot
+    upgrade, then you can still use tag v7.0.0 of kitty-scrollback.nvim.
+    See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v7.0.0
+- kitty-scrollback.nvim v7.0.0 dropped support for Neovim version 0.9.
+    If you are using Neovim version 9.0, please upgrade to 10.0 or greater. If you
+    are using Neovim version 9.0 and cannot upgrade, then you can still use tag
+    v6.4.0 of kitty-scrolback.nvim.
+    See https://github.com/mikesmithgh/kitty-scrollback.nvim/releases/tag/v6.4.0
 
 
 PREREQUISITES                            *kitty-scrollback.nvim-prerequisites*
