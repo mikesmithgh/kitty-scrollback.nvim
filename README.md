@@ -29,7 +29,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 ## 📖 Contents
 
 - ✨ [Features](#-features)
-- ⛓️‍💥 [Breaking Changes Migration Steps](#-breaking-changes-migration-steps)
+- ⛓️‍💥 [Breaking Changes Migration Steps](#%EF%B8%8F%E2%80%8D-breaking-changes-migration-steps)
 - 📚 [Prerequisites](#-prerequisites)
 - 🏃 [Quickstart](#-quickstart)
 - 📦 [Installation](#-installation)
