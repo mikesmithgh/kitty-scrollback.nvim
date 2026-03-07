@@ -51,6 +51,11 @@ M.paste_command = function()
   end
 end
 
+M.remove_newline_paste_visual_command = function()
+  local visual_selection_lines = ksb_util.clear_yank_autocommand_and_get_visual_selection()
+  ksb_kitty_cmds.send_lines_to_kitty_and_quit({ table.concat(visual_selection_lines, '') }, false)
+end
+
 M.paste_visual_command = function()
   local visual_selection_lines = ksb_util.clear_yank_autocommand_and_get_visual_selection()
   ksb_kitty_cmds.send_lines_to_kitty_and_quit(visual_selection_lines, false)
