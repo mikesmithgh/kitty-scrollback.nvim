@@ -164,7 +164,7 @@ M.set_yank_post_autocmd = function()
       end
 
       if yankevent.regname == '+' then
-        if vim.fn.has('clipboard') > 0 then
+        if vim.fn.has('clipboard') == 1 then
           -- Contents should be copied to clipboard, return to Kitty
           local clipboard_tool = vim.api.nvim_call_function('provider#clipboard#Executable', {})
           local defer_ms = 0
