@@ -399,7 +399,11 @@ M.clear = function()
   }
 end
 
-M.feed_kitty = function(input, pause_seconds_after)
+M.feed_kitty = function(input, opts)
+  opts = vim.tbl_deep_extend('force', {
+    pause_seconds_after = 3, -- longer pause for linux
+    get_text_args = {},
+  }, opts or {})
   input = input or {}
   for _, line in pairs(input) do
     local feed_opts = vim.tbl_extend('force', {
@@ -442,9 +446,9 @@ M.feed_kitty = function(input, pause_seconds_after)
       end
     end
   end
-  M.pause_seconds(pause_seconds_after or 3) -- longer pause for linux
+  M.pause_seconds(opts.pause_seconds_after)
 
-  local stdout = M.kitty_remote_get_text().stdout
+  local stdout = M.kitty_remote_get_text(opts.get_text_args).stdout
   local last_line = stdout:match('.*\n(.*)\n')
   local start_of_line, cursor_y, cursor_x =
     last_line:match('^(.*)\x1b%[%?25[hl]\x1b%[(%d+);(%d+)H\x1b.*$')

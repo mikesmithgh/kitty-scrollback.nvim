@@ -11,6 +11,10 @@ local kitty_instance
 
 local shell = h.debug(h.is_github_action and '/bin/fish' or 'fish')
 
+local feed_kitty = function(input)
+  return h.feed_kitty(input, { get_text_args = { '--extent=screen' } })
+end
+
 describe('kitty-scrollback.nvim', function()
   h.init_nvim()
 
@@ -30,7 +34,7 @@ describe('kitty-scrollback.nvim', function()
     kitty_instance = h.wait_for_kitty_remote_connection(kitty_cmd, tmpsock, {
       stdin = 'cd ' .. ksb_dir .. 'tests/workdir',
     })
-    h.feed_kitty({
+    feed_kitty({
       h.send_as_string([[
 function fish_prompt  
   echo "fish \$ " 
@@ -55,7 +59,7 @@ bind --mode default \\ee kitty_scrollback_edit_command_buffer
 
   it('should not have autocomplete in executed command', function()
     h.assert_screen_equals(
-      h.feed_kitty({
+      feed_kitty({
         h.with_pause_seconds_before([[echo autocomplete test]]),
         h.open_kitty_scrollback_nvim(),
         h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
@@ -78,7 +82,7 @@ fish $
 
   it('should have autocomplete available after cursor in current command', function()
     h.assert_screen_equals(
-      h.feed_kitty({
+      feed_kitty({
         h.with_pause_seconds_before([[echo autocomplete test]]),
         h.open_kitty_scrollback_nvim(),
         h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
@@ -99,7 +103,7 @@ fish $ echo autocomplete test
 
   it('should have fish filetype for paste window', function()
     h.assert_screen_match(
-      h.feed_kitty({
+      feed_kitty({
         h.open_kitty_scrollback_nvim(),
         h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.esc()),
@@ -117,7 +121,7 @@ Press ENTER or type command to continue.*]],
 
   it('should open command in command-line editing mode for fish', function()
     h.assert_screen_equals(
-      h.feed_kitty({
+      feed_kitty({
         h.with_pause_seconds_before(h.send_without_newline([[nacho cheese]])),
         h.alt_e(),
         h.with_pause_seconds_before(h.send_without_newline([[ciwecho]]), 2),
@@ -137,7 +141,7 @@ fish $
 
   it('should clear command if no-op in command-line editing mode for fish', function()
     h.assert_screen_equals(
-      h.feed_kitty({
+      feed_kitty({
         h.with_pause_seconds_before(h.send_without_newline([[nacho cheese]])),
         h.alt_e(),
         h.with_pause_seconds_before([[:qa!]]),
