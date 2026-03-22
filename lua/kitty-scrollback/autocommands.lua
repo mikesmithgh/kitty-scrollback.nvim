@@ -41,10 +41,12 @@ M.load_autocmds = function()
 end
 
 M.disable_term_close_autocmd = function()
-  -- In nvim 0.12+, the autocmd nvim.terminal TermClose is responsible for displaying the
-  -- [Process exited] message. Previously, the set_title escape sequence was used as a workaround.
-  -- See https://github.com/neovim/neovim/discussions/38315
-  vim.api.nvim_clear_autocmds({ group = 'nvim.terminal', event = 'TermClose' })
+  if vim.fn.has('nvim-0.12') == 1 then
+    -- In nvim 0.12+, the autocmd nvim.terminal TermClose is responsible for displaying the
+    -- [Process exited] message. Previously, the set_title escape sequence was used as a workaround.
+    -- See https://github.com/neovim/neovim/discussions/38315
+    vim.api.nvim_clear_autocmds({ group = 'nvim.terminal', event = 'TermClose' })
+  end
 end
 
 M.set_paste_buffer_write_autocmd = function()
