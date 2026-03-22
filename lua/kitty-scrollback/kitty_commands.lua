@@ -33,15 +33,13 @@ local function get_scrollback_cmd(get_text_args)
     .. [[-e 's/\r//g' ]] -- added to remove /r added by --add-wrap-markers, (--add-wrap-markers is used to add empty lines at end of screen)
     .. [[-e 's/$/\x1b[0m/g']] -- append all lines with reset to avoid unintended colors
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
-  -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
-  local start_set_title_cmd = 'printf "\x1b]2;"'
-  local full_cmd = scrollback_cmd
-    .. ' | '
-    .. sed_cmd
-    .. ' && '
-    .. flush_stdout_cmd
-    .. ' && '
-    .. start_set_title_cmd
+  local full_cmd = scrollback_cmd .. ' | ' .. sed_cmd .. ' && ' .. flush_stdout_cmd
+  if vim.fn.has('nvim-0.12') == 0 then
+    -- workaround to remove [Process exited] message in prior versions of nvim
+    -- start to set title but do not complete see https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
+    local start_set_title_cmd = 'printf "\x1b]2;"'
+    full_cmd = full_cmd .. ' && ' .. start_set_title_cmd
+  end
 
   return scrollback_cmd, full_cmd
 end
@@ -57,7 +55,7 @@ local function defer_resize_term(min_cols)
   return orig_columns
 end
 
-M.open_term_command = vim.fn.has('nvim-0.11') <= 0 and 'termopen' or 'jobstart'
+M.open_term_command = vim.fn.has('nvim-0.11') == 0 and 'termopen' or 'jobstart'
 
 ---@param get_text_opts KsbKittyGetTextArguments
 ---@param on_exit_cb function

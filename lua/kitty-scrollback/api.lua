@@ -264,7 +264,7 @@ M.checkhealth = function()
     vim.api.nvim_get_runtime_file('python/kitty_scrollback_nvim.py', false)[1],
     ':p'
   )
-  if vim.fn.has('nvim-0.10') > 0 then
+  if vim.fn.has('nvim-0.10') == 1 then
     vim
       .system({
         -- fallback to 'kitty' because checkhealth can be called outside of standard setup flow

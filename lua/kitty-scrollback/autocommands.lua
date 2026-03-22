@@ -30,6 +30,7 @@ M.setup = function(private, options)
 end
 
 M.load_autocmds = function()
+  M.disable_term_close_autocmd()
   M.set_term_enter_autocmd(p.bufid)
   M.set_yank_post_autocmd()
   M.set_paste_window_resized_autocmd()
@@ -37,6 +38,15 @@ M.load_autocmds = function()
   M.set_scrollback_buffer_enter_autocmd()
   M.set_colorscheme_autocmd()
   M.set_paste_window_closed()
+end
+
+M.disable_term_close_autocmd = function()
+  if vim.fn.has('nvim-0.12') == 1 then
+    -- In nvim 0.12+, the autocmd nvim.terminal TermClose is responsible for displaying the
+    -- [Process exited] message. Previously, the set_title escape sequence was used as a workaround.
+    -- See https://github.com/neovim/neovim/discussions/38315
+    vim.api.nvim_clear_autocmds({ group = 'nvim.terminal', event = 'TermClose' })
+  end
 end
 
 M.set_paste_buffer_write_autocmd = function()
@@ -156,7 +166,7 @@ M.set_yank_post_autocmd = function()
       end
 
       if yankevent.regname == '+' then
-        if vim.fn.has('clipboard') > 0 then
+        if vim.fn.has('clipboard') == 1 then
           -- Contents should be copied to clipboard, return to Kitty
           local clipboard_tool = vim.api.nvim_call_function('provider#clipboard#Executable', {})
           local defer_ms = 0

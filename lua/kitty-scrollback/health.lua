@@ -79,7 +79,7 @@ local function check_clipboard()
   end
   vim.health.start('kitty-scrollback: clipboard')
   local clipboard_tool = vim.api.nvim_call_function('provider#clipboard#Executable', {})
-  if vim.fn.has('clipboard') > 0 and not is_blank(clipboard_tool) then
+  if vim.fn.has('clipboard') == 1 and not is_blank(clipboard_tool) then
     vim.health.ok('Clipboard tool found: *' .. clipboard_tool .. '*')
     if clipboard_tool == 'xclip' then
       vim.health.warn([[
@@ -189,7 +189,7 @@ M.check_nvim_version = function(version, check_only)
     start('kitty-scrollback: Neovim version 0.10+')
   end
   local nvim_version = 'NVIM ' .. M.nvim_version()
-  if vim.fn.has(version) > 0 then
+  if vim.fn.has(version) == 1 then
     if not check_only then
       vim.health.ok(nvim_version)
     end

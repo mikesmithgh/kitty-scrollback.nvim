@@ -12,7 +12,7 @@ local kitty_instance
 local shell = h.debug(h.is_github_action and '/bin/bash' or 'bash --noprofile --norc')
 
 local it = it
-if not (h.is_github_action and vim.fn.has('linux') ~= 0) then
+if not (h.is_github_action and vim.fn.has('linux') == 1) then
   it = function(desc, ...)
     h.ignore(h.color_string('red', 'Test only runs on linux CI! ') .. desc, ...)
   end

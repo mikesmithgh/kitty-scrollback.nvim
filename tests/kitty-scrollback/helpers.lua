@@ -399,7 +399,11 @@ M.clear = function()
   }
 end
 
-M.feed_kitty = function(input, pause_seconds_after)
+M.feed_kitty = function(input, opts)
+  opts = vim.tbl_deep_extend('force', {
+    pause_seconds_after = 3, -- longer pause for linux
+    get_text_args = {},
+  }, opts or {})
   input = input or {}
   for _, line in pairs(input) do
     local feed_opts = vim.tbl_extend('force', {
@@ -442,9 +446,9 @@ M.feed_kitty = function(input, pause_seconds_after)
       end
     end
   end
-  M.pause_seconds(pause_seconds_after or 3) -- longer pause for linux
+  M.pause_seconds(opts.pause_seconds_after)
 
-  local stdout = M.kitty_remote_get_text().stdout
+  local stdout = M.kitty_remote_get_text(opts.get_text_args).stdout
   local last_line = stdout:match('.*\n(.*)\n')
   local start_of_line, cursor_y, cursor_x =
     last_line:match('^(.*)\x1b%[%?25[hl]\x1b%[(%d+);(%d+)H\x1b.*$')
@@ -522,9 +526,7 @@ M.replace_spinner_with_space = function(text)
   return text
 end
 
-M.assert_screen_equals = function(actual, expected, ...)
-  local actual_rstrip = M.replace_spinner_with_space(actual.stdout):gsub('%s*\n', '\n')
-  local expected_rstrip = expected.stdout:gsub('%s*\n', '\n')
+local assert_equals = function(actual, actual_rstrip, expected, expected_rstrip, ...)
   M.debug({
     actual_stdout = actual.stdout,
     actual_stdout_rstrip = actual_rstrip,
@@ -547,30 +549,24 @@ M.assert_screen_equals = function(actual, expected, ...)
   end
 end
 
+M.assert_screen_equals = function(actual, expected, ...)
+  local actual_rstrip = M.replace_spinner_with_space(actual.stdout):gsub('%s*\n', '\n')
+  local expected_rstrip = expected.stdout:gsub('%s*\n', '\n')
+  assert_equals(actual, actual_rstrip, expected, expected_rstrip, ...)
+end
+
 M.assert_screen_starts_with = function(actual, expected, ...)
   local expected_rstrip = expected.stdout:gsub('%s*\n', '\n'):gsub('\n$', '')
   local actual_rstrip =
     M.replace_spinner_with_space(actual.stdout):gsub('%s*\n', '\n'):sub(1, #expected_rstrip)
-  M.debug({
-    actual_stdout = actual.stdout,
-    actual_stdout_rstrip = actual_rstrip,
-    actual_stdout_length = #actual.stdout,
-    actual_rstrip_length = #actual_rstrip,
-    expected_stdout = expected.stdout,
-    expected_stdout_rstrip = expected_rstrip,
-    expected_length = #expected.stdout,
-    expected_rstrip_length = #expected_rstrip,
-  })
-  if actual_rstrip ~= expected_rstrip then
-    debug_print_differences(actual_rstrip, expected_rstrip)
-  end
-  assert.are.equal(expected_rstrip, actual_rstrip, ...)
-  if expected.cursor_y then
-    assert.are.equal(expected.cursor_y, actual.cursor_y, ...)
-  end
-  if expected.cursor_x then
-    assert.are.equal(expected.cursor_x, actual.cursor_x, ...)
-  end
+  assert_equals(actual, actual_rstrip, expected, expected_rstrip, ...)
+end
+
+M.assert_screen_ends_with = function(actual, expected, ...)
+  local expected_rstrip = expected.stdout:gsub('%s*\n', '\n')
+  local actual_rstrip =
+    M.replace_spinner_with_space(actual.stdout):gsub('%s*\n', '\n'):sub(-#expected_rstrip)
+  assert_equals(actual, actual_rstrip, expected, expected_rstrip, ...)
 end
 
 M.assert_screen_match = function(actual, expected, ...)
