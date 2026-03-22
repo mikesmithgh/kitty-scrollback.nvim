@@ -1,3 +1,10 @@
+## [9.0.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.0.0...v9.0.1) (2026-03-22)
+
+
+### Bug Fixes
+
+* hide process exited msg in nvim 0.12 ([#354](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/354)) ([b001090](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/b001090a4230bf3861bf8f9f91316c18ca497473))
+
 # [9.0.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v8.0.0...v9.0.0) (2026-03-02)
 
 
