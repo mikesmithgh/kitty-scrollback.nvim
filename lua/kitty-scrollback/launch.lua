@@ -8,6 +8,8 @@ local ksb_footer_win
 local ksb_hl
 ---@module 'kitty-scrollback.api'
 local ksb_api
+---@module 'kitty-scrollback.fzf_lua'
+local ksb_fzf_lua
 ---@module 'kitty-scrollback.keymaps'
 local ksb_keymaps
 ---@module 'kitty-scrollback.kitty_commands'
@@ -22,6 +24,7 @@ local ksb_health
 local ksb_configs_defaults
 
 local M = {}
+local uv = vim.uv or vim.loop
 
 ---@class KsbKittyOpts
 ---@field shell_integration table
@@ -60,6 +63,7 @@ local M = {}
 ---@field paste_bufid integer|nil the buffer ID of the paste window
 ---@field footer_winid integer|nil the window ID of the paste window footer
 ---@field footer_bufid integer|nil the buffer ID of the paste window footer
+---@field scrollback_tempfile string|nil path of the temp file backing the scrollback buffer
 ---@field pos table|nil
 local p = {}
 
@@ -197,6 +201,55 @@ local set_cursor_position = vim.schedule_wrap(function(d)
   vim.o.virtualedit = orig_virtualedit
 end)
 
+local function scrollback_tempfile_opts()
+  return (opts.scrollback_buffer and opts.scrollback_buffer.tempfile) or {}
+end
+
+local function scrollback_tempfile_path()
+  local tempfile_opts = scrollback_tempfile_opts()
+  local temp_path = vim.fn.tempname() .. '.ksb_scrollback'
+  if not tempfile_opts.dir or tempfile_opts.dir == '' then
+    return temp_path
+  end
+
+  local temp_dir = vim.fn.fnamemodify(tempfile_opts.dir, ':p')
+  vim.fn.mkdir(temp_dir, 'p')
+  return temp_dir .. '/' .. vim.fn.fnamemodify(temp_path, ':t')
+end
+
+local function write_scrollback_buffer_to_tempfile()
+  if not scrollback_tempfile_opts().enabled then
+    return false
+  end
+
+  local temp_path = scrollback_tempfile_path()
+  local ok, err = pcall(
+    vim.fn.writefile,
+    vim.api.nvim_buf_get_lines(p.bufid, 0, -1, false),
+    temp_path
+  )
+  if not ok then
+    vim.notify(
+      'kitty-scrollback.nvim: failed to write scrollback temp file: ' .. err,
+      vim.log.levels.ERROR,
+      {}
+    )
+    return false
+  end
+  if not uv.fs_stat(temp_path) then
+    vim.notify(
+      'kitty-scrollback.nvim: failed to stat scrollback temp file: ' .. temp_path,
+      vim.log.levels.ERROR,
+      {}
+    )
+    return false
+  end
+
+  p.scrollback_tempfile = temp_path
+  vim.api.nvim_buf_set_name(p.bufid, temp_path)
+  return true
+end
+
 local function load_requires()
   -- add to runtime to allow loading modules via require
   vim.opt.runtimepath:append(p.kitty_data.ksb_dir)
@@ -204,6 +257,7 @@ local function load_requires()
   ksb_footer_win = require('kitty-scrollback.footer_win')
   ksb_hl = require('kitty-scrollback.highlights')
   ksb_api = require('kitty-scrollback.api')
+  ksb_fzf_lua = require('kitty-scrollback.fzf_lua')
   ksb_keymaps = require('kitty-scrollback.keymaps')
   ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
   ksb_util = require('kitty-scrollback.util')
@@ -228,6 +282,7 @@ M.setup = function(kitty_data_str)
   end, { ['repeat'] = 80 }) -- 2 seconds
 
   p.kitty_data = vim.fn.json_decode(kitty_data_str)
+  p.scrollback_tempfile = nil
   load_requires() -- must be after p.kitty_data initialized
 
   -- if a config at the first index found, that will be applied to all configurations regardless of prefix
@@ -290,6 +345,7 @@ M.setup = function(kitty_data_str)
   ksb_footer_win.setup(p, opts)
   ksb_autocmds.setup(p, opts)
   ksb_api.setup(p, opts)
+  ksb_fzf_lua.setup(p, opts)
   ksb_keymaps.setup(p, opts)
 
   local ok = ksb_hl.setup(p, opts)
@@ -367,10 +423,12 @@ M.launch = function()
         end
         ksb_win.show_status_window()
 
-        -- improve buffer name to avoid displaying complex command to user
-        local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
-        term_buf_name = term_buf_name:gsub('^(term://.-:).*', '%1kitty-scrollback.nvim')
-        vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
+        if not write_scrollback_buffer_to_tempfile() then
+          -- improve buffer name to avoid displaying complex command to user
+          local term_buf_name = vim.api.nvim_buf_get_name(p.bufid)
+          term_buf_name = term_buf_name:gsub('^(term://.-:).*', '%1kitty-scrollback.nvim')
+          vim.api.nvim_buf_set_name(p.bufid, term_buf_name)
+        end
         vim.api.nvim_set_option_value(
           'winhighlight',
           'Normal:KittyScrollbackNvimNormal,Visual:KittyScrollbackNvimVisual',
