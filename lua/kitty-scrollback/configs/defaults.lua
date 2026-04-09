@@ -47,6 +47,14 @@
 ---@field yank_register string|nil register used during yanks to paste window, see :h registers
 ---@field yank_register_enabled boolean|nil If true, the `yank_register` copies content to the paste window. If false, disable yank to paste window
 
+---@class KsbScrollbackBufferTempfileOpts
+---@field enabled boolean|nil If true, write the scrollback buffer to a temp file on disk so ripgrep-based buffer search can use it
+---@field dir string|nil Directory where the temp file should be created. If nil, use the default system temp directory
+---@field keep boolean|nil If true, keep the temp file on disk after kitty-scrollback.nvim closes
+
+---@class KsbScrollbackBufferOpts
+---@field tempfile KsbScrollbackBufferTempfileOpts|nil options for backing the scrollback buffer with a temporary file
+
 ---@class KsbOpts
 ---@field callbacks KsbCallbacks|nil fire and forget callback functions
 ---@field keymaps_enabled boolean|nil if true, enabled all default keymaps
@@ -54,6 +62,7 @@
 ---@field highlight_overrides KsbHighlights|nil kitty-scrollback.nvim highlight overrides
 ---@field status_window KsbStatusWindowOpts|nil options for status window indicating that kitty-scrollback.nvim is ready
 ---@field paste_window KsbPasteWindowOpts|nil  options for paste window that sends commands to Kitty
+---@field scrollback_buffer KsbScrollbackBufferOpts|nil options for the main scrollback buffer
 ---@field kitty_get_text KsbKittyGetText|nil options passed to get-text when reading scrollback buffer, see `kitty @ get-text --help`
 ---@field checkhealth boolean|nil if true execute :checkhealth kitty-scrollback and skip setup
 ---@field visual_selection_highlight_mode string | 'darken' | 'kitty' | 'nvim' | 'reverse' | nil
@@ -83,6 +92,13 @@ local default_opts = {
     footer_winopts_overrides = nil,
     yank_register = '',
     yank_register_enabled = true,
+  },
+  scrollback_buffer = {
+    tempfile = {
+      enabled = false,
+      dir = nil,
+      keep = false,
+    },
   },
   kitty_get_text = {
     ansi = true,
