@@ -56,7 +56,7 @@ jobs:
           args: .
 
       - uses: stefanzweifel/git-auto-commit-action@v4
-        if: ${{ steps.checkstylua.outcome != 'success' }}
+        if: ${{ steps.checkstylua.outcome != 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           branch: ${{ github.head_ref }}
           commit_message: "chore(stylua): format lua files"
