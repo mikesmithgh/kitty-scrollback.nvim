@@ -223,11 +223,8 @@ local function write_scrollback_buffer_to_tempfile()
   end
 
   local temp_path = scrollback_tempfile_path()
-  local ok, err = pcall(
-    vim.fn.writefile,
-    vim.api.nvim_buf_get_lines(p.bufid, 0, -1, false),
-    temp_path
-  )
+  local ok, err =
+    pcall(vim.fn.writefile, vim.api.nvim_buf_get_lines(p.bufid, 0, -1, false), temp_path)
   if not ok then
     vim.notify(
       'kitty-scrollback.nvim: failed to write scrollback temp file: ' .. err,

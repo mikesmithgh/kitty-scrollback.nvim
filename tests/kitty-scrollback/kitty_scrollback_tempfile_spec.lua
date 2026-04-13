@@ -91,7 +91,7 @@ Press ENTER or type command to continue.*]],
       }),
       h.send_as_string(
         string.format(
-            [[:lua vim.fn.writefile({ vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':p') }, %q)]],
+          [[:lua vim.fn.writefile({ vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':p') }, %q)]],
           scrollback_tempfile_capture_path
         )
       ),

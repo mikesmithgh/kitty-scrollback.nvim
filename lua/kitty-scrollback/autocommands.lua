@@ -86,10 +86,8 @@ M.set_paste_buffer_write_autocmd = function()
 end
 
 M.set_scrollback_tempfile_cleanup_autocmd = function()
-  local group = vim.api.nvim_create_augroup(
-    'KittyScrollBackNvimScrollbackTempfileCleanup',
-    { clear = true }
-  )
+  local group =
+    vim.api.nvim_create_augroup('KittyScrollBackNvimScrollbackTempfileCleanup', { clear = true })
   vim.api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
     group = group,
     callback = function(e)
