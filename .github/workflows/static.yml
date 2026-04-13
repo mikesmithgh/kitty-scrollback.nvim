@@ -49,7 +49,9 @@ jobs:
 
       - name: checkstylua failed on forked branch
         if: ${{ steps.checkstylua.outcome != 'success' && github.event.pull_request.head.repo.full_name != github.repository }}
-        run: exit 1
+        run: |
+          echo "::error::Stylua check failed. Run 'stylua .' to fix formatting."
+          exit 1
 
       - name: formatstylua
         if: ${{ steps.checkstylua.outcome != 'success' }}
