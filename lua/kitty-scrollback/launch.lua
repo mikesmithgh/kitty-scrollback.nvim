@@ -292,6 +292,10 @@ M.setup = function(kitty_data_str)
   ksb_api.setup(p, opts)
   ksb_keymaps.setup(p, opts)
 
+  if opts.extras and opts.extras.fzf_lua then
+    require('kitty-scrollback.extras.fzf-lua').setup()
+  end
+
   local ok = ksb_hl.setup(p, opts)
   if ok then
     ksb_hl.set_highlights()
@@ -407,6 +411,9 @@ M.launch = function()
         vim.api.nvim_set_option_value('filetype', 'kitty-scrollback', {
           buf = p.bufid,
         })
+        if opts.extras and opts.extras.fzf_lua then
+          require('kitty-scrollback.extras.fzf-lua').use_tempfile(p.bufid, term_buf_name)
+        end
         if
           opts.callbacks
           and opts.callbacks.after_ready

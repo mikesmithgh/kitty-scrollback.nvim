@@ -92,6 +92,10 @@ local default_opts = {
   checkhealth = false,
   visual_selection_highlight_mode = 'darken',
   scrollback_columns = 300,
+  --TODO: add annotation for extras
+  extras = {
+    fzf_lua = false,
+  },
 }
 
 return default_opts
