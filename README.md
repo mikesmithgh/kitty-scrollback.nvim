@@ -618,18 +618,6 @@ The configuration precedence is `default` > `global` > `builtin` > `user` where 
     yank_register_enabled = true,
   },
 
-  -- KsbScrollbackBufferOpts? options for the main scrollback buffer
-  scrollback_buffer = {
-    tempfile = {
-      -- boolean? If true, write the scrollback buffer to a temp file on disk so ripgrep-based current-buffer pickers can search it
-      enabled = false,
-      -- string? Directory where the temp file should be created. If nil, use the system temp directory
-      dir = nil,
-      -- boolean? If true, keep the temp file on disk after kitty-scrollback.nvim closes
-      keep = false,
-    },
-  },
-
   -- KsbKittyGetText? options passed to get-text when reading scrollback buffer, see kitty @ get-text --help
   kitty_get_text = {
     -- boolean If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
@@ -645,6 +633,8 @@ The configuration precedence is `default` > `global` > `builtin` > `user` where 
   visual_selection_highlight_mode = 'darken',
   -- integer? Temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
   scrollback_columns = 300,
+  -- boolean? if true, writes the scrollback buffer to a temporary file (used for external tools like ripgrep)
+  scrollback_tempfile = false,
 }
 ```
 
@@ -841,23 +831,19 @@ require('kitty-scrollback').setup({
 })
 ```
 
+TODO: find a better spot for this in README
+
 If you use a ripgrep-based current-buffer picker such as `fzf-lua`'s `grep_curbuf`, enable a temp file for the scrollback buffer so the picker has a real file on disk to search. The temp file is deleted when kitty-scrollback.nvim closes unless you opt to keep it.
 
 ```lua
 require('kitty-scrollback').setup({
   {
-    scrollback_buffer = {
-      tempfile = {
-        enabled = true,
-      },
-    },
+    scrollback_tempfile = true,
   },
 })
 
 vim.keymap.set('n', '<leader>/', '<cmd>FzfLua grep_curbuf<cr>', { desc = 'Buffer' })
 ```
-
-Set `scrollback_buffer.tempfile.dir` if you want to control where the file is created, or `scrollback_buffer.tempfile.keep = true` if you want to inspect it after closing kitty-scrollback.nvim.
 
 ## 🫡 Commands
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`

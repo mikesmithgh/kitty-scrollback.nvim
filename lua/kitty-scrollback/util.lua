@@ -244,6 +244,15 @@ M.system_handle_error = function(cmd, error_header, sys_opts, ignore_error)
   return ok, result
 end
 
+M.create_tempfile = function(bufid, buf_name)
+  -- the temporary file is deleted by Neovim on exit, see :help tempdir
+  local tempfile =
+    vim.fs.joinpath(vim.fn.fnamemodify(vim.fn.tempname(), ':h'), vim.fn.fnamemodify(buf_name, ':t'))
+  local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
+  local result = vim.fn.writefile(lines, tempfile)
+  return tempfile, result == 0
+end
+
 M.command_line_editing_mode = vim.env.KITTY_SCROLLBACK_NVIM_MODE == 'command_line_editing'
 M.command_line_editing_mode_input = vim.env.KITTY_SCROLLBACK_NVIM_EDIT_INPUT
 

@@ -4,7 +4,6 @@ local ksb_hl = require('kitty-scrollback.highlights')
 local ksb_kitty_cmds = require('kitty-scrollback.kitty_commands')
 local ksb_util = require('kitty-scrollback.util')
 local ksb_win = require('kitty-scrollback.windows')
-local uv = vim.uv or vim.loop
 
 local M = {}
 
@@ -25,28 +24,6 @@ local function as_list(value)
   return {}
 end
 
-local function cleanup_scrollback_tempfile()
-  if not p.scrollback_tempfile then
-    return
-  end
-  if
-    opts.scrollback_buffer
-    and opts.scrollback_buffer.tempfile
-    and opts.scrollback_buffer.tempfile.keep
-  then
-    return
-  end
-
-  local temp_path = p.scrollback_tempfile ---@type string
-  p.scrollback_tempfile = nil
-  if uv.fs_stat(temp_path) then
-    pcall(vim.fn.delete, temp_path)
-  end
-  if uv.fs_stat(temp_path) then
-    pcall(os.remove, temp_path)
-  end
-end
-
 M.setup = function(private, options)
   p = private
   opts = options ---@diagnostic disable-line: unused-local
@@ -58,7 +35,6 @@ M.load_autocmds = function()
   M.set_yank_post_autocmd()
   M.set_paste_window_resized_autocmd()
   M.set_paste_buffer_write_autocmd()
-  M.set_scrollback_tempfile_cleanup_autocmd()
   M.set_scrollback_buffer_enter_autocmd()
   M.set_colorscheme_autocmd()
   M.set_paste_window_closed()
@@ -82,23 +58,6 @@ M.set_paste_buffer_write_autocmd = function()
         ksb_kitty_cmds.send_paste_buffer_text_to_kitty_and_quit(false)
       end
     end,
-  })
-end
-
-M.set_scrollback_tempfile_cleanup_autocmd = function()
-  local group =
-    vim.api.nvim_create_augroup('KittyScrollBackNvimScrollbackTempfileCleanup', { clear = true })
-  vim.api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
-    group = group,
-    callback = function(e)
-      if e.buf == p.bufid then
-        cleanup_scrollback_tempfile()
-      end
-    end,
-  })
-  vim.api.nvim_create_autocmd({ 'ExitPre', 'VimLeavePre' }, {
-    group = group,
-    callback = cleanup_scrollback_tempfile,
   })
 end
 

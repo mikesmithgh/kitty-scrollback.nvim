@@ -319,4 +319,7 @@ require('kitty-scrollback').setup({
       style_simple = true,
     },
   },
+  ksb_example_scrollback_tempfile = {
+    scrollback_tempfile = true,
+  },
 })
