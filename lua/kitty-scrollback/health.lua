@@ -180,13 +180,8 @@ M.nvim_version = function()
 end
 
 M.check_nvim_version = function(version, check_only)
-  local start = vim.health and (vim.health.start or vim.health.report_start)
-    or require('health').report_start
-  local error = vim.health and (vim.health.error or vim.health.report_error)
-    or require('health').report_error
-
   if not check_only then
-    start('kitty-scrollback: Neovim version 0.10+')
+    vim.health.start('kitty-scrollback: Neovim version 0.10+')
   end
   local nvim_version = 'NVIM ' .. M.nvim_version()
   if vim.fn.has(version) == 1 then
@@ -196,7 +191,7 @@ M.check_nvim_version = function(version, check_only)
     return true
   else
     if not check_only then
-      error(nvim_version, M.advice.nvim_version)
+      vim.health.error(nvim_version, M.advice.nvim_version)
     end
   end
   return false
