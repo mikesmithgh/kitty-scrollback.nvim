@@ -1,0 +1,10 @@
+std = "vim"
+
+[lints]
+global_usage = "allow"
+# mixed_table is triggered by standard Neovim API patterns like vim.cmd.normal({ ..., bang = true })
+mixed_table = "allow"
+# bad_string_escape: LuaJIT supports \x hex escape sequences (e.g., \x1b) which selene flags
+bad_string_escape = "allow"
+# unused_variable: The plugin uses a module pattern where p/opts are set in setup() and used by other functions
+unused_variable = "allow"

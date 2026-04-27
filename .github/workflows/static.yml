@@ -64,3 +64,21 @@ jobs:
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
 
+  selene:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install selene
+        run: |
+          version=$(curl -sI 'https://github.com/Kampfkarren/selene/releases/latest' | grep -i 'location:' | awk -F/ '{print $NF}' | tr -d '\r\n')
+          curl -LSfs "https://github.com/Kampfkarren/selene/releases/download/${version}/selene-${version}-linux.zip" -o selene.zip
+          unzip selene.zip
+          chmod +x selene
+          sudo mv selene /usr/local/bin/
+
+      - name: Run selene
+        run: selene --display-style=quiet .
+
