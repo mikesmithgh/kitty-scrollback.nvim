@@ -263,12 +263,8 @@ M.setup = function(kitty_data_str)
     vim.cmd('checkhealth kitty-scrollback') -- prefer vim.cmd('checkhealth') over vim.cmd.checkhealth to support older versions of neovim
     return
   end
-  if not ksb_health.check_nvim_version('nvim-0.10', true) then
-    local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM '
-      .. ksb_health.nvim_version()
-      .. '. '
-      .. table.concat(ksb_health.advice.nvim_version)
-    vim.fn.confirm(prompt_msg, '&Quit')
+  if vim.fn.has(ksb_health.supported_nvim_version) == 0 then
+    ksb_health.display_version_error()
     ksb_util.quitall()
   end
   if not ksb_health.check_kitty_version(true) then
