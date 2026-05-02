@@ -403,6 +403,18 @@ M.launch = function()
         vim.api.nvim_set_option_value('filetype', 'kitty-scrollback', {
           buf = p.bufid,
         })
+        if opts.scrollback_tempfile then
+          local tempfile, ok = ksb_util.create_tempfile(p.bufid, term_buf_name)
+          if ok then
+            vim.api.nvim_buf_set_name(p.bufid, tempfile)
+          else
+            vim.notify(
+              'kitty-scrollback.nvim: failed to write scrollback temp file: ' .. tempfile,
+              vim.log.levels.ERROR,
+              {}
+            )
+          end
+        end
         if
           opts.callbacks
           and opts.callbacks.after_ready

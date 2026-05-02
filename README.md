@@ -52,6 +52,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - 🫡 [Commands](#-commands)
 - ⌨️ [Keymaps](#%EF%B8%8F-keymaps)
 - 🪛 [Optional Setup](#-optional-setup)
+  - [fzf-lua integration](#fzf-lua-integration)
   - [Command-line editing](#command-line-editing)
 - 👏 [Recommendations](#-recommendations)
 - 🤝 [Acknowledgements](#-acknowledgements)
@@ -633,6 +634,8 @@ The configuration precedence is `default` > `global` > `builtin` > `user` where 
   visual_selection_highlight_mode = 'darken',
   -- integer? Temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
   scrollback_columns = 300,
+  -- boolean? if true, writes the scrollback buffer to a temporary file (used for external tools like ripgrep)
+  scrollback_tempfile = false,
 }
 ```
 
@@ -859,6 +862,23 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 ## 🪛 Optional Setup
 
+### fzf-lua integration
+
+[fzf-lua](https://github.com/ibhagwan/fzf-lua) allows you to search the current buffer via the commands `grep_curbuf` or `lgrep_curbuf`. This requires [ripgrep](https://github.com/burntsushi/ripgrep) and for a file to exist on disk. By default, kitty-scrollback.nvim does not create a file on disk. You can enable `scrollback_tempfile` if would like kitty-scrollback.nvim to create a temporary file to support searching the current buffer. The temporary file is created in Neovim's tempdir (see `:help tempdir`) and is deleted when Neovim closes.
+
+#### Example configuration
+```lua
+require('kitty-scrollback').setup({
+  {
+    scrollback_tempfile = true,
+  },
+})
+```
+
+#### Demo
+
+https://github.com/user-attachments/assets/e48979df-9e76-48ff-b733-adbe1ad84a89
+
 ### Command-line editing
 
 > [!NOTE]  
@@ -877,7 +897,7 @@ The generated configuration will mention the environment variable `KITTY_SCROLLB
 This allows [Kitten Arguments](#kitten-arguments) setup specific to opening kitty-scrollback.nvim in command-line editing mode
 that you may want to configure differently than your standard kitty-scrollback.nvim setup.
 
-### Example setups
+#### Example setups
 <details> 
 <summary>bash</summary>
  

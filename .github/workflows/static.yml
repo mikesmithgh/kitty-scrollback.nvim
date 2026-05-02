@@ -40,6 +40,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: checkstylua
+        id: checkstylua
         uses: JohnnyMorganz/stylua-action@v3
         continue-on-error: true
         with:
@@ -47,9 +48,15 @@ jobs:
           version: latest
           args: --check .
 
+      - name: checkstylua failed on forked branch
+        if: ${{ steps.checkstylua.outcome != 'success' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          echo "::error::Stylua check failed. Run 'stylua .' to fix formatting."
+          exit 1
+
       - name: formatstylua
         if: ${{ steps.checkstylua.outcome != 'success' }}
-        uses: JohnnyMorganz/stylua-action@v2
+        uses: JohnnyMorganz/stylua-action@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest

@@ -58,6 +58,7 @@
 ---@field checkhealth boolean|nil if true execute :checkhealth kitty-scrollback and skip setup
 ---@field visual_selection_highlight_mode string | 'darken' | 'kitty' | 'nvim' | 'reverse' | nil
 ---@field scrollback_columns integer|nil temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
+---@field scrollback_tempfile boolean|nil if true, writes the scrollback buffer to a temporary file (used for external tools like ripgrep)
 local default_opts = {
   callbacks = nil,
   keymaps_enabled = true,
@@ -92,6 +93,7 @@ local default_opts = {
   checkhealth = false,
   visual_selection_highlight_mode = 'darken',
   scrollback_columns = 300,
+  scrollback_tempfile = false,
 }
 
 return default_opts
