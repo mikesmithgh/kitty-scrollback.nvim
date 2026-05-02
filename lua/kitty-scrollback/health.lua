@@ -1,5 +1,7 @@
 ---@mod kitty-scrollback.health
-local M = {}
+local M = {
+  supported_nvim_version = 'nvim-0.10',
+}
 
 ---@type KsbPrivate
 local p
@@ -179,26 +181,27 @@ M.nvim_version = function()
   return fmt_version
 end
 
-M.check_nvim_version = function(version, check_only)
-  local start = vim.health and (vim.health.start or vim.health.report_start)
-    or require('health').report_start
-  local error = vim.health and (vim.health.error or vim.health.report_error)
-    or require('health').report_error
+M.display_version_error = function()
+  local prompt_msg = 'kitty-scrollback.nvim: Fatal error, on version NVIM '
+    .. M.nvim_version()
+    .. '. '
+    .. table.concat(M.advice.nvim_version)
+  vim.fn.confirm(prompt_msg, '&Quit')
+end
 
-  if not check_only then
-    start('kitty-scrollback: Neovim version 0.10+')
+M.check_nvim_version = function()
+  if vim.fn.has('nvim-0.9.1') == 0 then
+    -- vim.health.start was introduced in 0.9.1, fallback to error on older versions of nvim
+    M.display_version_error()
+    return false
   end
+  vim.health.start('kitty-scrollback: Neovim version 0.10+')
   local nvim_version = 'NVIM ' .. M.nvim_version()
-  if vim.fn.has(version) == 1 then
-    if not check_only then
-      vim.health.ok(nvim_version)
-    end
+  if vim.fn.has(M.supported_nvim_version) == 1 then
+    vim.health.ok(nvim_version)
     return true
-  else
-    if not check_only then
-      error(nvim_version, M.advice.nvim_version)
-    end
   end
+  vim.health.error(nvim_version, M.advice.nvim_version)
   return false
 end
 
@@ -268,7 +271,7 @@ end
 
 M.check = function()
   if
-    M.check_nvim_version('nvim-0.10')
+    M.check_nvim_version()
     and check_kitty_scrollback_nvim_version()
     and check_kitty_remote_control()
     and check_has_kitty_data()
