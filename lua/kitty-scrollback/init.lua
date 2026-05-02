@@ -4,7 +4,6 @@ local M = {}
 ---@type table<string, KsbOpts|fun(KsbKittyData):KsbOpts>
 M.configs = {}
 
----Create commands for generating kitty-scrollback.nvim kitten configs
 ---@param configs? table<string, KsbOpts|fun(KsbKittyData):KsbOpts>
 M.setup = function(configs)
   if configs then
