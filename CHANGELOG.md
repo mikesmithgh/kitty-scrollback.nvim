@@ -1,3 +1,10 @@
+# [9.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.0.1...v9.1.0) (2026-05-02)
+
+
+### Features
+
+* add option to create temp file for scrollback buffer ([#359](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/359)) ([7d9484f](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/7d9484fe39ed0cdf5d07be5dd3ae56085c8b9528))
+
 ## [9.0.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.0.0...v9.0.1) (2026-03-22)
 
 
