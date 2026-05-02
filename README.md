@@ -52,6 +52,7 @@ Navigate your [Kitty](https://sw.kovidgoyal.net/kitty/) scrollback buffer to qui
 - 🫡 [Commands](#-commands)
 - ⌨️ [Keymaps](#%EF%B8%8F-keymaps)
 - 🪛 [Optional Setup](#-optional-setup)
+  - [fzf-lua integration](#fzf-lua-integration)
   - [Command-line editing](#command-line-editing)
 - 👏 [Recommendations](#-recommendations)
 - 🤝 [Acknowledgements](#-acknowledgements)
@@ -831,20 +832,6 @@ require('kitty-scrollback').setup({
 })
 ```
 
-TODO: find a better spot for this in README
-
-If you use a ripgrep-based current-buffer picker such as `fzf-lua`'s `grep_curbuf`, enable a temp file for the scrollback buffer so the picker has a real file on disk to search. The temp file is deleted when kitty-scrollback.nvim closes unless you opt to keep it.
-
-```lua
-require('kitty-scrollback').setup({
-  {
-    scrollback_tempfile = true,
-  },
-})
-
-vim.keymap.set('n', '<leader>/', '<cmd>FzfLua grep_curbuf<cr>', { desc = 'Buffer' })
-```
-
 ## 🫡 Commands
 The API is available via the `kitty-scrollback.api` module. e.g., `require('kitty-scrollback.api')`
 
@@ -875,6 +862,19 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 ## 🪛 Optional Setup
 
+### fzf-lua integration
+
+[fzf-lua](https://github.com/ibhagwan/fzf-lua) allows you to search the current buffer via the commands `grep_curbuf` or `lgrep_curbuf`. This requires [ripgrep](https://github.com/burntsushi/ripgrep) and for a file to exist on disk. By default, kitty-scrollback.nvim does not create a file on disk. You can enable `scrollback_tempfile` if would like kitty-scrollback.nvim to create a temporary file to support searching the current buffer. The temporary file is created in Neovim's tempdir (see `:help tempdir`) and is deleted when Neovim closes.
+
+Example configuration:
+```lua
+require('kitty-scrollback').setup({
+  {
+    scrollback_tempfile = true,
+  },
+})
+```
+
 ### Command-line editing
 
 > [!NOTE]  
@@ -893,7 +893,7 @@ The generated configuration will mention the environment variable `KITTY_SCROLLB
 This allows [Kitten Arguments](#kitten-arguments) setup specific to opening kitty-scrollback.nvim in command-line editing mode
 that you may want to configure differently than your standard kitty-scrollback.nvim setup.
 
-### Example setups
+#### Example setups
 <details> 
 <summary>bash</summary>
  
