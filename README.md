@@ -866,7 +866,7 @@ The API is available via the `kitty-scrollback.api` module. e.g., `require('kitt
 
 [fzf-lua](https://github.com/ibhagwan/fzf-lua) allows you to search the current buffer via the commands `grep_curbuf` or `lgrep_curbuf`. This requires [ripgrep](https://github.com/burntsushi/ripgrep) and for a file to exist on disk. By default, kitty-scrollback.nvim does not create a file on disk. You can enable `scrollback_tempfile` if would like kitty-scrollback.nvim to create a temporary file to support searching the current buffer. The temporary file is created in Neovim's tempdir (see `:help tempdir`) and is deleted when Neovim closes.
 
-Example configuration:
+#### Example configuration
 ```lua
 require('kitty-scrollback').setup({
   {
@@ -874,6 +874,10 @@ require('kitty-scrollback').setup({
   },
 })
 ```
+
+#### Demo
+
+https://github.com/user-attachments/assets/e48979df-9e76-48ff-b733-adbe1ad84a89
 
 ### Command-line editing
 
