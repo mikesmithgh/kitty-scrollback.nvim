@@ -1,4 +1,4 @@
----@type table<string, KsbOpts|fun(KsbKittyData):KsbOpts>
+---@type table<string, KsbOpts|fun(KsbKittyData):KsbOpts?>
 return {
   ksb_builtin_get_text_all = {
     kitty_get_text = {
