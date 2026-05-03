@@ -246,8 +246,9 @@ end
 
 M.create_tempfile = function(bufid, buf_name)
   -- the temporary file is deleted by Neovim on exit, see :help tempdir
-  local tempfile =
-    vim.fs.joinpath(vim.fn.fnamemodify(vim.fn.tempname(), ':h'), vim.fn.fnamemodify(buf_name, ':t'))
+  -- replace : with - so the filename does not show in fzf-lua grep_curbuf
+  local filename = vim.fn.fnamemodify(buf_name, ':t'):gsub(':', '-')
+  local tempfile = vim.fs.joinpath(vim.fn.fnamemodify(vim.fn.tempname(), ':h'), filename)
   local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
   local result = vim.fn.writefile(lines, tempfile)
   return tempfile, result == 0

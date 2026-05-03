@@ -109,19 +109,19 @@ KsbKittyGetText                                   *default_opts.KsbKittyGetText*
 KsbStatusWindowIcons                         *default_opts.KsbStatusWindowIcons*
 
     Fields: ~
-        {kitty}  (string)  kitty status window icon, defaults to 󰄛
-        {heart}  (string)  heart status window icon, defaults to 󰣐
-        {nvim}   (string)  nvim status window icon, defaults to 
+        {kitty?}  (string)  kitty status window icon, defaults to 󰄛
+        {heart?}  (string)  heart status window icon, defaults to 󰣐
+        {nvim?}   (string)  nvim status window icon, defaults to 
 
 
 KsbStatusWindowOpts                           *default_opts.KsbStatusWindowOpts*
 
     Fields: ~
-        {enabled}       (boolean)               If true, show status window in upper right corner of the screen
-        {style_simple}  (boolean)               If true, use plaintext instead of nerd font icons
-        {autoclose}     (boolean)               If true, close the status window after kitty-scrollback.nvim is ready
-        {show_timer}    (boolean)               If true, show a timer in the status window while kitty-scrollback.nvim is loading
-        {icons}         (KsbStatusWindowIcons)  Icons displayed in the status window, defaults to 󰄛 󰣐 
+        {enabled?}       (boolean)               If true, show status window in upper right corner of the screen
+        {style_simple?}  (boolean)               If true, use plaintext instead of nerd font icons
+        {autoclose?}     (boolean)               If true, close the status window after kitty-scrollback.nvim is ready
+        {show_timer?}    (boolean)               If true, show a timer in the status window while kitty-scrollback.nvim is loading
+        {icons?}         (KsbStatusWindowIcons)  Icons displayed in the status window, defaults to 󰄛 󰣐 
 
 
 BoolOrFn                                                 *default_opts.BoolOrFn*
@@ -187,6 +187,7 @@ KsbOpts                                                   *default_opts.KsbOpts*
         {checkhealth}                      (boolean|nil)                                   if true execute :checkhealth kitty-scrollback and skip setup
         {visual_selection_highlight_mode}  (string|"darken"|"kitty"|"nvim"|"reverse"|nil)
         {scrollback_columns}               (integer|nil)                                   temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
+        {scrollback_tempfile}              (boolean|nil)                                   if true, writes the scrollback buffer to a temporary file (used for external tools like ripgrep)
 
 
 ==============================================================================
