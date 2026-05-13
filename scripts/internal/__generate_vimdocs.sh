@@ -2,6 +2,16 @@
 
 # dev utility to generate vimdoc from README
 
+if [[ ! -d "../panvimdoc" ]]; then
+  echo "../panvimdoc does not exist. hint: cd .. && git clone git@github.com:kdheepak/panvimdoc.git" >&2
+  exit 1
+fi
+
+if ! command -v pandoc &>/dev/null; then
+  echo "pandoc does not exist. hint: brew install pandoc " >&2
+  exit 1
+fi
+
 # preformat README.md
 mkdir -p tmp_vimdoc_workdir
 cp README.md tmp_vimdoc_workdir/README.md
@@ -11,8 +21,9 @@ sed -E -e's/\[!(NOTE|WARNING|IMPORTANT)\].*/[!\1]\n>/Ig' -e 's/.*<summary>(.+)<\
 
 # panvimdoc
 
-~/gitrepos/panvimdoc/panvimdoc.sh \
-  --description 'For NVIM v0.9+' \
+../panvimdoc/panvimdoc.sh \
+  --description 'kitty-scrollback.nvim' \
+  --vim-version 'NVIM v0.10+' \
   --project-name kitty-scrollback.nvim \
   --input-file tmp_vimdoc_workdir/README.md \
   --demojify true \

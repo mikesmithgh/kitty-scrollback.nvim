@@ -1,4 +1,5 @@
-*kitty-scrollback.nvim.txt*                                     For NVIM v0.9+
+*kitty-scrollback.nvim.txt*                              kitty-scrollback.nvim
+                                   For NVIM v0.10+    Last change: 2026 May 13
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -622,6 +623,8 @@ CONFIGURATION OPTIONS
       visual_selection_highlight_mode = 'darken',
       -- integer? Temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
       scrollback_columns = 300,
+      -- boolean? if true, writes the scrollback buffer to a temporary file (used for external tools like ripgrep)
+      scrollback_tempfile = false,
     }
 <
 
@@ -914,6 +917,34 @@ The API is available via the `kitty-scrollback.api` module. e.g.,
 OPTIONAL SETUP                          *kitty-scrollback.nvim-optional-setup*
 
 
+FZF-LUA INTEGRATION ~
+
+fzf-lua <https://github.com/ibhagwan/fzf-lua> allows you to search the current
+buffer via the commands `grep_curbuf` or `lgrep_curbuf`. This requires ripgrep
+<https://github.com/burntsushi/ripgrep> and for a file to exist on disk. By
+default, kitty-scrollback.nvim does not create a file on disk. You can enable
+`scrollback_tempfile` if would like kitty-scrollback.nvim to create a temporary
+file to support searching the current buffer. The temporary file is created in
+Neovim’s tempdir (see `:help tempdir`) and is deleted when Neovim closes.
+
+
+EXAMPLE CONFIGURATION
+
+>lua
+    require('kitty-scrollback').setup({
+      {
+        scrollback_tempfile = true,
+      },
+    })
+<
+
+
+DEMO
+
+
+https://github.com/user-attachments/assets/e48979df-9e76-48ff-b733-adbe1ad84a89
+
+
 COMMAND-LINE EDITING ~
 
 
@@ -937,7 +968,7 @@ kitty-scrollback.nvim in command-line editing mode that you may want to
 configure differently than your standard kitty-scrollback.nvim setup.
 
 
-EXAMPLE SETUPS ~
+EXAMPLE SETUPS
 
 
 `-` `bash`
