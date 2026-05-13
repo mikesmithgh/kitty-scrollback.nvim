@@ -1,3 +1,10 @@
+# [9.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.1.0...v9.2.0) (2026-05-13)
+
+
+### Features
+
+* replace : with - in temp file name ([#367](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/367)) ([979c3de](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/979c3deba4742a13e664d7131bf863967477e5bc))
+
 # [9.1.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.0.1...v9.1.0) (2026-05-02)
 
 
