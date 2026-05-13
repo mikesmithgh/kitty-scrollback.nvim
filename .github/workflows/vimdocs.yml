@@ -35,9 +35,10 @@ jobs:
         with:
           vimdoc: kitty-scrollback.nvim
           pandoc: "tmp_vimdoc_workdir/README.md"
-          description: "For NVIM v0.10+"
-          toc: true
+          description: "kitty-scrollback.nvim"
+          version: "NVIM v0.10+"
           demojify: true
+          toc: true
           dedupsubheadings: false
           treesitter: true
 

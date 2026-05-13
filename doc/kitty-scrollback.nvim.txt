@@ -1,5 +1,5 @@
-*kitty-scrollback.nvim.txt*                                    For NVIM v0.10+
-                                   For NVIM v0.8.0    Last change: 2026 May 03
+*kitty-scrollback.nvim.txt*                              kitty-scrollback.nvim
+                                   For NVIM v0.10+    Last change: 2026 May 12
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -103,7 +103,7 @@ This requires extra steps to setup. See optional
 - Modify the command and do any additional operations that you typically would perform in kitty-scrollback.nvim
 
 
-‍ BREAKING CHANGES MIGRATION STEPS*kitty-scrollback.nvim-‍-breaking-changes-migration-steps*
+� BREAKING CHANGES MIGRATION STEPS*kitty-scrollback.nvim-‍-breaking-changes-migration-steps*
 
 
   |‼| |IMPORTANT|
