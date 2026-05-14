@@ -877,7 +877,7 @@ require('kitty-scrollback').setup({
 
 #### Demo
 
-https://github.com/user-attachments/assets/e48979df-9e76-48ff-b733-adbe1ad84a89
+https://github.com/user-attachments/assets/aa747e5b-e449-4e38-98ec-2b6144e8ae0b
 
 ### Command-line editing
 
