@@ -1,5 +1,5 @@
 *kitty-scrollback.nvim.txt*                              kitty-scrollback.nvim
-                                   For NVIM v0.10+    Last change: 2026 May 14
+                                   For NVIM v0.10+    Last change: 2026 May 24
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -20,6 +20,9 @@ Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
   - Recommendations                    |kitty-scrollback.nvim-recommendations|
   - Acknowledgements                  |kitty-scrollback.nvim-acknowledgements|
   - Alternatives                          |kitty-scrollback.nvim-alternatives|
+
+  |‼| |IMPORTANT|
+  Experimental branch, killing or deprioritizing the paste window
 
 ==============================================================================
 1. kitty-scrollback.nvim         *kitty-scrollback.nvim-kitty-scrollback.nvim*
