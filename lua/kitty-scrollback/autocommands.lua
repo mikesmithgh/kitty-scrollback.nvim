@@ -31,8 +31,9 @@ end
 
 M.load_autocmds = function()
   M.disable_term_close_autocmd()
+  M.set_term_open_autocmd(p.bufid)
   M.set_term_enter_autocmd(p.bufid)
-  M.set_yank_post_autocmd()
+  -- M.set_yank_post_autocmd()
   M.set_paste_window_resized_autocmd()
   M.set_paste_buffer_write_autocmd()
   M.set_scrollback_buffer_enter_autocmd()
@@ -137,12 +138,36 @@ M.set_paste_window_closed = function()
   })
 end
 
+M.set_term_open_autocmd = function(bufid)
+  vim.api.nvim_create_autocmd('TermOpen', {
+    group = vim.api.nvim_create_augroup('KittyScrollBackTermOpen', { clear = true }),
+    buffer = bufid,
+    callback = function(args)
+      vim.api.nvim_create_autocmd({ 'CursorMoved', 'WinScrolled' }, {
+        buffer = args.buf,
+        group = vim.api.nvim_create_augroup('KittyScrollBackMovedOrScrolled', { clear = true }),
+        callback = function()
+          if vim.b.term_entered then
+            vim.b.term_entered = false
+            vim.fn.winrestview(vim.b.last_terminal_view)
+            return
+          else
+            vim.b.last_terminal_view = vim.fn.winsaveview()
+          end
+        end,
+      })
+    end,
+  })
+end
+
 M.set_term_enter_autocmd = function(bufid)
   vim.api.nvim_create_autocmd({ 'TermEnter' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimTermEnter', { clear = true }),
     callback = function(e)
       if e.buf == bufid then
-        ksb_win.open_paste_window(true)
+        -- ksb_win.open_paste_window(true)
+        vim.b.term_entered = true
+        vim.cmd.stopinsert()
       end
     end,
   })
