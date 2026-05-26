@@ -34,6 +34,7 @@ M.load_autocmds = function()
   M.set_term_open_autocmd(p.bufid)
   M.set_term_enter_autocmd(p.bufid)
   -- M.set_yank_post_autocmd()
+  M.set_text_post_autocmd()
   M.set_paste_window_resized_autocmd()
   M.set_paste_buffer_write_autocmd()
   M.set_scrollback_buffer_enter_autocmd()
@@ -150,6 +151,11 @@ M.set_term_open_autocmd = function(bufid)
           if vim.b.term_entered then
             vim.b.term_entered = false
             vim.fn.winrestview(vim.b.last_terminal_view)
+
+            if opts.open_edit_window_on_insert then
+              ksb_win.open_paste_window()
+            end
+
             return
           else
             vim.b.last_terminal_view = vim.fn.winsaveview()
@@ -231,6 +237,43 @@ M.set_yank_post_autocmd = function()
         end
         return
       end
+
+      -- send contents to paste window
+      if
+        opts.paste_window.yank_register_enabled
+        and yankevent.regname == opts.paste_window.yank_register
+      then
+        if e.buf ~= p.bufid then
+          return
+        end
+
+        local contents = {}
+        for _, line in ipairs(as_list(yankevent.regcontents)) do
+          line = line:gsub('%s+$', '')
+          table.insert(contents, line)
+        end
+        if type(contents) == 'table' then
+          vim.schedule(function()
+            ksb_win.open_paste_window()
+            vim.fn.cursor({ vim.fn.line('$'), 0 })
+            local lastline = vim.fn.search('.', 'bnc')
+            if lastline > 0 then
+              table.insert(contents, 1, '')
+            end
+            vim.api.nvim_buf_set_lines(p.paste_bufid, lastline, lastline, false, contents)
+          end)
+        end
+      end
+    end,
+  })
+end
+
+M.set_text_post_autocmd = function()
+  vim.api.nvim_create_autocmd({ 'TextPutPost' }, {
+    group = vim.api.nvim_create_augroup('KittyScrollBackNvimTextPutPost', { clear = true }),
+    pattern = '*',
+    callback = function(e)
+      local yankevent = vim.v.event
 
       -- send contents to paste window
       if

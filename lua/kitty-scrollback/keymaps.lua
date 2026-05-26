@@ -26,8 +26,13 @@ local function set_global_defaults()
   set_default({ 'n' }, '<leader>y', plug.NORMAL_YANK, {})
   set_default({ 'n' }, '<leader>yy', plug.YANK_LINE, {})
 
-  set_default({ 'n' }, 'q', plug.CLOSE_OR_QUIT_ALL, {})
-  set_default({ 'n', 't', 'i' }, '<c-c>', plug.QUIT_ALL, {})
+  if opts.quit_on_q then
+    set_default({ 'n' }, 'q', plug.CLOSE_OR_QUIT_ALL, {})
+  end
+
+  if opts.quit_on_ctrl_c then
+    set_default({ 'n', 't', 'i' }, '<c-c>', plug.QUIT_ALL, {})
+  end
 
   set_default({ 'v' }, '<c-cr>', plug.EXECUTE_VISUAL_CMD, {})
   set_default({ 'v' }, '<s-cr>', plug.PASTE_VISUAL_CMD, {})

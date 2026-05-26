@@ -48,6 +48,9 @@
 ---@field yank_register_enabled boolean|nil If true, the `yank_register` copies content to the paste window. If false, disable yank to paste window
 
 ---@class KsbOpts
+---@field open_edit_window_on_insert boolean|nil
+---@field quit_on_q boolean|nil
+---@field quit_on_ctrl_c boolean|nil
 ---@field callbacks KsbCallbacks|nil fire and forget callback functions
 ---@field keymaps_enabled boolean|nil if true, enabled all default keymaps
 ---@field restore_options boolean|nil if true, restore options that were modified while processing the scrollback buffer
@@ -60,6 +63,16 @@
 ---@field scrollback_columns integer|nil temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
 ---@field scrollback_tempfile boolean|nil if true, writes the scrollback buffer to a temporary file (used for external tools like ripgrep)
 local default_opts = {
+
+  -- open_edit_window_on_insert = false,
+  open_edit_window_on_insert = true,
+
+  quit_on_q = true,
+  -- quit_on_q = false,
+
+  quit_on_ctrl_c = true,
+  -- quit_on_ctrl_c = false,
+
   callbacks = nil,
   keymaps_enabled = true,
   restore_options = false,
