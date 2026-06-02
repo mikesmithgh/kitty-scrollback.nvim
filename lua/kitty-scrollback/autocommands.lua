@@ -269,6 +269,7 @@ M.set_yank_post_autocmd = function()
 end
 
 M.set_text_post_autocmd = function()
+  -- TextPutPost introduced in v0.13 nightly, so this will be a breaking change!
   vim.api.nvim_create_autocmd({ 'TextPutPost' }, {
     group = vim.api.nvim_create_augroup('KittyScrollBackNvimTextPutPost', { clear = true }),
     pattern = '*',
