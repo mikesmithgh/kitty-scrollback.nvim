@@ -270,40 +270,42 @@ end
 
 M.set_text_post_autocmd = function()
   -- TextPutPost introduced in v0.13 nightly, so this will be a breaking change!
-  vim.api.nvim_create_autocmd({ 'TextPutPost' }, {
-    group = vim.api.nvim_create_augroup('KittyScrollBackNvimTextPutPost', { clear = true }),
-    pattern = '*',
-    callback = function(e)
-      local yankevent = vim.v.event
+  if vim.fn.has('nvim-0.13') == 1 then
+    vim.api.nvim_create_autocmd({ 'TextPutPost' }, {
+      group = vim.api.nvim_create_augroup('KittyScrollBackNvimTextPutPost', { clear = true }),
+      pattern = '*',
+      callback = function(e)
+        local yankevent = vim.v.event
 
-      -- send contents to paste window
-      if
-        opts.paste_window.yank_register_enabled
-        and yankevent.regname == opts.paste_window.yank_register
-      then
-        if e.buf ~= p.bufid then
-          return
-        end
+        -- send contents to paste window
+        if
+          opts.paste_window.yank_register_enabled
+          and yankevent.regname == opts.paste_window.yank_register
+        then
+          if e.buf ~= p.bufid then
+            return
+          end
 
-        local contents = {}
-        for _, line in ipairs(as_list(yankevent.regcontents)) do
-          line = line:gsub('%s+$', '')
-          table.insert(contents, line)
+          local contents = {}
+          for _, line in ipairs(as_list(yankevent.regcontents)) do
+            line = line:gsub('%s+$', '')
+            table.insert(contents, line)
+          end
+          if type(contents) == 'table' then
+            vim.schedule(function()
+              ksb_win.open_paste_window()
+              vim.fn.cursor({ vim.fn.line('$'), 0 })
+              local lastline = vim.fn.search('.', 'bnc')
+              if lastline > 0 then
+                table.insert(contents, 1, '')
+              end
+              vim.api.nvim_buf_set_lines(p.paste_bufid, lastline, lastline, false, contents)
+            end)
+          end
         end
-        if type(contents) == 'table' then
-          vim.schedule(function()
-            ksb_win.open_paste_window()
-            vim.fn.cursor({ vim.fn.line('$'), 0 })
-            local lastline = vim.fn.search('.', 'bnc')
-            if lastline > 0 then
-              table.insert(contents, 1, '')
-            end
-            vim.api.nvim_buf_set_lines(p.paste_bufid, lastline, lastline, false, contents)
-          end)
-        end
-      end
-    end,
-  })
+      end,
+    })
+  end
 end
 
 return M
