@@ -110,16 +110,18 @@ local function check_sed()
     return
   end
 
+  local esc = vim.fn.eval([["\e"]]) -- literal ESC byte, matches the portable command used to read the scrollback
+  local cr = vim.fn.eval([["\r"]]) -- literal CR byte
   local cmd = {
     'sed',
     '-E',
     '-e',
-    [[s/\r//g]],
+    's/' .. cr .. '//g',
     '-e',
-    [[s/$/\x1b[0m/g]],
+    's/$/' .. esc .. '[0m/g',
   }
   local ok, sed_proc = pcall(vim.system, cmd, {
-    stdin = 'expected\r',
+    stdin = 'expected' .. cr,
   })
   local result = {}
   if ok then
@@ -129,7 +131,6 @@ local function check_sed()
     result.stdout = ''
     result.stderr = sed_proc
   end
-  local esc = vim.fn.eval([["\e"]]) -- use ^[ instead of \x1b to pass healthcheck
   ok = ok and result.code == 0 and result.stdout == 'expected' .. esc .. '[0m'
   if ok then
     vim.health.ok(

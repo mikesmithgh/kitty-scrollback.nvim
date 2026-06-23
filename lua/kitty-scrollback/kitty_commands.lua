@@ -29,9 +29,10 @@ local function get_scrollback_cmd(get_text_args)
     p.kitty_data.window_id,
     get_text_args.kitty
   )
-  local sed_cmd = [[sed -E ]]
-    .. [[-e 's/\r//g' ]] -- added to remove /r added by --add-wrap-markers, (--add-wrap-markers is used to add empty lines at end of screen)
-    .. [[-e 's/$/\x1b[0m/g']] -- append all lines with reset to avoid unintended colors
+  -- embed literal CR and ESC bytes rather than the \r and \x1b escapes, which only gnu sed expands (bsd and busybox sed pass them through literally)
+  local sed_cmd = "sed -E "
+    .. "-e 's/\r//g' " -- remove CR added by --add-wrap-markers, which adds empty lines at end of screen
+    .. "-e 's/$/\x1b[0m/g'" -- append all lines with reset to avoid unintended colors
   local flush_stdout_cmd = p.kitty_data.kitty_path .. [[ +runpy 'sys.stdout.flush()']]
   local full_cmd = scrollback_cmd .. ' | ' .. sed_cmd .. ' && ' .. flush_stdout_cmd
   if vim.fn.has('nvim-0.12') == 0 then
