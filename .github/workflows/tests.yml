@@ -36,7 +36,7 @@ jobs:
           - 'stable'  # v0.12.+
           - 'nightly' 
         kitty_version: 
-          - 'stable'  # 0.46.+
+          - 'stable'  # 0.48.+
           - 'nightly'
         # update __branch-protection-rules.json and run __update_branch_protection_rules.sh when modified
         # test only latest patch versions of nvim released as of v0.10.0
@@ -49,17 +49,19 @@ jobs:
             kitty_version: 'stable'
           - nvim_version: 'v0.11.7'
             kitty_version: 'stable'
-          - nvim_version: 'v0.12.2'
+          - nvim_version: 'v0.12.4'
             kitty_version: 'stable'
           # nvim stable + kitty versions
-          - nvim_version: 'stable'
-            kitty_version: '0.43.0'
           - nvim_version: 'stable'
             kitty_version: '0.43.1'
           - nvim_version: 'stable'
             kitty_version: '0.44.0'
           - nvim_version: 'stable'
             kitty_version: '0.45.0'
+          - nvim_version: 'stable'
+            kitty_version: '0.46.2'
+          - nvim_version: 'stable'
+            kitty_version: '0.47.4'
       fail-fast: false
     runs-on: ubuntu-24.04
     steps:
