@@ -15,6 +15,10 @@ M.setup = function(private, options)
   opts = options ---@diagnostic disable-line: unused-local
 end
 
+local keytrans_display = function(keys)
+  return vim.fn.keytrans(keys):gsub('<lt>', '<'):gsub('<Bslash>', '\\')
+end
+
 M.footer_winopts = function(paste_winopts)
   local target_border = { '▏', ' ', '▕', '▕', '🭿', '▁', '🭼', '▏' }
   local row_offset = 1
@@ -96,7 +100,7 @@ M.open_footer_window = function(winopts, refresh_only)
   )
 
   local default_footer_keys = {
-    ['<Plug>(KsbNormalYank)'] = vim.fn.keytrans((vim.g.mapleader or '\\') .. 'y'):gsub('<lt>', '<'),
+    ['<Plug>(KsbNormalYank)'] = keytrans_display((vim.g.mapleader or '\\') .. 'y'),
     ['<Plug>(KsbExecuteCmd)'] = '<C-CR>',
     ['<Plug>(KsbPasteCmd)'] = '<S-CR>',
     ['<Plug>(KsbToggleFooter)'] = 'g?',
@@ -113,7 +117,7 @@ M.open_footer_window = function(winopts, refresh_only)
   for _, km in pairs(mapped_to_ksb_keymaps) do
     local rhs = km.rhs
     if footer_keys[rhs] ~= nil then
-      local lhs = vim.fn.keytrans(km.lhs):gsub('<lt>', '<')
+      local lhs = keytrans_display(km.lhs)
       if not footer_keys[rhs] or (footer_keys[rhs] and lhs ~= default_footer_keys[rhs]) then
         footer_keys[rhs] = lhs
       end
