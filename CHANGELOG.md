@@ -1,3 +1,10 @@
+## [9.2.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.2.0...v9.2.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* substitute <Bslash> with \ in footer ([#371](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/371)) ([d85f4c4](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/d85f4c402f9169d944f43160e6938ee5a20230c7))
+
 # [9.2.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.1.0...v9.2.0) (2026-05-13)
 
 
