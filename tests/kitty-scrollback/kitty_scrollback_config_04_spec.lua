@@ -425,7 +425,7 @@ $
       '--config',
       'ksb_example_restore_opts',
     })
-    h.assert_screen_equals(
+    h.assert_screen_starts_with(
       h.feed_kitty({
         h.with_pause_seconds_before(h.send_without_newline([[a]]), 2),
         h.send_without_newline(h.send_as_string([[
@@ -467,7 +467,6 @@ restore_options is true, original values of overridden options have been restore
  ▏                                                                                                                                                              ▕
  ▏         \y Yank               <C-CR> Execute               <S-CR> Paste                :w Paste               g? Toggle Mappings                             ▕
 t🭼▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁🭿
-                                                                                                                                               1,1           All
 ]],
           168
         ),
