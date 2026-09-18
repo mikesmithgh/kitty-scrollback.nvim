@@ -244,6 +244,33 @@ M.system_handle_error = function(cmd, error_header, sys_opts, ignore_error)
   return ok, result
 end
 
+--- Run a command without waiting on it, handing the result to `on_exit` once it finishes
+---@param cmd string[]
+---@param error_header string[]
+---@param on_exit fun(result: vim.SystemCompleted)
+M.system_handle_error_async = function(cmd, error_header, on_exit)
+  local proc
+  -- vim.system's callback is a fast event, where the API calls in display_cmd_error
+  -- would raise E5560, so the body has to hop back onto the main loop
+  proc = vim.system(
+    cmd,
+    {},
+    vim.schedule_wrap(function(result)
+      if result.code ~= 0 then
+        M.display_cmd_error(table.concat(cmd, ' '), {
+          entrypoint = 'vim.system()',
+          pid = proc.pid,
+          code = result.code,
+          signal = result.signal,
+          stdout = result.stdout,
+          stderr = result.stderr,
+        }, error_header)
+      end
+      on_exit(result)
+    end)
+  )
+end
+
 M.create_tempfile = function(bufid, buf_name)
   -- the temporary file is deleted by Neovim on exit, see :help tempdir
   -- replace : with - so the filename does not show in fzf-lua grep_curbuf
