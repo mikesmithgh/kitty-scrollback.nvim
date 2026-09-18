@@ -8,6 +8,11 @@ local p
 ---@type KsbOpts
 local opts
 
+-- tracks the in-flight loading window launch: a close can arrive before Kitty
+-- reports the window id, so it is deferred until the launch completes
+local loading_launch_pending = false
+local loading_close_wanted = false
+
 M.setup = function(private, options)
   p = private
   opts = options ---@diagnostic disable-line: unused-local
@@ -222,6 +227,10 @@ M.close_kitty_loading_window = function(ignore_error)
       '--match=id:' .. winid,
     }, error_header, {}, ignore_error)
   end
+  if loading_launch_pending then
+    -- the launch has not returned its window id yet, close it once it does
+    loading_close_wanted = true
+  end
   return true
 end
 
@@ -235,7 +244,7 @@ M.signal_winchanged_to_kitty_child_process = function()
 end
 
 M.open_kitty_loading_window = function(env)
-  if p.kitty_loading_winid then
+  if p.kitty_loading_winid or loading_launch_pending then
     M.close_kitty_loading_window(true)
   end
   local kitty_cmd = vim.list_extend({
@@ -259,10 +268,20 @@ M.open_kitty_loading_window = function(env)
     '--env',
     'KITTY_SCROLLBACK_NVIM_NVIM_ICON=' .. tostring(opts.status_window.icons.nvim),
   }, vim.list_extend(env or {}, { p.kitty_data.ksb_dir .. '/python/loading.py' }))
-  local ok, result = ksb_util.system_handle_error(kitty_cmd, error_header)
-  if ok then
-    p.kitty_loading_winid = tonumber(result.stdout)
-  end
+  -- Launch in the background. Waiting on this costs ~40ms on the critical path
+  -- before the scrollback can even start loading, and the window only has to exist
+  -- by the time close_kitty_loading_window runs.
+  loading_launch_pending = true
+  ksb_util.system_handle_error_async(kitty_cmd, error_header, function(result)
+    loading_launch_pending = false
+    if result.code == 0 then
+      p.kitty_loading_winid = tonumber(result.stdout)
+    end
+    if loading_close_wanted then
+      loading_close_wanted = false
+      M.close_kitty_loading_window(true)
+    end
+  end)
 end
 
 M.get_kitty_colors = function(kitty_data, ignore_error, no_window_id)
