@@ -578,6 +578,8 @@ The configuration precedence is `default` > `global` > `builtin` > `user` where 
     -- table? scrollback buffer window Normal highlight group
     KittyScrollbackNvimNormal = {},
   },
+  -- boolean? if true, close kitty-scrollback.nvim after yanking to the clipboard register
+  close_after_yank = true,
   -- KsbStatusWindowOpts? options for status window indicating that kitty-scrollback.nvim is ready
   status_window = {
     -- boolean If true, show status window in upper right corner of the screen

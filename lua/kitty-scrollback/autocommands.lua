@@ -176,9 +176,11 @@ M.set_yank_post_autocmd = function()
             -- see issue https://github.com/astrand/xclip/issues/38#ref-commit-b042f6d
             defer_ms = 200
           end
-          vim.defer_fn(function()
-            ksb_util.quitall()
-          end, defer_ms)
+          if opts.close_after_yank then
+            vim.defer_fn(function()
+              ksb_util.quitall()
+            end, defer_ms)
+          end
         else
           vim.schedule(function()
             local prompt_msg =

@@ -59,11 +59,13 @@
 ---@field visual_selection_highlight_mode string | 'darken' | 'kitty' | 'nvim' | 'reverse' | nil
 ---@field scrollback_columns integer|nil temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
 ---@field scrollback_tempfile boolean|nil if true, writes the scrollback buffer to a temporary file (used for external tools like ripgrep)
+---@field close_after_yank boolean|nil if true, close kitty-scrollback.nvim after yanking to the clipboard register
 local default_opts = {
   callbacks = nil,
   keymaps_enabled = true,
   restore_options = false,
   highlight_overrides = nil,
+  close_after_yank = true,
   status_window = {
     enabled = true,
     style_simple = false,
