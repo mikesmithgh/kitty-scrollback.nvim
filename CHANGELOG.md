@@ -1,3 +1,10 @@
+# [9.3.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.2.1...v9.3.0) (2026-09-22)
+
+
+### Features
+
+* add close_after_yank option ([#375](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/375)) ([3c7e388](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/3c7e3883128dc1e89bd494a32ffa72c96f776998))
+
 ## [9.2.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.2.0...v9.2.1) (2026-07-18)
 
 
