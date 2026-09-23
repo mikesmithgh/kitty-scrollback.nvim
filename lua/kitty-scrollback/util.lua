@@ -227,11 +227,21 @@ end
 
 M.system_handle_error = function(cmd, error_header, sys_opts, ignore_error)
   local proc = vim.system(cmd, sys_opts or {})
+  return M.system_wait_handle_error(proc, error_header, ignore_error)
+end
+
+--- Wait for a process started with vim.system and report a non-zero exit code
+---@param proc vim.SystemObj
+---@param error_header string[]
+---@param ignore_error boolean|nil
+---@return boolean ok
+---@return vim.SystemCompleted result
+M.system_wait_handle_error = function(proc, error_header, ignore_error)
   local result = proc:wait()
   local ok = result.code == 0
 
   if not ignore_error and not ok then
-    M.display_cmd_error(table.concat(cmd, ' '), {
+    M.display_cmd_error(table.concat(proc.cmd, ' '), {
       entrypoint = 'vim.system()',
       pid = proc.pid,
       code = result.code,

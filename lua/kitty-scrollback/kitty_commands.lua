@@ -211,18 +211,58 @@ M.list_kitty_windows = function()
   }, error_header)
 end
 
-M.close_kitty_loading_window = function(ignore_error)
-  if p and p.kitty_loading_winid then
-    local winid = p.kitty_loading_winid
-    p.kitty_loading_winid = nil
-    return ksb_util.system_handle_error({
-      p.kitty_data.kitty_path,
-      '@',
-      'close-window',
-      '--match=id:' .. winid,
-    }, error_header, {}, ignore_error)
+-- the loading window is tagged with a kitty user variable so it can be closed by
+-- matching the variable instead of the window id returned by launch
+local function loading_window_var()
+  return 'ksb_loading_for', tostring(vim.env.KITTY_WINDOW_ID or p.kitty_data.window_id)
+end
+
+--- Name and value of the kitty user variable set on the loading window
+---@return string name
+---@return string value
+M.loading_window_var = loading_window_var
+
+--- Wait for the background launch of the loading window and report a failure
+--- This returns immediately when the launch already finished, which is every path
+--- except a quit within the first few milliseconds of startup
+---@param ignore_error boolean|nil
+---@return boolean ok
+---@return vim.SystemCompleted|nil result
+M.wait_kitty_loading_window = function(ignore_error)
+  local proc = p and p.kitty_loading_proc
+  if not proc then
+    return true
   end
-  return true
+  return ksb_util.system_wait_handle_error(proc, error_header, ignore_error)
+end
+
+--- Close the loading window by matching its user variable, this does not depend on
+--- the launch handle so it can be used to reattempt a failed close
+---@param ignore_error boolean|nil
+---@return boolean ok
+---@return vim.SystemCompleted result
+M.close_kitty_loading_window_by_var = function(ignore_error)
+  local name, value = loading_window_var()
+  return ksb_util.system_handle_error({
+    p.kitty_data.kitty_path,
+    '@',
+    'close-window',
+    '--match=var:' .. name .. '=' .. value,
+  }, error_header, {}, ignore_error)
+end
+
+M.close_kitty_loading_window = function(ignore_error)
+  local proc = p and p.kitty_loading_proc
+  if not proc then
+    return true
+  end
+  p.kitty_loading_proc = nil
+  -- the launch may still be running, wait for it so the window exists before closing it
+  if proc:wait().code ~= 0 then
+    -- the launch failed so there is no window to close, see M.wait_kitty_loading_window
+    return true
+  end
+  return M.close_kitty_loading_window_by_var(ignore_error)
 end
 
 M.signal_winchanged_to_kitty_child_process = function()
@@ -235,9 +275,10 @@ M.signal_winchanged_to_kitty_child_process = function()
 end
 
 M.open_kitty_loading_window = function(env)
-  if p.kitty_loading_winid then
+  if p.kitty_loading_proc then
     M.close_kitty_loading_window(true)
   end
+  local var_name, var_value = loading_window_var()
   local kitty_cmd = vim.list_extend({
     p.kitty_data.kitty_path,
     '@',
@@ -246,6 +287,8 @@ M.open_kitty_loading_window = function(env)
     'overlay',
     '--title',
     'kitty-scrollback.nvim :: loading...',
+    '--var',
+    var_name .. '=' .. var_value,
     '--env',
     'KITTY_SCROLLBACK_NVIM_STYLE_SIMPLE=' .. tostring(opts.status_window.style_simple),
     '--env',
@@ -259,10 +302,7 @@ M.open_kitty_loading_window = function(env)
     '--env',
     'KITTY_SCROLLBACK_NVIM_NVIM_ICON=' .. tostring(opts.status_window.icons.nvim),
   }, vim.list_extend(env or {}, { p.kitty_data.ksb_dir .. '/python/loading.py' }))
-  local ok, result = ksb_util.system_handle_error(kitty_cmd, error_header)
-  if ok then
-    p.kitty_loading_winid = tonumber(result.stdout)
-  end
+  p.kitty_loading_proc = vim.system(kitty_cmd, {})
 end
 
 M.get_kitty_colors = function(kitty_data, ignore_error, no_window_id)

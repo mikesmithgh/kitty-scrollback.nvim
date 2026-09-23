@@ -35,18 +35,18 @@ KsbKittyData                              *kitty-scrollback.launch.KsbKittyData*
 KsbPrivate                                  *kitty-scrollback.launch.KsbPrivate*
 
     Fields: ~
-        {orig_columns}         (number)
-        {orig_normal_hl}       (table|nil)
-        {bufid}                (integer|nil)   the buffer ID of the scrollback buffer
-        {winid}                (integer|nil)   the initial window ID of the scrollback buffer, this ID is not always guaranteed to be correct if the user has modified the window layout
-        {kitty_loading_winid}  (number|nil)    the ID of the kitty overlay loading window, this is kitty window not a nvim window
-        {kitty_colors}         (table)
-        {kitty_data}           (KsbKittyData)
-        {paste_winid}          (integer|nil)   the window ID of the paste window
-        {paste_bufid}          (integer|nil)   the buffer ID of the paste window
-        {footer_winid}         (integer|nil)   the window ID of the paste window footer
-        {footer_bufid}         (integer|nil)   the buffer ID of the paste window footer
-        {pos}                  (table|nil)
+        {orig_columns}        (number)
+        {orig_normal_hl}      (table|nil)
+        {bufid}               (integer|nil)        the buffer ID of the scrollback buffer
+        {winid}               (integer|nil)        the initial window ID of the scrollback buffer, this ID is not always guaranteed to be correct if the user has modified the window layout
+        {kitty_loading_proc}  (vim.SystemObj|nil)  the background launch of the kitty overlay loading window, the window is closed by matching a kitty user variable
+        {kitty_colors}        (table)
+        {kitty_data}          (KsbKittyData)
+        {paste_winid}         (integer|nil)        the window ID of the paste window
+        {paste_bufid}         (integer|nil)        the buffer ID of the paste window
+        {footer_winid}        (integer|nil)        the window ID of the paste window footer
+        {footer_bufid}        (integer|nil)        the buffer ID of the paste window footer
+        {pos}                 (table|nil)
 
 
 M.setup({kitty_data_str})                        *kitty-scrollback.launch.setup*
@@ -188,6 +188,7 @@ KsbOpts                                                   *default_opts.KsbOpts*
         {visual_selection_highlight_mode}  (string|"darken"|"kitty"|"nvim"|"reverse"|nil)
         {scrollback_columns}               (integer|nil)                                   temporary column width during get-text operation to avoid hard wrapping (larger values may impact performance), see :h columns
         {scrollback_tempfile}              (boolean|nil)                                   if true, writes the scrollback buffer to a temporary file (used for external tools like ripgrep)
+        {close_after_yank}                 (boolean|nil)                                   if true, close kitty-scrollback.nvim after yanking to the clipboard register
 
 
 ==============================================================================
@@ -248,6 +249,7 @@ M.checkhealth()                               *kitty-scrollback.api.checkhealth*
                                *kitty-scrollback.api.close_kitty_loading_window*
 M.close_kitty_loading_window()
      Try to close Kitty loading window
+     The loading window is launched in the background, so first wait for the launch and report a failure
      If the first attempt to close fails, then list all Kitty windows to see if window exists
      If the window does exist, then reattempt to close the window and report error on failure
 
