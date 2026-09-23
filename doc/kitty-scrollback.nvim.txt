@@ -1,5 +1,5 @@
 *kitty-scrollback.nvim.txt*                              kitty-scrollback.nvim
-                                   For NVIM v0.10+    Last change: 2026 May 14
+                             For NVIM v0.10+    Last change: 2026 September 23
 
 ==============================================================================
 Table of Contents                    *kitty-scrollback.nvim-table-of-contents*
@@ -92,8 +92,7 @@ FEATURES                                      *kitty-scrollback.nvim-features*
 
 https://github.com/user-attachments/assets/6b4f177f-34c2-4ce7-9adb-15e0d3e19498
 
-This requires extra steps to setup. See optional
-|kitty-scrollback.nvim-command-line-editing-setup|.
+This requires extra steps to setup. See optional Command-line editing setup.
 
 - Start typing a command in your shell
 - Open the current command line in kitty-scrollback.nvim with the following keybind
@@ -246,10 +245,10 @@ This section outlines the required configuration for kitty-scrollback.nvim.
         allow_remote_control yes
         listen_on unix:/tmp/kitty
         shell_integration enabled
-        
+
         # kitty-scrollback.nvim Kitten alias
         action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py
-        
+
         # Browse scrollback buffer in nvim
         map kitty_mod+h kitty_scrollback_nvim
         # Browse output of the last shell command in nvim
@@ -325,8 +324,8 @@ structure of `KsbOpts` is defined in lua/kitty-scrollback/configs/defaults.lua
 
 The key for an entry in the options table is the name of a configuration that
 you wish to define. The key can be referenced as the name of the configuration
-that is passed to the |kitty-scrollback.nvim-kitten-argument| `--config`. For
-example, with a configuration named `myconfig` that disables ANSI colors:
+that is passed to the Kitten argument `--config`. For example, with a
+configuration named `myconfig` that disables ANSI colors:
 
 >lua
     require('kitty-scrollback').setup({
@@ -548,7 +547,7 @@ CONFIGURATION OPTIONS
         KittyScrollbackNvimStatusWinNormal = {},
         -- table? status window heart icon highlight group
         KittyScrollbackNvimStatusWinHeartIcon = {},
-        -- table? status window spinner icon highlight group 
+        -- table? status window spinner icon highlight group
         KittyScrollbackNvimStatusWinSpinnerIcon = {},
         -- table? status window ready icon highlight group
         KittyScrollbackNvimStatusWinReadyIcon = {},
@@ -587,7 +586,7 @@ CONFIGURATION OPTIONS
           nvim = '', -- variants  |  |  | 
         },
       },
-    
+
       -- KsbPasteWindowOpts? options for paste window that sends commands to Kitty
       paste_window = {
         --- BoolOrFn? If true, use Normal highlight group. If false, use NormalFloat
@@ -607,7 +606,7 @@ CONFIGURATION OPTIONS
         -- boolean? If true, the yank_register copies content to the paste window. If false, disable yank to paste window
         yank_register_enabled = true,
       },
-    
+
       -- KsbKittyGetText? options passed to get-text when reading scrollback buffer, see kitty @ get-text --help
       kitty_get_text = {
         -- boolean If true, the text will include the ANSI formatting escape codes for colors, bold, italic, etc.
@@ -658,15 +657,15 @@ startup-options|.
 
 >
     --clean     Mimics a fresh install of Nvim.
-    --noplugin  Skip loading plugins.  
-    -n          No swap-file will be used.  
+    --noplugin  Skip loading plugins.
+    -n          No swap-file will be used.
 <
 
 To provide this configuration to kitty-scrollback.nvim, pass the `--nvim-args`
-flag to the `kitty_scrollback_nvim` kitten defined in kitty.conf. See
-|kitty-scrollback.nvim-kitten-arguments| for more details on configuration the
-`kitty_scrollback_nvim` kitten. The following is an example of what the
-configuration should look like in your kitty.conf.
+flag to the `kitty_scrollback_nvim` kitten defined in kitty.conf. See Kitten
+Arguments for more details on configuration the `kitty_scrollback_nvim` kitten.
+The following is an example of what the configuration should look like in your
+kitty.conf.
 
 >kitty
     action_alias kitty_scrollback_nvim kitten /path/to/your/install/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py --nvim-args --clean --noplugin -n
@@ -685,14 +684,14 @@ with the contents:
 
 >lua
     -- kitty-scrollback-nvim-kitten-config.lua
-    
+
     -- put your general Neovim configurations here
     vim.g.mapleader = ' '
     vim.g.maplocalleader = ','
-    
+
     vim.keymap.set({ 'n' }, '<C-e>', '5<C-e>', {})
     vim.keymap.set({ 'n' }, '<C-y>', '5<C-y>', {})
-    
+
     -- add kitty-scrollback.nvim to the runtimepath to allow us to require the kitty-scrollback module
     -- pick a runtimepath that corresponds with your package manager, if you are not sure leave them all it will not cause any issues
     vim.opt.runtimepath:append(vim.fn.stdpath('data') .. '/lazy/kitty-scrollback.nvim') -- lazy.nvim
@@ -739,8 +738,8 @@ USE KITTY_SCROLLBACK_NVIM ENVIRONMENT VARIABLE
 
 If you want to use your default Neovim configuration but only have a few minors
 differences, then using the environment variable `KITTY_SCROLLBACK_NVIM` is
-recommended. See the |kitty-scrollback.nvim-environment-variables| section for
-an example of how this can be used.
+recommended. See the Environment Variables section for an example of how this
+can be used.
 
 
 NVIM_APPNAME WITH SEPARATE CONFIGURATION
@@ -759,7 +758,7 @@ example, I will create the directory `~/.config/ksb-nvim` and add the file
       vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, })
     end
     vim.opt.rtp:prepend(lazypath)
-    
+
     require("lazy").setup({
       "mikesmithgh/kitty-scrollback.nvim",
       enabled = true,
@@ -880,7 +879,7 @@ The API is available via the `kitty-scrollback.api` module. e.g.,
 
   --------------------------------------------------------------------------------------------------------------------
 <Plug> Mapping                Default      Mode    API                        Description
-                                Mapping                                         
+                                Mapping
   ----------------------------- ------------ ------- -------------------------- --------------------------------------
 <Plug>(KsbExecuteCmd)         <C-CR>       n,i     execute_command()          Execute the contents of the paste
                                                                                 window in Kitty
@@ -962,10 +961,10 @@ bash, fish, or zsh`
 
 The generated configuration will mention the environment variable
 `KITTY_SCROLLBACK_NVIM_EDIT_ARGS`. This can be used to pass arguments to
-kitty-scrollback.nvim in command-line editing mode. This allows
-|kitty-scrollback.nvim-kitten-arguments| setup specific to opening
-kitty-scrollback.nvim in command-line editing mode that you may want to
-configure differently than your standard kitty-scrollback.nvim setup.
+kitty-scrollback.nvim in command-line editing mode. This allows Kitten
+Arguments setup specific to opening kitty-scrollback.nvim in command-line
+editing mode that you may want to configure differently than your standard
+kitty-scrollback.nvim setup.
 
 
 EXAMPLE SETUPS
@@ -976,7 +975,7 @@ EXAMPLE SETUPS
     should see similar output to the following:
 
 >bash
-    
+
     # add the following environment variables to your bash config (e.g., ~/.bashrc)
     # the editor defined in KITTY_SCROLLBACK_VISUAL will be used in place of VISUAL
     # for other scenarios that are not editing the command-line. For example, C-xC-e
@@ -985,16 +984,16 @@ EXAMPLE SETUPS
     # defined)
     export KITTY_SCROLLBACK_VISUAL='nvim'
     export VISUAL='~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.bash'
-    
+
     # [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode
     # by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS
     # export KITTY_SCROLLBACK_NVIM_EDIT_ARGS=''
-    
-    # [optional] customize your readline config (e.g., ~/.inputrc) 
+
+    # [optional] customize your readline config (e.g., ~/.inputrc)
     # default mapping in vi mode
     set keymap vi-command
     "v": vi-edit-and-execute-command
-    
+
     # default mapping in emacs mode
     set keymap emacs
     "\C-x\C-e": edit-and-execute-command
@@ -1025,29 +1024,29 @@ in this case open in `nvim` as you typically would expect.
     should see similar output to the following:
 
 >fish
-    
+
     # add the following function and bindings to your fish config
     # recommended location: ~/.config/fish/conf.d/kitty_scrollback_nvim.fish
-    
+
     if not status is-interactive
         return
     end
-    
+
     function kitty_scrollback_edit_command_buffer
         set --local --export VISUAL ~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.sh
         edit_command_buffer
         commandline ''
     end
-    
+
     bind --mode default \ee kitty_scrollback_edit_command_buffer
     bind --mode default \ev kitty_scrollback_edit_command_buffer
-    
+
     bind --mode visual \ee kitty_scrollback_edit_command_buffer
     bind --mode visual \ev kitty_scrollback_edit_command_buffer
-    
+
     bind --mode insert \ee kitty_scrollback_edit_command_buffer
     bind --mode insert \ev kitty_scrollback_edit_command_buffer
-    
+
     # [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode
     # by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS
     # set --global --export KITTY_SCROLLBACK_NVIM_EDIT_ARGS ''
@@ -1057,18 +1056,18 @@ in this case open in `nvim` as you typically would expect.
     `~/.config/fish/conf.d/kitty_scrollback_nvim.fish` and add the following:
 
 >fish
-    # ~/.config/fish/conf.d/kitty_scrollback_nvim.fish 
-    
+    # ~/.config/fish/conf.d/kitty_scrollback_nvim.fish
+
     if not status is-interactive
         return
     end
-    
+
     function kitty_scrollback_edit_command_buffer
         set --local --export VISUAL ~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.sh
         edit_command_buffer
         commandline ''
     end
-    
+
     bind --mode default \ee kitty_scrollback_edit_command_buffer
     bind --mode visual \ee kitty_scrollback_edit_command_buffer
     bind --mode insert \ee kitty_scrollback_edit_command_buffer
@@ -1090,21 +1089,21 @@ flexibility in the fish shell!
 >zsh
     # IMPORTANT: kitty-scrollback.nvim only supports zsh 5.9 or greater for command-line editing,
     # please check your version by running: zsh --version
-    
+
     # add the following environment variables to your zsh config (e.g., ~/.zshrc)
-    
+
     autoload -Uz edit-command-line
     zle -N edit-command-line
-    
-    function kitty_scrollback_edit_command_line() { 
+
+    function kitty_scrollback_edit_command_line() {
       local VISUAL='~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.sh'
       zle edit-command-line
       zle kill-whole-line
     }
     zle -N kitty_scrollback_edit_command_line
-    
+
     bindkey '^x^e' kitty_scrollback_edit_command_line
-    
+
     # [optional] pass arguments to kitty-scrollback.nvim in command-line editing mode
     # by using the environment variable KITTY_SCROLLBACK_NVIM_EDIT_ARGS
     # export KITTY_SCROLLBACK_NVIM_EDIT_ARGS=''
@@ -1116,14 +1115,14 @@ flexibility in the fish shell!
     # ~/.zshrc
     autoload -Uz edit-command-line
     zle -N edit-command-line
-    
-    function kitty_scrollback_edit_command_line() { 
+
+    function kitty_scrollback_edit_command_line() {
       local VISUAL='~/.local/share/nvim/lazy/kitty-scrollback.nvim/scripts/edit_command_line.sh'
       zle edit-command-line
       zle kill-whole-line
     }
     zle -N kitty_scrollback_edit_command_line
-    
+
     bindkey '^x^e' kitty_scrollback_edit_command_line
 <
 
@@ -1143,7 +1142,7 @@ RECOMMENDATIONS                        *kitty-scrollback.nvim-recommendations*
 ACKNOWLEDGEMENTS                      *kitty-scrollback.nvim-acknowledgements*
 
 - Kitty custom kitten <https://sw.kovidgoyal.net/kitty/kittens/custom/> documentation
-- baleia.nvim <https://github.com/m00qek/baleia.nvim> - very nice plugin to colorize Neovim buffer containing ANSI escape sequences. I plan to add integration with this plugin 
+- baleia.nvim <https://github.com/m00qek/baleia.nvim> - very nice plugin to colorize Neovim buffer containing ANSI escape sequences. I plan to add integration with this plugin
 - kovidgoyal/kitty#719Feature Request: Ability to select text with the keyboard (vim-like) <https://github.com/kovidgoyal/kitty/issues/719> - ideas for passing the scrollback buffer to Neovim
     - kovidgoyal/kitty#719 Comment 952039731 <https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731> - very detailed solution to opening the Kitty scrollback buffer in Neovim. In particular, I used the `set title` escape code to hide the `[Process exited]` message
 - kovidgoyal/kitty#2426 'Failed to open controlling terminal' error when trying to remote control from vim <https://github.com/kovidgoyal/kitty/issues/2426> - workaround for issuing kitty remote commands without a TTY `listen_on unix:/tmp/mykitty`
