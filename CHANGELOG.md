@@ -1,3 +1,11 @@
+## [9.3.1](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.3.0...v9.3.1) (2026-09-23)
+
+
+### Performance Improvements
+
+* launch the loading window in the background ([8b45113](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/8b45113235dc6ef2f998c009f6b552621ed2301b))
+* launch the loading window in the background ([#376](https://github.com/mikesmithgh/kitty-scrollback.nvim/issues/376)) ([56073b2](https://github.com/mikesmithgh/kitty-scrollback.nvim/commit/56073b2e9f4d3291fb32d92f8686309d65eed634))
+
 # [9.3.0](https://github.com/mikesmithgh/kitty-scrollback.nvim/compare/v9.2.1...v9.3.0) (2026-09-22)
 
 
