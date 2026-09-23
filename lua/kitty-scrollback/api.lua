@@ -288,10 +288,11 @@ M.checkhealth = function()
 end
 
 --- Try to close Kitty loading window
+--- The loading window is launched in the background, so first wait for the launch and report a failure
 --- If the first attempt to close fails, then list all Kitty windows to see if window exists
 --- If the window does exist, then reattempt to close the window and report error on failure
 M.close_kitty_loading_window = function()
-  local winid = p.kitty_loading_winid
+  ksb_kitty_cmds.wait_kitty_loading_window()
   local close_ok, close_result = ksb_kitty_cmds.close_kitty_loading_window(true)
   if not close_ok then
     if
@@ -304,14 +305,13 @@ M.close_kitty_loading_window = function()
         return
       end
       local kitty_windows = vim.json.decode(kitty_windows_result.stdout)
+      local var_name, var_value = ksb_kitty_cmds.loading_window_var()
       for _, kitty_window in pairs(kitty_windows) do
         for _, tab in pairs(kitty_window.tabs) do
           for _, window in pairs(tab.windows) do
-            for env_name, env_value in pairs(window.env) do
-              if env_name == 'KITTY_WINDOW_ID' and tonumber(env_value) == winid then
-                -- the close error is valid, attempt one more time to properly display error to user
-                vim.defer_fn(ksb_kitty_cmds.close_kitty_loading_window, 500)
-              end
+            if window.user_vars and window.user_vars[var_name] == var_value then
+              -- the close error is valid, attempt one more time to properly display error to user
+              vim.defer_fn(ksb_kitty_cmds.close_kitty_loading_window_by_var, 500)
             end
           end
         end

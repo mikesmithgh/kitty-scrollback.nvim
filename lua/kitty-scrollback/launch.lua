@@ -53,7 +53,7 @@ local M = {}
 ---@field orig_normal_hl table|nil
 ---@field bufid integer|nil the buffer ID of the scrollback buffer
 ---@field winid integer|nil the initial window ID of the scrollback buffer, this ID is not always guaranteed to be correct if the user has modified the window layout
----@field kitty_loading_winid number|nil the ID of the kitty overlay loading window, this is kitty window not a nvim window
+---@field kitty_loading_proc vim.SystemObj|nil the background launch of the kitty overlay loading window, the window is closed by matching a kitty user variable
 ---@field kitty_colors table
 ---@field kitty_data KsbKittyData
 ---@field paste_winid integer|nil the window ID of the paste window

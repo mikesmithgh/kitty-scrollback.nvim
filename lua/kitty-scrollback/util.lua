@@ -227,11 +227,21 @@ end
 
 M.system_handle_error = function(cmd, error_header, sys_opts, ignore_error)
   local proc = vim.system(cmd, sys_opts or {})
+  return M.system_wait_handle_error(proc, error_header, ignore_error)
+end
+
+--- Wait for a process started with vim.system and report a non-zero exit code
+---@param proc vim.SystemObj
+---@param error_header string[]
+---@param ignore_error boolean|nil
+---@return boolean ok
+---@return vim.SystemCompleted result
+M.system_wait_handle_error = function(proc, error_header, ignore_error)
   local result = proc:wait()
   local ok = result.code == 0
 
   if not ignore_error and not ok then
-    M.display_cmd_error(table.concat(cmd, ' '), {
+    M.display_cmd_error(table.concat(proc.cmd, ' '), {
       entrypoint = 'vim.system()',
       pid = proc.pid,
       code = result.code,
@@ -242,33 +252,6 @@ M.system_handle_error = function(cmd, error_header, sys_opts, ignore_error)
   end
 
   return ok, result
-end
-
---- Run a command without waiting on it, handing the result to `on_exit` once it finishes
----@param cmd string[]
----@param error_header string[]
----@param on_exit fun(result: vim.SystemCompleted)
-M.system_handle_error_async = function(cmd, error_header, on_exit)
-  local proc
-  -- vim.system's callback is a fast event, where the API calls in display_cmd_error
-  -- would raise E5560, so the body has to hop back onto the main loop
-  proc = vim.system(
-    cmd,
-    {},
-    vim.schedule_wrap(function(result)
-      if result.code ~= 0 then
-        M.display_cmd_error(table.concat(cmd, ' '), {
-          entrypoint = 'vim.system()',
-          pid = proc.pid,
-          code = result.code,
-          signal = result.signal,
-          stdout = result.stdout,
-          stderr = result.stderr,
-        }, error_header)
-      end
-      on_exit(result)
-    end)
-  )
 end
 
 M.create_tempfile = function(bufid, buf_name)
