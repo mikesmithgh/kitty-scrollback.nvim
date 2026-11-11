@@ -8,6 +8,7 @@ from kitty.constants import config_dir, version
 from kitty.utils import resolved_shell, which
 from kitty.shell_integration import get_effective_ksi_env_var
 
+import base64
 import json
 import os
 import inspect
@@ -160,7 +161,9 @@ def handle_result(args: List[str],
                                    target_window_id,
                                    config,
                                    kitty_path)
-        kitty_data = json.dumps(kitty_data_str)
+        # local patch: base64 keeps window titles from closing the Lua [[ ]] string below
+        kitty_data = base64.b64encode(
+            json.dumps(kitty_data_str).encode()).decode()
 
         if w.title.startswith('kitty-scrollback.nvim'):
             print(
@@ -188,7 +191,7 @@ def handle_result(args: List[str],
             '  callback = function()'
             f'  vim.opt.runtimepath:append([[{ksb_dir}]])'
             '   vim.api.nvim_exec_autocmds([[User]], { pattern = [[KittyScrollbackLaunch]], modeline = false })'
-            f'  require([[kitty-scrollback.launch]]).setup_and_launch([[{kitty_data}]])'
+            f'  require([[kitty-scrollback.launch]]).setup_and_launch(vim.base64.decode([[{kitty_data}]]))'
             ' end,'
             ' })')
 
